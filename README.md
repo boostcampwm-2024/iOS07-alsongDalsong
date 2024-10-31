@@ -1,4 +1,4 @@
-### iOS07 - 대대대대 팀 소개
+### Team 대대대대(DDDD)
 |S024 박상원|S029 박진성|S033 손승재|S050 이민하|
 |:-:|:-:|:-:|:-:|
 |<img src="https://github.com/user-attachments/assets/36eac979-7b5b-4c17-97b3-3cdaae30ae05" width=150>|<img src="https://github.com/user-attachments/assets/036badf2-b8cf-4ada-a50b-9052c4ee7446" width=150>|<img src="https://github.com/user-attachments/assets/6cf68e6d-a807-412d-adb7-ecea4bc8c45e" width=150>|<img src="https://github.com/user-attachments/assets/c7d1b9c7-1b5e-44f8-ba8f-ba6258a8a5fe" width=150>|
