@@ -2,7 +2,7 @@ name: Merge to Main
 
 on:
   schedule:
-    - cron: '23 5 * * 4' # 매주 금요일 0시에 실행되도록 스케줄 설정
+    - cron: '0 15 * * 4' # 매주 금요일 0시에 실행되도록 스케줄 설정
 
 jobs:
   merge-to-main:
