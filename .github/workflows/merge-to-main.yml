@@ -1,0 +1,19 @@
+name: Merge to Main
+
+on:
+  schedule:
+    - cron: '0 15 * * 4' # 매주 금요일 0시에 실행되도록 스케줄 설정
+
+jobs:
+  merge-to-main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Merge to Main
+        run: |
+          git checkout main
+          git merge dev --no-ff --no-edit
+          git push origin main
