@@ -6,10 +6,16 @@ class ViewController: UIViewController {
         button.setBackgroundImage(UIImage(named: "fake"), for: .normal)
         return button
     }()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
+        let action = UIAction(handler: {_ in
+            let alert = UIAlertController(title: "", message: "힝! 속았찌?", preferredStyle: .alert)
+            self.present(alert, animated: true)
+        })
+        button.addAction(action, for: .touchUpInside)
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
