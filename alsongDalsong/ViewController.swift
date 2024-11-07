@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  alsongDalsong
-//
-//  Created by Minha Lee on 11/7/24.
-//
-
 import UIKit
 
 class ViewController: UIViewController {
@@ -16,7 +9,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         view.backgroundColor = .red
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -25,7 +17,4 @@ class ViewController: UIViewController {
         button.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         button.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
-
-
 }
-
