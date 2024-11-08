@@ -1,8 +1,7 @@
 name: Merge to Main
 
 on:
-  schedule:
-    - cron: '0 15 * * 4' # 매주 금요일 0시에 실행되도록 스케줄 설정
+  workflow_dispatch:  # 수동 실행을 위한 트리거
 
 jobs:
   merge-to-main:
@@ -10,10 +9,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Merge to Main
+      - name: Fetch all branches
+        run: git fetch origin +refs/heads/*:refs/remotes/origin/* 
+
+      - name: Merge dev to main
         run: |
           git checkout main
-          git merge dev --no-ff --no-edit
+          git merge origin/dev --no-ff --no-edit
           git push origin main
