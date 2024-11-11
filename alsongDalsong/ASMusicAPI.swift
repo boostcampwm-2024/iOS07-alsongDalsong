@@ -1,4 +1,5 @@
 import MusicKit
+import Foundation
 
 struct ASMusicAPI {
     
@@ -17,7 +18,8 @@ struct ASMusicAPI {
                     
                     let result = try await request.response()
                     let asSongs = result.songs.map { song in
-                        ASSong(title: song.title, artistName: song.artistName)
+                        let artworkURL = song.artwork?.url(width: 300, height: 300)
+                        return ASSong(title: song.title, artistName: song.artistName, artwork: artworkURL)
                     }
                     return asSongs
                 } catch {
@@ -34,5 +36,6 @@ struct ASMusicAPI {
 struct ASSong: Equatable {
     let title: String
     let artistName: String
+    let artwork: URL?
 }
 
