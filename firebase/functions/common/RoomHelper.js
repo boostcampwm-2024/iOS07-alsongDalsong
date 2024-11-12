@@ -5,7 +5,20 @@ const firestore = admin.firestore();
  * 방 번호를 생성하는 함수.
  * @returns roomNumber
  */
-function generateRoomNumber() {}
+async function generateRoomNumber() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let roomNumber;
+  let roomExists = true;
+
+  while (roomExists) {
+    roomNumber = Array.from({ length: 6 }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join(
+      ''
+    );
+    roomExists = await invalidRoomNumber(roomNumber);
+  }
+
+  return roomNumber;
+}
 
 /**
  * 방 번호가 유효한지 확인하는 함수
