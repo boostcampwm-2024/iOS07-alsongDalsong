@@ -1,6 +1,6 @@
 import UIKit
 
-internal class MemoryCacheManager {
+internal final class MemoryCacheManager {
     private let cache = NSCache<NSString, AnyObject>()
 
     func getObject(forKey key: String) -> AnyObject? {

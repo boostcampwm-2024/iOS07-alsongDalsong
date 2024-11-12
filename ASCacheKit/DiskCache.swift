@@ -1,6 +1,6 @@
 import UIKit
 
-internal class DiskCacheManager {
+internal final class DiskCacheManager {
     private let fileManager = FileManager.default
     let cacheDirectory: URL
 

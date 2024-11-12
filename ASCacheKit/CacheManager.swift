@@ -1,6 +1,6 @@
 import UIKit
 
-public class ASCacheManager {
+public final class ASCacheManager {
     public static let shared = ASCacheManager()
     private let memoryCache = MemoryCacheManager()
     private let diskCache = DiskCacheManager()
