@@ -1,26 +1,13 @@
+import ASCacheKit
 import Foundation
 
-class MockURLSession: URLProtocol {
-    static var testData: Data?
-    static var testError: Error?
+public class MockURLSession: URLSessionProtocol {
+    public static var testData: Data?
+    public static var testResponse: URLResponse?
 
-    override class func canInit(with _: URLRequest) -> Bool {
-        return true
+    public func data(from url: URL) async throws -> (Data, URLResponse) {
+        let data = MockURLSession.testData ?? Data()
+        let response = MockURLSession.testResponse ?? URLResponse()
+        return (data, response)
     }
-
-    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
-        return request
-    }
-
-    override func startLoading() {
-        if let data = MockURLSession.testData {
-            client?.urlProtocol(self, didLoad: data)
-        }
-        if let error = MockURLSession.testError {
-            client?.urlProtocol(self, didFailWithError: error)
-        }
-        client?.urlProtocolDidFinishLoading(self)
-    }
-
-    override func stopLoading() {}
 }

@@ -1,6 +1,6 @@
 import UIKit
 
-internal final class DiskCacheManager: DiskCacheManagerProtocol {
+internal struct DiskCacheManager: DiskCacheManagerProtocol {
     private let fileManager = FileManager.default
     let cacheDirectory: URL
 
@@ -17,12 +17,12 @@ internal final class DiskCacheManager: DiskCacheManagerProtocol {
     }
 
     func getData(forKey key: String) -> Data? {
-        let fileURL = cacheDirectory.appendingPathComponent(key)
+        let fileURL = cacheDirectory.appendingPathComponent(key.sha256)
         return try? Data(contentsOf: fileURL)
     }
 
     func saveData(_ data: Data, forKey key: String) {
-        let fileURL = cacheDirectory.appendingPathComponent(key)
+        let fileURL = cacheDirectory.appendingPathComponent(key.sha256)
         try? data.write(to: fileURL)
     }
 

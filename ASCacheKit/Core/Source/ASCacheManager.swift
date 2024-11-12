@@ -1,11 +1,21 @@
 import UIKit
 
-public final class ASCacheManager {
-    public static let shared = ASCacheManager()
-    private let memoryCache = MemoryCacheManager()
-    private let diskCache = DiskCacheManager()
+public struct ASCacheManager {
+    public let memoryCache: MemoryCacheManagerProtocol
+    public let diskCache: DiskCacheManagerProtocol
+    public let urlSession: URLSessionProtocol
 
-    private init() {}
+    public init () {
+        self.memoryCache = MemoryCacheManager()
+        diskCache = DiskCacheManager()
+        urlSession = URLSession.shared
+    }
+    
+    public init(memoryCache: MemoryCacheManagerProtocol, diskCache: DiskCacheManagerProtocol, session: URLSessionProtocol) {
+        self.memoryCache = memoryCache
+        self.diskCache = diskCache
+        self.urlSession = session
+    }
 
     public func loadImage(from url: URL, cacheOption: CacheOption) async -> UIImage? {
         let cacheKey = url.absoluteString
@@ -53,7 +63,7 @@ public final class ASCacheManager {
 
     private func downloadData(from url: String) async -> Data? {
         do {
-            let (data, _) = try await URLSession.shared.data(from: URL(string: url)!)
+            let (data, _) = try await urlSession.data(from: URL(string: url)!)
             memoryCache.setObject(data as NSData, forKey: url)
             diskCache.saveData(data, forKey: url)
             return data
