@@ -19,7 +19,12 @@ async function invalidRoomNumber(roomNumber) {}
  * @param id - 사용자 id
  * @returns player
  */
-async function getUserData(id) {}
+
+async function getUserData(id) {
+  const userSnapshot = await admin.database().ref(`/players/${id}`).once('value');
+  if (!userSnapshot.exists()) return null;
+  return userSnapshot.val();
+}
 
 /**
  * 방의 정원을 확인하는 함수
