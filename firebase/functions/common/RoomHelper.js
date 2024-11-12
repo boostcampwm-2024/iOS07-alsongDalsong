@@ -47,7 +47,11 @@ async function getUserData(id) {
  * @param roomNumber - 방 번호
  * @returns boolean
  */
-async function isRoomFull(roomNumber) {}
+async function isRoomFull(roomNumber) {
+  const roomSnapshot = await firestore.collection('rooms').doc(roomNumber).get();
+  const roomData = roomSnapshot.data();
+  return roomData.players.length >= 4;
+}
 
 /**
  * DB 초기화 함수
