@@ -41,7 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		4E8907B62CE2415800D5B547 /* Embed Frameworks */ = {
+		1BD3B8BC2CE2F2510037A6E1 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
@@ -60,6 +60,7 @@
 		1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEntity.xcodeproj; sourceTree = "<group>"; };
 		1BA95B692CE4AC1A008AD761 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASCacheKit.xcodeproj; sourceTree = "<group>"; };
 		4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASAudioKit.xcodeproj; sourceTree = "<group>"; };
 		8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,17 +122,24 @@
 			children = (
 				4E8907A52CE240B300D5B547 /* ASAudioKit.framework */,
 			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		1B1AFB9A2CE344710038FC32 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4E8907B32CE2415700D5B547 /* Frameworks */ = {
+		1BD3B8B92CE2F2510037A6E1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		8D4F316B2CE3804B00E13720 /* Products */ = {
+		1BD3B8D32CE2F34F0037A6E1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				1BA95B632CE4AC0A008AD761 /* ASMusicKit.framework */,
@@ -142,14 +150,15 @@
 		8D69A5892CDC5A83006B9075 = {
 			isa = PBXGroup;
 			children = (
+				1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */,
 				1BA95B692CE4AC1A008AD761 /* ASMusicKit.xcodeproj */,
 				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
 				1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */,
 				4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
-				4E8907B32CE2415700D5B547 /* Frameworks */,
+				1BD3B8B92CE2F2510037A6E1 /* Frameworks */,
 				8D69A5932CDC5A83006B9075 /* Products */,
-				8D9C31952CE47A8000F6E69C /* Recovered References */,
+				1B1AFB742CE344700038FC32 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -186,8 +195,8 @@
 				8D69A58E2CDC5A83006B9075 /* Sources */,
 				8D69A58F2CDC5A83006B9075 /* Frameworks */,
 				8D69A5902CDC5A83006B9075 /* Resources */,
+				1BD3B8BC2CE2F2510037A6E1 /* Embed Frameworks */,
 				1BBE1CB32CE47C920052A698 /* SwiftLint Script */,
-				4E8907B62CE2415800D5B547 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -232,10 +241,12 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 4E89079D2CE240B300D5B547 /* Products */;
+					ProductGroup = 1BD3B8D32CE2F34F0037A6E1 /* Products */;
 					ProjectRef = 4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */;
 				},
 				{
+					ProductGroup = 1B1AFB9A2CE344710038FC32 /* Products */;
+					ProjectRef = 1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */;
 					ProductGroup = 1BA95B642CE4AC0A008AD761 /* Products */;
 					ProjectRef = 1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */;
 				},

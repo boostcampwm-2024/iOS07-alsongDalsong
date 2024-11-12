@@ -1,4 +1,5 @@
 import UIKit
+import ASCacheKit
 
 class ViewController: UIViewController {
     private let button: UIButton = {
