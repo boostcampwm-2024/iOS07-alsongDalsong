@@ -10,6 +10,7 @@ const admin = require('../FirebaseAdmin.js');
  * @param playerId - 호스트 id
  * @returns roomNumber - 생성된 방 번호
  */
+
 module.exports.createRoom = onRequest({ region: 'asia-southeast1' }, async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST requests are accepted' });
@@ -29,7 +30,7 @@ module.exports.createRoom = onRequest({ region: 'asia-southeast1' }, async (req,
     }
 
     const roomData = createRoomData(roomNumber, hostData);
-    await firestore.collection('rooms').doc(roomNumber).set(roomData);
+    await admin.firestore().collection('rooms').doc(roomNumber).set(roomData);
 
     res.status(201).json({ roomNumber });
   } catch (error) {

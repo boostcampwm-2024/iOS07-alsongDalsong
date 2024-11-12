@@ -20,7 +20,7 @@ module.exports.joinRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
     return res.status(400).json({ error: 'Room number and user ID are required' });
   }
 
-  const roomRef = firestore.collection('rooms').doc(roomNumber);
+  const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
   try {
     const roomSnapshot = await roomRef.get();
     if (!roomSnapshot.exists) {
