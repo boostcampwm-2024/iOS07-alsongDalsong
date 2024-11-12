@@ -23,6 +23,7 @@ public class ASAudioPlayer {
             audioPlayer?.play()
         case .play(let time):
             audioPlayer?.currentTime = 0
+            audioPlayer?.play()
             let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(time), repeats: false) { [weak self] _ in
                 self?.audioPlayer?.stop()
             }
