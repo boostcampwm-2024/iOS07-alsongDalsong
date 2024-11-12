@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 1BBE1CA82CE47C660052A698 /* .swiftlint.yml */; };
+		1B9D437C2CE3B1BE004C79EE /* ASEntity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B9D437B2CE3B1BE004C79EE /* ASEntity.framework */; };
+		1B9D437D2CE3B1BE004C79EE /* ASEntity.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B9D437B2CE3B1BE004C79EE /* ASEntity.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; };
 		4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D4F31772CE3806C00E13720 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D4F316F2CE3804B00E13720 /* ASMusicKit.framework */; };
@@ -40,6 +42,7 @@
 			files = (
 				4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */,
 				8D4F31782CE3806C00E13720 /* ASMusicKit.framework in Embed Frameworks */,
+				1B9D437D2CE3B1BE004C79EE /* ASEntity.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEntity.xcodeproj; sourceTree = "<group>"; };
 		4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASAudioKit.xcodeproj; sourceTree = "<group>"; };
 		8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +85,7 @@
 			files = (
 				4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */,
 				8D4F31772CE3806C00E13720 /* ASMusicKit.framework in Frameworks */,
+				1B9D437C2CE3B1BE004C79EE /* ASEntity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +103,7 @@
 		4E8907B32CE2415700D5B547 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1B9D437B2CE3B1BE004C79EE /* ASEntity.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -113,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
+				1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */,
 				4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
 				4E8907B32CE2415700D5B547 /* Frameworks */,
