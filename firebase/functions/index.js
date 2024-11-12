@@ -5,7 +5,6 @@ const { joinRoom } = require('./api/JoinRoom.js');
 const { startGame } = require('./api/StartGame.js');
 const { uploadRecord } = require('./api/UploadRecord.js');
 const { onRecordAdded } = require('./trigger/onRecordAdded.js');
-const { onRoundEdited } = require('./trigger/onRoundEdited.js');
 
 // 방 관련 API
 exports.createRoom = createRoom;
@@ -20,6 +19,3 @@ exports.uploadRecording = uploadRecord;
 
 // Record 추가 트리거
 exports.onRecordAdded = onRecordAdded;
-
-// Round 추가 트리거
-// exports.onRoundEdited = onRoundEdited;
