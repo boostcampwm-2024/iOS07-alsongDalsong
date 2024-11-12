@@ -2,7 +2,9 @@
 // fireStore database의 rooms/{roomNumber}/players 에 player 데이터를 추가합니다.
 
 const { onRequest } = require('firebase-functions/v2/https');
+const { getUserData } = require('../common/RoomHelper.js');
 const admin = require('../FirebaseAdmin.js');
+const { FieldValue } = require('firebase-admin/firestore');
 
 /**
  * 방 참여를 요청하는 API
@@ -20,9 +22,10 @@ module.exports.joinRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
     return res.status(400).json({ error: 'Room number and user ID are required' });
   }
 
-  const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
   try {
+    const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
     const roomSnapshot = await roomRef.get();
+
     if (!roomSnapshot.exists) {
       return res.status(404).json({ error: 'Room not found' });
     }
@@ -40,10 +43,10 @@ module.exports.joinRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
     }
 
     const player = {
-      id: userData.id,
-      avatar: userData.avatar,
-      nickname: userData.nickname,
-      score: userData.score,
+      id: userId,
+      avatar: userData.avatar || '',
+      nickname: userData.nickname || '',
+      score: userData.score || 0,
       order: 0,
     };
 
@@ -54,7 +57,7 @@ module.exports.joinRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
     const updatedRoomData = (await roomRef.get()).data();
     res.status(200).json(updatedRoomData);
   } catch (error) {
-    logger.error('Error joining room:', error);
+    console.error('Join room error:', error);
     res.status(500).json({ error: 'Failed to join room' });
   }
 });

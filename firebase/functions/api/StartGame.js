@@ -44,7 +44,6 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
       res.status(400).json({ error: 'Invalid mode' });
     }
   } catch (error) {
-    logger.error('Error starting game:', error);
     res.status(500).json({ error: 'Failed to start game' });
   }
 });

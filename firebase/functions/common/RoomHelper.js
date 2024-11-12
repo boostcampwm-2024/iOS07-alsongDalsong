@@ -55,8 +55,8 @@ async function generateRoomNumber() {
  * @returns boolean
  */
 async function invalidRoomNumber(roomNumber) {
-  const roomSnapshot = await firestore.collection('rooms').where('number', '==', roomNumber).get();
-  return roomSnapshot.empty;
+  const roomSnapshot = await firestore.collection('rooms').doc(roomNumber).get();
+  return roomSnapshot.exists;
 }
 
 /**

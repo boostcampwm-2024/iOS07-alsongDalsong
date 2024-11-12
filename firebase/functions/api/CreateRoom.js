@@ -34,7 +34,6 @@ module.exports.createRoom = onRequest({ region: 'asia-southeast1' }, async (req,
 
     res.status(201).json({ roomNumber });
   } catch (error) {
-    logger.error('Error creating room:', error);
     res.status(500).json({ error: 'Failed to create room' });
   }
 });
