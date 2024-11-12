@@ -29,6 +29,7 @@
 		4E8907C92CE24BA400D5B547 /* Exceptions for "ASAudioKit" folder in "ASAudioKitTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				ASAudioPlayer/ASAudioPlayer.swift,
 				ASAudioRecorder/ASAudioRecorder.swift,
 				ASAudioRecorder/README.md,
 			);

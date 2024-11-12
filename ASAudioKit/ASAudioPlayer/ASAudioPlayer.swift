@@ -1,4 +1,3 @@
-import Foundation
 import AVFoundation
 
 public enum PlayType {
@@ -28,5 +27,16 @@ public class ASAudioPlayer {
                 self?.audioPlayer?.stop()
             }
         }
+    }
+    
+    public func isPlaying() -> Bool {
+        if let audioPlayer {
+            return audioPlayer.isPlaying
+        }
+        return false
+    }
+    
+    public func getCurrentTime() -> TimeInterval {
+        return audioPlayer?.currentTime ?? 0
     }
 }
