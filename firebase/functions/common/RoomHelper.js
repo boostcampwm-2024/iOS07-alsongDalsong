@@ -12,7 +12,10 @@ function generateRoomNumber() {}
  * @param roomNumber - 방 번호
  * @returns boolean
  */
-async function invalidRoomNumber(roomNumber) {}
+async function invalidRoomNumber(roomNumber) {
+  const roomSnapshot = await firestore.collection('rooms').where('number', '==', roomNumber).get();
+  return roomSnapshot.empty;
+}
 
 /**
  * Realtime Database에 있는 Player 데이터 가져오는 함수
