@@ -1,11 +1,11 @@
 import AVFoundation
 
 public enum PlayType {
-    case allPlay
-    case play(time: Int)
+    case full
+    case partial(time: Int)
 }
 
-public class ASAudioPlayer {
+public final class ASAudioPlayer {
     private var audioPlayer: AVAudioPlayer? = nil
     
     public init() {}
@@ -19,9 +19,10 @@ public class ASAudioPlayer {
         }
         
         switch option {
-        case .allPlay:
+        case .full:
             audioPlayer?.play()
-        case .play(let time):
+            
+        case .partial(let time):
             audioPlayer?.currentTime = 0
             audioPlayer?.play()
             let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(time), repeats: false) { [weak self] _ in

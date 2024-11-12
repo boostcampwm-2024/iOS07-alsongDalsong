@@ -30,6 +30,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ASAudioPlayer/ASAudioPlayer.swift,
+				ASAudioPlayer/README.md,
 				ASAudioRecorder/ASAudioRecorder.swift,
 				ASAudioRecorder/README.md,
 			);

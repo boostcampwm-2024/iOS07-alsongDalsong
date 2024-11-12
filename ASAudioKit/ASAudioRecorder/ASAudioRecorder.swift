@@ -1,6 +1,6 @@
 import AVFoundation
 
-public class ASAudioRecorder {
+public final class ASAudioRecorder {
     private var audioRecorder: AVAudioRecorder? = nil
     
     public init() {}
