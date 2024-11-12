@@ -103,7 +103,6 @@
 		8D4F316B2CE3804B00E13720 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D4F316F2CE3804B00E13720 /* ASMusicKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
