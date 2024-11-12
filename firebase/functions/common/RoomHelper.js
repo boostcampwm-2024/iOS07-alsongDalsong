@@ -1,5 +1,34 @@
 const admin = require('../FirebaseAdmin.js');
 const firestore = admin.firestore();
+/**
+ *
+ * @param {*} roomNumber
+ * @param {*} hostData
+ * @returns roomData
+ */
+function createRoomData(roomNumber, hostData) {
+  const host = {
+    id: hostData.id,
+    avatar: hostData.avatar || '',
+    nickname: hostData.nickname || '',
+    score: hostData.score || 0,
+    order: 0,
+  };
+
+  return {
+    number: roomNumber,
+    host: host,
+    players: [],
+    mode: 'humming',
+    round: 0,
+    status: '',
+    records: [],
+    answers: [],
+    duetime: null,
+    selectedRecords: [],
+    submits: [],
+  };
+}
 
 /**
  * 방 번호를 생성하는 함수.
@@ -68,4 +97,4 @@ async function resetRoom(roomNumber) {}
  */
 async function isHost(userId, roomNumber) {}
 
-module.exports = { generateRoomNumber, invalidRoomNumber, getUserData, isRoomFull, resetRoom, isHost };
+module.exports = { createRoomData, generateRoomNumber, invalidRoomNumber, getUserData, isRoomFull, resetRoom, isHost };
