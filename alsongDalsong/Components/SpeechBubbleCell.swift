@@ -6,55 +6,41 @@ enum MessageType {
     case record
 }
 
-enum MesssageAlignment {
+enum MessageAlignment {
     case left
     case right
 }
 
 struct SpeechBubbleCell: View {
-    let alignment: MesssageAlignment
+    let alignment: MessageAlignment
     let messageType: MessageType
+    let message: String
     
     var body: some View {
         HStack {
             if alignment == .left {
-                AvatarCircle(imageName: "person")
+                AvatarCircleView(imageName: "person")
+                    .frame(width: 80, height: 80)
                     .padding(.leading, 10)
             }
-            SpeechBubble(message: "hello", alignment: alignment, messageType: messageType)
+            speechBubble
             if alignment == .right {
-                AvatarCircle(imageName: "person")
-                    .padding(.trailing, 10)
+                AvatarCircleView(imageName: "person")
+                    .frame(width: 80, height: 80)
+                    .padding(.leading, 10)
             }
         }
     }
-}
-
-struct AvatarCircle: View {
-    //TODO: 추후에 이미지가 들어오면 Data or url 타입으로 변경
-    let imageName: String
-    var body: some View {
-        Image(systemName: imageName)
-            .resizable()
-            .scaledToFill()
-            .frame(width: 80, height: 80)
-            .clipShape(Circle())
-            .overlay(Circle().stroke(Color.white, lineWidth: 4))
-    }
-}
-
-struct SpeechBubble: View {
-    var message: String
-    let alignment: MesssageAlignment
-    let messageType: MessageType
-    var height: CGFloat {
-        if messageType == .music {
-            return 90
-        }
-        return 64
-    }
     
-    var body: some View {
+    @ViewBuilder
+    private var speechBubble: some View {
+        var height: CGFloat {
+            if messageType == .music {
+                return 90
+            }
+            return 64
+        }
+        
         ZStack {
             BubbleShape(alignment: alignment)
                 .frame(width: 255, height: height + 5)
@@ -82,7 +68,7 @@ struct SpeechBubble: View {
 }
 
 struct BubbleShape: Shape {
-    let alignment: MesssageAlignment
+    let alignment: MessageAlignment
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -108,5 +94,5 @@ struct BubbleShape: Shape {
 }
 
 #Preview {
-    SpeechBubbleCell(alignment: .right, messageType: .music)
+    SpeechBubbleCell(alignment: .right, messageType: .music, message: "HELLO")
 }
