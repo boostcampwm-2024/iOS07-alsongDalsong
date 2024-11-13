@@ -6,22 +6,22 @@ public enum PlayType {
 }
 
 public final class ASAudioPlayer {
-    private var audioPlayer: AVAudioPlayer? = nil
-    
+    private var audioPlayer: AVAudioPlayer?
+
     public init() {}
-    
+
     public func startPlaying(data: Data, option: PlayType) {
         do {
             audioPlayer = try AVAudioPlayer(data: data)
             audioPlayer?.prepareToPlay()
         } catch {
-            //TODO: 오디오 객체생성 실패 시 처리
+            // TODO: 오디오 객체생성 실패 시 처리
         }
-        
+
         switch option {
         case .full:
             audioPlayer?.play()
-            
+
         case .partial(let time):
             audioPlayer?.currentTime = 0
             audioPlayer?.play()
@@ -30,14 +30,14 @@ public final class ASAudioPlayer {
             }
         }
     }
-    
+
     public func isPlaying() -> Bool {
         if let audioPlayer {
             return audioPlayer.isPlaying
         }
         return false
     }
-    
+
     public func getCurrentTime() -> TimeInterval {
         return audioPlayer?.currentTime ?? 0
     }
