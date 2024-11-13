@@ -292,8 +292,6 @@
 /* Begin XCBuildConfiguration section */
 		8D69A5A62CDC5A85006B9075 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 8D69A5942CDC5A83006B9075 /* alsongDalsong */;
-			baseConfigurationReferenceRelativePath = "Configurations/FirebaseConfig-Debug.xcconfig";
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -364,8 +362,6 @@
 		};
 		8D69A5A82CDC5A85006B9075 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 8D69A5942CDC5A83006B9075 /* alsongDalsong */;
-			baseConfigurationReferenceRelativePath = "Configurations/FirebaseConfig-Debug.xcconfig";
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
