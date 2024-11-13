@@ -115,6 +115,7 @@
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
 				4E8907B32CE2415700D5B547 /* Frameworks */,
 				8D69A5932CDC5A83006B9075 /* Products */,
+				8D9C31952CE47A8000F6E69C /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -124,6 +125,14 @@
 				8D69A5922CDC5A83006B9075 /* alsongDalsong.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8D9C31952CE47A8000F6E69C /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				8D4F316F2CE3804B00E13720 /* ASMusicKit.framework */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
