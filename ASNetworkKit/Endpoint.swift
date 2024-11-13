@@ -14,7 +14,7 @@ public protocol Endpoint<Path> {
 }
 
 extension Endpoint {
-    var url: URL? {
+    public var url: URL? {
         var components = URLComponents()
         components.scheme = scheme
         components.host = host
@@ -23,7 +23,7 @@ extension Endpoint {
         return components.url
     }
     
-    func update<T>(_ keyPath: WritableKeyPath<Self, T>, with value: T) -> Self {
+    public func update<T>(_ keyPath: WritableKeyPath<Self, T>, with value: T) -> Self {
         var copy = self
         copy[keyPath: keyPath] = value
         return copy
