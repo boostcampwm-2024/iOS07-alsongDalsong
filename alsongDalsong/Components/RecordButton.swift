@@ -27,4 +27,3 @@ class RecordButton: UIButton {
         layer.borderColor = UIColor.white.cgColor
     }
 }
-
