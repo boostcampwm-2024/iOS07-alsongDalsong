@@ -1,6 +1,6 @@
 import Foundation
 
-struct FirebaseEndpoint: Endpoint {
+struct FirebaseEndpoint: Endpoint, Equatable {
     let scheme: String = "https"
     // TODO: - firebase api에 맞는 host 넣기
     let host: String = "google.com"
