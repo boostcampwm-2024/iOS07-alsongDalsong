@@ -1,0 +1,63 @@
+only_rules:
+  - colon
+  - fatal_error_message
+  - implicitly_unwrapped_optional
+  - legacy_cggeometry_functions
+  - legacy_constant
+  - legacy_constructor
+  - legacy_nsgeometry_functions
+  - operator_usage_whitespace
+  - return_arrow_whitespace
+  - trailing_newline
+  - unused_optional_binding
+  - vertical_whitespace
+  - void_return
+  - custom_rules
+  - line_length
+  - identifier_name
+
+excluded:
+  - Carthage
+  - Pods
+  - .build
+
+colon:
+  apply_to_dictionaries: false
+
+indentation: 4
+
+line_length: 140
+
+identifier_name:
+  min_length:
+    warning: 0
+    error: 0
+  max_length:
+    warning: 130
+    error: 150
+  allowed_symbols:
+    - $
+    - _
+    
+custom_rules:
+  no_objcMembers:
+    name: "@objcMembers"
+    regex: "@objcMembers"
+    message: "Explicitly use @objc on each member you want to expose to Objective-C"
+    severity: error
+    
+  no_file_literal:
+    name: "#file is disallowed"
+    regex: "(\\b#file\\b)"
+    match_kinds:
+    - identifier
+    message: "Instead of #file, use #fileID"
+  no_filepath_literal:
+    name: "#filePath is disallowed"
+    regex: "(\\b#filePath\\b)"
+    match_kinds:
+    - identifier
+    message: "Instead of #filePath, use #fileID."
+
+excluded:
+  - "*/*Tests.swift"

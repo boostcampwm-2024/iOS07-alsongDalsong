@@ -26,6 +26,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1BBE1CA72CE479950052A698 /* Exceptions for "ASAudioKit" folder in "ASAudioKit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ASAudioRecorder/README.md,
+			);
+			target = 4E89071D2CE23D1B00D5B547 /* ASAudioKit */;
+		};
 		4E8907C92CE24BA400D5B547 /* Exceptions for "ASAudioKit" folder in "ASAudioKitTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -42,6 +49,7 @@
 		4E8907AD2CE240D400D5B547 /* ASAudioKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				1BBE1CA72CE479950052A698 /* Exceptions for "ASAudioKit" folder in "ASAudioKit" target */,
 				4E8907C92CE24BA400D5B547 /* Exceptions for "ASAudioKit" folder in "ASAudioKitTests" target */,
 			);
 			path = ASAudioKit;
