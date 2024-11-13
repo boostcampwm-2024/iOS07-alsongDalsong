@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 internal struct MemoryCacheManager: MemoryCacheManagerProtocol {
     private let cache = NSCache<NSString, AnyObject>()

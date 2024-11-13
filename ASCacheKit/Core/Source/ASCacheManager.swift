@@ -1,31 +1,23 @@
-import UIKit
+import Foundation
 
 public struct ASCacheManager {
     public let memoryCache: MemoryCacheManagerProtocol
     public let diskCache: DiskCacheManagerProtocol
     public let urlSession: URLSessionProtocol
 
-    public init () {
-        self.memoryCache = MemoryCacheManager()
+    public init() {
+        memoryCache = MemoryCacheManager()
         diskCache = DiskCacheManager()
         urlSession = URLSession.shared
     }
-    
+
     public init(memoryCache: MemoryCacheManagerProtocol, diskCache: DiskCacheManagerProtocol, session: URLSessionProtocol) {
         self.memoryCache = memoryCache
         self.diskCache = diskCache
-        self.urlSession = session
+        urlSession = session
     }
 
-    public func loadImage(from url: URL, cacheOption: CacheOption) async -> UIImage? {
-        let cacheKey = url.absoluteString
-        if let data = await loadData(forKey: cacheKey, cacheOption: cacheOption) {
-            return UIImage(data: data)
-        }
-        return nil
-    }
-
-    public func loadAudio(from url: URL, cacheOption: CacheOption) async -> Data? {
+    public func loadCache(from url: URL, cacheOption: CacheOption) async -> Data? {
         let cacheKey = url.absoluteString
         return await loadData(forKey: cacheKey, cacheOption: cacheOption)
     }

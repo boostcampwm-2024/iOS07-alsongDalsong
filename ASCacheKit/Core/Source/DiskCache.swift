@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 internal struct DiskCacheManager: DiskCacheManagerProtocol {
     private let fileManager = FileManager.default
