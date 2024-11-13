@@ -10,6 +10,7 @@ public protocol Endpoint<Path> {
     var body: Data? { get set }
     var queryItems: [URLQueryItem]? { get set }
     var url: URL? { get }
+    func update<T>(_: WritableKeyPath<Self, T>, with _: T) -> Self
 }
 
 extension Endpoint {
@@ -20,5 +21,11 @@ extension Endpoint {
         components.path = path.description
         components.queryItems = queryItems
         return components.url
+    }
+    
+    func update<T>(_ keyPath: WritableKeyPath<Self, T>, with value: T) -> Self {
+        var copy = self
+        copy[keyPath: keyPath] = value
+        return copy
     }
 }
