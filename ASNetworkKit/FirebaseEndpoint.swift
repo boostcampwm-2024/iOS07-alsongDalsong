@@ -3,15 +3,13 @@ import Foundation
 struct FirebaseEndpoint: Endpoint {
     let scheme: String = "https"
     // TODO: - firebase api에 맞는 host 넣기
-    let host: String = ""
-    
+    let host: String = "google.com"
     var path: Path
     var method: HTTPMethod
     var headers: [String: String]
     var body: Data?
     var queryItems: [URLQueryItem]?
-    var url: URL?
-    
+
     init(path: Path, method: HTTPMethod) {
         self.path = path
         self.method = method
@@ -24,7 +22,7 @@ struct FirebaseEndpoint: Endpoint {
         var description: String {
             switch self {
                 case .auth:
-                    "s"
+                    "/auth"
             }
         }
     }

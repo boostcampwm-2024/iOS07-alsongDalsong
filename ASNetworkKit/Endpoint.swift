@@ -11,3 +11,14 @@ public protocol Endpoint<Path> {
     var queryItems: [URLQueryItem]? { get set }
     var url: URL? { get }
 }
+
+extension Endpoint {
+    var url: URL? {
+        var components = URLComponents()
+        components.scheme = scheme
+        components.host = host
+        components.path = path.description
+        components.queryItems = queryItems
+        return components.url
+    }
+}
