@@ -47,22 +47,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEntity.xcodeproj; sourceTree = "<group>"; };
 		1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASCacheKit.xcodeproj; sourceTree = "<group>"; };
 		4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASAudioKit.xcodeproj; sourceTree = "<group>"; };
 		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8D69A5A42CDC5A85006B9075 /* Exceptions for "alsongDalsong" folder in "alsongDalsong" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 8D69A5912CDC5A83006B9075 /* alsongDalsong */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1BA95AE52CE4A9F6008AD761 /* firebase */ = {
@@ -72,9 +63,6 @@
 		};
 		8D69A5942CDC5A83006B9075 /* alsongDalsong */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				8D69A5A42CDC5A85006B9075 /* Exceptions for "alsongDalsong" folder in "alsongDalsong" target */,
-			);
 			path = alsongDalsong;
 			sourceTree = "<group>";
 		};
@@ -94,6 +82,13 @@
 
 /* Begin PBXGroup section */
 		1B1AFB9A2CE344710038FC32 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1B702E0F2CE5148D00124F73 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -133,11 +128,12 @@
 		8D69A5892CDC5A83006B9075 = {
 			isa = PBXGroup;
 			children = (
-				1BA95AE52CE4A9F6008AD761 /* firebase */,
+				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
+				1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */,
 				1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */,
 				1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */,
-				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
 				4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */,
+				1BA95AE52CE4A9F6008AD761 /* firebase */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
 				1BD3B8B92CE2F2510037A6E1 /* Frameworks */,
 				8D69A5932CDC5A83006B9075 /* Products */,
@@ -216,6 +212,10 @@
 				{
 					ProductGroup = 1B1AFB9A2CE344710038FC32 /* Products */;
 					ProjectRef = 1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */;
+				},
+				{
+					ProductGroup = 1B702E0F2CE5148D00124F73 /* Products */;
+					ProjectRef = 1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */;
 				},
 				{
 					ProductGroup = 1BA95AC82CE4A9E2008AD761 /* Products */;
