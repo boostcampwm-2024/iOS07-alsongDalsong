@@ -3,8 +3,6 @@ import UIKit
 class RecordButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        widthAnchor.constraint(equalToConstant: 64).isActive = true
-        heightAnchor.constraint(equalToConstant: 64).isActive = true
         setupButton()
     }
     
@@ -22,6 +20,8 @@ class RecordButton: UIButton {
     }
     
     func setupButton() {
+        widthAnchor.constraint(equalToConstant: 64).isActive = true
+        heightAnchor.constraint(equalToConstant: 64).isActive = true
         backgroundColor = .red
         layer.borderWidth = 5
         layer.borderColor = UIColor.white.cgColor
