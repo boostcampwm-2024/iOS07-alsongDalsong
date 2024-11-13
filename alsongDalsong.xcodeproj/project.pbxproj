@@ -48,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEntity.xcodeproj; sourceTree = "<group>"; };
+		1B702E4A2CE515FC00124F73 /* ASEncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEncoder.xcodeproj; sourceTree = "<group>"; };
 		1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASCacheKit.xcodeproj; sourceTree = "<group>"; };
@@ -95,6 +96,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1B702E4B2CE515FC00124F73 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1BA95A822CE4A9A4008AD761 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
+				1B702E4A2CE515FC00124F73 /* ASEncoder.xcodeproj */,
 				1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */,
 				1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */,
 				1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */,
@@ -212,6 +221,10 @@
 				{
 					ProductGroup = 1B1AFB9A2CE344710038FC32 /* Products */;
 					ProjectRef = 1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */;
+				},
+				{
+					ProductGroup = 1B702E4B2CE515FC00124F73 /* Products */;
+					ProjectRef = 1B702E4A2CE515FC00124F73 /* ASEncoder.xcodeproj */;
 				},
 				{
 					ProductGroup = 1B702E0F2CE5148D00124F73 /* Products */;
