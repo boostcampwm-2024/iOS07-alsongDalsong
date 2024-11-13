@@ -1,3 +1,5 @@
 import Foundation
 
-public enum ASNetworkErrors: Error {}
+public enum ASNetworkErrors: Error {
+    case serverError(message: String)
+}
