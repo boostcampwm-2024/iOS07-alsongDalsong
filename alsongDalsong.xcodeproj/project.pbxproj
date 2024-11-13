@@ -7,27 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 1BBE1CA82CE47C660052A698 /* .swiftlint.yml */; };
+		165214562CE496ED006A3804 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1652144F2CE495FE006A3804 /* ASMusicKit.framework */; };
+		165214572CE496ED006A3804 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1652144F2CE495FE006A3804 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; };
 		4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8D4F31772CE3806C00E13720 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D4F316F2CE3804B00E13720 /* ASMusicKit.framework */; };
-		8D4F31782CE3806C00E13720 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D4F316F2CE3804B00E13720 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1652144E2CE495FE006A3804 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1652142E2CE495FE006A3804;
+			remoteInfo = ASMusicKit;
+		};
 		4E8907A42CE240B300D5B547 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 4E89071E2CE23D1B00D5B547;
 			remoteInfo = ASAudioKit;
-		};
-		8D4F316E2CE3804B00E13720 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D9402EC2CE37DA1009D21C4;
-			remoteInfo = ASMusicKit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -39,7 +38,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */,
-				8D4F31782CE3806C00E13720 /* ASMusicKit.framework in Embed Frameworks */,
+				165214572CE496ED006A3804 /* ASMusicKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,7 +46,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		165214502CE496D0006A3804 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASAudioKit.xcodeproj; sourceTree = "<group>"; };
 		8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,13 +79,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */,
-				8D4F31772CE3806C00E13720 /* ASMusicKit.framework in Frameworks */,
+				165214562CE496ED006A3804 /* ASMusicKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		165214512CE496D0006A3804 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4E89079D2CE240B300D5B547 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,6 +111,7 @@
 		8D4F316B2CE3804B00E13720 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				1652144F2CE495FE006A3804 /* ASMusicKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,7 +119,7 @@
 		8D69A5892CDC5A83006B9075 = {
 			isa = PBXGroup;
 			children = (
-				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
+				165214502CE496D0006A3804 /* ASMusicKit.xcodeproj */,
 				4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
 				4E8907B32CE2415700D5B547 /* Frameworks */,
@@ -132,7 +139,6 @@
 		8D9C31952CE47A8000F6E69C /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				8D4F316F2CE3804B00E13720 /* ASMusicKit.framework */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -200,6 +206,10 @@
 					ProductGroup = 8D4F316B2CE3804B00E13720 /* Products */;
 					ProjectRef = 8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */;
 				},
+				{
+					ProductGroup = 165214512CE496D0006A3804 /* Products */;
+					ProjectRef = 165214502CE496D0006A3804 /* ASMusicKit.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -209,18 +219,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		1652144F2CE495FE006A3804 /* ASMusicKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASMusicKit.framework;
+			remoteRef = 1652144E2CE495FE006A3804 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		4E8907A52CE240B300D5B547 /* ASAudioKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = ASAudioKit.framework;
 			remoteRef = 4E8907A42CE240B300D5B547 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		8D4F316F2CE3804B00E13720 /* ASMusicKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ASMusicKit.framework;
-			remoteRef = 8D4F316E2CE3804B00E13720 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -230,7 +240,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +280,8 @@
 /* Begin XCBuildConfiguration section */
 		8D69A5A62CDC5A85006B9075 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8D69A5942CDC5A83006B9075 /* alsongDalsong */;
+			baseConfigurationReferenceRelativePath = "Configurations/FirebaseConfig-Debug.xcconfig";
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -341,6 +352,8 @@
 		};
 		8D69A5A82CDC5A85006B9075 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8D69A5942CDC5A83006B9075 /* alsongDalsong */;
+			baseConfigurationReferenceRelativePath = "Configurations/FirebaseConfig-Debug.xcconfig";
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
