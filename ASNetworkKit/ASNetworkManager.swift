@@ -26,7 +26,7 @@ public struct ASNetworkManager {
 
     private func validate(response: URLResponse) throws {
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw URLError(.badServerResponse)
+            throw ASNetworkErrors.responseError
         }
 
         let statusCode = StatusCode(statusCode: httpResponse.statusCode)
