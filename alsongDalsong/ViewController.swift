@@ -7,6 +7,7 @@ class ViewController: UIViewController {
     private var avatarView: ASAvatarCircleView!
     private var nickNameTextField: ASTextField!
     private var nickNamePanel: ASPanel!
+    private var avatarRefreshButton: ASRefreshButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,9 +33,13 @@ class ViewController: UIViewController {
         
         nickNamePanel = ASPanel(title: "닉네임", titleAlign: .left, titleSize: 24)
         self.view.addSubview(nickNamePanel)
+        
         //placeholder는 추후 랜덤 생성된 닉네임으로 바뀌어야 함
         nickNameTextField = ASTextField(placeholder: "도덕적인 삶")
         nickNamePanel.addSubview(nickNameTextField)
+        
+        avatarRefreshButton = ASRefreshButton(size: 28)
+        self.view.addSubview(avatarRefreshButton)
     }
     
     private func setupLayout() {
@@ -45,6 +50,7 @@ class ViewController: UIViewController {
         avatarView.translatesAutoresizingMaskIntoConstraints = false
         nickNamePanel.translatesAutoresizingMaskIntoConstraints = false
         nickNameTextField.translatesAutoresizingMaskIntoConstraints = false
+        avatarRefreshButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             joinRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
@@ -75,6 +81,11 @@ class ViewController: UIViewController {
             nickNameTextField.leadingAnchor.constraint(equalTo: nickNamePanel.leadingAnchor, constant: 16),
             nickNameTextField.trailingAnchor.constraint(equalTo: nickNamePanel.trailingAnchor, constant: -16),
             nickNameTextField.bottomAnchor.constraint(equalTo: nickNamePanel.bottomAnchor, constant: -16),
+            
+            avatarRefreshButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 231),
+            avatarRefreshButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 352),
+            avatarRefreshButton.widthAnchor.constraint(equalToConstant: 60),
+            avatarRefreshButton.heightAnchor.constraint(equalToConstant: 60)
         ])
         
     }
