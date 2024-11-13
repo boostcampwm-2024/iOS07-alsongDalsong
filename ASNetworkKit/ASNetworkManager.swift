@@ -7,10 +7,23 @@ public struct ASNetworkManager {
         self.urlSession = urlSession
     }
 
-    public func sendRequest(_ endpoint: ASEndpoint) async throws {
-        
+    public func sendRequest(to endpoint: any Endpoint, body: Data? = nil) async throws -> Data {
+        let request = try urlRequest(for: endpoint, body: body)
+        let (data, response) = try await urlSession.data(for: request)
+        try validate(response: response)
+        return data
     }
-    
+
+    private func urlRequest(for endpoint: any Endpoint, body: Data? = nil) throws -> URLRequest {
+        guard let url = endpoint.url else { throw ASNetworkErrors.urlError }
+        var header = endpoint.headers
+        return RequestBuilder(using: url)
+            .setHeader(header)
+            .setHttpMethod(endpoint.method)
+            .setBody(body)
+            .build()
+    }
+
     private func validate(response: URLResponse) throws {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)

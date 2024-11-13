@@ -1,6 +1,6 @@
 import Foundation
 
-internal enum HTTPMethod: String {
+public enum HTTPMethod: String {
     case get
     case post
     case put
