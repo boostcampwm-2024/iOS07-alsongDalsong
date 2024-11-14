@@ -27,8 +27,8 @@ class ASAlertController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut) { [weak self] in
-            self?.alertView.transform = .identity
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut) {
+            self.alertView.transform = .identity
         }
     }
     
