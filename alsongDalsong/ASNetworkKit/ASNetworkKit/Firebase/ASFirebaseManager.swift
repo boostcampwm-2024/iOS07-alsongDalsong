@@ -1,11 +1,13 @@
 import ASEntity
 internal import FirebaseAuth
+internal import FirebaseFirestore
 internal import FirebaseDatabase
 import Foundation
 
 public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabaseProtocol {
     private var databaseRef = Database.database().reference()
-    private var roomListeners: [String: DatabaseHandle] = [:]
+    private var firestoreRef = Firestore.firestore()
+    private var roomListeners: [String: ListenerRegistration] = [:]
     
     public init() {}
     
@@ -13,7 +15,7 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
         guard let authResult = try? await Auth.auth().signInAnonymously() else {
             throw ASNetworkErrors.FirebaseSignInError
         }
-       
+        
         let playerID = authResult.user.uid
         let playerData: [String: Any] = [
             "id": authResult.user.uid,
@@ -53,7 +55,43 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
         }
     }
     
-    public func addRoomListener(roomId: String, completion: @escaping (Result<Room, any Error>) -> Void) {}
+    public func addRoomListener(roomNumber: String, completion: @escaping (Result<Room, any Error>) -> Void) {
+        let roomRef = firestoreRef.collection("rooms").document(roomNumber)
+        
+        let listener = roomRef.addSnapshotListener { documentSnapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let document = documentSnapshot, document.exists, let roomData = document.data() else {
+                completion(.failure(ASNetworkErrors.FirebaseListenerError))
+                return
+            }
+            
+            do {
+                let room = try self.parseRoomData(roomData)
+                completion(.success(room))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        
+        roomListeners[roomNumber] = listener
+    }
     
-    public func removeRoomListener(roomId: String) {}
+    public func removeRoomListener(roomNumber: String) {
+        if let listener = roomListeners[roomNumber] {
+            listener.remove()
+            roomListeners.removeValue(forKey: roomNumber)
+        }
+    }
+    
+    // MARK: Room Entity로 매핑
+    private func parseRoomData(_ data: [String: Any]) throws -> Room {
+        var room = Room()
+        room.number = data["roomNumber"] as? String
+        //TODO: ENCODER 필요
+        return room
+    }
 }
