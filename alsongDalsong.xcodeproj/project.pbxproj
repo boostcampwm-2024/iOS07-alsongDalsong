@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		165216942CE4A7CC006A3804 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 165216932CE4A7CC006A3804 /* FirebaseAuth */; };
+		165216962CE4A7CC006A3804 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 165216952CE4A7CC006A3804 /* FirebaseDatabase */; };
+		165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 165216972CE4A7CC006A3804 /* FirebaseFirestore */; };
 		1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; };
 		1BA95AFB2CE4AA03008AD761 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 1BBE1CA82CE47C660052A698 /* .swiftlint.yml */; };
@@ -48,8 +51,6 @@
 
 /* Begin PBXFileReference section */
 		1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEntity.xcodeproj; sourceTree = "<group>"; };
-		1B702E4A2CE515FC00124F73 /* ASEncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEncoder.xcodeproj; sourceTree = "<group>"; };
-		1B702E902CE51D4E00124F73 /* ASDecoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASDecoder.xcodeproj; sourceTree = "<group>"; };
 		1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASCacheKit.xcodeproj; sourceTree = "<group>"; };
@@ -76,6 +77,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */,
+				165216942CE4A7CC006A3804 /* FirebaseAuth in Frameworks */,
+				165216962CE4A7CC006A3804 /* FirebaseDatabase in Frameworks */,
+				165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */,
 				1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -91,20 +95,6 @@
 			sourceTree = "<group>";
 		};
 		1B702E0F2CE5148D00124F73 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1B702E4B2CE515FC00124F73 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1B702E912CE51D4E00124F73 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -137,6 +127,7 @@
 		1BD3B8D32CE2F34F0037A6E1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				1652144F2CE495FE006A3804 /* ASMusicKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -145,8 +136,6 @@
 			isa = PBXGroup;
 			children = (
 				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
-				1B702E902CE51D4E00124F73 /* ASDecoder.xcodeproj */,
-				1B702E4A2CE515FC00124F73 /* ASEncoder.xcodeproj */,
 				1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */,
 				1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */,
 				1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */,
@@ -190,6 +179,9 @@
 			);
 			name = alsongDalsong;
 			packageProductDependencies = (
+				165216932CE4A7CC006A3804 /* FirebaseAuth */,
+				165216952CE4A7CC006A3804 /* FirebaseDatabase */,
+				165216972CE4A7CC006A3804 /* FirebaseFirestore */,
 			);
 			productName = alsongDalsong;
 			productReference = 8D69A5922CDC5A83006B9075 /* alsongDalsong.app */;
@@ -219,6 +211,9 @@
 			);
 			mainGroup = 8D69A5892CDC5A83006B9075;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8D69A5932CDC5A83006B9075 /* Products */;
 			projectDirPath = "";
@@ -232,20 +227,16 @@
 					ProjectRef = 1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */;
 				},
 				{
-					ProductGroup = 1B702E912CE51D4E00124F73 /* Products */;
-					ProjectRef = 1B702E902CE51D4E00124F73 /* ASDecoder.xcodeproj */;
-				},
-				{
-					ProductGroup = 1B702E4B2CE515FC00124F73 /* Products */;
-					ProjectRef = 1B702E4A2CE515FC00124F73 /* ASEncoder.xcodeproj */;
-				},
-				{
 					ProductGroup = 1B702E0F2CE5148D00124F73 /* Products */;
 					ProjectRef = 1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */;
 				},
 				{
 					ProductGroup = 1BA95AC82CE4A9E2008AD761 /* Products */;
 					ProjectRef = 1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */;
+				},
+				{
+					ProductGroup = 165214512CE496D0006A3804 /* Products */;
+					ProjectRef = 165214502CE496D0006A3804 /* ASMusicKit.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -277,7 +268,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,6 +517,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		165216932CE4A7CC006A3804 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		165216952CE4A7CC006A3804 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		165216972CE4A7CC006A3804 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8D69A58A2CDC5A83006B9075 /* Project object */;
 }
