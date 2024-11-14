@@ -1,9 +1,9 @@
 import UIKit
 
 class ASButton: UIButton {
-    init(systemImageName: String = "", title: String, backgroundColor: UIColor) {
+    init(systemImageName: String = "", title: String, backgroundColor: UIColor, textSize: CGFloat = 32) {
         super.init(frame: .zero)
-        setConfiguration(systemImageName: systemImageName, title: title, backgroundColor: backgroundColor)
+        setConfiguration(systemImageName: systemImageName, title: title, backgroundColor: backgroundColor, textSize: textSize)
         setShadow()
     }
     
@@ -33,7 +33,7 @@ class ASButton: UIButton {
         config.preferredSymbolConfigurationForImage = imageConfig
         
         var titleAttr = AttributedString.init(title)
-        titleAttr.font = UIFont.font(.dohyeon, ofSize: 32)
+        titleAttr.font = UIFont.font(.dohyeon, ofSize: textSize)
         config.attributedTitle = titleAttr
         
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
