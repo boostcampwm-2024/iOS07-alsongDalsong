@@ -124,14 +124,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		1BD3B8D32CE2F34F0037A6E1 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1652144F2CE495FE006A3804 /* ASMusicKit.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		8D69A5892CDC5A83006B9075 = {
 			isa = PBXGroup;
 			children = (
@@ -233,10 +225,6 @@
 				{
 					ProductGroup = 1BA95AC82CE4A9E2008AD761 /* Products */;
 					ProjectRef = 1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */;
-				},
-				{
-					ProductGroup = 165214512CE496D0006A3804 /* Products */;
-					ProjectRef = 165214502CE496D0006A3804 /* ASMusicKit.xcodeproj */;
 				},
 			);
 			projectRoot = "";
