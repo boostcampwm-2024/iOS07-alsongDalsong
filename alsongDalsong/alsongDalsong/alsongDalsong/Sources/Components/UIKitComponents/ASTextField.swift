@@ -21,6 +21,8 @@ class ASTextField: UITextField {
         font = UIFont.font(.dohyeon, ofSize: textSize)
         textColor = .black
         attributedText?.addObserver(self, forKeyPath: "string", options: .new, context: nil)
+        leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        leftViewMode = .always
     }
     
     required init?(coder: NSCoder) {
