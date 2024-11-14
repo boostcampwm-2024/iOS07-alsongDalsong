@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		8D9402EC2CE37DA1009D21C4 /* ASMusicKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ASMusicKit.framework; path = "/Users/minhalee/BoostCamp/DDDD/alsongDalsong/build/Debug-iphoneos/ASMusicKit.framework"; sourceTree = "<absolute>"; };
+		1635A4282CE59833002246E0 /* ASMusicKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASMusicKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				8D4F31732CE3805D00E13720 /* ASMusicKit */,
+				1635A4282CE59833002246E0 /* ASMusicKit.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,7 +70,7 @@
 			packageProductDependencies = (
 			);
 			productName = ASMusicKit;
-			productReference = 8D9402EC2CE37DA1009D21C4 /* ASMusicKit.framework */;
+			productReference = 1635A4282CE59833002246E0 /* ASMusicKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
