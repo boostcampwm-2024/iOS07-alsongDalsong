@@ -6,6 +6,7 @@ class ASCacheKitDemoViewModel: ObservableObject {
     private let imageURL = URL(string: "https://picsum.photos/id/13/600/600")!
     @Published var imageData: Data?
 
+    @MainActor
     func loadCacheData(at cacheOption: CacheOption) {
         Task {
             imageData = await cacheManager.loadCache(from: imageURL, cacheOption: cacheOption)
