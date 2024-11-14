@@ -7,49 +7,45 @@ struct ASDecoderDemoView: View {
         NavigationStack {
             VStack {
                 Group {
-                    VStack(alignment: .leading) {
-                        if viewModel.jsonString == nil {
+                    if viewModel.jsonString == nil {
+                        VStack(alignment: .leading) {
                             titleText("디코딩할 자료 구조")
                             Text(viewModel.modelString)
                         }
-
-                        if let jsonString = viewModel.jsonString {
+                        .grayBackground()
+                    }
+                    if let jsonString = viewModel.jsonString {
+                        VStack(alignment: .leading) {
                             titleText("원본 JSON")
                             Text(jsonString)
                         }
+                        .secondaryGradientBackground()
                     }
                 }
-                .padding()
-                .foregroundStyle(Color.white)
-                .background(LinearGradient(colors: [.red, .purple, .yellow],
-                                           startPoint: .topLeading,
-                                           endPoint: .bottomTrailing))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
 
                 Group {
-                    VStack(alignment: .leading) {
-                        if let userInfo = viewModel.userInfo {
+                    if let userInfo = viewModel.userInfo {
+                        VStack(alignment: .leading) {
                             titleText("디코딩 정보")
                             Text("사용자 ID: \(userInfo.id)")
                             Text("사용자 이름: \(userInfo.userName)")
                             Text("아바타 URL: \(userInfo.userAvatarUrl.absoluteString)")
                             Text("생년월일: \(userInfo.userBirthDate, formatter: viewModel.customDateFormatter)")
                             Text("상태: \(userInfo.userStatus)")
-                        } else if let errorMessage = viewModel.errorMessage {
+                        }
+                        .primaryGradientBackground()
+                    } else if let errorMessage = viewModel.errorMessage {
+                        VStack(alignment: .leading) {
                             titleText("디코딩 정보")
                             Text(errorMessage)
                                 .foregroundColor(.red)
-                        } else {
-                            Text("디코딩 시나리오를 선택하세요")
                         }
+                        .primaryGradientBackground()
+                    } else {
+                        Text("디코딩 시나리오를 선택하세요")
+                            .grayBackground()
                     }
                 }
-                .padding()
-                .multilineTextAlignment(.center)
-                .background(LinearGradient(colors: [.cyan, .green, .yellow],
-                                           startPoint: .topLeading,
-                                           endPoint: .bottomTrailing))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
 
                 VStack {
                     Button("정상 JSON 디코딩") {
