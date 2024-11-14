@@ -1,9 +1,19 @@
 import UIKit
 
 class ASButton: UIButton {
-    init(systemImageName: String = "", title: String, backgroundColor: UIColor) {
+    init(
+        systemImageName: String = "",
+        title: String,
+        backgroundColor: UIColor,
+        textSize: CGFloat = 32
+    ) {
         super.init(frame: .zero)
-        setConfiguration(systemImageName: systemImageName, title: title, backgroundColor: backgroundColor)
+        setConfiguration(
+            systemImageName: systemImageName,
+            title: title,
+            backgroundColor: backgroundColor,
+            textSize: textSize
+        )
         setShadow()
     }
     
@@ -16,7 +26,12 @@ class ASButton: UIButton {
     ///   - systemImageName: SF Symbol 이미지를 삽입을 원할 경우 "play.fill" 과 같이 systemName 입력. 입력 안할시 이미지 입력 안됨.
     ///   - title: 버튼에 쓰일 텍스트
     ///   - backgroundColor: UIColor 형태로 색깔 입력.  (ex.   .asYellow)
-    private func setConfiguration(systemImageName: String, title: String, backgroundColor: UIColor, textSize: CGFloat = 32) {
+    private func setConfiguration(
+        systemImageName: String,
+        title: String,
+        backgroundColor: UIColor,
+        textSize: CGFloat = 32
+    ) {
         var config = UIButton.Configuration.gray()
         
         config.baseBackgroundColor = backgroundColor
@@ -33,7 +48,7 @@ class ASButton: UIButton {
         config.preferredSymbolConfigurationForImage = imageConfig
         
         var titleAttr = AttributedString.init(title)
-        titleAttr.font = UIFont.font(.dohyeon, ofSize: 32)
+        titleAttr.font = UIFont.font(.dohyeon, ofSize: textSize)
         config.attributedTitle = titleAttr
         
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)

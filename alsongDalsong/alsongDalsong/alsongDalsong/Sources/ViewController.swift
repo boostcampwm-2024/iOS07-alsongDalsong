@@ -15,6 +15,7 @@ class ViewController: UIViewController {
         
         setupUI()
         setupLayout()
+        setAction()
     }
     
     private func setupUI() {
@@ -88,5 +89,26 @@ class ViewController: UIViewController {
             nickNameRefreshButton.heightAnchor.constraint(equalToConstant: 60)
         ])
         
+    }
+    
+    /// 화면상의 컴포넌트 들에게 Action을 추가함
+    private func setAction() {
+        joinRoomButton.addAction(
+            UIAction { [weak self] _ in
+                let joinAlert = ASAlertController(
+                    titleText: "게임 입장 코드를 입력하세요",
+                    doneButtonTitle: "입장",
+                    cancelButtonTitle: "취소",
+                    textFieldPlaceholder: "#A3B4C5"
+                )
+                joinAlert.cancelButtonCompletion = { [weak self] in
+                    print("취소")
+                }
+                joinAlert.doneButtonCompletion = { [weak self] in
+                    print("입력된 텍스트: \(joinAlert.text)")
+                }
+                self?.present(joinAlert, animated: true, completion: nil)
+            },
+            for: .touchUpInside)
     }
 }
