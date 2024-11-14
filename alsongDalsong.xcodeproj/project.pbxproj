@@ -9,11 +9,14 @@
 /* Begin PBXBuildFile section */
 		1B783AD42CE4C684005511AE /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B783ACD2CE4C664005511AE /* ASNetworkKit.framework */; };
 		1B783AD52CE4C684005511AE /* ASNetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B783ACD2CE4C664005511AE /* ASNetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1BA95B6F2CE4AC27008AD761 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95B632CE4AC0A008AD761 /* ASMusicKit.framework */; };
-		1BA95B702CE4AC27008AD761 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95B632CE4AC0A008AD761 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BA95B712CE4AC55008AD761 /* ASEntity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95B682CE4AC0B008AD761 /* ASEntity.framework */; };
 		1BA95B722CE4AC55008AD761 /* ASEntity.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95B682CE4AC0B008AD761 /* ASEntity.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 1BBE1CA82CE47C660052A698 /* .swiftlint.yml */; };
+		165216942CE4A7CC006A3804 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 165216932CE4A7CC006A3804 /* FirebaseAuth */; };
+		165216962CE4A7CC006A3804 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 165216952CE4A7CC006A3804 /* FirebaseDatabase */; };
+		165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 165216972CE4A7CC006A3804 /* FirebaseFirestore */; };
+		1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; };
+		1BA95AFB2CE4AA03008AD761 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; };
 		4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -26,19 +29,12 @@
 			remoteGlobalIDString = 1B10CADB2CE4C13F002A5B8F;
 			remoteInfo = ASNetworkKit;
 		};
-		1BA95B622CE4AC0A008AD761 /* PBXContainerItemProxy */ = {
+		1BA95ACB2CE4A9E2008AD761 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */;
+			containerPortal = 1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 1BA95B322CE4AC09008AD761;
+			remoteGlobalIDString = 1BA95A832CE4A9A4008AD761;
 			remoteInfo = ASMusicKit;
-		};
-		1BA95B672CE4AC0B008AD761 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1B9D3FF12CE3AD62004C79EE;
-			remoteInfo = ASEntity;
 		};
 		4E8907A42CE240B300D5B547 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -50,7 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		4E8907B62CE2415800D5B547 /* Embed Frameworks */ = {
+		1BD3B8BC2CE2F2510037A6E1 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
@@ -58,8 +54,7 @@
 			files = (
 				1B783AD52CE4C684005511AE /* ASNetworkKit.framework in Embed Frameworks */,
 				4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */,
-				1BA95B702CE4AC27008AD761 /* ASMusicKit.framework in Embed Frameworks */,
-				1BA95B722CE4AC55008AD761 /* ASEntity.framework in Embed Frameworks */,
+				1BA95AFB2CE4AA03008AD761 /* ASMusicKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,30 +63,22 @@
 
 /* Begin PBXFileReference section */
 		1B783AC82CE4C664005511AE /* ASNetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASNetworkKit.xcodeproj; sourceTree = "<group>"; };
-		1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEntity.xcodeproj; sourceTree = "<group>"; };
-		1BA95B692CE4AC1A008AD761 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
+		1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEntity.xcodeproj; sourceTree = "<group>"; };
+		1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASCacheKit.xcodeproj; sourceTree = "<group>"; };
 		4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASAudioKit.xcodeproj; sourceTree = "<group>"; };
-		8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
-		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = alsongDalsong.app; path = "/Users/minhalee/BoostCamp/DDDD/alsongDalsong/build/Debug-iphoneos/alsongDalsong.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8D69A5A42CDC5A85006B9075 /* Exceptions for "alsongDalsong" folder in "alsongDalsong" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 8D69A5912CDC5A83006B9075 /* alsongDalsong */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		1BA95AE52CE4A9F6008AD761 /* firebase */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = firebase;
+			sourceTree = "<group>";
+		};
 		8D69A5942CDC5A83006B9075 /* alsongDalsong */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				8D69A5A42CDC5A85006B9075 /* Exceptions for "alsongDalsong" folder in "alsongDalsong" target */,
-			);
 			path = alsongDalsong;
 			sourceTree = "<group>";
 		};
@@ -104,8 +91,10 @@
 			files = (
 				1B783AD42CE4C684005511AE /* ASNetworkKit.framework in Frameworks */,
 				4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */,
-				1BA95B6F2CE4AC27008AD761 /* ASMusicKit.framework in Frameworks */,
-				1BA95B712CE4AC55008AD761 /* ASEntity.framework in Frameworks */,
+				165216942CE4A7CC006A3804 /* FirebaseAuth in Frameworks */,
+				165216962CE4A7CC006A3804 /* FirebaseDatabase in Frameworks */,
+				165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */,
+				1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,7 +109,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1BA95B642CE4AC0A008AD761 /* Products */ = {
+		1B702E0F2CE5148D00124F73 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				1BA95B682CE4AC0B008AD761 /* ASEntity.framework */,
@@ -128,27 +117,27 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4E89079D2CE240B300D5B547 /* Products */ = {
+		1BA95A822CE4A9A4008AD761 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
 				4E8907A52CE240B300D5B547 /* ASAudioKit.framework */,
 			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		1BA95AC82CE4A9E2008AD761 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */,
+			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4E8907B32CE2415700D5B547 /* Frameworks */ = {
+		1BD3B8B92CE2F2510037A6E1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		8D4F316B2CE3804B00E13720 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1BA95B632CE4AC0A008AD761 /* ASMusicKit.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		8D69A5892CDC5A83006B9075 = {
@@ -156,29 +145,22 @@
 			children = (
 				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
 				1B783AC82CE4C664005511AE /* ASNetworkKit.xcodeproj */,
-				1BA95B692CE4AC1A008AD761 /* ASMusicKit.xcodeproj */,
-				1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */,
+				1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */,
+				1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */,
+				1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */,
 				4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */,
+				1BA95AE52CE4A9F6008AD761 /* firebase */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
-				4E8907B32CE2415700D5B547 /* Frameworks */,
-				8D69A5932CDC5A83006B9075 /* Products */,
-				8D9C31952CE47A8000F6E69C /* Recovered References */,
+				1BD3B8B92CE2F2510037A6E1 /* Frameworks */,
+				1BA95A822CE4A9A4008AD761 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
-		8D69A5932CDC5A83006B9075 /* Products */ = {
+		8D9C371B2CE593D500F6E69C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D69A5922CDC5A83006B9075 /* alsongDalsong.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		8D9C31952CE47A8000F6E69C /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -191,18 +173,22 @@
 				8D69A58E2CDC5A83006B9075 /* Sources */,
 				8D69A58F2CDC5A83006B9075 /* Frameworks */,
 				8D69A5902CDC5A83006B9075 /* Resources */,
+				1BD3B8BC2CE2F2510037A6E1 /* Embed Frameworks */,
 				1BBE1CB32CE47C920052A698 /* SwiftLint Script */,
-				4E8907B62CE2415800D5B547 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				1BA95AE52CE4A9F6008AD761 /* firebase */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
 			);
 			name = alsongDalsong;
 			packageProductDependencies = (
+				165216932CE4A7CC006A3804 /* FirebaseAuth */,
+				165216952CE4A7CC006A3804 /* FirebaseDatabase */,
+				165216972CE4A7CC006A3804 /* FirebaseFirestore */,
 			);
 			productName = alsongDalsong;
 			productReference = 8D69A5922CDC5A83006B9075 /* alsongDalsong.app */;
@@ -232,25 +218,32 @@
 			);
 			mainGroup = 8D69A5892CDC5A83006B9075;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 8D69A5932CDC5A83006B9075 /* Products */;
+			productRefGroup = 8D69A5892CDC5A83006B9075;
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 4E89079D2CE240B300D5B547 /* Products */;
+					ProductGroup = 8D9C371B2CE593D500F6E69C /* Products */;
 					ProjectRef = 4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */;
 				},
 				{
-					ProductGroup = 1BA95B642CE4AC0A008AD761 /* Products */;
-					ProjectRef = 1B9D43632CE3B1A1004C79EE /* ASEntity.xcodeproj */;
+					ProductGroup = 1B1AFB9A2CE344710038FC32 /* Products */;
+					ProjectRef = 1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */;
 				},
 				{
-					ProductGroup = 8D4F316B2CE3804B00E13720 /* Products */;
-					ProjectRef = 8D4F316A2CE3804B00E13720 /* ASMusicKit.xcodeproj */;
+					ProductGroup = 1B702E0F2CE5148D00124F73 /* Products */;
+					ProjectRef = 1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */;
 				},
 				{
 					ProductGroup = 1B783AC92CE4C664005511AE /* Products */;
 					ProjectRef = 1B783AC82CE4C664005511AE /* ASNetworkKit.xcodeproj */;
+        },
+        {
+					ProductGroup = 1BA95AC82CE4A9E2008AD761 /* Products */;
+					ProjectRef = 1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -268,18 +261,11 @@
 			remoteRef = 1B783ACC2CE4C664005511AE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1BA95B632CE4AC0A008AD761 /* ASMusicKit.framework */ = {
+		1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = ASMusicKit.framework;
-			remoteRef = 1BA95B622CE4AC0A008AD761 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1BA95B682CE4AC0B008AD761 /* ASEntity.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ASEntity.framework;
-			remoteRef = 1BA95B672CE4AC0B008AD761 /* PBXContainerItemProxy */;
+			remoteRef = 1BA95ACB2CE4A9E2008AD761 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		4E8907A52CE240B300D5B547 /* ASAudioKit.framework */ = {
@@ -296,7 +282,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,6 +531,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		165216932CE4A7CC006A3804 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		165216952CE4A7CC006A3804 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		165216972CE4A7CC006A3804 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8D69A58A2CDC5A83006B9075 /* Project object */;
 }
