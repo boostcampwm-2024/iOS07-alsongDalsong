@@ -1,11 +1,23 @@
 import Foundation
 
 public struct Player {
-    var id = UUID()
+    var id: String
     var avatarUrl: URL?
     var nickname: String?
     var score: Int?
     var order: Int?
     
-    public init() {}
+    public init(
+        id: String,
+        avatarUrl: URL? = nil,
+        nickname: String? = nil,
+        score: Int? = nil,
+        order: Int? = nil
+    ) {
+        self.id = id
+        self.avatarUrl = avatarUrl
+        self.nickname = nickname
+        self.score = score
+        self.order = order
+    }
 }
