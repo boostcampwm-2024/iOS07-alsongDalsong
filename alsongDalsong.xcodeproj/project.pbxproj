@@ -12,7 +12,6 @@
 		165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 165216972CE4A7CC006A3804 /* FirebaseFirestore */; };
 		1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; };
 		1BA95AFB2CE4AA03008AD761 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 1BBE1CA82CE47C660052A698 /* .swiftlint.yml */; };
 		4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; };
 		4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -55,7 +54,7 @@
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASCacheKit.xcodeproj; sourceTree = "<group>"; };
 		4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASAudioKit.xcodeproj; sourceTree = "<group>"; };
-		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = alsongDalsong.app; path = "/Users/minhalee/BoostCamp/DDDD/alsongDalsong/build/Debug-iphoneos/alsongDalsong.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -135,15 +134,13 @@
 				1BA95AE52CE4A9F6008AD761 /* firebase */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
 				1BD3B8B92CE2F2510037A6E1 /* Frameworks */,
-				8D69A5932CDC5A83006B9075 /* Products */,
 				1BA95A822CE4A9A4008AD761 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
-		8D69A5932CDC5A83006B9075 /* Products */ = {
+		8D9C371B2CE593D500F6E69C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D69A5922CDC5A83006B9075 /* alsongDalsong.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -207,11 +204,11 @@
 				165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 8D69A5932CDC5A83006B9075 /* Products */;
+			productRefGroup = 8D69A5892CDC5A83006B9075;
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 1BD3B8D32CE2F34F0037A6E1 /* Products */;
+					ProductGroup = 8D9C371B2CE593D500F6E69C /* Products */;
 					ProjectRef = 4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */;
 				},
 				{
