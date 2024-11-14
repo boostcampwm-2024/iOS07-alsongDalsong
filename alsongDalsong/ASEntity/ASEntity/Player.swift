@@ -1,11 +1,11 @@
 import Foundation
 
-public struct Player {
-    var id: String
-    var avatarUrl: URL?
-    var nickname: String?
-    var score: Int?
-    var order: Int?
+public struct Player: Codable {
+    public var id: String
+    public var avatarUrl: URL?
+    public var nickname: String?
+    public var score: Int?
+    public var order: Int?
     
     public init(
         id: String,
