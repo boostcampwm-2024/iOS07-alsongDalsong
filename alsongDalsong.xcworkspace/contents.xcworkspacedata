@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:alsongDalsong/AS/alsongDalsong.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:alsongDalsong/ASAudioKit/ASAudioKit.xcodeproj">
    </FileRef>
    <FileRef
@@ -24,5 +21,8 @@
    </FileRef>
    <FileRef
       location = "group:alsongDalsong/ASNetworkKit/ASNetworkKit.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:alsongDalsong/alsongDalsong/alsongDalsong.xcodeproj">
    </FileRef>
 </Workspace>
