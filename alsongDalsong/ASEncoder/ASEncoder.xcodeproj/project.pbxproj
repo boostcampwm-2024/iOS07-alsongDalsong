@@ -7,10 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B1327F02CE5F26400EF706D /* ASEncoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B702E2F2CE5152600124F73 /* ASEncoder.framework */; };
+		1B1327F12CE5F26400EF706D /* ASEncoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B702E2F2CE5152600124F73 /* ASEncoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1B702E382CE5152600124F73 /* ASEncoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B702E2F2CE5152600124F73 /* ASEncoder.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1B1327F22CE5F26400EF706D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1B702E262CE5152600124F73 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1B702E2E2CE5152600124F73;
+			remoteInfo = ASEncoder;
+		};
 		1B702E392CE5152600124F73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1B702E262CE5152600124F73 /* Project object */;
@@ -20,9 +29,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1B1327F42CE5F26400EF706D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1B1327F12CE5F26400EF706D /* ASEncoder.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		1B702E2F2CE5152600124F73 /* ASEncoder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASEncoder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B702E372CE5152600124F73 /* ASEncoderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASEncoderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BDDABBD2CE5E2E000147881 /* ASEncoderDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASEncoderDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +58,11 @@
 		1B702E3B2CE5152600124F73 /* ASEncoderTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ASEncoderTests;
+			sourceTree = "<group>";
+		};
+		1BDDABBE2CE5E2E000147881 /* ASEncoderDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ASEncoderDemo;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -54,14 +83,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1BDDABBA2CE5E2E000147881 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B1327F02CE5F26400EF706D /* ASEncoder.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B1327EF2CE5F26400EF706D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1B702E252CE5152600124F73 = {
 			isa = PBXGroup;
 			children = (
 				1B702E312CE5152600124F73 /* ASEncoder */,
 				1B702E3B2CE5152600124F73 /* ASEncoderTests */,
+				1BDDABBE2CE5E2E000147881 /* ASEncoderDemo */,
+				1B1327EF2CE5F26400EF706D /* Frameworks */,
 				1B702E302CE5152600124F73 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +117,7 @@
 			children = (
 				1B702E2F2CE5152600124F73 /* ASEncoder.framework */,
 				1B702E372CE5152600124F73 /* ASEncoderTests.xctest */,
+				1BDDABBD2CE5E2E000147881 /* ASEncoderDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,6 +181,30 @@
 			productReference = 1B702E372CE5152600124F73 /* ASEncoderTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		1BDDABBC2CE5E2E000147881 /* ASEncoderDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1BDDABC82CE5E2E200147881 /* Build configuration list for PBXNativeTarget "ASEncoderDemo" */;
+			buildPhases = (
+				1BDDABB92CE5E2E000147881 /* Sources */,
+				1BDDABBA2CE5E2E000147881 /* Frameworks */,
+				1BDDABBB2CE5E2E000147881 /* Resources */,
+				1B1327F42CE5F26400EF706D /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1B1327F32CE5F26400EF706D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1BDDABBE2CE5E2E000147881 /* ASEncoderDemo */,
+			);
+			name = ASEncoderDemo;
+			packageProductDependencies = (
+			);
+			productName = ASEncoderDemo;
+			productReference = 1BDDABBD2CE5E2E000147881 /* ASEncoderDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -149,6 +220,9 @@
 						LastSwiftMigration = 1610;
 					};
 					1B702E362CE5152600124F73 = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					1BDDABBC2CE5E2E000147881 = {
 						CreatedOnToolsVersion = 16.1;
 					};
 				};
@@ -169,6 +243,7 @@
 			targets = (
 				1B702E2E2CE5152600124F73 /* ASEncoder */,
 				1B702E362CE5152600124F73 /* ASEncoderTests */,
+				1BDDABBC2CE5E2E000147881 /* ASEncoderDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -182,6 +257,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1B702E352CE5152600124F73 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1BDDABBB2CE5E2E000147881 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -205,9 +287,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1BDDABB92CE5E2E000147881 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1B1327F32CE5F26400EF706D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1B702E2E2CE5152600124F73 /* ASEncoder */;
+			targetProxy = 1B1327F22CE5F26400EF706D /* PBXContainerItemProxy */;
+		};
 		1B702E3A2CE5152600124F73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1B702E2E2CE5152600124F73 /* ASEncoder */;
@@ -444,6 +538,64 @@
 			};
 			name = Release;
 		};
+		1BDDABC92CE5E2E200147881 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ASEncoderDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoderDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1BDDABCA2CE5E2E200147881 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ASEncoderDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoderDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -470,6 +622,15 @@
 			buildConfigurations = (
 				1B702E462CE5152600124F73 /* Debug */,
 				1B702E472CE5152600124F73 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1BDDABC82CE5E2E200147881 /* Build configuration list for PBXNativeTarget "ASEncoderDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BDDABC92CE5E2E200147881 /* Debug */,
+				1BDDABCA2CE5E2E200147881 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

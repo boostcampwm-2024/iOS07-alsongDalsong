@@ -95,6 +95,7 @@
 		169727722CE6627F005B4953 /* ASDecoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASDecoder.xcodeproj; path = ../ASDecoder/ASDecoder.xcodeproj; sourceTree = "<group>"; };
 		16F8B8902CE5E4FD0059F22A /* ASFirebaseDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASFirebaseDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASNetworkKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B1328942CE5F3C600EF706D /* ASEntity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ASEntity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B783B682CE4F04E005511AE /* ASNetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASNetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -225,6 +226,14 @@
 				16F8B8902CE5E4FD0059F22A /* ASFirebaseDemo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1B1328932CE5F3C600EF706D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1B1328942CE5F3C600EF706D /* ASEntity.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
