@@ -1,3 +1,4 @@
+import Firebase
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -7,7 +8,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                willConnectTo _: UISceneSession,
                options _: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-
+        FirebaseApp.configure()
         window = UIWindow(windowScene: windowScene)
         let viewController = ViewController()
         window?.rootViewController = viewController

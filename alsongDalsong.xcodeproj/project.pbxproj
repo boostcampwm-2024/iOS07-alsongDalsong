@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		165216942CE4A7CC006A3804 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 165216932CE4A7CC006A3804 /* FirebaseAuth */; };
+		165216962CE4A7CC006A3804 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 165216952CE4A7CC006A3804 /* FirebaseDatabase */; };
+		165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 165216972CE4A7CC006A3804 /* FirebaseFirestore */; };
 		1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; };
 		1BA95AFB2CE4AA03008AD761 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 1BBE1CA82CE47C660052A698 /* .swiftlint.yml */; };
 		4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; };
 		4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -54,56 +58,14 @@
 		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8D9C35A02CE5238E00F6E69C /* Exceptions for "firebase" folder in "alsongDalsong" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				.firebaserc,
-				firebase.json,
-				functions/.gitignore,
-				functions/api/CreateRoom.js,
-				functions/api/GetRecord.js,
-				functions/api/GetResult.js,
-				functions/api/GetUserAvatar.js,
-				functions/api/JoinRoom.js,
-				functions/api/ResetGame.js,
-				functions/api/SetAnswer.js,
-				functions/api/StartGame.js,
-				functions/api/SubmitAnswer.js,
-				functions/api/UploadRecord.js,
-				functions/common/GameHelper.js,
-				functions/common/RoomHelper.js,
-				functions/FirebaseAdmin.js,
-				functions/index.js,
-				"functions/package-lock.json",
-				functions/package.json,
-				functions/trigger/onRecordAdded.js,
-			);
-			target = 8D69A5912CDC5A83006B9075 /* alsongDalsong */;
-		};
-		8D9C35A12CE5238E00F6E69C /* Exceptions for "alsongDalsong" folder in "alsongDalsong" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 8D69A5912CDC5A83006B9075 /* alsongDalsong */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1BA95AE52CE4A9F6008AD761 /* firebase */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				8D9C35A02CE5238E00F6E69C /* Exceptions for "firebase" folder in "alsongDalsong" target */,
-			);
 			path = firebase;
 			sourceTree = "<group>";
 		};
 		8D69A5942CDC5A83006B9075 /* alsongDalsong */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				8D9C35A12CE5238E00F6E69C /* Exceptions for "alsongDalsong" folder in "alsongDalsong" target */,
-			);
 			path = alsongDalsong;
 			sourceTree = "<group>";
 		};
@@ -115,6 +77,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */,
+				165216942CE4A7CC006A3804 /* FirebaseAuth in Frameworks */,
+				165216962CE4A7CC006A3804 /* FirebaseDatabase in Frameworks */,
+				165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */,
 				1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,13 +122,6 @@
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		1BD3B8D32CE2F34F0037A6E1 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		8D69A5892CDC5A83006B9075 = {
@@ -213,6 +171,9 @@
 			);
 			name = alsongDalsong;
 			packageProductDependencies = (
+				165216932CE4A7CC006A3804 /* FirebaseAuth */,
+				165216952CE4A7CC006A3804 /* FirebaseDatabase */,
+				165216972CE4A7CC006A3804 /* FirebaseFirestore */,
 			);
 			productName = alsongDalsong;
 			productReference = 8D69A5922CDC5A83006B9075 /* alsongDalsong.app */;
@@ -242,6 +203,9 @@
 			);
 			mainGroup = 8D69A5892CDC5A83006B9075;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8D69A5932CDC5A83006B9075 /* Products */;
 			projectDirPath = "";
@@ -541,6 +505,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		165216932CE4A7CC006A3804 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		165216952CE4A7CC006A3804 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		165216972CE4A7CC006A3804 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8D69A58A2CDC5A83006B9075 /* Project object */;
 }
