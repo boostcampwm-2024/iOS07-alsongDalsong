@@ -7,70 +7,94 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1B702E382CE5152600124F73 /* ASEncoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B702E2F2CE5152600124F73 /* ASEncoder.framework */; };
+		4E8907C22CE2489A00D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */; platformFilter = ios; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1B702E392CE5152600124F73 /* PBXContainerItemProxy */ = {
+		4E8907C32CE2489A00D5B547 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1B702E262CE5152600124F73 /* Project object */;
+			containerPortal = 4E8907152CE23D1A00D5B547 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 1B702E2E2CE5152600124F73;
-			remoteInfo = ASEncoder;
+			remoteGlobalIDString = 4E89071D2CE23D1B00D5B547;
+			remoteInfo = ASAudioKit;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1B702E2F2CE5152600124F73 /* ASEncoder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASEncoder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1B702E372CE5152600124F73 /* ASEncoderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASEncoderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASAudioKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E8907BE2CE2489A00D5B547 /* ASAudioKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASAudioKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1BBE1CA72CE479950052A698 /* Exceptions for "ASAudioKit" folder in "ASAudioKit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ASAudioRecorder/README.md,
+			);
+			target = 4E89071D2CE23D1B00D5B547 /* ASAudioKit */;
+		};
+		4E8907C92CE24BA400D5B547 /* Exceptions for "ASAudioKit" folder in "ASAudioKitTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ASAudioPlayer/ASAudioPlayer.swift,
+				ASAudioPlayer/README.md,
+				ASAudioRecorder/ASAudioRecorder.swift,
+				ASAudioRecorder/README.md,
+			);
+			target = 4E8907BD2CE2489A00D5B547 /* ASAudioKitTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		1B702E312CE5152600124F73 /* ASEncoder */ = {
+		4E8907AD2CE240D400D5B547 /* ASAudioKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ASEncoder;
+			exceptions = (
+				1BBE1CA72CE479950052A698 /* Exceptions for "ASAudioKit" folder in "ASAudioKit" target */,
+				4E8907C92CE24BA400D5B547 /* Exceptions for "ASAudioKit" folder in "ASAudioKitTests" target */,
+			);
+			path = ASAudioKit;
 			sourceTree = "<group>";
 		};
-		1B702E3B2CE5152600124F73 /* ASEncoderTests */ = {
+		4E8907BF2CE2489A00D5B547 /* ASAudioKitTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ASEncoderTests;
+			path = ASAudioKitTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1B702E2C2CE5152600124F73 /* Frameworks */ = {
+		4E89071B2CE23D1B00D5B547 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B702E342CE5152600124F73 /* Frameworks */ = {
+		4E8907BB2CE2489A00D5B547 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B702E382CE5152600124F73 /* ASEncoder.framework in Frameworks */,
+				4E8907C22CE2489A00D5B547 /* ASAudioKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1B702E252CE5152600124F73 = {
+		4E8907142CE23D1A00D5B547 = {
 			isa = PBXGroup;
 			children = (
-				1B702E312CE5152600124F73 /* ASEncoder */,
-				1B702E3B2CE5152600124F73 /* ASEncoderTests */,
-				1B702E302CE5152600124F73 /* Products */,
+				4E8907AD2CE240D400D5B547 /* ASAudioKit */,
+				4E8907BF2CE2489A00D5B547 /* ASAudioKitTests */,
+				4E89071F2CE23D1B00D5B547 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		1B702E302CE5152600124F73 /* Products */ = {
+		4E89071F2CE23D1B00D5B547 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1B702E2F2CE5152600124F73 /* ASEncoder.framework */,
-				1B702E372CE5152600124F73 /* ASEncoderTests.xctest */,
+				4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */,
+				4E8907BE2CE2489A00D5B547 /* ASAudioKitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -78,7 +102,7 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		1B702E2A2CE5152600124F73 /* Headers */ = {
+		4E8907192CE23D1B00D5B547 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -88,100 +112,99 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1B702E2E2CE5152600124F73 /* ASEncoder */ = {
+		4E89071D2CE23D1B00D5B547 /* ASAudioKit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1B702E402CE5152600124F73 /* Build configuration list for PBXNativeTarget "ASEncoder" */;
+			buildConfigurationList = 4E8907262CE23D1B00D5B547 /* Build configuration list for PBXNativeTarget "ASAudioKit" */;
 			buildPhases = (
-				1B702E2A2CE5152600124F73 /* Headers */,
-				1B702E2B2CE5152600124F73 /* Sources */,
-				1B702E2C2CE5152600124F73 /* Frameworks */,
-				1B702E2D2CE5152600124F73 /* Resources */,
+				4E8907192CE23D1B00D5B547 /* Headers */,
+				4E89071A2CE23D1B00D5B547 /* Sources */,
+				4E89071B2CE23D1B00D5B547 /* Frameworks */,
+				4E89071C2CE23D1B00D5B547 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				1B702E312CE5152600124F73 /* ASEncoder */,
+				4E8907AD2CE240D400D5B547 /* ASAudioKit */,
 			);
-			name = ASEncoder;
+			name = ASAudioKit;
 			packageProductDependencies = (
 			);
-			productName = ASEncoder;
-			productReference = 1B702E2F2CE5152600124F73 /* ASEncoder.framework */;
+			productName = ASAudioKit;
+			productReference = 4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		1B702E362CE5152600124F73 /* ASEncoderTests */ = {
+		4E8907BD2CE2489A00D5B547 /* ASAudioKitTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1B702E452CE5152600124F73 /* Build configuration list for PBXNativeTarget "ASEncoderTests" */;
+			buildConfigurationList = 4E8907C52CE2489A00D5B547 /* Build configuration list for PBXNativeTarget "ASAudioKitTests" */;
 			buildPhases = (
-				1B702E332CE5152600124F73 /* Sources */,
-				1B702E342CE5152600124F73 /* Frameworks */,
-				1B702E352CE5152600124F73 /* Resources */,
+				4E8907BA2CE2489A00D5B547 /* Sources */,
+				4E8907BB2CE2489A00D5B547 /* Frameworks */,
+				4E8907BC2CE2489A00D5B547 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				1B702E3A2CE5152600124F73 /* PBXTargetDependency */,
+				4E8907C42CE2489A00D5B547 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				1B702E3B2CE5152600124F73 /* ASEncoderTests */,
+				4E8907BF2CE2489A00D5B547 /* ASAudioKitTests */,
 			);
-			name = ASEncoderTests;
+			name = ASAudioKitTests;
 			packageProductDependencies = (
 			);
-			productName = ASEncoderTests;
-			productReference = 1B702E372CE5152600124F73 /* ASEncoderTests.xctest */;
+			productName = ASAudioKitTests;
+			productReference = 4E8907BE2CE2489A00D5B547 /* ASAudioKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		1B702E262CE5152600124F73 /* Project object */ = {
+		4E8907152CE23D1A00D5B547 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
-					1B702E2E2CE5152600124F73 = {
+					4E89071D2CE23D1B00D5B547 = {
 						CreatedOnToolsVersion = 16.1;
-						LastSwiftMigration = 1610;
 					};
-					1B702E362CE5152600124F73 = {
+					4E8907BD2CE2489A00D5B547 = {
 						CreatedOnToolsVersion = 16.1;
 					};
 				};
 			};
-			buildConfigurationList = 1B702E292CE5152600124F73 /* Build configuration list for PBXProject "ASEncoder" */;
+			buildConfigurationList = 4E8907182CE23D1A00D5B547 /* Build configuration list for PBXProject "ASAudioKit" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 1B702E252CE5152600124F73;
+			mainGroup = 4E8907142CE23D1A00D5B547;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 1B702E302CE5152600124F73 /* Products */;
+			productRefGroup = 4E89071F2CE23D1B00D5B547 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1B702E2E2CE5152600124F73 /* ASEncoder */,
-				1B702E362CE5152600124F73 /* ASEncoderTests */,
+				4E89071D2CE23D1B00D5B547 /* ASAudioKit */,
+				4E8907BD2CE2489A00D5B547 /* ASAudioKitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1B702E2D2CE5152600124F73 /* Resources */ = {
+		4E89071C2CE23D1B00D5B547 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B702E352CE5152600124F73 /* Resources */ = {
+		4E8907BC2CE2489A00D5B547 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -191,14 +214,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1B702E2B2CE5152600124F73 /* Sources */ = {
+		4E89071A2CE23D1B00D5B547 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B702E332CE5152600124F73 /* Sources */ = {
+		4E8907BA2CE2489A00D5B547 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -208,19 +231,19 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1B702E3A2CE5152600124F73 /* PBXTargetDependency */ = {
+		4E8907C42CE2489A00D5B547 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1B702E2E2CE5152600124F73 /* ASEncoder */;
-			targetProxy = 1B702E392CE5152600124F73 /* PBXContainerItemProxy */;
+			platformFilter = ios;
+			target = 4E89071D2CE23D1B00D5B547 /* ASAudioKit */;
+			targetProxy = 4E8907C32CE2489A00D5B547 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1B702E412CE5152600124F73 /* Debug */ = {
+		4E8907272CE23D1B00D5B547 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -232,6 +255,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -240,22 +264,20 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoder;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASAudioKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		1B702E422CE5152600124F73 /* Release */ = {
+		4E8907282CE23D1B00D5B547 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -267,6 +289,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -275,7 +298,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoder;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASAudioKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -285,7 +308,7 @@
 			};
 			name = Release;
 		};
-		1B702E432CE5152600124F73 /* Debug */ = {
+		4E8907292CE23D1B00D5B547 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -351,7 +374,7 @@
 			};
 			name = Debug;
 		};
-		1B702E442CE5152600124F73 /* Release */ = {
+		4E89072A2CE23D1B00D5B547 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -410,69 +433,79 @@
 			};
 			name = Release;
 		};
-		1B702E462CE5152600124F73 /* Debug */ = {
+		4E8907C62CE2489A00D5B547 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoderTests;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASAudioKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Debug;
 		};
-		1B702E472CE5152600124F73 /* Release */ = {
+		4E8907C72CE2489A00D5B547 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoderTests;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASAudioKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1B702E292CE5152600124F73 /* Build configuration list for PBXProject "ASEncoder" */ = {
+		4E8907182CE23D1A00D5B547 /* Build configuration list for PBXProject "ASAudioKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1B702E432CE5152600124F73 /* Debug */,
-				1B702E442CE5152600124F73 /* Release */,
+				4E8907292CE23D1B00D5B547 /* Debug */,
+				4E89072A2CE23D1B00D5B547 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1B702E402CE5152600124F73 /* Build configuration list for PBXNativeTarget "ASEncoder" */ = {
+		4E8907262CE23D1B00D5B547 /* Build configuration list for PBXNativeTarget "ASAudioKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1B702E412CE5152600124F73 /* Debug */,
-				1B702E422CE5152600124F73 /* Release */,
+				4E8907272CE23D1B00D5B547 /* Debug */,
+				4E8907282CE23D1B00D5B547 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1B702E452CE5152600124F73 /* Build configuration list for PBXNativeTarget "ASEncoderTests" */ = {
+		4E8907C52CE2489A00D5B547 /* Build configuration list for PBXNativeTarget "ASAudioKitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1B702E462CE5152600124F73 /* Debug */,
-				1B702E472CE5152600124F73 /* Release */,
+				4E8907C62CE2489A00D5B547 /* Debug */,
+				4E8907C72CE2489A00D5B547 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 1B702E262CE5152600124F73 /* Project object */;
+	rootObject = 4E8907152CE23D1A00D5B547 /* Project object */;
 }

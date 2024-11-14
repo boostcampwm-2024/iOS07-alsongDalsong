@@ -7,70 +7,70 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1B783B6C2CE4F04E005511AE /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */; };
+		1B702E382CE5152600124F73 /* ASEncoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B702E2F2CE5152600124F73 /* ASEncoder.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1B783B6D2CE4F04E005511AE /* PBXContainerItemProxy */ = {
+		1B702E392CE5152600124F73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1B10CAD22CE4C13F002A5B8F /* Project object */;
+			containerPortal = 1B702E262CE5152600124F73 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 1B10CADA2CE4C13F002A5B8F;
-			remoteInfo = ASNetworkKit;
+			remoteGlobalIDString = 1B702E2E2CE5152600124F73;
+			remoteInfo = ASEncoder;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASNetworkKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1B783B682CE4F04E005511AE /* ASNetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASNetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B702E2F2CE5152600124F73 /* ASEncoder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASEncoder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B702E372CE5152600124F73 /* ASEncoderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASEncoderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		1B10CADD2CE4C13F002A5B8F /* ASNetworkKit */ = {
+		1B702E312CE5152600124F73 /* ASEncoder */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ASNetworkKit;
+			path = ASEncoder;
 			sourceTree = "<group>";
 		};
-		1B783B692CE4F04E005511AE /* ASNetworkKitTests */ = {
+		1B702E3B2CE5152600124F73 /* ASEncoderTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ASNetworkKitTests;
+			path = ASEncoderTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1B10CAD82CE4C13F002A5B8F /* Frameworks */ = {
+		1B702E2C2CE5152600124F73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B783B652CE4F04E005511AE /* Frameworks */ = {
+		1B702E342CE5152600124F73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B783B6C2CE4F04E005511AE /* ASNetworkKit.framework in Frameworks */,
+				1B702E382CE5152600124F73 /* ASEncoder.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1B10CAD12CE4C13F002A5B8F = {
+		1B702E252CE5152600124F73 = {
 			isa = PBXGroup;
 			children = (
-				1B10CADD2CE4C13F002A5B8F /* ASNetworkKit */,
-				1B783B692CE4F04E005511AE /* ASNetworkKitTests */,
-				1B10CADC2CE4C13F002A5B8F /* Products */,
+				1B702E312CE5152600124F73 /* ASEncoder */,
+				1B702E3B2CE5152600124F73 /* ASEncoderTests */,
+				1B702E302CE5152600124F73 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		1B10CADC2CE4C13F002A5B8F /* Products */ = {
+		1B702E302CE5152600124F73 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */,
-				1B783B682CE4F04E005511AE /* ASNetworkKitTests.xctest */,
+				1B702E2F2CE5152600124F73 /* ASEncoder.framework */,
+				1B702E372CE5152600124F73 /* ASEncoderTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -78,7 +78,7 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		1B10CAD62CE4C13F002A5B8F /* Headers */ = {
+		1B702E2A2CE5152600124F73 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -88,100 +88,100 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1B10CADA2CE4C13F002A5B8F /* ASNetworkKit */ = {
+		1B702E2E2CE5152600124F73 /* ASEncoder */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1B10CAE12CE4C13F002A5B8F /* Build configuration list for PBXNativeTarget "ASNetworkKit" */;
+			buildConfigurationList = 1B702E402CE5152600124F73 /* Build configuration list for PBXNativeTarget "ASEncoder" */;
 			buildPhases = (
-				1B10CAD62CE4C13F002A5B8F /* Headers */,
-				1B10CAD72CE4C13F002A5B8F /* Sources */,
-				1B10CAD82CE4C13F002A5B8F /* Frameworks */,
-				1B10CAD92CE4C13F002A5B8F /* Resources */,
+				1B702E2A2CE5152600124F73 /* Headers */,
+				1B702E2B2CE5152600124F73 /* Sources */,
+				1B702E2C2CE5152600124F73 /* Frameworks */,
+				1B702E2D2CE5152600124F73 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				1B10CADD2CE4C13F002A5B8F /* ASNetworkKit */,
+				1B702E312CE5152600124F73 /* ASEncoder */,
 			);
-			name = ASNetworkKit;
+			name = ASEncoder;
 			packageProductDependencies = (
 			);
-			productName = ASNetworkKit;
-			productReference = 1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */;
+			productName = ASEncoder;
+			productReference = 1B702E2F2CE5152600124F73 /* ASEncoder.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		1B783B672CE4F04E005511AE /* ASNetworkKitTests */ = {
+		1B702E362CE5152600124F73 /* ASEncoderTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1B783B6F2CE4F04E005511AE /* Build configuration list for PBXNativeTarget "ASNetworkKitTests" */;
+			buildConfigurationList = 1B702E452CE5152600124F73 /* Build configuration list for PBXNativeTarget "ASEncoderTests" */;
 			buildPhases = (
-				1B783B642CE4F04E005511AE /* Sources */,
-				1B783B652CE4F04E005511AE /* Frameworks */,
-				1B783B662CE4F04E005511AE /* Resources */,
+				1B702E332CE5152600124F73 /* Sources */,
+				1B702E342CE5152600124F73 /* Frameworks */,
+				1B702E352CE5152600124F73 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				1B783B6E2CE4F04E005511AE /* PBXTargetDependency */,
+				1B702E3A2CE5152600124F73 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				1B783B692CE4F04E005511AE /* ASNetworkKitTests */,
+				1B702E3B2CE5152600124F73 /* ASEncoderTests */,
 			);
-			name = ASNetworkKitTests;
+			name = ASEncoderTests;
 			packageProductDependencies = (
 			);
-			productName = ASNetworkKitTests;
-			productReference = 1B783B682CE4F04E005511AE /* ASNetworkKitTests.xctest */;
+			productName = ASEncoderTests;
+			productReference = 1B702E372CE5152600124F73 /* ASEncoderTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		1B10CAD22CE4C13F002A5B8F /* Project object */ = {
+		1B702E262CE5152600124F73 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
-					1B10CADA2CE4C13F002A5B8F = {
+					1B702E2E2CE5152600124F73 = {
 						CreatedOnToolsVersion = 16.1;
 						LastSwiftMigration = 1610;
 					};
-					1B783B672CE4F04E005511AE = {
+					1B702E362CE5152600124F73 = {
 						CreatedOnToolsVersion = 16.1;
 					};
 				};
 			};
-			buildConfigurationList = 1B10CAD52CE4C13F002A5B8F /* Build configuration list for PBXProject "ASNetworkKit" */;
+			buildConfigurationList = 1B702E292CE5152600124F73 /* Build configuration list for PBXProject "ASEncoder" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 1B10CAD12CE4C13F002A5B8F;
+			mainGroup = 1B702E252CE5152600124F73;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 1B10CADC2CE4C13F002A5B8F /* Products */;
+			productRefGroup = 1B702E302CE5152600124F73 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1B10CADA2CE4C13F002A5B8F /* ASNetworkKit */,
-				1B783B672CE4F04E005511AE /* ASNetworkKitTests */,
+				1B702E2E2CE5152600124F73 /* ASEncoder */,
+				1B702E362CE5152600124F73 /* ASEncoderTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1B10CAD92CE4C13F002A5B8F /* Resources */ = {
+		1B702E2D2CE5152600124F73 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B783B662CE4F04E005511AE /* Resources */ = {
+		1B702E352CE5152600124F73 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -191,14 +191,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1B10CAD72CE4C13F002A5B8F /* Sources */ = {
+		1B702E2B2CE5152600124F73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B783B642CE4F04E005511AE /* Sources */ = {
+		1B702E332CE5152600124F73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -208,15 +208,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1B783B6E2CE4F04E005511AE /* PBXTargetDependency */ = {
+		1B702E3A2CE5152600124F73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1B10CADA2CE4C13F002A5B8F /* ASNetworkKit */;
-			targetProxy = 1B783B6D2CE4F04E005511AE /* PBXContainerItemProxy */;
+			target = 1B702E2E2CE5152600124F73 /* ASEncoder */;
+			targetProxy = 1B702E392CE5152600124F73 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1B10CAE22CE4C13F002A5B8F /* Debug */ = {
+		1B702E412CE5152600124F73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
@@ -232,6 +232,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -240,7 +241,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASNetworkKit;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoder;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -251,7 +252,7 @@
 			};
 			name = Debug;
 		};
-		1B10CAE32CE4C13F002A5B8F /* Release */ = {
+		1B702E422CE5152600124F73 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
@@ -267,6 +268,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -275,7 +277,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASNetworkKit;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoder;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -285,7 +287,7 @@
 			};
 			name = Release;
 		};
-		1B10CAE42CE4C13F002A5B8F /* Debug */ = {
+		1B702E432CE5152600124F73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -351,7 +353,7 @@
 			};
 			name = Debug;
 		};
-		1B10CAE52CE4C13F002A5B8F /* Release */ = {
+		1B702E442CE5152600124F73 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -410,7 +412,7 @@
 			};
 			name = Release;
 		};
-		1B783B702CE4F04E005511AE /* Debug */ = {
+		1B702E462CE5152600124F73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -418,7 +420,7 @@
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASNetworkKitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoderTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -426,7 +428,7 @@
 			};
 			name = Debug;
 		};
-		1B783B712CE4F04E005511AE /* Release */ = {
+		1B702E472CE5152600124F73 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -434,7 +436,7 @@
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASNetworkKitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASEncoderTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -445,34 +447,34 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1B10CAD52CE4C13F002A5B8F /* Build configuration list for PBXProject "ASNetworkKit" */ = {
+		1B702E292CE5152600124F73 /* Build configuration list for PBXProject "ASEncoder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1B10CAE42CE4C13F002A5B8F /* Debug */,
-				1B10CAE52CE4C13F002A5B8F /* Release */,
+				1B702E432CE5152600124F73 /* Debug */,
+				1B702E442CE5152600124F73 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1B10CAE12CE4C13F002A5B8F /* Build configuration list for PBXNativeTarget "ASNetworkKit" */ = {
+		1B702E402CE5152600124F73 /* Build configuration list for PBXNativeTarget "ASEncoder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1B10CAE22CE4C13F002A5B8F /* Debug */,
-				1B10CAE32CE4C13F002A5B8F /* Release */,
+				1B702E412CE5152600124F73 /* Debug */,
+				1B702E422CE5152600124F73 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1B783B6F2CE4F04E005511AE /* Build configuration list for PBXNativeTarget "ASNetworkKitTests" */ = {
+		1B702E452CE5152600124F73 /* Build configuration list for PBXNativeTarget "ASEncoderTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1B783B702CE4F04E005511AE /* Debug */,
-				1B783B712CE4F04E005511AE /* Release */,
+				1B702E462CE5152600124F73 /* Debug */,
+				1B702E472CE5152600124F73 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 1B10CAD22CE4C13F002A5B8F /* Project object */;
+	rootObject = 1B702E262CE5152600124F73 /* Project object */;
 }

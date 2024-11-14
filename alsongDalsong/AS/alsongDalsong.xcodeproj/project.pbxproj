@@ -7,78 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1B783AD42CE4C684005511AE /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B783ACD2CE4C664005511AE /* ASNetworkKit.framework */; };
-		1B783AD52CE4C684005511AE /* ASNetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B783ACD2CE4C664005511AE /* ASNetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1BA95B712CE4AC55008AD761 /* ASEntity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95B682CE4AC0B008AD761 /* ASEntity.framework */; };
-		1BA95B722CE4AC55008AD761 /* ASEntity.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95B682CE4AC0B008AD761 /* ASEntity.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1BBE1CA92CE47C660052A698 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 1BBE1CA82CE47C660052A698 /* .swiftlint.yml */; };
-		165216942CE4A7CC006A3804 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 165216932CE4A7CC006A3804 /* FirebaseAuth */; };
-		165216962CE4A7CC006A3804 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 165216952CE4A7CC006A3804 /* FirebaseDatabase */; };
-		165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 165216972CE4A7CC006A3804 /* FirebaseFirestore */; };
-		1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; };
-		1BA95AFB2CE4AA03008AD761 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; };
-		4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8907A52CE240B300D5B547 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16F8B7A72CE59CA90059F22A /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 16F8B7A62CE59CA90059F22A /* FirebaseAuth */; };
+		16F8B7A92CE59CA90059F22A /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 16F8B7A82CE59CA90059F22A /* FirebaseDatabase */; };
+		16F8B7AB2CE59CA90059F22A /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 16F8B7AA2CE59CA90059F22A /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		1B783ACC2CE4C664005511AE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1B783AC82CE4C664005511AE /* ASNetworkKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1B10CADB2CE4C13F002A5B8F;
-			remoteInfo = ASNetworkKit;
-		};
-		1BA95ACB2CE4A9E2008AD761 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1BA95A832CE4A9A4008AD761;
-			remoteInfo = ASMusicKit;
-		};
-		4E8907A42CE240B300D5B547 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4E89071E2CE23D1B00D5B547;
-			remoteInfo = ASAudioKit;
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		1BD3B8BC2CE2F2510037A6E1 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				1B783AD52CE4C684005511AE /* ASNetworkKit.framework in Embed Frameworks */,
-				4E8907B52CE2415700D5B547 /* ASAudioKit.framework in Embed Frameworks */,
-				1BA95AFB2CE4AA03008AD761 /* ASMusicKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		1B783AC82CE4C664005511AE /* ASNetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASNetworkKit.xcodeproj; sourceTree = "<group>"; };
-		1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASEntity.xcodeproj; sourceTree = "<group>"; };
-		1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASMusicKit.xcodeproj; sourceTree = "<group>"; };
+		16F8B7772CE59B7F0059F22A /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASCacheKit.xcodeproj; sourceTree = "<group>"; };
-		4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ASAudioKit.xcodeproj; sourceTree = "<group>"; };
-		8D69A5922CDC5A83006B9075 /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = alsongDalsong.app; path = "/Users/minhalee/BoostCamp/DDDD/alsongDalsong/build/Debug-iphoneos/alsongDalsong.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		1BA95AE52CE4A9F6008AD761 /* firebase */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = firebase;
-			sourceTree = "<group>";
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		168180AC2CE599F00013307D /* Exceptions for "alsongDalsong" folder in "alsongDalsong" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = 8D69A5912CDC5A83006B9075 /* alsongDalsong */;
 		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
 		8D69A5942CDC5A83006B9075 /* alsongDalsong */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				168180AC2CE599F00013307D /* Exceptions for "alsongDalsong" folder in "alsongDalsong" target */,
+			);
 			path = alsongDalsong;
 			sourceTree = "<group>";
 		};
@@ -89,78 +43,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B783AD42CE4C684005511AE /* ASNetworkKit.framework in Frameworks */,
-				4E8907B42CE2415700D5B547 /* ASAudioKit.framework in Frameworks */,
-				165216942CE4A7CC006A3804 /* FirebaseAuth in Frameworks */,
-				165216962CE4A7CC006A3804 /* FirebaseDatabase in Frameworks */,
-				165216982CE4A7CC006A3804 /* FirebaseFirestore in Frameworks */,
-				1BA95AFA2CE4AA03008AD761 /* ASMusicKit.framework in Frameworks */,
+				16F8B7A92CE59CA90059F22A /* FirebaseDatabase in Frameworks */,
+				16F8B7A72CE59CA90059F22A /* FirebaseAuth in Frameworks */,
+				16F8B7AB2CE59CA90059F22A /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1B783AC92CE4C664005511AE /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1B783ACD2CE4C664005511AE /* ASNetworkKit.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1B702E0F2CE5148D00124F73 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1BA95B682CE4AC0B008AD761 /* ASEntity.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1BA95A822CE4A9A4008AD761 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				4E8907A52CE240B300D5B547 /* ASAudioKit.framework */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
-		1BA95AC82CE4A9E2008AD761 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1BD3B8B92CE2F2510037A6E1 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		8D69A5892CDC5A83006B9075 = {
 			isa = PBXGroup;
 			children = (
 				1BBE1CA82CE47C660052A698 /* .swiftlint.yml */,
-				1B783AC82CE4C664005511AE /* ASNetworkKit.xcodeproj */,
-				1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */,
-				1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */,
-				1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */,
-				4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */,
-				1BA95AE52CE4A9F6008AD761 /* firebase */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
-				1BD3B8B92CE2F2510037A6E1 /* Frameworks */,
-				1BA95A822CE4A9A4008AD761 /* Recovered References */,
+				16F8B7772CE59B7F0059F22A /* alsongDalsong.app */,
 			);
-			sourceTree = "<group>";
-		};
-		8D9C371B2CE593D500F6E69C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,7 +71,6 @@
 				8D69A58E2CDC5A83006B9075 /* Sources */,
 				8D69A58F2CDC5A83006B9075 /* Frameworks */,
 				8D69A5902CDC5A83006B9075 /* Resources */,
-				1BD3B8BC2CE2F2510037A6E1 /* Embed Frameworks */,
 				1BBE1CB32CE47C920052A698 /* SwiftLint Script */,
 			);
 			buildRules = (
@@ -181,17 +78,16 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				1BA95AE52CE4A9F6008AD761 /* firebase */,
 				8D69A5942CDC5A83006B9075 /* alsongDalsong */,
 			);
 			name = alsongDalsong;
 			packageProductDependencies = (
-				165216932CE4A7CC006A3804 /* FirebaseAuth */,
-				165216952CE4A7CC006A3804 /* FirebaseDatabase */,
-				165216972CE4A7CC006A3804 /* FirebaseFirestore */,
+				16F8B7A62CE59CA90059F22A /* FirebaseAuth */,
+				16F8B7A82CE59CA90059F22A /* FirebaseDatabase */,
+				16F8B7AA2CE59CA90059F22A /* FirebaseFirestore */,
 			);
 			productName = alsongDalsong;
-			productReference = 8D69A5922CDC5A83006B9075 /* alsongDalsong.app */;
+			productReference = 16F8B7772CE59B7F0059F22A /* alsongDalsong.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -219,63 +115,17 @@
 			mainGroup = 8D69A5892CDC5A83006B9075;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				16F8B7A52CE59CA90059F22A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8D69A5892CDC5A83006B9075;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 8D9C371B2CE593D500F6E69C /* Products */;
-					ProjectRef = 4E89079C2CE240B300D5B547 /* ASAudioKit.xcodeproj */;
-				},
-				{
-					ProductGroup = 1B1AFB9A2CE344710038FC32 /* Products */;
-					ProjectRef = 1BD3B8D22CE2F34F0037A6E1 /* ASCacheKit.xcodeproj */;
-				},
-				{
-					ProductGroup = 1B702E0F2CE5148D00124F73 /* Products */;
-					ProjectRef = 1B702E0E2CE5148D00124F73 /* ASEntity.xcodeproj */;
-				},
-				{
-					ProductGroup = 1B783AC92CE4C664005511AE /* Products */;
-					ProjectRef = 1B783AC82CE4C664005511AE /* ASNetworkKit.xcodeproj */;
-        },
-        {
-					ProductGroup = 1BA95AC82CE4A9E2008AD761 /* Products */;
-					ProjectRef = 1BA95AC72CE4A9E2008AD761 /* ASMusicKit.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				8D69A5912CDC5A83006B9075 /* alsongDalsong */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		1B783ACD2CE4C664005511AE /* ASNetworkKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ASNetworkKit.framework;
-			remoteRef = 1B783ACC2CE4C664005511AE /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1BA95ACC2CE4A9E2008AD761 /* ASMusicKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ASMusicKit.framework;
-			remoteRef = 1BA95ACB2CE4A9E2008AD761 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		4E8907A52CE240B300D5B547 /* ASAudioKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ASAudioKit.framework;
-			remoteRef = 4E8907A42CE240B300D5B547 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8D69A5902CDC5A83006B9075 /* Resources */ = {
@@ -330,7 +180,7 @@
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = alsongDalsong/Info.plist;
+				INFOPLIST_FILE = alsongDalsong/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "알쏭달쏭";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -365,7 +215,7 @@
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = alsongDalsong/Info.plist;
+				INFOPLIST_FILE = alsongDalsong/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "알쏭달쏭";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -533,7 +383,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		16F8B7A52CE59CA90059F22A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
@@ -544,19 +394,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		165216932CE4A7CC006A3804 /* FirebaseAuth */ = {
+		16F8B7A62CE59CA90059F22A /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 16F8B7A52CE59CA90059F22A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
 		};
-		165216952CE4A7CC006A3804 /* FirebaseDatabase */ = {
+		16F8B7A82CE59CA90059F22A /* FirebaseDatabase */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 16F8B7A52CE59CA90059F22A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseDatabase;
 		};
-		165216972CE4A7CC006A3804 /* FirebaseFirestore */ = {
+		16F8B7AA2CE59CA90059F22A /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 165216922CE4A7CC006A3804 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 16F8B7A52CE59CA90059F22A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */

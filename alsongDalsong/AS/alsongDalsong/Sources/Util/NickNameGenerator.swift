@@ -18,4 +18,3 @@ enum NickNameGenerator {
         return "멋진 닉네임"
     }
 }
-

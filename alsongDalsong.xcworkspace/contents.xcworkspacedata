@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:alsongDalsong/AS/alsongDalsong.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:alsongDalsong/ASAudioKit/ASAudioKit.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:alsongDalsong/ASCacheKit/ASCacheKit.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:alsongDalsong/ASDecoder/ASDecoder.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:alsongDalsong/ASEncoder/ASEncoder.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:alsongDalsong/ASEntity/ASEntity.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:alsongDalsong/ASMusicKit/ASMusicKit.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:alsongDalsong/ASNetworkKit/ASNetworkKit.xcodeproj">
+   </FileRef>
+</Workspace>
