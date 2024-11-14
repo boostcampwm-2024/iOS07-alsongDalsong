@@ -7,10 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B06307A2CE64E7C005300BF /* ASDecoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B702E612CE5193F00124F73 /* ASDecoder.framework */; };
+		1B06307B2CE64E7C005300BF /* ASDecoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B702E612CE5193F00124F73 /* ASDecoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1B702E6A2CE5193F00124F73 /* ASDecoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B702E612CE5193F00124F73 /* ASDecoder.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1B06307C2CE64E7C005300BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1B702E582CE5193F00124F73 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1B702E602CE5193F00124F73;
+			remoteInfo = ASDecoder;
+		};
 		1B702E6B2CE5193F00124F73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1B702E582CE5193F00124F73 /* Project object */;
@@ -20,12 +29,32 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1B06307E2CE64E7C005300BF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1B06307B2CE64E7C005300BF /* ASDecoder.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1B06306B2CE64E74005300BF /* ASDecoderDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASDecoderDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B702E612CE5193F00124F73 /* ASDecoder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASDecoder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B702E692CE5193F00124F73 /* ASDecoderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASDecoderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		1B06306C2CE64E74005300BF /* ASDecoderDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ASDecoderDemo;
+			sourceTree = "<group>";
+		};
 		1B702E632CE5193F00124F73 /* ASDecoder */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ASDecoder;
@@ -39,6 +68,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1B0630682CE64E74005300BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B06307A2CE64E7C005300BF /* ASDecoder.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1B702E5E2CE5193F00124F73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -57,11 +94,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B0630792CE64E7C005300BF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1B702E572CE5193F00124F73 = {
 			isa = PBXGroup;
 			children = (
 				1B702E632CE5193F00124F73 /* ASDecoder */,
 				1B702E6D2CE5193F00124F73 /* ASDecoderTests */,
+				1B06306C2CE64E74005300BF /* ASDecoderDemo */,
+				1B0630792CE64E7C005300BF /* Frameworks */,
 				1B702E622CE5193F00124F73 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +117,7 @@
 			children = (
 				1B702E612CE5193F00124F73 /* ASDecoder.framework */,
 				1B702E692CE5193F00124F73 /* ASDecoderTests.xctest */,
+				1B06306B2CE64E74005300BF /* ASDecoderDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -88,6 +135,30 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		1B06306A2CE64E74005300BF /* ASDecoderDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1B0630782CE64E75005300BF /* Build configuration list for PBXNativeTarget "ASDecoderDemo" */;
+			buildPhases = (
+				1B0630672CE64E74005300BF /* Sources */,
+				1B0630682CE64E74005300BF /* Frameworks */,
+				1B0630692CE64E74005300BF /* Resources */,
+				1B06307E2CE64E7C005300BF /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1B06307D2CE64E7C005300BF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1B06306C2CE64E74005300BF /* ASDecoderDemo */,
+			);
+			name = ASDecoderDemo;
+			packageProductDependencies = (
+			);
+			productName = ASDecoderDemo;
+			productReference = 1B06306B2CE64E74005300BF /* ASDecoderDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
 		1B702E602CE5193F00124F73 /* ASDecoder */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1B702E722CE5193F00124F73 /* Build configuration list for PBXNativeTarget "ASDecoder" */;
@@ -144,6 +215,9 @@
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					1B06306A2CE64E74005300BF = {
+						CreatedOnToolsVersion = 16.1;
+					};
 					1B702E602CE5193F00124F73 = {
 						CreatedOnToolsVersion = 16.1;
 						LastSwiftMigration = 1610;
@@ -154,11 +228,12 @@
 				};
 			};
 			buildConfigurationList = 1B702E5B2CE5193F00124F73 /* Build configuration list for PBXProject "ASDecoder" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 1B702E572CE5193F00124F73;
 			minimizedProjectReferenceProxies = 1;
@@ -169,11 +244,19 @@
 			targets = (
 				1B702E602CE5193F00124F73 /* ASDecoder */,
 				1B702E682CE5193F00124F73 /* ASDecoderTests */,
+				1B06306A2CE64E74005300BF /* ASDecoderDemo */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1B0630692CE64E74005300BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1B702E5F2CE5193F00124F73 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -191,6 +274,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1B0630672CE64E74005300BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1B702E5D2CE5193F00124F73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -208,6 +298,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1B06307D2CE64E7C005300BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1B702E602CE5193F00124F73 /* ASDecoder */;
+			targetProxy = 1B06307C2CE64E7C005300BF /* PBXContainerItemProxy */;
+		};
 		1B702E6C2CE5193F00124F73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1B702E602CE5193F00124F73 /* ASDecoder */;
@@ -216,6 +311,64 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		1B0630762CE64E75005300BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ASDecoderDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASDecoderDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1B0630772CE64E75005300BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ASDecoderDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASDecoderDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		1B702E732CE5193F00124F73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -447,6 +600,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1B0630782CE64E75005300BF /* Build configuration list for PBXNativeTarget "ASDecoderDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1B0630762CE64E75005300BF /* Debug */,
+				1B0630772CE64E75005300BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1B702E5B2CE5193F00124F73 /* Build configuration list for PBXProject "ASDecoder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
