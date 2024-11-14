@@ -7,7 +7,7 @@ class ViewController: UIViewController {
     private var avatarView: ASAvatarCircleView!
     private var nickNameTextField: ASTextField!
     private var nickNamePanel: ASPanel!
-    private var avatarRefreshButton: ASRefreshButton!
+    private var nickNameRefreshButton: ASRefreshButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +38,8 @@ class ViewController: UIViewController {
         nickNameTextField = ASTextField(placeholder: "도덕적인 삶")
         nickNamePanel.addSubview(nickNameTextField)
         
-        avatarRefreshButton = ASRefreshButton(size: 28)
-        self.view.addSubview(avatarRefreshButton)
+        nickNameRefreshButton = ASRefreshButton(size: 28)
+        self.view.addSubview(nickNameRefreshButton)
     }
     
     private func setupLayout() {
@@ -50,7 +50,7 @@ class ViewController: UIViewController {
         avatarView.translatesAutoresizingMaskIntoConstraints = false
         nickNamePanel.translatesAutoresizingMaskIntoConstraints = false
         nickNameTextField.translatesAutoresizingMaskIntoConstraints = false
-        avatarRefreshButton.translatesAutoresizingMaskIntoConstraints = false
+        nickNameRefreshButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             joinRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
@@ -82,10 +82,10 @@ class ViewController: UIViewController {
             nickNameTextField.trailingAnchor.constraint(equalTo: nickNamePanel.trailingAnchor, constant: -16),
             nickNameTextField.bottomAnchor.constraint(equalTo: nickNamePanel.bottomAnchor, constant: -16),
             
-            avatarRefreshButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 231),
-            avatarRefreshButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 352),
-            avatarRefreshButton.widthAnchor.constraint(equalToConstant: 60),
-            avatarRefreshButton.heightAnchor.constraint(equalToConstant: 60)
+            nickNameRefreshButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 231),
+            nickNameRefreshButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 352),
+            nickNameRefreshButton.widthAnchor.constraint(equalToConstant: 60),
+            nickNameRefreshButton.heightAnchor.constraint(equalToConstant: 60)
         ])
         
     }
