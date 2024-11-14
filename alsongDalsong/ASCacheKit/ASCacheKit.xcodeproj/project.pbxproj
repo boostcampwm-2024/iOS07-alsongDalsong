@@ -7,10 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B0630BD2CE66867005300BF /* ASCacheKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */; };
+		1B0630BE2CE66867005300BF /* ASCacheKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BD3B91A2CE329160037A6E1 /* ASCacheKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */; platformFilter = ios; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1B0630BF2CE66867005300BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1BD3B68C2CE203680037A6E1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1BD3B6942CE203680037A6E1;
+			remoteInfo = ASCacheKit;
+		};
 		1BD3B91B2CE329160037A6E1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1BD3B68C2CE203680037A6E1 /* Project object */;
@@ -19,6 +28,20 @@
 			remoteInfo = ASCacheKit;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1B0630C12CE66867005300BF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1B0630BE2CE66867005300BF /* ASCacheKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1B0630AC2CE66729005300BF /* ASCacheKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASCacheKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -49,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B0630BD2CE66867005300BF /* ASCacheKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,12 +94,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B0630BC2CE66867005300BF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1BD3B68B2CE203680037A6E1 = {
 			isa = PBXGroup;
 			children = (
 				1BD3B90A2CE3286D0037A6E1 /* ASCacheKit */,
 				1BD3B9172CE329160037A6E1 /* ASCacheKitTests */,
 				1B0630AD2CE66729005300BF /* ASCacheKitDemo */,
+				1B0630BC2CE66867005300BF /* Frameworks */,
 				1BD3B6962CE203680037A6E1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,10 +142,12 @@
 				1B0630A82CE66729005300BF /* Sources */,
 				1B0630A92CE66729005300BF /* Frameworks */,
 				1B0630AA2CE66729005300BF /* Resources */,
+				1B0630C12CE66867005300BF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1B0630C02CE66867005300BF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				1B0630AD2CE66729005300BF /* ASCacheKitDemo */,
@@ -263,6 +297,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1B0630C02CE66867005300BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1BD3B6942CE203680037A6E1 /* ASCacheKit */;
+			targetProxy = 1B0630BF2CE66867005300BF /* PBXContainerItemProxy */;
+		};
 		1BD3B91C2CE329160037A6E1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
