@@ -32,7 +32,7 @@ module.exports.createRoom = onRequest({ region: 'asia-southeast1' }, async (req,
     const roomData = createRoomData(roomNumber, hostData);
     await admin.firestore().collection('rooms').doc(roomNumber).set(roomData);
 
-    res.status(201).json({ roomNumber });
+    res.status(200).json({ roomNumber: roomNumber });
   } catch (error) {
     res.status(500).json({ error: 'Failed to create room' });
   }
