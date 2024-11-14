@@ -1,5 +1,5 @@
-import Foundation
 import ASEncoder
+import Foundation
 
 public class EncodingDemoViewModel: ObservableObject {
     @Published var userInfo: UserInfo = .init(
@@ -14,7 +14,9 @@ public class EncodingDemoViewModel: ObservableObject {
 
     var userAvatarUrl: String {
         get { userInfo.userAvaterUrl.absoluteString }
-        set { userInfo.userAvaterUrl = URL(string: newValue) ?? userInfo.userAvaterUrl }
+        set { userInfo.userAvaterUrl = URL(string: newValue) ?? userInfo.userAvaterUrl
+            updateJSON()
+        }
     }
 
     func updateJSON() {

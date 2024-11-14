@@ -32,16 +32,19 @@ struct EncodingDemoView: View {
                             }
                         }
                     }
+                    if let jsonDisplayText = viewModel.jsonDisplayText {
+                        Text(jsonDisplayText)
+                            .padding()
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(.none)
+                            .listRowBackground(
+                                Color(uiColor: .systemGroupedBackground)
+                                    .clipShape(RoundedRectangle(cornerRadius: 25))
+                                    .padding()
+                            )
+                    }
                 }
                 .listStyle(.plain)
-
-                if let jsonDisplayText = viewModel.jsonDisplayText {
-                    Text(jsonDisplayText)
-                        .padding()
-                        .background(Color(uiColor: .systemGroupedBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .padding(.bottom, 150)
-                }
             }
             .onReceive(viewModel.$userInfo) { _ in
                 viewModel.updateJSON()
