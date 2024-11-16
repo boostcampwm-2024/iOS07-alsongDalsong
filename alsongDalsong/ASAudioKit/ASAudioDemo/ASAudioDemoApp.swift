@@ -11,7 +11,7 @@ import SwiftUI
 struct ASAudioDemoApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ASAudioKitDemoView()
         }
     }
 }
