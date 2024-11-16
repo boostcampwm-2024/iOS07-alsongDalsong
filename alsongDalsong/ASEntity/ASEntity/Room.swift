@@ -5,12 +5,12 @@ public struct Room {
     public var host: Player?
     public var players: [Player]?
     public var mode: Mode?
-    public var round: Int?
+    public var round: UInt8?
     public var status: Status?
     public var records: [[Record]]?
     public var answers: [Answer]?
     public var dueTime: Date?
-    public var selectedRecords: [Int]?
+    public var selectedRecords: [UInt8]?
     public var submits: [Answer]?
     
     public init(
@@ -18,12 +18,12 @@ public struct Room {
         host: Player? = nil,
         players: [Player]? = nil,
         mode: Mode? = nil,
-        round: Int? = nil,
+        round: UInt8? = nil,
         status: Status? = nil,
         records: [[Record]]? = nil,
         answers: [Answer]? = nil,
         dueTime: Date? = nil,
-        selectedRecords: [Int]? = nil,
+        selectedRecords: [UInt8]? = nil,
         submits: [Answer]? = nil
     ) {
         self.number = number
