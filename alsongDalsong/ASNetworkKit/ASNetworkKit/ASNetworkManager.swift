@@ -6,7 +6,8 @@ public struct ASNetworkManager {
     public init(urlSession: URLSessionProtocol = URLSession.shared) {
         self.urlSession = urlSession
     }
-
+    
+    @discardableResult
     public func sendRequest(to endpoint: any Endpoint, body: Data? = nil) async throws -> Data {
         let request = try urlRequest(for: endpoint, body: body)
         let (data, response) = try await urlSession.data(for: request)
