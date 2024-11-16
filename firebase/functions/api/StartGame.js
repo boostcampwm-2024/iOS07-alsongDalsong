@@ -10,9 +10,13 @@ const admin = require('../FirebaseAdmin.js');
  * 게임을 시작 요청을 하는 HTTPS requests.
  * @param roomNumber - 방 정보
  * @param playerId - 호스트 id
- * @returns Boolean
+ * @returns status message
  */
 module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, res) => {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Only POST requests are accepted' });
+  }
+
   const { roomNumber, userId } = req.body;
   const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
 
@@ -35,11 +39,10 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
       await roomRef.update({
         status: 'humming',
         round: 1,
-        records: Array.from({ length: roomData.players.length }, () => ({ data: null })),
+        records: Array.from({ length: roomData.players.length * roomData.players.length }, () => ({ data: {} })),
       });
 
-      const updatedRoomData = (await roomRef.get()).data();
-      res.status(200).json(updatedRoomData);
+      res.status(200).json({ status: 'success' });
     } else {
       res.status(400).json({ error: 'Invalid mode' });
     }
