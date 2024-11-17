@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 final class OnboardingViewController: UIViewController {
     private var logoImageView = UIImageView(image: UIImage(named: Constants.logoImageName))
@@ -8,6 +9,8 @@ final class OnboardingViewController: UIViewController {
     private var nickNameTextField = ASTextField(placeholder: NickNameGenerator.generate())
     private var nickNamePanel = ASPanel(title: Constants.nickNameTitle, titleAlign: .left, titleSize: 24)
     private var nickNameRefreshButton = ASRefreshButton(size: 28)
+    
+    private var onboardingViewModel: OnboardingViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,7 +80,8 @@ final class OnboardingViewController: UIViewController {
                 )
                 joinAlert.doneButtonCompletion = { [weak self] in
                     // TODO: 방 참가 로직 추가
-                    print("입력된 텍스트: \(joinAlert.text)")
+//                    print("입력된 텍스트: \(joinAlert.text)")
+                    self?.onboardingViewModel.joinRoom(roomNumber: joinAlert.text)
                 }
                 self?.present(joinAlert, animated: true, completion: nil)
             },

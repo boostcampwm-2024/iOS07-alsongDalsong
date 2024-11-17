@@ -21,6 +21,8 @@
 		1697277B2CE66283005B4953 /* ASDecoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; };
 		1697277C2CE66283005B4953 /* ASDecoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1B783B6C2CE4F04E005511AE /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */; };
+		8D64F8DD2CEA05A90069B77F /* ASDecoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; };
+		8D64F8DE2CEA05AA0069B77F /* ASDecoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +71,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				169726A72CE63DCD005B4953 /* ASEntity.framework in Embed Frameworks */,
+				8D64F8DE2CEA05AA0069B77F /* ASDecoder.framework in Embed Frameworks */,
 				169727712CE65D99005B4953 /* ASEncoder.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -99,18 +102,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1697284D2CE87FAA005B4953 /* Exceptions for "ASFirebaseDemo" folder in "ASNetworkKit" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Resources/Secret.xcconfig,
-			);
-			target = 1B10CADA2CE4C13F002A5B8F /* ASNetworkKit */;
-		};
 		16F8B8A12CE5E4FE0059F22A /* Exceptions for "ASFirebaseDemo" folder in "ASFirebaseDemo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
-				Resources/Secret.xcconfig,
 			);
 			target = 16F8B88F2CE5E4FD0059F22A /* ASFirebaseDemo */;
 		};
@@ -120,7 +115,6 @@
 		16F8B8912CE5E4FD0059F22A /* ASFirebaseDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1697284D2CE87FAA005B4953 /* Exceptions for "ASFirebaseDemo" folder in "ASNetworkKit" target */,
 				16F8B8A12CE5E4FE0059F22A /* Exceptions for "ASFirebaseDemo" folder in "ASFirebaseDemo" target */,
 			);
 			path = ASFirebaseDemo;
@@ -154,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				169725542CE5F817005B4953 /* FirebaseDatabase in Frameworks */,
+				8D64F8DD2CEA05A90069B77F /* ASDecoder.framework in Frameworks */,
 				169727702CE65D99005B4953 /* ASEncoder.framework in Frameworks */,
 				169725562CE5F817005B4953 /* FirebaseFirestore in Frameworks */,
 				169725522CE5F817005B4953 /* FirebaseAuth in Frameworks */,
