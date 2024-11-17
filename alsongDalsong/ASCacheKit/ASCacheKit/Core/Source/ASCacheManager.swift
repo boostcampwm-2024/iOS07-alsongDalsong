@@ -4,18 +4,15 @@ import Foundation
 public struct ASCacheManager: CacheManagerProtocol {
     public let memoryCache: MemoryCacheManagerProtocol
     public let diskCache: DiskCacheManagerProtocol
-    public let urlSession: URLSessionProtocol
 
     public init() {
         memoryCache = MemoryCacheManager()
         diskCache = DiskCacheManager()
-        urlSession = URLSession.shared
     }
 
-    public init(memoryCache: MemoryCacheManagerProtocol, diskCache: DiskCacheManagerProtocol, session: URLSessionProtocol) {
+    public init(memoryCache: MemoryCacheManagerProtocol, diskCache: DiskCacheManagerProtocol) {
         self.memoryCache = memoryCache
         self.diskCache = diskCache
-        urlSession = session
     }
 
     public func loadCache(from url: URL, cacheOption: CacheOption) async -> Data? {
