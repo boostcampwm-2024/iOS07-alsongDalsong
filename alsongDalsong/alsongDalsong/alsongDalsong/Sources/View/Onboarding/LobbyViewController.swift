@@ -1,6 +1,6 @@
 import UIKit
 
-class ViewController: UIViewController {
+final class LobbyViewController: UIViewController {
     private var logoImageView: UIImageView!
     private var createRoomButton: ASButton!
     private var joinRoomButton: ASButton!

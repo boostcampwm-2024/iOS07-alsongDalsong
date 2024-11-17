@@ -10,8 +10,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         FirebaseApp.configure()
         window = UIWindow(windowScene: windowScene)
-        let viewController = ViewController()
-        window?.rootViewController = viewController
+        let lobbyVC = LobbyViewController()
+        window?.rootViewController = lobbyVC
         window?.makeKeyAndVisible()
     }
 }
