@@ -1,4 +1,5 @@
 import Foundation
+import ASCacheKitProtocol
 
 internal struct MemoryCacheManager: MemoryCacheManagerProtocol {
     private let cache = NSCache<NSString, AnyObject>()

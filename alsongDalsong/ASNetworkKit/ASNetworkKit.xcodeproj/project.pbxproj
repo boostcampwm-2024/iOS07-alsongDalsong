@@ -111,7 +111,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
-				Resources/Secret.xcconfig,
 			);
 			target = 16F8B88F2CE5E4FD0059F22A /* ASFirebaseDemo */;
 		};
@@ -121,7 +120,6 @@
 		16F8B8912CE5E4FD0059F22A /* ASFirebaseDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1697284D2CE87FAA005B4953 /* Exceptions for "ASFirebaseDemo" folder in "ASNetworkKit" target */,
 				16F8B8A12CE5E4FE0059F22A /* Exceptions for "ASFirebaseDemo" folder in "ASFirebaseDemo" target */,
 			);
 			path = ASFirebaseDemo;

@@ -1,3 +1,4 @@
+import ASCacheKitProtocol
 import Foundation
 
 public struct ASCacheManager {
@@ -36,7 +37,7 @@ public struct ASCacheManager {
                     return diskData
                 }
                 return await downloadData(from: key)
-            case .nothing:
+            default:
                 return nil
         }
     }

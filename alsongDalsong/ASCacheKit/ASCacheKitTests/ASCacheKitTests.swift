@@ -1,5 +1,5 @@
 @testable import ASCacheKit
-import Foundation
+import ASCacheKitProtocol
 import Testing
 import UIKit
 
