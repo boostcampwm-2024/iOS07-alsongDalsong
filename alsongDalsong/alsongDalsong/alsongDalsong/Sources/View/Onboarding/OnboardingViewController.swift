@@ -1,6 +1,6 @@
 import UIKit
 
-final class LobbyViewController: UIViewController {
+final class OnboardingViewController: UIViewController {
     private var logoImageView: UIImageView!
     private var createRoomButton: ASButton!
     private var joinRoomButton: ASButton!
@@ -112,3 +112,5 @@ final class LobbyViewController: UIViewController {
             for: .touchUpInside)
     }
 }
+
+extension L
