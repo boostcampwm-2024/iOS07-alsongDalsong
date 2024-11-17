@@ -65,6 +65,7 @@ final class MainViewController: UIViewController {
         Task {
             do {
                 createButton.isEnabled = false
+                joinButton.isEnabled = false
                 try await connectToFirebase()
                 
                 let endpoint = FirebaseEndpoint(path: .createRoom, method: .post)
@@ -80,6 +81,7 @@ final class MainViewController: UIViewController {
                 }
             } catch(let error) {
                 createButton.isEnabled = true
+                joinButton.isEnabled = true
                 print("error: \(error)")
             }
         }
@@ -89,6 +91,7 @@ final class MainViewController: UIViewController {
         Task {
             do {
                 createButton.isEnabled = false
+                joinButton.isEnabled = false
                 try await connectToFirebase()
                 
                 let endpoint = FirebaseEndpoint(path: .joinRoom, method: .post)
@@ -102,6 +105,7 @@ final class MainViewController: UIViewController {
                 }
             } catch {
                 createButton.isEnabled = true
+                joinButton.isEnabled = true
                 print("error: \(error)")
             }
         }
