@@ -7,10 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B0630BD2CE66867005300BF /* ASCacheKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */; };
+		1B0630BE2CE66867005300BF /* ASCacheKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BD3B91A2CE329160037A6E1 /* ASCacheKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */; platformFilter = ios; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1B0630BF2CE66867005300BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1BD3B68C2CE203680037A6E1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1BD3B6942CE203680037A6E1;
+			remoteInfo = ASCacheKit;
+		};
 		1BD3B91B2CE329160037A6E1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1BD3B68C2CE203680037A6E1 /* Project object */;
@@ -20,12 +29,32 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1B0630C12CE66867005300BF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1B0630BE2CE66867005300BF /* ASCacheKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1B0630AC2CE66729005300BF /* ASCacheKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASCacheKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASCacheKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD3B9162CE329160037A6E1 /* ASCacheKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASCacheKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		1B0630AD2CE66729005300BF /* ASCacheKitDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ASCacheKitDemo;
+			sourceTree = "<group>";
+		};
 		1BD3B90A2CE3286D0037A6E1 /* ASCacheKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ASCacheKit;
@@ -39,6 +68,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1B0630A92CE66729005300BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B0630BD2CE66867005300BF /* ASCacheKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1BD3B6922CE203680037A6E1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -57,11 +94,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B0630BC2CE66867005300BF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1BD3B68B2CE203680037A6E1 = {
 			isa = PBXGroup;
 			children = (
 				1BD3B90A2CE3286D0037A6E1 /* ASCacheKit */,
 				1BD3B9172CE329160037A6E1 /* ASCacheKitTests */,
+				1B0630AD2CE66729005300BF /* ASCacheKitDemo */,
+				1B0630BC2CE66867005300BF /* Frameworks */,
 				1BD3B6962CE203680037A6E1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +117,7 @@
 			children = (
 				1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */,
 				1BD3B9162CE329160037A6E1 /* ASCacheKitTests.xctest */,
+				1B0630AC2CE66729005300BF /* ASCacheKitDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -88,6 +135,30 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		1B0630AB2CE66729005300BF /* ASCacheKitDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1B0630B92CE6672B005300BF /* Build configuration list for PBXNativeTarget "ASCacheKitDemo" */;
+			buildPhases = (
+				1B0630A82CE66729005300BF /* Sources */,
+				1B0630A92CE66729005300BF /* Frameworks */,
+				1B0630AA2CE66729005300BF /* Resources */,
+				1B0630C12CE66867005300BF /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1B0630C02CE66867005300BF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1B0630AD2CE66729005300BF /* ASCacheKitDemo */,
+			);
+			name = ASCacheKitDemo;
+			packageProductDependencies = (
+			);
+			productName = ASCacheKitDemo;
+			productReference = 1B0630AC2CE66729005300BF /* ASCacheKitDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
 		1BD3B6942CE203680037A6E1 /* ASCacheKit */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1BD3B6A62CE203680037A6E1 /* Build configuration list for PBXNativeTarget "ASCacheKit" */;
@@ -144,6 +215,9 @@
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					1B0630AB2CE66729005300BF = {
+						CreatedOnToolsVersion = 16.1;
+					};
 					1BD3B6942CE203680037A6E1 = {
 						CreatedOnToolsVersion = 16.1;
 						LastSwiftMigration = 1610;
@@ -169,11 +243,19 @@
 			targets = (
 				1BD3B6942CE203680037A6E1 /* ASCacheKit */,
 				1BD3B9152CE329160037A6E1 /* ASCacheKitTests */,
+				1B0630AB2CE66729005300BF /* ASCacheKitDemo */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1B0630AA2CE66729005300BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1BD3B6932CE203680037A6E1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -191,6 +273,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1B0630A82CE66729005300BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1BD3B6912CE203680037A6E1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -208,6 +297,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1B0630C02CE66867005300BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1BD3B6942CE203680037A6E1 /* ASCacheKit */;
+			targetProxy = 1B0630BF2CE66867005300BF /* PBXContainerItemProxy */;
+		};
 		1BD3B91C2CE329160037A6E1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
@@ -217,6 +311,69 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		1B0630B72CE6672B005300BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ASCacheKitDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASCacheKitDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1B0630B82CE6672B005300BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ASCacheKitDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASCacheKitDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		1BD3B6A72CE203680037A6E1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -466,6 +623,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1B0630B92CE6672B005300BF /* Build configuration list for PBXNativeTarget "ASCacheKitDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1B0630B72CE6672B005300BF /* Debug */,
+				1B0630B82CE6672B005300BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1BD3B68F2CE203680037A6E1 /* Build configuration list for PBXProject "ASCacheKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
