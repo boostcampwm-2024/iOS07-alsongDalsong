@@ -5,7 +5,7 @@ final class OnboardingViewController: UIViewController {
     private var createRoomButton = ASButton(title: Constants.craeteButtonTitle, backgroundColor: .asYellow)
     private var joinRoomButton = ASButton(title: Constants.joinButtonTitle, backgroundColor: .asMint)
     private var avatarView = ASAvatarCircleView(image: UIImage(named: "mojojojo") ?? UIImage.fake)
-    private var nickNameTextField = ASTextField(placeholder: "도덕적인 삶")
+    private var nickNameTextField = ASTextField(placeholder: NickNameGenerator.generate())
     private var nickNamePanel = ASPanel(title: Constants.nickNameTitle, titleAlign: .left, titleSize: 24)
     private var nickNameRefreshButton = ASRefreshButton(size: 28)
     
@@ -93,7 +93,7 @@ extension OnboardingViewController {
         static let nickNameTitle = "닉네임"
         static let doneAlertButtonTitle = "완료"
         static let cancelAlertButtonTitle = "취소"
-        static let roomNumberPlaceholder = "#000000"
+        static let roomNumberPlaceholder = "000000"
         
         static let logoImageName = "logo"
     }
