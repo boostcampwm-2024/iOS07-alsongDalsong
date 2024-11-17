@@ -59,13 +59,13 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
                 return
             }
             
-            guard let document = documentSnapshot, document.exists, let roomData = document.data() else {
+            guard let document = documentSnapshot, document.exists else {
                 completion(.failure(ASNetworkErrors.FirebaseListenerError))
                 return
             }
             
             do {
-                let room = try self.parseRoomData(roomData)
+                let room = try document.data(as: Room.self)
                 completion(.success(room))
             } catch {
                 completion(.failure(error))
@@ -77,56 +77,5 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
     
     public func removeRoomListener(roomNumber: String) {
         roomListeners?.remove()
-    }
-    
-    // TODO: Room Entity로 매핑 (ASDecoder에 Dictionary를 한번에 Entitiy로 Decoding 하는 기능이 필요할듯 합니다.)
-    private func parseRoomData(_ data: [String: Any]) throws -> Room {
-        var room = Room()
-        
-        room.number = data["number"] as? String
-        
-        if let hostData = data["host"] as? [String: Any] {
-            let hostJSONData = try JSONSerialization.data(withJSONObject: hostData)
-            room.host = try ASDecoder.decode(Player.self, from: hostJSONData)
-        }
-        
-        if let playersData = data["players"] as? [[String: Any]] {
-            let playersJSONData = try JSONSerialization.data(withJSONObject: playersData)
-            room.players = try ASDecoder.decode([Player].self, from: playersJSONData)
-        }
-        
-        if let mode = data["mode"] as? String {
-            room.mode = Mode(rawValue: mode)
-        }
-        
-        if let status = data["status"] as? String {
-            room.status = Status(rawValue: status)
-        }
-        
-        room.round = data["round"] as? UInt8
-        
-        // TODO: Decoding 에러 발생, 미해결
-        if let recordsData = data["records"] as? [[String: Any]] {
-            let recordsJSONData = try JSONSerialization.data(withJSONObject: recordsData)
-            room.records = try ASDecoder.decode([[Record]].self, from: recordsJSONData)
-        }
-        
-        if let answersData = data["answers"] as? [[String: Any]] {
-            let answersJSONData = try JSONSerialization.data(withJSONObject: answersData)
-            room.answers = try ASDecoder.decode([Answer].self, from: answersJSONData)
-        }
-        
-        if let dueTime = data["dueTime"] as? Timestamp {
-            room.dueTime = dueTime.dateValue()
-        }
-        
-        room.selectedRecords = data["selectedRecords"] as? [UInt8]
-        
-        if let submitsData = data["submits"] as? [[String: Any]] {
-            let submitsJSONData = try JSONSerialization.data(withJSONObject: submitsData)
-            room.submits = try ASDecoder.decode([Answer].self, from: submitsJSONData)
-        }
-        print(room)
-        return room
     }
 }
