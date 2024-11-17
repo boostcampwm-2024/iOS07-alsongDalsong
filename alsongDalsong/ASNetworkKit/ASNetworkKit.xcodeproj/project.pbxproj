@@ -21,6 +21,8 @@
 		1697277B2CE66283005B4953 /* ASDecoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; };
 		1697277C2CE66283005B4953 /* ASDecoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1B783B6C2CE4F04E005511AE /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */; };
+		1BF1CB722CEA52D40003EED9 /* ASCacheKitProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */; };
+		1BF1CB732CEA52D40003EED9 /* ASCacheKitProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +70,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1BF1CB732CEA52D40003EED9 /* ASCacheKitProtocol.framework in Embed Frameworks */,
 				169726A72CE63DCD005B4953 /* ASEntity.framework in Embed Frameworks */,
 				169727712CE65D99005B4953 /* ASEncoder.framework in Embed Frameworks */,
 			);
@@ -95,18 +98,11 @@
 		169727722CE6627F005B4953 /* ASDecoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASDecoder.xcodeproj; path = ../ASDecoder/ASDecoder.xcodeproj; sourceTree = "<group>"; };
 		16F8B8902CE5E4FD0059F22A /* ASFirebaseDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASFirebaseDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASNetworkKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1B1328942CE5F3C600EF706D /* ASEntity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ASEntity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B783B682CE4F04E005511AE /* ASNetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASNetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ASCacheKitProtocol.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1697284D2CE87FAA005B4953 /* Exceptions for "ASFirebaseDemo" folder in "ASNetworkKit" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Resources/Secret.xcconfig,
-			);
-			target = 1B10CADA2CE4C13F002A5B8F /* ASNetworkKit */;
-		};
 		16F8B8A12CE5E4FE0059F22A /* Exceptions for "ASFirebaseDemo" folder in "ASFirebaseDemo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -152,6 +148,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BF1CB722CEA52D40003EED9 /* ASCacheKitProtocol.framework in Frameworks */,
 				169725542CE5F817005B4953 /* FirebaseDatabase in Frameworks */,
 				169727702CE65D99005B4953 /* ASEncoder.framework in Frameworks */,
 				169725562CE5F817005B4953 /* FirebaseFirestore in Frameworks */,
@@ -198,6 +195,7 @@
 		16F8B8A52CE5E50C0059F22A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */,
 				169727722CE6627F005B4953 /* ASDecoder.xcodeproj */,
 				169727672CE65D89005B4953 /* ASEncoder.xcodeproj */,
 				169724552CE5F44E005B4953 /* ASEntity.xcodeproj */,
@@ -224,14 +222,6 @@
 				16F8B8902CE5E4FD0059F22A /* ASFirebaseDemo.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		1B1328932CE5F3C600EF706D /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1B1328942CE5F3C600EF706D /* ASEntity.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

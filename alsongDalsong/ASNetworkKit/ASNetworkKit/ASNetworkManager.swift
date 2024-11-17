@@ -1,18 +1,33 @@
+import ASCacheKitProtocol
 import Foundation
 
 public struct ASNetworkManager {
     private let urlSession: URLSessionProtocol
+    private let cacheManager: CacheManagerProtocol
 
-    public init(urlSession: URLSessionProtocol = URLSession.shared) {
+    public init(urlSession: URLSessionProtocol = URLSession.shared, cacheManager: CacheManagerProtocol) {
         self.urlSession = urlSession
+        self.cacheManager = cacheManager
     }
-    
+
     @discardableResult
     public func sendRequest(to endpoint: any Endpoint, body: Data? = nil) async throws -> Data {
+        guard let url = endpoint.url else { throw ASNetworkErrors.urlError }
+        // cache 먼저 체크 후 urlRequest 생성
+        if let cache = try await loadCache(from: url) { return cache }
         let request = try urlRequest(for: endpoint, body: body)
         let (data, response) = try await urlSession.data(for: request)
         try validate(response: response)
+        saveCache(from: url, with: data)
         return data
+    }
+
+    private func loadCache(from url: URL) async throws -> Data? {
+        await cacheManager.loadCache(from: url, cacheOption: .both)
+    }
+
+    private func saveCache(from url: URL, with data: Data) {
+        cacheManager.saveCache(withKey: url, data: data, cacheOption: .both)
     }
 
     private func urlRequest(for endpoint: any Endpoint, body: Data? = nil) throws -> URLRequest {
