@@ -13,7 +13,7 @@ final class MainViewController: UIViewController {
     var player: Player!
     
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         setupUI()
         setupLayout()
     }
@@ -21,24 +21,22 @@ final class MainViewController: UIViewController {
     private func setupUI() {
         nicknameField = UITextField()
         nicknameField.borderStyle = .roundedRect
-        nicknameField.backgroundColor = .white
-        nicknameField.tintColor = .black
         nicknameField.placeholder = "닉네임 입력해주세요"
         
         textField = UITextField()
         textField.borderStyle = .roundedRect
-        textField.backgroundColor = .white
-        textField.tintColor = .black
         textField.placeholder = "방번호 입력해주세요"
         
         createButton = UIButton()
         createButton.setTitle("방 생성하기", for: .normal)
         createButton.setTitleColor(.blue, for: .normal)
+        createButton.setTitleColor(.gray, for: .disabled)
         createButton.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         
         joinButton = UIButton()
         joinButton.setTitle("방 참가하기", for: .normal)
         joinButton.setTitleColor(.blue, for: .normal)
+        joinButton.setTitleColor(.gray, for: .disabled)
         joinButton.addTarget(self, action: #selector(joinButtonTapped), for: .touchUpInside)
     }
     
@@ -66,6 +64,7 @@ final class MainViewController: UIViewController {
     @objc private func createButtonTapped() {
         Task {
             do {
+                createButton.isEnabled = false
                 try await connectToFirebase()
                 
                 let endpoint = FirebaseEndpoint(path: .createRoom, method: .post)
@@ -80,6 +79,7 @@ final class MainViewController: UIViewController {
                     navigateToLobby(roomNumber: roomNumber)
                 }
             } catch(let error) {
+                createButton.isEnabled = true
                 print("error: \(error)")
             }
         }
@@ -88,6 +88,7 @@ final class MainViewController: UIViewController {
     @objc private func joinButtonTapped() {
         Task {
             do {
+                createButton.isEnabled = false
                 try await connectToFirebase()
                 
                 let endpoint = FirebaseEndpoint(path: .joinRoom, method: .post)
@@ -100,6 +101,7 @@ final class MainViewController: UIViewController {
                     navigateToLobby(roomNumber: roomNumber)
                 }
             } catch {
+                createButton.isEnabled = true
                 print("error: \(error)")
             }
         }
