@@ -1,7 +1,7 @@
 import ASCacheKitProtocol
 import Foundation
 
-public struct ASCacheManager {
+public struct ASCacheManager: CacheManagerProtocol {
     public let memoryCache: MemoryCacheManagerProtocol
     public let diskCache: DiskCacheManagerProtocol
     public let urlSession: URLSessionProtocol
@@ -23,6 +23,20 @@ public struct ASCacheManager {
         return await loadData(forKey: cacheKey, cacheOption: cacheOption)
     }
 
+    public func saveCache(withKey url: URL, data: Data, cacheOption: CacheOption) {
+        let cacheKey = url.absoluteString
+        switch cacheOption {
+            case .onlyMemory:
+                memoryCache.setObject(data as NSData, forKey: cacheKey)
+            case .onlyDisk:
+                diskCache.saveData(data, forKey: cacheKey)
+            case .both:
+                memoryCache.setObject(data as NSData, forKey: cacheKey)
+                diskCache.saveData(data, forKey: cacheKey)
+            default: break
+        }
+    }
+
     private func loadData(forKey key: String, cacheOption: CacheOption) async -> Data? {
         switch cacheOption {
             case .onlyMemory:
@@ -36,7 +50,7 @@ public struct ASCacheManager {
                 if let diskData = await loadFromDisk(forKey: key) {
                     return diskData
                 }
-                return await downloadData(from: key)
+                return nil
             default:
                 return nil
         }
@@ -52,18 +66,6 @@ public struct ASCacheManager {
             return diskData
         }
         return nil
-    }
-
-    private func downloadData(from url: String) async -> Data? {
-        do {
-            let (data, _) = try await urlSession.data(from: URL(string: url)!)
-            memoryCache.setObject(data as NSData, forKey: url)
-            diskCache.saveData(data, forKey: url)
-            return data
-        } catch {
-            print("Failed to load data from URL:", error)
-            return nil
-        }
     }
 
     public func clearMemoryCache() {
