@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Status {
+public enum Status: String {
     case humming
     case rehumming
     case waiting

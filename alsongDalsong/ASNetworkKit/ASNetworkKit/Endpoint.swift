@@ -17,7 +17,7 @@ extension Endpoint {
     public var url: URL? {
         var components = URLComponents()
         components.scheme = scheme
-        components.host = host
+        components.host = "\(path.description.dropFirst())-\(host)"
         components.path = path.description
         components.queryItems = queryItems
         return components.url

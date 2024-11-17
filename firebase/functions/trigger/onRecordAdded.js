@@ -19,6 +19,11 @@ module.exports.onRecordAdded = onDocumentWritten(
       return;
     }
 
+    if (roomData.round < 1) {
+      console.log('라운드 시작 전');
+      return;
+    }
+
     const playersCount = roomData.players.length;
     const currentRound = roomData.round || 0;
     const records = roomData.records;

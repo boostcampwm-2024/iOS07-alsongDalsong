@@ -16,7 +16,6 @@ module.exports.joinRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST requests are accepted' });
   }
-
   const { roomNumber, userId } = req.body;
   if (!roomNumber || !userId) {
     return res.status(400).json({ error: 'Room number and user ID are required' });

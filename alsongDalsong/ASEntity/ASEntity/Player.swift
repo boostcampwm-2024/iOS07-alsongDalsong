@@ -1,11 +1,23 @@
 import Foundation
 
-public struct Player {
-    var id = UUID()
-    var avatarUrl: URL?
-    var nickname: String?
-    var score: Int?
-    var order: Int?
+public struct Player: Codable {
+    public var id: String
+    public var avatarUrl: URL?
+    public var nickname: String?
+    public var score: Int?
+    public var order: Int?
     
-    public init() {}
+    public init(
+        id: String,
+        avatarUrl: URL? = nil,
+        nickname: String? = nil,
+        score: Int? = nil,
+        order: Int? = nil
+    ) {
+        self.id = id
+        self.avatarUrl = avatarUrl
+        self.nickname = nickname
+        self.score = score
+        self.order = order
+    }
 }
