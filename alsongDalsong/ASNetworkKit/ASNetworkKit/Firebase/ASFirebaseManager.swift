@@ -105,6 +105,7 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
         
         room.round = data["round"] as? UInt8
         
+        // TODO: Decoding 에러 발생, 미해결
         if let recordsData = data["records"] as? [[String: Any]] {
             let recordsJSONData = try JSONSerialization.data(withJSONObject: recordsData)
             room.records = try ASDecoder.decode([[Record]].self, from: recordsJSONData)
