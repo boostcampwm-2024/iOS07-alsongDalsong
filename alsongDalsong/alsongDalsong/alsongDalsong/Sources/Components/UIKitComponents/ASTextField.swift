@@ -8,12 +8,15 @@
 import UIKit
 
 class ASTextField: UITextField {
-    init(
+    init() {
+        super.init(frame: .zero)
+    }
+    
+    func setConfiguration(
         placeholder: String = "텍스트를 입력하세요",
         backgroundColor: UIColor = .white,
         textSize: CGFloat = 32
     ) {
-        super.init(frame: .zero)
         layer.cornerRadius = 12
         
         attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [.foregroundColor: UIColor.lightGray])

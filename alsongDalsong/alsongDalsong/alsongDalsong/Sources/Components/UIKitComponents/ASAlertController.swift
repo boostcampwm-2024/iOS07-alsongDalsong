@@ -1,10 +1,10 @@
 import UIKit
 
 class ASAlertController: UIViewController {
-    private var alertView: ASPanel!
-    private var textField: ASTextField!
-    private var doneButton: ASButton!
-    private var cancelButton: ASButton!
+    private var alertView = ASPanel()
+    private var textField = ASTextField()
+    private var doneButton = ASButton()
+    private var cancelButton = ASButton()
     //Alert창에 입력한 text
     var text: String {
         textField.text ?? ""
@@ -34,18 +34,17 @@ class ASAlertController: UIViewController {
     
     private func setupUI(titleText: String, textFieldPlaceholder: String, doneButtonTitle: String, cancelButtonTitle: String) {
         self.view.backgroundColor = .black.withAlphaComponent(0.3)
-        alertView = ASPanel(title: titleText, titleAlign: .center, titleSize: 24)
+        alertView.setConfiguration(title: titleText, titleAlign: .center, titleSize: 24)
         alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         alertView.backgroundColor = .asLightGray
         alertView.layer.borderWidth = 0
         view.addSubview(alertView)
         
-        textField = ASTextField(placeholder: textFieldPlaceholder, textSize: 24)
+        textField.setConfiguration(placeholder: textFieldPlaceholder)
         alertView.addSubview(textField)
         
-        doneButton = ASButton(title: doneButtonTitle, backgroundColor: .asLightSky, textSize: 24)
-        cancelButton = ASButton(title: cancelButtonTitle, backgroundColor: .asLightRed, textSize: 24)
-        
+        doneButton.setConfiguration(systemImageName: "", title: doneButtonTitle, backgroundColor: .asLightSky, textSize: 24)
+        cancelButton.setConfiguration(systemImageName: "", title: cancelButtonTitle, backgroundColor: .asLightRed, textSize: 24)
         alertView.addSubview(doneButton)
         alertView.addSubview(cancelButton)
         
