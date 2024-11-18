@@ -224,6 +224,8 @@
 /* Begin XCBuildConfiguration section */
 		8D69A5A62CDC5A85006B9075 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8D69A5942CDC5A83006B9075 /* alsongDalsong */;
+			baseConfigurationReferenceRelativePath = Resources/Secret.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -235,6 +237,7 @@
 				INFOPLIST_FILE = alsongDalsong/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "알쏭달쏭";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music-games";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "알쏭달쏭은 Apple Music을 이용하여 음악을 찾는 것을 돕습니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
@@ -259,6 +262,8 @@
 		};
 		8D69A5A72CDC5A85006B9075 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8D69A5942CDC5A83006B9075 /* alsongDalsong */;
+			baseConfigurationReferenceRelativePath = Resources/Secret.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -270,6 +275,7 @@
 				INFOPLIST_FILE = alsongDalsong/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "알쏭달쏭";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music-games";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "알쏭달쏭은 Apple Music을 이용하여 음악을 찾는 것을 돕습니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
@@ -294,6 +300,8 @@
 		};
 		8D69A5A82CDC5A85006B9075 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8D69A5942CDC5A83006B9075 /* alsongDalsong */;
+			baseConfigurationReferenceRelativePath = Resources/Secret.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -357,6 +365,8 @@
 		};
 		8D69A5A92CDC5A85006B9075 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8D69A5942CDC5A83006B9075 /* alsongDalsong */;
+			baseConfigurationReferenceRelativePath = Resources/Secret.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

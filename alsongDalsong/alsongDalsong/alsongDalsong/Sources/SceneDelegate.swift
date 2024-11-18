@@ -11,7 +11,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         FirebaseApp.configure()
         window = UIWindow(windowScene: windowScene)
         let onboardingVC = OnboardingViewController()
-        window?.rootViewController = onboardingVC
+        let navigationController = UINavigationController(rootViewController: onboardingVC)
+        navigationController.navigationBar.isHidden = true
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
 }

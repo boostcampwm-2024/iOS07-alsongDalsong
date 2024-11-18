@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CarouselView: View {
+struct LobbyView: View {
     let cards: [ModeInfo] = [
         ModeInfo(title: "허밍", image: Image(systemName: "photo.artframe"), description: "허밍모드 설명입니다"),
         ModeInfo(title: "이구동성", image: Image(systemName: "photo.artframe"), description: "이구동성모드 설명입니다"),
@@ -183,5 +183,5 @@ struct CardView: View {
 }
 
 #Preview {
-    CarouselView()
+    LobbyView()
 }

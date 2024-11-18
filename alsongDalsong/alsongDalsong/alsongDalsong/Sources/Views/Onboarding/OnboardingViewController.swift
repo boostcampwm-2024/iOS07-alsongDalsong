@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Combine
 
 final class OnboardingViewController: UIViewController {
@@ -10,13 +11,16 @@ final class OnboardingViewController: UIViewController {
     private var nickNamePanel = ASPanel(title: Constants.nickNameTitle, titleAlign: .left, titleSize: 24)
     private var nickNameRefreshButton = ASRefreshButton(size: 28)
     
-    private var onboardingViewModel: OnboardingViewModel!
+    private var viewModel = OnboardingViewModel()
+    
+    private var cancleables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupLayout()
         setAction()
+        bind()
     }
     
     private func setupUI() {
@@ -70,6 +74,14 @@ final class OnboardingViewController: UIViewController {
     
     /// 화면상의 컴포넌트 들에게 Action을 추가함
     private func setAction() {
+        createRoomButton.addAction(
+            UIAction { [weak self] _ in
+                Task {
+                    await self?.viewModel.createRoom()
+                }
+            },
+            for: .touchUpInside)
+        
         joinRoomButton.addAction(
             UIAction { [weak self] _ in
                 let joinAlert = ASAlertController(
@@ -79,13 +91,31 @@ final class OnboardingViewController: UIViewController {
                     textFieldPlaceholder: Constants.roomNumberPlaceholder
                 )
                 joinAlert.doneButtonCompletion = { [weak self] in
-                    // TODO: 방 참가 로직 추가
-//                    print("입력된 텍스트: \(joinAlert.text)")
-                    self?.onboardingViewModel.joinRoom(roomNumber: joinAlert.text)
+                    Task {
+                        await self?.viewModel.joinRoom(roomNumber: joinAlert.text)
+                    }
                 }
                 self?.present(joinAlert, animated: true, completion: nil)
             },
             for: .touchUpInside)
+    }
+    
+    private func bind() {
+        Task {
+            // Actor로부터 AsyncStream 획득
+            let stream = await viewModel.valueStream()
+            // 스트림 구독 및 상태 변화 수신
+            for await newValue in stream {
+                // 메인 스레드에서 UI 업데이트
+                DispatchQueue.main.async { [weak self] in
+                    if newValue {
+                        let vc = UIHostingController(rootView: LobbyView())
+                        self?.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }
+            }
+        }
+        
     }
 }
 

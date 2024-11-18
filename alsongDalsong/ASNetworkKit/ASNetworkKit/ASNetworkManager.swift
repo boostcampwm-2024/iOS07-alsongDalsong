@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ASNetworkManager {
+public struct ASNetworkManager: Sendable {
     private let urlSession: URLSessionProtocol
 
     public init(urlSession: URLSessionProtocol = URLSession.shared) {

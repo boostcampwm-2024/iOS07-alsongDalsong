@@ -2,13 +2,13 @@ import ASEntity
 import ASDecoder
 import ASEncoder
 internal import FirebaseAuth
-internal import FirebaseFirestore
-internal import FirebaseDatabase
+@preconcurrency internal import FirebaseFirestore
+@preconcurrency internal import FirebaseDatabase
 import Foundation
 
-public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabaseProtocol {
-    private var databaseRef = Database.database().reference()
-    private var firestoreRef = Firestore.firestore()
+public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabaseProtocol, Sendable {
+    private let databaseRef = Database.database().reference()
+    private let firestoreRef = Firestore.firestore()
     private var roomListeners: ListenerRegistration?
     
     public init() {}
