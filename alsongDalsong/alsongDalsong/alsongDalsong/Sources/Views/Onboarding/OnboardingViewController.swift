@@ -4,11 +4,11 @@ import Combine
 
 final class OnboardingViewController: UIViewController {
     private var logoImageView = UIImageView(image: UIImage(named: Constants.logoImageName))
-    private var createRoomButton = ASButton(title: Constants.craeteButtonTitle, backgroundColor: .asYellow)
-    private var joinRoomButton = ASButton(title: Constants.joinButtonTitle, backgroundColor: .asMint)
-    private var avatarView = ASAvatarCircleView(image: UIImage(named: "mojojojo") ?? UIImage.fake)
-    private var nickNameTextField = ASTextField(placeholder: NickNameGenerator.generate())
-    private var nickNamePanel = ASPanel(title: Constants.nickNameTitle, titleAlign: .left, titleSize: 24)
+    private var createRoomButton = ASButton()
+    private var joinRoomButton = ASButton()
+    private var avatarView = ASAvatarCircleView()
+    private var nickNameTextField = ASTextField()
+    private var nickNamePanel = ASPanel()
     private var nickNameRefreshButton = ASRefreshButton(size: 28)
     
     private var viewModel = OnboardingViewModel()
@@ -72,12 +72,20 @@ final class OnboardingViewController: UIViewController {
         
     }
     
-    /// 화면상의 컴포넌트 들에게 Action을 추가함
+    /// 화면상의 컴포넌트들에게 Action을 추가함
     private func setAction() {
         createRoomButton.addAction(
             UIAction { [weak self] _ in
                 Task {
-                    await self?.viewModel.createRoom()
+                    self?.createRoomButton.isEnabled = false
+                    do {
+                        try await self?.viewModel.createRoom()
+                    } catch {
+                        //TODO: Error UI
+                        self?.createRoomButton.isEnabled = true
+                        print("error: \(error.localizedDescription)")
+                    }
+                    
                 }
             },
             for: .touchUpInside)
@@ -92,7 +100,15 @@ final class OnboardingViewController: UIViewController {
                 )
                 joinAlert.doneButtonCompletion = { [weak self] in
                     Task {
-                        await self?.viewModel.joinRoom(roomNumber: joinAlert.text)
+                        do {
+                            if let nickname = self?.nickNameTextField.text {
+                                await self?.viewModel.setNickname(with: nickname)
+                            }
+                            try await self?.viewModel.joinRoom(roomNumber: joinAlert.text)
+                        } catch {
+                            //TODO: 에러 UI 띄우기
+                            print("error: \(error.localizedDescription)")
+                        }
                     }
                 }
                 self?.present(joinAlert, animated: true, completion: nil)
@@ -100,18 +116,29 @@ final class OnboardingViewController: UIViewController {
             for: .touchUpInside)
     }
     
+    func setConfiguration(with data: OnboardingData) {
+        nickNameTextField.setConfiguration(placeholder: data.nickname)
+        createRoomButton.setConfiguration(systemImageName: "", title: Constants.craeteButtonTitle, backgroundColor: .asYellow)
+        joinRoomButton.setConfiguration(systemImageName: "", title: Constants.joinButtonTitle, backgroundColor: .asMint)
+        nickNamePanel.setConfiguration(title: Constants.nickNameTitle, titleAlign: .left, titleSize: 24)
+        guard let imageURL = data.avatarURL else { return }
+        avatarView.setImage(imageURL: imageURL)
+
+    }
+    
     private func bind() {
         Task {
             // Actor로부터 AsyncStream 획득
             let stream = await viewModel.valueStream()
             // 스트림 구독 및 상태 변화 수신
-            for await newValue in stream {
+            for await data in stream {
                 // 메인 스레드에서 UI 업데이트
                 DispatchQueue.main.async { [weak self] in
-                    if newValue {
+                    if let roomNumber = data.roomNumber {
                         let vc = UIHostingController(rootView: LobbyView())
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }
+                    self?.setConfiguration(with: data)
                 }
             }
         }

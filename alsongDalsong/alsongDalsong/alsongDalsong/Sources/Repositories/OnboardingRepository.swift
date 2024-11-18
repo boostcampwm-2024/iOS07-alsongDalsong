@@ -1,5 +1,6 @@
 import Foundation
 import ASNetworkKit
+import ASEntity
 
 final class OnboradingRepository: OnboardingRepositoryProtocol {
     let firebaseManager: ASFirebaseAuthProtocol = ASFirebaseManager()
@@ -23,7 +24,24 @@ final class OnboradingRepository: OnboardingRepositoryProtocol {
         }
     }
     
-    func joinRoom(nickname: String, avatar: URL?, roomNumber: String) async throws -> Bool {
-        return true
+    func joinRoom(nickname: String, avatar: URL?, roomNumber: String) async throws -> String {
+        do {
+            let player = try await firebaseManager.signInAnonymously(
+                nickname: nickname,
+                avatarURL: avatar
+                )
+            let endpoint = FirebaseEndpoint(path: .joinRoom, method: .post)
+                .update(\.headers, with: ["Content-Type": "application/json"])
+            let bodyData = ["roomNumber": roomNumber, "userId": player.id]
+            let body = try JSONSerialization.data(withJSONObject: bodyData, options: [])
+            let room = try await networkManager.sendRequest(to: endpoint, body: body)
+            if let jsonObject = try JSONSerialization.jsonObject(with: room, options: []) as? [String: Any],
+               let roomNumber = jsonObject["number"] as? String {
+                return roomNumber
+            }
+        } catch let error {
+            throw error
+        }
+        return ""
     }
 }

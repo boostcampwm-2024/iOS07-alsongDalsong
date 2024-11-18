@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ASCacheManager {
+public struct ASCacheManager: Sendable {
     public let memoryCache: MemoryCacheManagerProtocol
     public let diskCache: DiskCacheManagerProtocol
     public let urlSession: URLSessionProtocol

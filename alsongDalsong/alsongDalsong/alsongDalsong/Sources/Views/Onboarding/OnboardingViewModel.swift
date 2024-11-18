@@ -6,12 +6,15 @@ actor OnboardingViewModel: Sendable {
     private var onboardingRepository: OnboardingRepositoryProtocol = OnboradingRepository()
     private var avatars: [URL] = []
     
-    @Published var onboardingData = OnboardingData()
-    @Published var isButtonEnabled: Bool = true
+    private var onboardingData = OnboardingData()
+    private var continuations: [AsyncStream<OnboardingData>.Continuation] = []
     
-    var isJoined: Bool = false
-    
-    private var continuations: [AsyncStream<Bool>.Continuation] = []
+    init() {
+        Task {
+            await refreshAvatars()
+            await publish()
+        }
+    }
     
     func setNickname(with nickname: String) {
         onboardingData.setNickname(with: nickname)
@@ -33,42 +36,43 @@ actor OnboardingViewModel: Sendable {
         self.onboardingData.setAvatarURL(with: randomAvatar)
     }
     
-    func valueStream() -> AsyncStream<Bool> {
+    func valueStream() -> AsyncStream<OnboardingData> {
         // 새로운 AsyncStream 생성 및 반환
         return AsyncStream { continuation in
             // 초기 값 전달
-            continuation.yield(isJoined)
+            continuation.yield(onboardingData)
             // 구독자 목록에 추가
             continuations.append(continuation)
         }
     }
+    func publish() {
+        for continuation in continuations {
+            continuation.yield(onboardingData)
+        }
+    }
     
-    func joinRoom(roomNumber: String) {
+    func joinRoom(roomNumber id: String) throws {
         Task {
             do {
-                isButtonEnabled = false
-                
-                isJoined = try await onboardingRepository.joinRoom(nickname: onboardingData.nickname, avatar: onboardingData.avatarURL, roomNumber: roomNumber)
-                for continuation in continuations {
-                    continuation.yield(isJoined)
-                }
+                let roomNumber = try await onboardingRepository.joinRoom(nickname: onboardingData.nickname, avatar: onboardingData.avatarURL, roomNumber: id)
+                onboardingData.setRoomNumber(with: roomNumber)
+                publish()
                 
             } catch {
-                isButtonEnabled = true
+                throw error
             }
         }
     }
     
-    func createRoom() {
+    func createRoom() throws {
         Task {
             do {
-                isButtonEnabled = false
                 let roomNumber = try await onboardingRepository.createRoom(nickname: onboardingData.nickname, avatar: onboardingData.avatarURL)
                 if !roomNumber.isEmpty {
-                    joinRoom(roomNumber: roomNumber)
+                    try joinRoom(roomNumber: roomNumber)
                 }
             } catch {
-                isButtonEnabled = true
+                throw error
             }
         }
     }
@@ -77,6 +81,7 @@ actor OnboardingViewModel: Sendable {
 struct OnboardingData {
     private(set) var nickname: String = NickNameGenerator.generate()
     var avatarURL: URL?
+    var roomNumber: String?
     
     mutating func setNickname(with nickname: String) {
         self.nickname = nickname
@@ -84,6 +89,10 @@ struct OnboardingData {
     
     mutating func setAvatarURL(with url: URL) {
         self.avatarURL = url
+    }
+    
+    mutating func setRoomNumber(with roomNumber: String) {
+        self.roomNumber = roomNumber
     }
     
 }
