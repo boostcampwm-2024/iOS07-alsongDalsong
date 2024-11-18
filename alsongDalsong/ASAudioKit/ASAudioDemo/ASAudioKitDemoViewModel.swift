@@ -2,7 +2,8 @@ import Foundation
 import AVFoundation
 import ASAudioKit
 
-class ASAudioKitDemoViewModel: ObservableObject {
+@MainActor
+final class ASAudioKitDemoViewModel: Sendable, ObservableObject {
     let audioRecorder: ASAudioRecorder
     let audioPlayer: ASAudioPlayer
     
@@ -10,7 +11,9 @@ class ASAudioKitDemoViewModel: ObservableObject {
     @Published var isRecording: Bool
     @Published var isPlaying: Bool
     @Published var playedTime: TimeInterval
+    @Published var amplitude: Float = 0.0
     private var progressTimer: Timer?
+    private var recordProgressTimer: Timer?
     
     init(recordedFile: Data? = nil,
          isRecording: Bool = false,
@@ -50,11 +53,22 @@ extension ASAudioKitDemoViewModel {
         }
         audioRecorder.startRecording(url: fileURL)
         self.isRecording = true
+        self.recordProgressTimer = Timer.scheduledTimer(withTimeInterval: 0.08, repeats: true, block: {[weak self] _ in
+            Task { @MainActor in
+                guard let self else {return}
+                self.audioRecorder.updateMeters()
+                
+                guard let averagePower = self.audioRecorder.getAveragePower() else { return }
+                let newAmplitude = 1.1 * pow(10.0, averagePower / 20.0)
+                self.amplitude = min(max(newAmplitude, 0), 1)
+            }
+        })
     }
     
     private func stopRecording() {
         recordedFile = audioRecorder.stopRecording()
         self.isRecording = false
+        self.recordProgressTimer?.invalidate()
     }
 }
 
@@ -68,7 +82,9 @@ extension ASAudioKitDemoViewModel {
         audioPlayer.startPlaying(data: recordedFile, option: playType)
         self.isPlaying = true
         self.progressTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-            self.updateCurrentTime()
+            Task { @MainActor in
+                self.updateCurrentTime()
+            }
         })
     }
     

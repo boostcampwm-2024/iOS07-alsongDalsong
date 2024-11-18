@@ -1,14 +1,21 @@
 import SwiftUI
 
 struct ASAudioKitDemoView: View {
-    @StateObject var asAudioKitDemoViewModel: ASAudioKitDemoViewModel = ASAudioKitDemoViewModel()
+    @StateObject var viewModel: ASAudioKitDemoViewModel = ASAudioKitDemoViewModel()
     
     var body: some View {
         VStack {
+            if viewModel.isRecording {
+                AudioVisualizerViewWrapper(amplitude: $viewModel.amplitude)
+                    .frame(height: 200)
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 10)
+            }
+            
             Button {
-                asAudioKitDemoViewModel.recordButtonTapped()
+                viewModel.recordButtonTapped()
             } label: {
-                if asAudioKitDemoViewModel.isRecording {
+                if viewModel.isRecording {
                     Image(systemName: "pause")
                         .resizable()
                         .foregroundStyle(.red)
@@ -22,10 +29,9 @@ struct ASAudioKitDemoView: View {
             }
             .padding(.bottom, 20)
             
-            if let file = asAudioKitDemoViewModel.recordedFile {
+            if let file = viewModel.recordedFile {
                 Button {
-                    asAudioKitDemoViewModel.startPlaying(recoredFile: file, playType: .full)
-                    // 최초 녹음 시에 안들림
+                    viewModel.startPlaying(recoredFile: file, playType: .full)
                 } label: {
                     Image(systemName: "play.fill")
                         .resizable()
@@ -34,7 +40,7 @@ struct ASAudioKitDemoView: View {
                 }
                 .padding(.bottom, 10)
                 
-                ProgressBar(progress: Float(asAudioKitDemoViewModel.playedTime) / Float(asAudioKitDemoViewModel.getDuration(recordedFile: file) ?? 0))
+                ProgressBar(progress: Float(viewModel.playedTime) / Float(viewModel.getDuration(recordedFile: file) ?? 0))
                     .frame(height: 2)
             }
             else {

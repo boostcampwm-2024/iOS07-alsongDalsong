@@ -5,13 +5,13 @@ public enum PlayType {
     case partial(time: Int)
 }
 
-public final class ASAudioPlayer: NSObject, AVAudioPlayerDelegate {
+public final class ASAudioPlayer: NSObject, Sendable, AVAudioPlayerDelegate {
     private var audioPlayer: AVAudioPlayer?
 
     public override init() {}
     
     public var onPlaybackFinished: (() -> Void)?
-    ///녹음파일을 재생하고 옵션에 따라 재생시간을 설정합니다.
+    /// 녹음파일을 재생하고 옵션에 따라 재생시간을 설정합니다.
     public func startPlaying(data: Data, option: PlayType) {
         do {
             audioPlayer = try AVAudioPlayer(data: data)
@@ -32,18 +32,18 @@ public final class ASAudioPlayer: NSObject, AVAudioPlayerDelegate {
             }
         }
     }
-    ///AVPlayer객체의 재생여부를 확인합니다.
+    /// AVPlayer객체의 재생여부를 확인합니다.
     public func isPlaying() -> Bool {
         if let audioPlayer {
             return audioPlayer.isPlaying
         }
         return false
     }
-    ///현재 플레이되고 있는 파일의 진행시간을 리턴합니다.
+    /// 현재 플레이되고 있는 파일의 진행시간을 리턴합니다.
     public func getCurrentTime() -> TimeInterval {
         return audioPlayer?.currentTime ?? 0
     }
-    ///녹음파일의 총 녹음시간을 리턴합니다.
+    /// 녹음파일의 총 녹음시간을 리턴합니다.
     public func getDuration(data: Data) -> TimeInterval {
         if audioPlayer == nil {
             do {
