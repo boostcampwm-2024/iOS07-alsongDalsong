@@ -1,10 +1,11 @@
 import Foundation
 import ASNetworkKit
 import ASEntity
+import ASCacheKit
 
 final class OnboradingRepository: OnboardingRepositoryProtocol {
     let firebaseManager: ASFirebaseAuthProtocol = ASFirebaseManager()
-    let networkManager = ASNetworkManager()
+    let networkManager = ASNetworkManager(cacheManager: ASCacheManager())
     
     func createRoom(nickname: String, avatar: URL?) async throws -> String {
         do {

@@ -20,9 +20,9 @@ final class LobbyViewModel: ObservableObject {
     }
     
     func fetchData(roomNumber: String) {
-        repository.observeLobby(roomNumber: roomNumber) { [weak self] lobbyData in
-            self?.lobbyData = lobbyData
-        }
+//        repository.observeLobby(roomNumber: roomNumber) { [weak self] lobbyData in
+//            self?.lobbyData = lobbyData
+//        }
     }
 }
 

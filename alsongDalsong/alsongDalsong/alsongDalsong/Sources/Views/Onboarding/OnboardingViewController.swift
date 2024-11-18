@@ -9,10 +9,9 @@ final class OnboardingViewController: UIViewController {
     private var avatarView = ASAvatarCircleView()
     private var nickNameTextField = ASTextField()
     private var nickNamePanel = ASPanel()
-    private var nickNameRefreshButton = ASRefreshButton(size: 28)
+    private var avatarRefreshButton = ASRefreshButton(size: 28)
     
     private var viewModel = OnboardingViewModel()
-    
     private var cancleables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
@@ -20,12 +19,13 @@ final class OnboardingViewController: UIViewController {
         setupUI()
         setupLayout()
         setAction()
+        setConfiguration()
         bind()
     }
     
     private func setupUI() {
         view.backgroundColor = .asLightGray
-        [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, nickNameTextField, nickNameRefreshButton].forEach {
+        [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, nickNameTextField, avatarRefreshButton].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -64,10 +64,10 @@ final class OnboardingViewController: UIViewController {
             nickNameTextField.trailingAnchor.constraint(equalTo: nickNamePanel.trailingAnchor, constant: -16),
             nickNameTextField.bottomAnchor.constraint(equalTo: nickNamePanel.bottomAnchor, constant: -16),
             
-            nickNameRefreshButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 231),
-            nickNameRefreshButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 352),
-            nickNameRefreshButton.widthAnchor.constraint(equalToConstant: 60),
-            nickNameRefreshButton.heightAnchor.constraint(equalToConstant: 60)
+            avatarRefreshButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 231),
+            avatarRefreshButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 352),
+            avatarRefreshButton.widthAnchor.constraint(equalToConstant: 60),
+            avatarRefreshButton.heightAnchor.constraint(equalToConstant: 60)
         ])
         
     }
@@ -80,9 +80,9 @@ final class OnboardingViewController: UIViewController {
                     self?.createRoomButton.isEnabled = false
                     do {
                         if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                            await self?.viewModel.setNickname(with: nickname)
+                            self?.viewModel.setNickname(with: nickname)
                         }
-                        try await self?.viewModel.createRoom()
+                        try self?.viewModel.createRoom()
                     } catch {
                         //TODO: Error UI
                         self?.createRoomButton.isEnabled = true
@@ -117,38 +117,41 @@ final class OnboardingViewController: UIViewController {
                 self?.present(joinAlert, animated: true, completion: nil)
             },
             for: .touchUpInside)
+        
+        avatarRefreshButton.addAction(
+            UIAction { [weak self] _ in
+                self?.viewModel.refreshAvatars()
+            }, for: .touchUpInside)
     }
     
-    func setConfiguration(with data: OnboardingData) {
-        nickNameTextField.setConfiguration(placeholder: data.nickname)
+    func setConfiguration() {
         createRoomButton.setConfiguration(systemImageName: "", title: Constants.craeteButtonTitle, backgroundColor: .asYellow)
         joinRoomButton.setConfiguration(systemImageName: "", title: Constants.joinButtonTitle, backgroundColor: .asMint)
         nickNamePanel.setConfiguration(title: Constants.nickNameTitle, titleAlign: .left, titleSize: 24)
-        guard let imageURL = data.avatarURL else { return }
-        avatarView.setImage(imageURL: imageURL)
-
     }
     
     private func bind() {
-        viewModel.publisher.sink { OnboardingData in
-            print("")
-        }
-        Task {
-            // Actor로부터 AsyncStream 획득
-            let stream = await viewModel.valueStream()
-            // 스트림 구독 및 상태 변화 수신
-            for await data in stream {
-                // 메인 스레드에서 UI 업데이트
-                DispatchQueue.main.async { [weak self] in
-                    if let roomNumber = data.roomNumber {
-                        let vc = UIHostingController(rootView: LobbyView(roomNumber: roomNumber))
-                        self?.navigationController?.pushViewController(vc, animated: true)
-                    }
-                    self?.setConfiguration(with: data)
-                }
+        viewModel.$nickname
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] nickname in
+                self?.nickNameTextField.setConfiguration(placeholder: nickname)
             }
-        }
-        
+            .store(in: &cancleables)
+        viewModel.$avatarURL
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .sink { [weak self] avatarURL in
+                self?.avatarView.setImage(imageURL: avatarURL)
+            }
+            .store(in: &cancleables)
+        viewModel.$roomNumber
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] roomNumber in
+                let lobbyViewController = UIHostingController(rootView: LobbyView(roomNumber: roomNumber))
+                self?.navigationController?.pushViewController(lobbyViewController, animated: true)
+            }
+            .store(in: &cancleables)
+            
     }
 }
 

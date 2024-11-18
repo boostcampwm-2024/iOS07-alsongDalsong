@@ -13,6 +13,8 @@
 		8D1355A72CEB2B8600868316 /* ASCacheKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64F9402CEB1D600069B77F /* ASEntity.framework */; };
 		8D64F9422CEB1D6C0069B77F /* ASEntity.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64F9402CEB1D600069B77F /* ASEntity.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D95AF212CEB8BC000C211AD /* ASRepository.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D95AF202CEB8BB900C211AD /* ASRepository.framework */; };
+		8D95AF222CEB8BC000C211AD /* ASRepository.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D95AF202CEB8BB900C211AD /* ASRepository.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +39,13 @@
 			remoteGlobalIDString = 1B9D3FF12CE3AD62004C79EE;
 			remoteInfo = ASEntity;
 		};
+		8D95AF1F2CEB8BB900C211AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1601093E2CEB79E500FB3182;
+			remoteInfo = ASRepository;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,6 +57,7 @@
 			files = (
 				8D1355A72CEB2B8600868316 /* ASCacheKit.framework in Embed Frameworks */,
 				169725692CE5F863005B4953 /* ASNetworkKit.framework in Embed Frameworks */,
+				8D95AF222CEB8BC000C211AD /* ASRepository.framework in Embed Frameworks */,
 				8D64F9422CEB1D6C0069B77F /* ASEntity.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -61,6 +71,7 @@
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASCacheKit.xcodeproj; path = ../ASCacheKit/ASCacheKit.xcodeproj; sourceTree = "<group>"; };
 		8D64F93B2CEB1D600069B77F /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASEntity.xcodeproj; path = ../ASEntity/ASEntity.xcodeproj; sourceTree = "<group>"; };
+		8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASRepository.xcodeproj; path = ../ASRepository/ASRepository.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -91,6 +102,7 @@
 			files = (
 				8D1355A62CEB2B8600868316 /* ASCacheKit.framework in Frameworks */,
 				169725682CE5F863005B4953 /* ASNetworkKit.framework in Frameworks */,
+				8D95AF212CEB8BC000C211AD /* ASRepository.framework in Frameworks */,
 				8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,6 +113,7 @@
 		169725572CE5F82F005B4953 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */,
 				8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */,
 				8D64F93B2CEB1D600069B77F /* ASEntity.xcodeproj */,
 				1697255C2CE5F859005B4953 /* ASNetworkKit.xcodeproj */,
@@ -140,6 +153,14 @@
 				16F8B7772CE59B7F0059F22A /* alsongDalsong.app */,
 				169725572CE5F82F005B4953 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		8D95AF1C2CEB8BB900C211AD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D95AF202CEB8BB900C211AD /* ASRepository.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +233,10 @@
 					ProductGroup = 1697255D2CE5F859005B4953 /* Products */;
 					ProjectRef = 1697255C2CE5F859005B4953 /* ASNetworkKit.xcodeproj */;
 				},
+				{
+					ProductGroup = 8D95AF1C2CEB8BB900C211AD /* Products */;
+					ProjectRef = 8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -240,6 +265,13 @@
 			fileType = wrapper.framework;
 			path = ASEntity.framework;
 			remoteRef = 8D64F93F2CEB1D600069B77F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8D95AF202CEB8BB900C211AD /* ASRepository.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASRepository.framework;
+			remoteRef = 8D95AF1F2CEB8BB900C211AD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
