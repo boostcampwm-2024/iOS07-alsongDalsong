@@ -1,4 +1,5 @@
 import ASCacheKit
+import ASCacheKitProtocol
 import Foundation
 
 class ASCacheKitDemoViewModel: ObservableObject {

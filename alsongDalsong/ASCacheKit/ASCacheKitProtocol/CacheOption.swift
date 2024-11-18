@@ -6,3 +6,4 @@ public enum CacheOption {
     case both
     case nothing
 }
+
