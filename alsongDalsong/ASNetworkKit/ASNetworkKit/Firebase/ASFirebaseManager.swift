@@ -61,20 +61,11 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
             }
             
             guard let document = documentSnapshot, document.exists else {
-                completion(.failure(ASNetworkErrors.FirebaseListenerError))
-                return
-            }
-            
-            do {
-                let room = try document.data(as: Room.self)
-                completion(.success(room))
-            guard let document = documentSnapshot, document.exists, let roomData = document.data() else {
-                
                 return self.roomPublisher.send(completion: .failure(ASNetworkErrors.FirebaseListenerError))
             }
             
             do {
-                let room = try self.parseRoomData(roomData)
+                let room = try document.data(as: Room.self)
                 return self.roomPublisher.send(room)
             } catch {
                 return self.roomPublisher.send(completion: .failure(ASNetworkErrors.FirebaseListenerError))
@@ -82,6 +73,7 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
         }
         
         roomListeners = listener
+        return roomPublisher.eraseToAnyPublisher()
     }
     
     public func removeRoomListener(roomNumber: String) {
