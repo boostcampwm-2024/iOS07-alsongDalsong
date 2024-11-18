@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4E8907C22CE2489A00D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */; platformFilter = ios; };
+		4EB1ED372CE88E500012FFBA /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */; };
+		4EB1ED382CE88E500012FFBA /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -18,11 +20,33 @@
 			remoteGlobalIDString = 4E89071D2CE23D1B00D5B547;
 			remoteInfo = ASAudioKit;
 		};
+		4EB1ED392CE88E500012FFBA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E8907152CE23D1A00D5B547 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4E89071D2CE23D1B00D5B547;
+			remoteInfo = ASAudioKit;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4EB1ED3B2CE88E500012FFBA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4EB1ED382CE88E500012FFBA /* ASAudioKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASAudioKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E8907BE2CE2489A00D5B547 /* ASAudioKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASAudioKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EB1EC802CE7AA160012FFBA /* ASAudioDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASAudioDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -60,6 +84,11 @@
 			path = ASAudioKitTests;
 			sourceTree = "<group>";
 		};
+		4EB1EC812CE7AA160012FFBA /* ASAudioDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ASAudioDemo;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +107,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4EB1EC7D2CE7AA160012FFBA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4EB1ED372CE88E500012FFBA /* ASAudioKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -86,6 +123,8 @@
 			children = (
 				4E8907AD2CE240D400D5B547 /* ASAudioKit */,
 				4E8907BF2CE2489A00D5B547 /* ASAudioKitTests */,
+				4EB1EC812CE7AA160012FFBA /* ASAudioDemo */,
+				4EB1ED362CE88E500012FFBA /* Frameworks */,
 				4E89071F2CE23D1B00D5B547 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,8 +134,16 @@
 			children = (
 				4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */,
 				4E8907BE2CE2489A00D5B547 /* ASAudioKitTests.xctest */,
+				4EB1EC802CE7AA160012FFBA /* ASAudioDemo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		4EB1ED362CE88E500012FFBA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,6 +205,30 @@
 			productReference = 4E8907BE2CE2489A00D5B547 /* ASAudioKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		4EB1EC7F2CE7AA160012FFBA /* ASAudioDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4EB1EC8D2CE7AA190012FFBA /* Build configuration list for PBXNativeTarget "ASAudioDemo" */;
+			buildPhases = (
+				4EB1EC7C2CE7AA160012FFBA /* Sources */,
+				4EB1EC7D2CE7AA160012FFBA /* Frameworks */,
+				4EB1EC7E2CE7AA160012FFBA /* Resources */,
+				4EB1ED3B2CE88E500012FFBA /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4EB1ED3A2CE88E500012FFBA /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4EB1EC812CE7AA160012FFBA /* ASAudioDemo */,
+			);
+			name = ASAudioDemo;
+			packageProductDependencies = (
+			);
+			productName = ASAudioDemo;
+			productReference = 4EB1EC802CE7AA160012FFBA /* ASAudioDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -172,6 +243,9 @@
 						CreatedOnToolsVersion = 16.1;
 					};
 					4E8907BD2CE2489A00D5B547 = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					4EB1EC7F2CE7AA160012FFBA = {
 						CreatedOnToolsVersion = 16.1;
 					};
 				};
@@ -192,6 +266,7 @@
 			targets = (
 				4E89071D2CE23D1B00D5B547 /* ASAudioKit */,
 				4E8907BD2CE2489A00D5B547 /* ASAudioKitTests */,
+				4EB1EC7F2CE7AA160012FFBA /* ASAudioDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -205,6 +280,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4E8907BC2CE2489A00D5B547 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4EB1EC7E2CE7AA160012FFBA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -228,6 +310,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4EB1EC7C2CE7AA160012FFBA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -236,6 +325,11 @@
 			platformFilter = ios;
 			target = 4E89071D2CE23D1B00D5B547 /* ASAudioKit */;
 			targetProxy = 4E8907C32CE2489A00D5B547 /* PBXContainerItemProxy */;
+		};
+		4EB1ED3A2CE88E500012FFBA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4E89071D2CE23D1B00D5B547 /* ASAudioKit */;
+			targetProxy = 4EB1ED392CE88E500012FFBA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -475,6 +569,68 @@
 			};
 			name = Release;
 		};
+		4EB1EC8B2CE7AA190012FFBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ASAudioDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "녹음을 진행하기 위해";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASAudioDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4EB1EC8C2CE7AA190012FFBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ASAudioDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "녹음을 진행하기 위해";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASAudioDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -501,6 +657,15 @@
 			buildConfigurations = (
 				4E8907C62CE2489A00D5B547 /* Debug */,
 				4E8907C72CE2489A00D5B547 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4EB1EC8D2CE7AA190012FFBA /* Build configuration list for PBXNativeTarget "ASAudioDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4EB1EC8B2CE7AA190012FFBA /* Debug */,
+				4EB1EC8C2CE7AA190012FFBA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
