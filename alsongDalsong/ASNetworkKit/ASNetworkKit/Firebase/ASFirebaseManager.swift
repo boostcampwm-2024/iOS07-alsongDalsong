@@ -1,6 +1,7 @@
 import ASEntity
 import ASDecoder
 import ASEncoder
+import Combine
 internal import FirebaseAuth
 internal import FirebaseFirestore
 internal import FirebaseDatabase
@@ -10,6 +11,8 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
     private var databaseRef = Database.database().reference()
     private var firestoreRef = Firestore.firestore()
     private var roomListeners: ListenerRegistration?
+    
+    private var roomPublisher = PassthroughSubject<Room, Error>()
     
     public init() {}
     
@@ -50,25 +53,23 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
         return Auth.auth().currentUser?.uid ?? ""
     }
     
-    public func addRoomListener(roomNumber: String, completion: @escaping (Result<Room, any Error>) -> Void) {
+    public func addRoomListener(roomNumber: String) -> AnyPublisher<Room, Error> {
         let roomRef = firestoreRef.collection("rooms").document(roomNumber)
-        
         let listener = roomRef.addSnapshotListener { documentSnapshot, error in
             if let error = error {
-                completion(.failure(error))
                 return
             }
             
             guard let document = documentSnapshot, document.exists, let roomData = document.data() else {
-                completion(.failure(ASNetworkErrors.FirebaseListenerError))
-                return
+                
+                return self.roomPublisher.send(completion: .failure(ASNetworkErrors.FirebaseListenerError))
             }
             
             do {
                 let room = try self.parseRoomData(roomData)
-                completion(.success(room))
+                return self.roomPublisher.send(room)
             } catch {
-                completion(.failure(error))
+                return self.roomPublisher.send(completion: .failure(ASNetworkErrors.FirebaseListenerError))
             }
         }
         
