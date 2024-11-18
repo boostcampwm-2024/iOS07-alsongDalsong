@@ -1,25 +1,37 @@
+import ASCacheKitProtocol
 import Foundation
 
-public struct ASCacheManager: Sendable {
+public struct ASCacheManager: CacheManagerProtocol {
     public let memoryCache: MemoryCacheManagerProtocol
     public let diskCache: DiskCacheManagerProtocol
-    public let urlSession: URLSessionProtocol
 
     public init() {
         memoryCache = MemoryCacheManager()
         diskCache = DiskCacheManager()
-        urlSession = URLSession.shared
     }
 
-    public init(memoryCache: MemoryCacheManagerProtocol, diskCache: DiskCacheManagerProtocol, session: URLSessionProtocol) {
+    public init(memoryCache: MemoryCacheManagerProtocol, diskCache: DiskCacheManagerProtocol) {
         self.memoryCache = memoryCache
         self.diskCache = diskCache
-        urlSession = session
     }
 
     public func loadCache(from url: URL, cacheOption: CacheOption) async -> Data? {
         let cacheKey = url.absoluteString
         return await loadData(forKey: cacheKey, cacheOption: cacheOption)
+    }
+
+    public func saveCache(withKey url: URL, data: Data, cacheOption: CacheOption) {
+        let cacheKey = url.absoluteString
+        switch cacheOption {
+            case .onlyMemory:
+                memoryCache.setObject(data as NSData, forKey: cacheKey)
+            case .onlyDisk:
+                diskCache.saveData(data, forKey: cacheKey)
+            case .both:
+                memoryCache.setObject(data as NSData, forKey: cacheKey)
+                diskCache.saveData(data, forKey: cacheKey)
+            default: break
+        }
     }
 
     private func loadData(forKey key: String, cacheOption: CacheOption) async -> Data? {
@@ -35,8 +47,8 @@ public struct ASCacheManager: Sendable {
                 if let diskData = await loadFromDisk(forKey: key) {
                     return diskData
                 }
-                return await downloadData(from: key)
-            case .nothing:
+                return nil
+            default:
                 return nil
         }
     }
@@ -51,18 +63,6 @@ public struct ASCacheManager: Sendable {
             return diskData
         }
         return nil
-    }
-
-    private func downloadData(from url: String) async -> Data? {
-        do {
-            let (data, _) = try await urlSession.data(from: URL(string: url)!)
-            memoryCache.setObject(data as NSData, forKey: url)
-            diskCache.saveData(data, forKey: url)
-            return data
-        } catch {
-            print("Failed to load data from URL:", error)
-            return nil
-        }
     }
 
     public func clearMemoryCache() {

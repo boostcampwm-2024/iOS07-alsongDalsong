@@ -1,4 +1,4 @@
-import ASCacheKit
+import ASCacheKitProtocol
 
 final class MockMemoryCacheManager: MemoryCacheManagerProtocol {
     private var mockStorage: [String: AnyObject] = [:]

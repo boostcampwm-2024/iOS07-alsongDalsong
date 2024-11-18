@@ -1,6 +1,7 @@
 import ASEntity
 import ASDecoder
 import ASEncoder
+import Combine
 internal import FirebaseAuth
 @preconcurrency internal import FirebaseFirestore
 @preconcurrency internal import FirebaseDatabase
@@ -10,6 +11,8 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
     private let databaseRef = Database.database().reference()
     private let firestoreRef = Firestore.firestore()
     private var roomListeners: ListenerRegistration?
+    
+    private var roomPublisher = PassthroughSubject<Room, Error>()
     
     public init() {}
     
@@ -50,12 +53,10 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
         return Auth.auth().currentUser?.uid ?? ""
     }
     
-    public func addRoomListener(roomNumber: String, completion: @escaping (Result<Room, any Error>) -> Void) {
+    public func addRoomListener(roomNumber: String) -> AnyPublisher<Room, Error> {
         let roomRef = firestoreRef.collection("rooms").document(roomNumber)
-        
         let listener = roomRef.addSnapshotListener { documentSnapshot, error in
             if let error = error {
-                completion(.failure(error))
                 return
             }
             
@@ -67,8 +68,16 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
             do {
                 let room = try document.data(as: Room.self)
                 completion(.success(room))
+            guard let document = documentSnapshot, document.exists, let roomData = document.data() else {
+                
+                return self.roomPublisher.send(completion: .failure(ASNetworkErrors.FirebaseListenerError))
+            }
+            
+            do {
+                let room = try self.parseRoomData(roomData)
+                return self.roomPublisher.send(room)
             } catch {
-                completion(.failure(error))
+                return self.roomPublisher.send(completion: .failure(ASNetworkErrors.FirebaseListenerError))
             }
         }
         

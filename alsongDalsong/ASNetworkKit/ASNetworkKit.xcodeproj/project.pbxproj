@@ -23,6 +23,8 @@
 		1B783B6C2CE4F04E005511AE /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */; };
 		8D64F8DD2CEA05A90069B77F /* ASDecoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; };
 		8D64F8DE2CEA05AA0069B77F /* ASDecoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1BF1CB722CEA52D40003EED9 /* ASCacheKitProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */; };
+		1BF1CB732CEA52D40003EED9 /* ASCacheKitProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +72,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1BF1CB732CEA52D40003EED9 /* ASCacheKitProtocol.framework in Embed Frameworks */,
 				169726A72CE63DCD005B4953 /* ASEntity.framework in Embed Frameworks */,
 				8D64F8DE2CEA05AA0069B77F /* ASDecoder.framework in Embed Frameworks */,
 				169727712CE65D99005B4953 /* ASEncoder.framework in Embed Frameworks */,
@@ -99,6 +102,7 @@
 		16F8B8902CE5E4FD0059F22A /* ASFirebaseDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASFirebaseDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASNetworkKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B783B682CE4F04E005511AE /* ASNetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASNetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ASCacheKitProtocol.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -147,6 +151,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BF1CB722CEA52D40003EED9 /* ASCacheKitProtocol.framework in Frameworks */,
 				169725542CE5F817005B4953 /* FirebaseDatabase in Frameworks */,
 				8D64F8DD2CEA05A90069B77F /* ASDecoder.framework in Frameworks */,
 				169727702CE65D99005B4953 /* ASEncoder.framework in Frameworks */,
@@ -194,6 +199,7 @@
 		16F8B8A52CE5E50C0059F22A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */,
 				169727722CE6627F005B4953 /* ASDecoder.xcodeproj */,
 				169727672CE65D89005B4953 /* ASEncoder.xcodeproj */,
 				169724552CE5F44E005B4953 /* ASEntity.xcodeproj */,
@@ -553,7 +559,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -593,7 +599,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;

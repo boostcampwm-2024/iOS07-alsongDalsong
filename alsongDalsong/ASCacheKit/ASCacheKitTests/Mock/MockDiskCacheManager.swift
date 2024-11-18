@@ -1,4 +1,4 @@
-import ASCacheKit
+import ASCacheKitProtocol
 import Foundation
 
 final class MockDiskCacheManager: DiskCacheManagerProtocol {

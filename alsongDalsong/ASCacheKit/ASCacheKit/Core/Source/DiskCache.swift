@@ -1,4 +1,5 @@
 import Foundation
+import ASCacheKitProtocol
 
 internal struct DiskCacheManager: DiskCacheManagerProtocol {
     private let fileManager = FileManager.default
