@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct LobbyView: View {
-    let cards: [ModeInfo] = [
-        ModeInfo(title: "허밍", image: Image(systemName: "photo.artframe"), description: "허밍모드 설명입니다"),
-        ModeInfo(title: "이구동성", image: Image(systemName: "photo.artframe"), description: "이구동성모드 설명입니다"),
-        ModeInfo(title: "찰나의순간", image: Image(systemName: "photo.artframe"), description: "찰나의순간모드 설명입니다"),
-        ModeInfo(title: "TTS", image: Image(systemName: "photo.artframe"), description: "TTS모드 설명입니다"),
-        
-    ]
+    @StateObject var viewModel = LobbyViewModel()
+    @Environment(\.dismiss) var dismiss
+    
+    var roomNumber: String
     
     var body: some View {
         VStack {
             HStack {
-                Image(systemName: "square.and.arrow.up")
-                    .rotationEffect(.degrees(-90))
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .rotationEffect(.degrees(-90))
+                        .tint(.black)
+                }
                 Spacer()
                 Text("#13A7H5")
                     .foregroundStyle(.gray)
@@ -36,7 +38,7 @@ struct LobbyView: View {
             }
             .padding()
             GeometryReader { reader in
-                SnapperView(size: reader.size, cards: cards)
+                SnapperView(size: reader.size, cards: viewModel.cards)
             }
             Button {
                 print("초대코드 복사 완료")
@@ -73,6 +75,9 @@ struct LobbyView: View {
             
         }
         .background(Color.asLightGray)
+        .onAppear {
+            viewModel.fetchData(roomNumber: roomNumber)
+        }
     }
 }
 
@@ -148,7 +153,7 @@ struct SnapperView: View {
 struct ModeInfo: Identifiable {
     var id: UUID = UUID()
     let title: String
-    let image: Image
+    let imageName: String
     let description: String
 }
 
@@ -166,11 +171,10 @@ struct CardView: View {
                 Text(card.title)
                     .font(.custom("DoHyeon-Regular", size: 32))
                     .padding(.top, 16)
-                card.image
+                Image(card.imageName)
                     .resizable()
                     .scaledToFit()
                     .padding()
-                    .opacity(0.1)
                 Text(card.description)
                     .font(.custom("DoHyeon-Regular", size: 16))
                     .padding(.horizontal)
@@ -183,5 +187,5 @@ struct CardView: View {
 }
 
 #Preview {
-    LobbyView()
+    LobbyView(roomNumber: "13A7H5")
 }

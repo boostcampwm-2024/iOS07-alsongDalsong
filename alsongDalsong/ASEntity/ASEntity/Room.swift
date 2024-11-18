@@ -38,4 +38,18 @@ public struct Room: Codable {
         self.selectedRecords = selectedRecords
         self.submits = submits
     }
+    
+    enum CodingKeys: String, CodingKey {
+        case number
+        case host
+        case players
+        case mode
+        case round
+        case status = "Status"
+        case records
+        case answers
+        case dueTime
+        case selectedRecords
+        case submits
+    }
 }

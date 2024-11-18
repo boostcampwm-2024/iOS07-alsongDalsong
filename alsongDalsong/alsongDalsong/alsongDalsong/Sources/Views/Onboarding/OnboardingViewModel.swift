@@ -1,19 +1,15 @@
 import Foundation
 import Combine
 
-actor OnboardingViewModel: Sendable {
+final class OnboardingViewModel {
     // TODO: 닉네임 생성기 + 이미지 fetch (배열) + 참가하기 로직, 생성하기 로직
     private var onboardingRepository: OnboardingRepositoryProtocol = OnboradingRepository()
     private var avatars: [URL] = []
-    
     private var onboardingData = OnboardingData()
-    private var continuations: [AsyncStream<OnboardingData>.Continuation] = []
+    var publisher = PassthroughSubject<OnboardingData, Never>()
     
     init() {
-        Task {
-            await refreshAvatars()
-            await publish()
-        }
+        refreshAvatars()
     }
     
     func setNickname(with nickname: String) {
@@ -36,34 +32,19 @@ actor OnboardingViewModel: Sendable {
         self.onboardingData.setAvatarURL(with: randomAvatar)
     }
     
-    func valueStream() -> AsyncStream<OnboardingData> {
-        // 새로운 AsyncStream 생성 및 반환
-        return AsyncStream { continuation in
-            // 초기 값 전달
-            continuation.yield(onboardingData)
-            // 구독자 목록에 추가
-            continuations.append(continuation)
-        }
-    }
-    func publish() {
-        for continuation in continuations {
-            continuation.yield(onboardingData)
-        }
-    }
-    
+    @MainActor
     func joinRoom(roomNumber id: String) throws {
         Task {
             do {
                 let roomNumber = try await onboardingRepository.joinRoom(nickname: onboardingData.nickname, avatar: onboardingData.avatarURL, roomNumber: id)
                 onboardingData.setRoomNumber(with: roomNumber)
-                publish()
-                
             } catch {
                 throw error
             }
         }
     }
     
+    @MainActor
     func createRoom() throws {
         Task {
             do {

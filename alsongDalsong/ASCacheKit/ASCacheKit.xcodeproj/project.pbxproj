@@ -154,11 +154,12 @@
 				};
 			};
 			buildConfigurationList = 1BD3B68F2CE203680037A6E1 /* Build configuration list for PBXProject "ASCacheKit" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 1BD3B68B2CE203680037A6E1;
 			minimizedProjectReferenceProxies = 1;

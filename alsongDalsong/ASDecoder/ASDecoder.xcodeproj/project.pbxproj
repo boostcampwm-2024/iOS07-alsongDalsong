@@ -154,11 +154,12 @@
 				};
 			};
 			buildConfigurationList = 1B702E5B2CE5193F00124F73 /* Build configuration list for PBXProject "ASDecoder" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 1B702E572CE5193F00124F73;
 			minimizedProjectReferenceProxies = 1;

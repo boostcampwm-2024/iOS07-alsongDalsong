@@ -79,6 +79,9 @@ final class OnboardingViewController: UIViewController {
                 Task {
                     self?.createRoomButton.isEnabled = false
                     do {
+                        if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                            await self?.viewModel.setNickname(with: nickname)
+                        }
                         try await self?.viewModel.createRoom()
                     } catch {
                         //TODO: Error UI
@@ -101,7 +104,7 @@ final class OnboardingViewController: UIViewController {
                 joinAlert.doneButtonCompletion = { [weak self] in
                     Task {
                         do {
-                            if let nickname = self?.nickNameTextField.text {
+                            if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
                                 await self?.viewModel.setNickname(with: nickname)
                             }
                             try await self?.viewModel.joinRoom(roomNumber: joinAlert.text)
@@ -127,6 +130,9 @@ final class OnboardingViewController: UIViewController {
     }
     
     private func bind() {
+        viewModel.publisher.sink { OnboardingData in
+            print("")
+        }
         Task {
             // Actor로부터 AsyncStream 획득
             let stream = await viewModel.valueStream()
@@ -135,7 +141,7 @@ final class OnboardingViewController: UIViewController {
                 // 메인 스레드에서 UI 업데이트
                 DispatchQueue.main.async { [weak self] in
                     if let roomNumber = data.roomNumber {
-                        let vc = UIHostingController(rootView: LobbyView())
+                        let vc = UIHostingController(rootView: LobbyView(roomNumber: roomNumber))
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }
                     self?.setConfiguration(with: data)

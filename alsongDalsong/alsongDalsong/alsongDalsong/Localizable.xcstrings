@@ -1,0 +1,100 @@
+{
+  "sourceLanguage" : "ko",
+  "strings" : {
+    "#13A7H5" : {
+
+    },
+    "HarmonyModeDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this is hamony"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하모니 설명입니다"
+          }
+        }
+      }
+    },
+    "HummingModeDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this is humming"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "허밍모드 설명입니다"
+          }
+        }
+      }
+    },
+    "InstantModeDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this is instant"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "찰나의순간 설명입니다."
+          }
+        }
+      }
+    },
+    "SyncModeDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this is sync"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이구동성 설명입니다"
+          }
+        }
+      }
+    },
+    "TTSModeDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this is tts"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TTS모드 설명입니다"
+          }
+        }
+      }
+    },
+    "시작하기!" : {
+
+    },
+    "초대코드" : {
+
+    }
+  },
+  "version" : "1.0"
+}

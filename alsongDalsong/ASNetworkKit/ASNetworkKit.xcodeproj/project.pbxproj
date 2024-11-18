@@ -332,11 +332,12 @@
 				};
 			};
 			buildConfigurationList = 1B10CAD52CE4C13F002A5B8F /* Build configuration list for PBXProject "ASNetworkKit" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 1B10CAD12CE4C13F002A5B8F;
 			minimizedProjectReferenceProxies = 1;
