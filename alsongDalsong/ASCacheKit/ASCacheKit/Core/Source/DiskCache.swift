@@ -1,8 +1,8 @@
 import Foundation
 import ASCacheKitProtocol
 
-internal actor DiskCacheManager: DiskCacheManagerProtocol {
-    private let fileManager: FileManager
+struct DiskCacheManager: @unchecked Sendable, DiskCacheManagerProtocol {
+    private let fileManager = FileManager()
     let cacheDirectory: URL
 
     init() {
