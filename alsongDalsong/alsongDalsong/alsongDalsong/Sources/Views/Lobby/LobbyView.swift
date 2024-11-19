@@ -3,7 +3,7 @@ import SwiftUI
 import ASEntity
 
 struct LobbyView: View {
-//    @StateObject var viewModel: LobbyViewModel
+    //    @StateObject var viewModel: LobbyViewModel
     @ObservedObject var viewModel: LobbyViewModel
     @Environment(\.dismiss) var dismiss
     var body: some View {
@@ -32,22 +32,23 @@ struct LobbyView: View {
             GeometryReader { reader in
                 SnapperView(size: reader.size, modeInfos: ModeInfo.modeInfos, currentMode: $viewModel.mode)
             }
-            Button {
-                
-            } label: {
+            
+            ShareLink(item: URL(string: "alsongDalsong://roomNumber?\(viewModel.roomNumber)")!) {
                 Image(systemName: "link")
-                Text("초대코드")
+                Text("초대코드!")
             }
             .buttonStyle(ASButtonStyle(backgroundColor: Color(.asYellow)))
             .padding(.vertical, 20)
+            
             Button {
-                print("초대코드 복사 완료")
+                
             } label: {
                 Image(systemName: "play.fill")
                 Text("시작하기!")
             }
             .buttonStyle(ASButtonStyle(backgroundColor: Color(.asMint)))
             .padding(.bottom, 20)
+
         }
         .background(Color.asLightGray)
         .onAppear {

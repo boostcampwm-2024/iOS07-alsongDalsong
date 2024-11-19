@@ -20,7 +20,19 @@ final class OnboardingViewController: UIViewController {
             networkManager: ASNetworkManager(cacheManager: ASCacheManager())
         )
     )
+    private var roomNumber: String
+    
     private var cancleables = Set<AnyCancellable>()
+    
+    init(roomNumber: String) {
+        self.roomNumber = roomNumber
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        self.roomNumber = ""
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
