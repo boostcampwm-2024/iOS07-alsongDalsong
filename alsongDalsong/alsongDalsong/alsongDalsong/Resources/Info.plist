@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>알쏭달쏭은 Apple Music을 이용하여 음악을 찾는 것을 돕습니다</string>
 	<key>SERVER_URL</key>
 	<string>$(SERVER_URL)</string>
 	<key>UIAppFonts</key>

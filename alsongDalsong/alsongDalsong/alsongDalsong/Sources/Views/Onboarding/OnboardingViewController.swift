@@ -149,10 +149,9 @@ final class OnboardingViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
                 let lobbyViewController = UIHostingController(rootView: LobbyView(roomNumber: roomNumber))
-                self?.navigationController?.pushViewController(lobbyViewController, animated: true)
+                self?.navigationController?.pushViewController(lobbyViewController, animated: false)
             }
             .store(in: &cancleables)
-            
     }
 }
 
@@ -165,7 +164,6 @@ extension OnboardingViewController {
         static let doneAlertButtonTitle = "완료"
         static let cancelAlertButtonTitle = "취소"
         static let roomNumberPlaceholder = "000000"
-        
         static let logoImageName = "logo"
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 import ASCacheKitProtocol
 
 struct DiskCacheManager: @unchecked Sendable, DiskCacheManagerProtocol {
-    private let fileManager = FileManager()
+    private let fileManager = FileManager.default
     let cacheDirectory: URL
 
     init() {

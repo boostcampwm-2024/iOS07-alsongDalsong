@@ -7,7 +7,7 @@ internal import FirebaseAuth
 @preconcurrency internal import FirebaseDatabase
 import Foundation
 
-public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabaseProtocol, Sendable {
+public final class ASFirebaseManager: Sendable {
     private let databaseRef = Database.database().reference()
     private let firestoreRef = Firestore.firestore()
     private var roomListeners: ListenerRegistration?
@@ -16,6 +16,12 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
     
     public init() {}
     
+    public func getCurrentUserID() -> String {
+        return Auth.auth().currentUser?.uid ?? ""
+    }
+}
+
+extension ASFirebaseManager: ASFirebaseAuthProtocol {
     public func signInAnonymously(nickname: String, avatarURL: URL?) async throws -> Player {
         do {
             let authResult = try await Auth.auth().signInAnonymously()
@@ -48,11 +54,9 @@ public final class ASFirebaseManager: ASFirebaseAuthProtocol, ASFirebaseDatabase
             throw ASNetworkErrors.FirebaseSignOutError
         }
     }
-    
-    public func getCurrentUserID() -> String {
-        return Auth.auth().currentUser?.uid ?? ""
-    }
-    
+}
+
+extension ASFirebaseManager: ASFirebaseDatabaseProtocol {
     public func addRoomListener(roomNumber: String) -> AnyPublisher<Room, Error> {
         let roomRef = firestoreRef.collection("rooms").document(roomNumber)
         let listener = roomRef.addSnapshotListener { documentSnapshot, error in

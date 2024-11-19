@@ -52,7 +52,7 @@ final class OnboardingViewModel {
     func createRoom() throws {
         Task {
             do {
-                roomNumber = try await onboardingRepository.createRoom(nickname: nickname, avatar: avatarURL)
+                let roomNumber = try await onboardingRepository.createRoom(nickname: nickname, avatar: avatarURL)
                 if !roomNumber.isEmpty {
                     try joinRoom(roomNumber: roomNumber)
                 }
