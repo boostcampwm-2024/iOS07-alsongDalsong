@@ -17,6 +17,7 @@ class ASPanel: UIView {
         backgroundColor = .white
         
         let label = UILabel()
+        label.textColor = .asBlack
         label.text = title
         label.textAlignment = titleAlign
         label.font = UIFont.font(.dohyeon, ofSize: titleSize)

@@ -14,7 +14,7 @@ struct LobbyView: View {
                 } label: {
                     Image(systemName: "square.and.arrow.up")
                         .rotationEffect(.degrees(-90))
-                        .tint(.black)
+                        .tint(.asBlack)
                 }
                 Spacer()
                 Text(viewModel.roomNumber)

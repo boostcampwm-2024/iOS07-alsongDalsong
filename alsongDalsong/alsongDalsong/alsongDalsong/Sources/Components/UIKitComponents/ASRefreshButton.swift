@@ -15,7 +15,7 @@ class ASRefreshButton: UIButton {
     private func setConfiguration(size: CGFloat) {
         var config = UIButton.Configuration.gray()
 
-        config.baseBackgroundColor = .white
+        config.baseBackgroundColor = .asSystem
         config.baseForegroundColor = .asShadow
         
         config.imagePlacement = .all
