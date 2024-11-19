@@ -4,7 +4,7 @@ import UIKit
 final class HummingViewController: UIViewController {
     // dueTime을 사용하는 timer 필요
     private var timer = UIView()
-    private var guideLabel = UILabel()
+    private var guideLabel = GuideLabel()
     private var recordPanel = ASPanel()
     private var recordButton = RecordButton()
     private var submitButton = ASButton()
@@ -22,7 +22,6 @@ final class HummingViewController: UIViewController {
             playersRepository: playersRepository,
             submitsRepository: submitsRepository
         )
-
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -42,7 +41,7 @@ final class HummingViewController: UIViewController {
     }
 
     private func setupUI() {
-        guideLabel.text = "허밍을 듣고 따라하세요!"
+        guideLabel.setText("허밍을 듣고 따라하세요!")
         view.backgroundColor = .asLightGray
         view.addSubview(timer)
         view.addSubview(guideLabel)
@@ -55,8 +54,6 @@ final class HummingViewController: UIViewController {
     /// 구현되지 않은 컴포넌트들의 placeholder
     private func setupPlaceholder() {
         timer.backgroundColor = .asYellow
-        guideLabel.font = .font(forTextStyle: .largeTitle)
-        guideLabel.textColor = .label
         recordPanel.backgroundColor = .asMint
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asGreen)
     }
