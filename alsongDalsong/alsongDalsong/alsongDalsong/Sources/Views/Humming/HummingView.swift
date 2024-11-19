@@ -83,12 +83,12 @@ final class HummingViewController: UIViewController {
             recordButton.topAnchor.constraint(equalTo: recordPanel.bottomAnchor, constant: 68),
             recordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-            submitButton.topAnchor.constraint(equalTo: recordButton.bottomAnchor, constant: 68),
+            submitButton.bottomAnchor.constraint(equalTo: submissionStatus.topAnchor, constant: -24),
             submitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             submitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             submitButton.heightAnchor.constraint(equalToConstant: 64),
 
-            submissionStatus.topAnchor.constraint(equalTo: submitButton.bottomAnchor, constant: 68),
+            submissionStatus.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             submissionStatus.centerXAnchor.constraint(equalTo: view.centerXAnchor),
         ])
     }
