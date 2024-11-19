@@ -23,27 +23,25 @@ final class OnboardingViewModel {
     }
     
     @MainActor
-    func fetchAvatars() {
-        Task {
-            do {
-                avatars = try await onboardingRepository.getAvatarUrls() ?? []
-            }
-            catch {
-                print(error.localizedDescription)
-            }
+    func fetchAvatars() async {
+        do {
+            avatars = try await onboardingRepository.getAvatarUrls() ?? []
+        }
+        catch {
+            print(error.localizedDescription)
         }
     }
     
     @MainActor
     func refreshAvatars() {
-        if avatars.isEmpty {
-            fetchAvatars()
-        }
-        
-        guard let url = avatars.randomElement() else { return }
-        selectedAvatar = url
         Task {
             do {
+                if avatars.isEmpty {
+                    await fetchAvatars()
+                }
+                guard let url = avatars.randomElement() else { return }
+                selectedAvatar = url
+                
                 guard let selectedAvatar else { return }
                 avatarData = try await self.onboardingRepository.getAvatarData(url: selectedAvatar)
             } catch {
@@ -58,6 +56,7 @@ final class OnboardingViewModel {
             do {
                 roomNumber = try await onboardingRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
             } catch {
+                print(error)
                 throw error
             }
         }

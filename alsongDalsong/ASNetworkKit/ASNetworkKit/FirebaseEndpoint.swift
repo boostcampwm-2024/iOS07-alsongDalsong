@@ -1,7 +1,6 @@
 import Foundation
 
 public struct FirebaseEndpoint: Endpoint, Equatable {
-    public var url: URL?
     public let scheme: String = "https"
     // TODO: - firebase api에 맞는 host 넣기
     public let host: String = Bundle.main.object(forInfoDictionaryKey: "SERVER_URL") as! String

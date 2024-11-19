@@ -17,9 +17,11 @@ public struct ImageEndpoint: Endpoint {
     public var headers: [String : String]
     public var body: Data?
     public var queryItems: [URLQueryItem]?
+    public var url: URL?
     
     public init?(url: URL) {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
+        self.url = url
         self.scheme = components.scheme ?? ""
         self.host = components.host ?? ""
         self.method = .get
