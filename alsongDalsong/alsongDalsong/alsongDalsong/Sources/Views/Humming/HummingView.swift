@@ -2,14 +2,12 @@ import ASRepository
 import UIKit
 
 final class HummingViewController: UIViewController {
-    // dueTime을 사용하는 timer 필요
-    private var timer = UIView()
+    private var progressBar = ProgressBar()
     private var guideLabel = GuideLabel()
     private var recordPanel = ASPanel()
     private var recordButton = RecordButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
-
     private let vm: HummingViewModel
 
     init(
@@ -39,12 +37,13 @@ final class HummingViewController: UIViewController {
 
     private func bindToComponents() {
         submissionStatus.bind(to: vm.$submissionStatus)
+        progressBar.bind(to: vm.$dueTime)
     }
 
     private func setupUI() {
         guideLabel.setText("허밍을 듣고 따라하세요!")
         view.backgroundColor = .asLightGray
-        view.addSubview(timer)
+        view.addSubview(progressBar)
         view.addSubview(guideLabel)
         view.addSubview(recordPanel)
         view.addSubview(recordButton)
@@ -54,13 +53,12 @@ final class HummingViewController: UIViewController {
 
     /// 구현되지 않은 컴포넌트들의 placeholder
     private func setupPlaceholder() {
-        timer.backgroundColor = .asYellow
         recordPanel.backgroundColor = .asMint
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asGreen)
     }
 
     private func setupLayout() {
-        timer.translatesAutoresizingMaskIntoConstraints = false
+        progressBar.translatesAutoresizingMaskIntoConstraints = false
         guideLabel.translatesAutoresizingMaskIntoConstraints = false
         recordPanel.translatesAutoresizingMaskIntoConstraints = false
         recordButton.translatesAutoresizingMaskIntoConstraints = false
@@ -68,12 +66,12 @@ final class HummingViewController: UIViewController {
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            timer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            timer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            timer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            timer.heightAnchor.constraint(equalToConstant: 15),
+            progressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            progressBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            progressBar.heightAnchor.constraint(equalToConstant: 15),
 
-            guideLabel.topAnchor.constraint(equalTo: timer.bottomAnchor, constant: 53),
+            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 53),
             guideLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
             recordPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 68),
