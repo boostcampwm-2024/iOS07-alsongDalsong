@@ -40,9 +40,13 @@ struct ProfileView: View {
             if let name {
                 Text(name)
                     .font(.custom("DoHyeon-Regular", size: 16))
+                    .multilineTextAlignment(.center)
+                    .frame(maxHeight: 32.0)
             } else {
                 Text("비어 있음")
                     .font(.custom("DoHyeon-Regular", size: 16))
+                    .multilineTextAlignment(.center)
+                    .frame(maxHeight: 32.0)
             }
         }
     }
