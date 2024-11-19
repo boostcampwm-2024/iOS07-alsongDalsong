@@ -19,7 +19,6 @@ final class OnboradingRepository: OnboardingRepositoryProtocol {
             guard let roomNumber = response["roomNumber"] else {
                 throw ASNetworkErrors.responseError
             }
-            print(roomNumber)
             return roomNumber
             
         } catch {
