@@ -145,6 +145,7 @@ final class OnboardingViewController: UIViewController {
             }
             .store(in: &cancleables)
         viewModel.$roomNumber
+            .filter { !$0.isEmpty }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
                 let lobbyViewController = UIHostingController(rootView: LobbyView(roomNumber: roomNumber))
