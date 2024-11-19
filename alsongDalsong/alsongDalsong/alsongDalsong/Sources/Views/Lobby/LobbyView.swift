@@ -1,17 +1,10 @@
-//
-//  ContentView.swift
-//  Carousel
-//
-//  Created by Prahlad Dhungana on 2024-04-06.
-//
-
+import ASRepository
 import SwiftUI
 
 struct LobbyView: View {
-    @StateObject var viewModel = LobbyViewModel()
+//    @StateObject var viewModel: LobbyViewModel
+    @ObservedObject var viewModel: LobbyViewModel
     @Environment(\.dismiss) var dismiss
-    
-    var roomNumber: String
     
     var body: some View {
         VStack {
@@ -24,76 +17,39 @@ struct LobbyView: View {
                         .tint(.black)
                 }
                 Spacer()
-                Text("#13A7H5")
+                Text(viewModel.roomNumber)
                     .foregroundStyle(.gray)
                     .font(.custom("DoHyeon-Regular", size: 48))
             }
             .font(.title)
             .padding()
             HStack(spacing: 15) {
-                LobbyProfileView(image: Image(systemName: "person.circle.fill"), name: "비어있음")
-                LobbyProfileView(image: Image(systemName: "person.circle.fill"), name: "비어있음")
-                LobbyProfileView(image: Image(systemName: "person.circle.fill"), name: "비어있음")
-                LobbyProfileView(image: Image(systemName: "person.circle.fill"), name: "비어있음")
+                ForEach(viewModel.players) { player in
+                    ProfileView(imageURL: player.avatarUrl, name: player.nickname)
+                }
             }
             .padding()
             GeometryReader { reader in
                 SnapperView(size: reader.size, cards: viewModel.cards)
             }
             Button {
-                print("초대코드 복사 완료")
+                
             } label: {
                 Image(systemName: "link")
-                    .fontWeight(.heavy)
-                    .imageScale(.large)
                 Text("초대코드")
-                    .font(.custom("DoHyeon-Regular", size: 32))
             }
-            .tint(.black)
-            .frame(maxWidth: 345, maxHeight: 64)
-            .background(Color.asYellow)
-            .cornerRadius(12)
-            .shadow(color: .asShadow, radius: 0, x: 4, y: 4)
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.black, lineWidth: 3))
-            .padding(.top, 36)
+            .buttonStyle(ASButtonStyle(backgroundColor: Color(.asYellow)))
             Button {
                 print("초대코드 복사 완료")
             } label: {
                 Image(systemName: "play.fill")
-                    .fontWeight(.heavy)
-                    .imageScale(.large)
                 Text("시작하기!")
-                    .font(.custom("DoHyeon-Regular", size: 32))
             }
-            .tint(.black)
-            .frame(maxWidth: 345, maxHeight: 64)
-            .background(Color.asMint)
-            .cornerRadius(12)
-            .shadow(color: .asShadow, radius: 0, x: 4, y: 4)
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.black, lineWidth: 3))
-            .padding()
-            
+            .buttonStyle(ASButtonStyle(backgroundColor: Color(.asMint)))
         }
         .background(Color.asLightGray)
         .onAppear {
-            viewModel.fetchData(roomNumber: roomNumber)
-        }
-    }
-}
-
-struct LobbyProfileView: View {
-    let image: Image
-    let name: String
-    
-    var body: some View {
-        VStack {
-            image
-                .resizable()
-                .frame(width: 75, height: 75)
-                .clipShape(Circle())
-                .overlay(Circle().stroke(Color.white, lineWidth: 5))
-            Text(name)
-                .font(.custom("DoHyeon-Regular", size: 16))
+            viewModel.fetchData()
         }
     }
 }
@@ -187,5 +143,5 @@ struct CardView: View {
 }
 
 #Preview {
-    LobbyView(roomNumber: "13A7H5")
+    LobbyView(viewModel: LobbyViewModel(mainRepository: MainRepository(roomNumber: "ASDKFJ")))
 }

@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
-    "#13A7H5" : {
-
-    },
     "HarmonyModeDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -88,6 +85,9 @@
           }
         }
       }
+    },
+    "비어 있음" : {
+
     },
     "시작하기!" : {
 
