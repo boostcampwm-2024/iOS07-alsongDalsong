@@ -1,4 +1,6 @@
 import UIKit
+import ASCacheKit
+import ASNetworkKit
 import SwiftUI
 import Combine
 
@@ -10,8 +12,13 @@ final class OnboardingViewController: UIViewController {
     private var nickNameTextField = ASTextField()
     private var nickNamePanel = ASPanel()
     private var avatarRefreshButton = ASRefreshButton(size: 28)
-    
-    private var viewModel = OnboardingViewModel()
+    // 뷰모델에 주입해줄 때 Container 가 필요할 거 같습니다.
+    private var viewModel = OnboardingViewModel(
+        repository: OnboardingRepository(
+            firebaseManager: ASFirebaseManager(),
+            networkManager: ASNetworkManager(cacheManager: ASCacheManager())
+        )
+    )
     private var cancleables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
@@ -21,6 +28,7 @@ final class OnboardingViewController: UIViewController {
         setAction()
         setConfiguration()
         bind()
+        viewModel.refreshAvatars()
     }
     
     private func setupUI() {
@@ -138,11 +146,11 @@ final class OnboardingViewController: UIViewController {
                 self?.nickNameTextField.setConfiguration(placeholder: nickname)
             }
             .store(in: &cancleables)
-        viewModel.$avatarURL
+        viewModel.$avatarData
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
-            .sink { [weak self] avatarURL in
-                self?.avatarView.setImage(imageURL: avatarURL)
+            .sink { [weak self] data in
+                self?.avatarView.setImage(imageData: data)
             }
             .store(in: &cancleables)
         viewModel.$roomNumber

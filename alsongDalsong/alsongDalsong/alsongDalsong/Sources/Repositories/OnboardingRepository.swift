@@ -3,9 +3,17 @@ import ASNetworkKit
 import ASEntity
 import ASCacheKit
 
-final class OnboradingRepository: OnboardingRepositoryProtocol {
-    let firebaseManager: ASFirebaseAuthProtocol = ASFirebaseManager()
-    let networkManager = ASNetworkManager(cacheManager: ASCacheManager())
+final class OnboardingRepository: OnboardingRepositoryProtocol {
+    let firebaseManager: ASFirebaseManager
+    let networkManager: ASNetworkManager
+    
+    init (
+        firebaseManager: ASFirebaseManager,
+        networkManager: ASNetworkManager
+    ) {
+        self.firebaseManager = firebaseManager
+        self.networkManager = networkManager
+    }
     
     func createRoom(nickname: String, avatar: URL?) async throws -> String {
         do {
@@ -45,5 +53,24 @@ final class OnboradingRepository: OnboardingRepositoryProtocol {
             throw error
         }
         return ""
+    }
+    
+    func getAvatarUrls() async throws -> [URL]? {
+        do {
+            return try await firebaseManager.getAvatarUrls()
+        }
+        catch {
+            throw error
+        }
+    }
+    
+    func getAvatarData(url: URL) async throws -> Data? {
+        do {
+            guard let endpoint = ImageEndpoint(url: url) else { return nil }
+            return try await self.networkManager.sendRequest(to: endpoint)
+        }
+        catch {
+            throw error
+        }
     }
 }

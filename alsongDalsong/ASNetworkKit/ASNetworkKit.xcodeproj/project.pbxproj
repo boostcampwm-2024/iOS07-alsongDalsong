@@ -20,6 +20,7 @@
 		169727712CE65D99005B4953 /* ASEncoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1697276D2CE65D89005B4953 /* ASEncoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1697277B2CE66283005B4953 /* ASDecoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; };
 		1697277C2CE66283005B4953 /* ASDecoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		169C06272CEC61030084B082 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 169C06262CEC61030084B082 /* FirebaseStorage */; };
 		1B783B6C2CE4F04E005511AE /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */; };
 		1BF1CB722CEA52D40003EED9 /* ASCacheKitProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */; };
 		1BF1CB732CEA52D40003EED9 /* ASCacheKitProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -156,6 +157,7 @@
 				8D64F8DD2CEA05A90069B77F /* ASDecoder.framework in Frameworks */,
 				169727702CE65D99005B4953 /* ASEncoder.framework in Frameworks */,
 				169725562CE5F817005B4953 /* FirebaseFirestore in Frameworks */,
+				169C06272CEC61030084B082 /* FirebaseStorage in Frameworks */,
 				169725522CE5F817005B4953 /* FirebaseAuth in Frameworks */,
 				169726A62CE63DCD005B4953 /* ASEntity.framework in Frameworks */,
 			);
@@ -287,6 +289,7 @@
 				169725512CE5F817005B4953 /* FirebaseAuth */,
 				169725532CE5F817005B4953 /* FirebaseDatabase */,
 				169725552CE5F817005B4953 /* FirebaseFirestore */,
+				169C06262CEC61030084B082 /* FirebaseStorage */,
 			);
 			productName = ASNetworkKit;
 			productReference = 1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */;
@@ -835,6 +838,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 169725502CE5F817005B4953 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		169C06262CEC61030084B082 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 169725502CE5F817005B4953 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

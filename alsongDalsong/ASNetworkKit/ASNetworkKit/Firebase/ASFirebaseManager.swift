@@ -5,12 +5,14 @@ import Combine
 internal import FirebaseAuth
 @preconcurrency internal import FirebaseFirestore
 @preconcurrency internal import FirebaseDatabase
+@preconcurrency internal import FirebaseStorage
 import Foundation
 
 public final class ASFirebaseManager: Sendable {
     private let databaseRef = Database.database().reference()
     private let firestoreRef = Firestore.firestore()
     private var roomListeners: ListenerRegistration?
+    private let storageRef = Storage.storage().reference()
     
     private var roomPublisher = PassthroughSubject<Room, Error>()
     
@@ -18,6 +20,40 @@ public final class ASFirebaseManager: Sendable {
     
     public func getCurrentUserID() -> String {
         return Auth.auth().currentUser?.uid ?? ""
+    }
+    
+    public func getAvatarUrls() async throws -> [URL] {
+        let avatarRef = storageRef.child("avatar")
+
+        do {
+            let result = try await avatarRef.listAll()
+            
+            // TaskGroup으로 비동기 작업 처리
+            return try await withThrowingTaskGroup(of: URL.self) { taskGroup in
+                for item in result.items {
+                    taskGroup.addTask {
+                        try await withCheckedThrowingContinuation { continuation in
+                            item.downloadURL { url, error in
+                                if let url = url {
+                                    continuation.resume(returning: url)
+                                } else if let error = error {
+                                    continuation.resume(throwing: error)
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // 모든 작업 완료 후 결과 수집
+                var urls: [URL] = []
+                for try await url in taskGroup {
+                    urls.append(url)
+                }
+                return urls
+            }
+        } catch {
+            throw ASNetworkErrors.responseError
+        }
     }
 }
 

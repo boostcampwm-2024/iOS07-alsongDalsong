@@ -1,47 +1,62 @@
 import Foundation
 import Combine
 import ASRepository
+import ASNetworkKit
 
 final class OnboardingViewModel {
     // TODO: 닉네임 생성기 + 이미지 fetch (배열) + 참가하기 로직, 생성하기 로직
-    private var onboardingRepository: OnboardingRepositoryProtocol = OnboradingRepository()
+    private var onboardingRepository: OnboardingRepositoryProtocol
     private var avatars: [URL] = []
+    private var selectedAvatar: URL?
     
     @Published var nickname: String = NickNameGenerator.generate()
-    @Published var avatarURL: URL?
+    @Published var avatarData: Data?
+    
     @Published var roomNumber: String = ""
     
-    init() {
-        refreshAvatars()
+    init(repository: OnboardingRepositoryProtocol) {
+        self.onboardingRepository = repository
     }
     
     func setNickname(with nickname: String) {
         self.nickname = nickname
     }
     
+    @MainActor
     func fetchAvatars() {
-        self.avatars = [
-            URL(string: "https://i.namu.wiki/i/UPNrk6CU0c-W4lE4dt9ire9gJQEcF3FnlSnZG6v_RgDzP40M6Xhm0aIWrr4bakrmJFl2zQbbCJsiWe_QKuNbag.webp")!,
-            URL(string: "https://i.namu.wiki/i/ipynokVLK3TAvWxj4zzJ9fnLjvz6IRnTYy8lKkgnJYquv1vWl4SDnA9OOdB0OiDYfG13WusRKc_j6zdxkCislQ.webp")!,
-            URL(string: "https://i.namu.wiki/i/chcr-vg2cJIbKZ4eoQDh0_1iVnK41MRfV5fQJ4hjvAhT7gyBuTzr2PvnxUExDvXFA9aXFV02VqjLKkkxVa8N1Q.webp")!,
-            URL(string: "https://i.namu.wiki/i/NAAI2TdyvYSIaKl_rjCCARFDbrn-W8vB18NAfS7DTR2rAF3lMkAdXkexG-TqyavIaWO0PphIVJMO6HGjusL5qA.webp")!,
-            URL(string: "https://i.namu.wiki/i/UeV-hSjVoUixzROj9YmJhIu6bL4En7AkCOeuUMuhxSXhY9VlKaUy9e1a9KReU_dYqE0WQw5PQH_APL_R1iDrtA.webp")!
-        ]
+        Task {
+            do {
+                avatars = try await onboardingRepository.getAvatarUrls() ?? []
+            }
+            catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
+    @MainActor
     func refreshAvatars() {
         if avatars.isEmpty {
             fetchAvatars()
         }
-        guard let randomAvatar = avatars.randomElement() else { return }
-        avatarURL = randomAvatar
+        
+        guard let url = avatars.randomElement() else { return }
+        selectedAvatar = url
+        Task {
+            do {
+                guard let selectedAvatar else { return }
+                avatarData = try await self.onboardingRepository.getAvatarData(url: selectedAvatar)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
     @MainActor
     func joinRoom(roomNumber id: String) throws {
         Task {
             do {
-                roomNumber = try await onboardingRepository.joinRoom(nickname: nickname, avatar: avatarURL, roomNumber: id)
+                roomNumber = try await onboardingRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
             } catch {
                 throw error
             }
@@ -52,7 +67,7 @@ final class OnboardingViewModel {
     func createRoom() throws {
         Task {
             do {
-                let roomNumber = try await onboardingRepository.createRoom(nickname: nickname, avatar: avatarURL)
+                let roomNumber = try await onboardingRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
                 if !roomNumber.isEmpty {
                     try joinRoom(roomNumber: roomNumber)
                 }
