@@ -1,7 +1,7 @@
 import Foundation
 import ASCacheKitProtocol
 
-internal struct MemoryCacheManager: MemoryCacheManagerProtocol {
+struct MemoryCacheManager: @unchecked Sendable, MemoryCacheManagerProtocol {
     private let cache = NSCache<NSString, AnyObject>()
 
     func getObject(forKey key: String) -> AnyObject? {
@@ -16,3 +16,4 @@ internal struct MemoryCacheManager: MemoryCacheManagerProtocol {
         cache.removeAllObjects()
     }
 }
+

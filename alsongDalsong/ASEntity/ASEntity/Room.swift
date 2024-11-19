@@ -1,13 +1,13 @@
 import Foundation
 
-public struct Room {
+public struct Room: Codable {
     public var number: String?
     public var host: Player?
     public var players: [Player]?
     public var mode: Mode?
     public var round: UInt8?
     public var status: Status?
-    public var records: [[Record]]?
+    public var records: [Record]?
     public var answers: [Answer]?
     public var dueTime: Date?
     public var selectedRecords: [UInt8]?
@@ -20,7 +20,7 @@ public struct Room {
         mode: Mode? = nil,
         round: UInt8? = nil,
         status: Status? = nil,
-        records: [[Record]]? = nil,
+        records: [Record]? = nil,
         answers: [Answer]? = nil,
         dueTime: Date? = nil,
         selectedRecords: [UInt8]? = nil,
@@ -37,5 +37,19 @@ public struct Room {
         self.dueTime = dueTime
         self.selectedRecords = selectedRecords
         self.submits = submits
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case number
+        case host
+        case players
+        case mode
+        case round
+        case status = "Status"
+        case records
+        case answers
+        case dueTime
+        case selectedRecords
+        case submits
     }
 }

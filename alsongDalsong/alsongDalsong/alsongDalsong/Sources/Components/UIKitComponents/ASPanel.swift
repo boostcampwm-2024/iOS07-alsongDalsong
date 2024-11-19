@@ -1,8 +1,19 @@
 import UIKit
 
 class ASPanel: UIView {
-    init(title: String, titleAlign: NSTextAlignment, titleSize: CGFloat) {
+    init() {
         super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    func setConfiguration(
+        title: String,
+        titleAlign: NSTextAlignment,
+        titleSize: CGFloat
+    ) {
         backgroundColor = .white
         
         let label = UILabel()
@@ -23,9 +34,5 @@ class ASPanel: UIView {
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 3
         setShadow()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

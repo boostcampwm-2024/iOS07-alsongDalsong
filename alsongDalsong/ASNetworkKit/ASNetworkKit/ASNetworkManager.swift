@@ -1,7 +1,7 @@
 import ASCacheKitProtocol
 import Foundation
 
-public struct ASNetworkManager {
+public struct ASNetworkManager: Sendable {
     private let urlSession: URLSessionProtocol
     private let cacheManager: CacheManagerProtocol
 

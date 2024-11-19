@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Mode: String {
+public enum Mode: String, Codable {
     case humming
     case harmony
     case sync

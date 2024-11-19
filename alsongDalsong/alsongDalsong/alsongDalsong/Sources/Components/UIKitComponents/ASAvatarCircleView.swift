@@ -1,16 +1,20 @@
 import UIKit
+import ASCacheKit
 
-class ASAvatarCircleView: UIView {
-    init(image: UIImage, backgroundColor: UIColor = .asMint) {
-        super.init(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
-        setup(image: image, backgroundColor: backgroundColor)
+final class ASAvatarCircleView: UIView {
+    private var imageView = UIImageView()
+    private let cacheManager = ASCacheManager()
+    
+    init(backgroundColor: UIColor = .asMint) {
+        super.init(frame: .zero)
+        setup(backgroundColor: backgroundColor)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setup(image: UIImage, backgroundColor: UIColor) {
+    private func setup(backgroundColor: UIColor) {
         layer.cornerRadius = 100
         layer.masksToBounds = true
         layer.backgroundColor = backgroundColor.cgColor
@@ -18,9 +22,26 @@ class ASAvatarCircleView: UIView {
         layer.borderWidth = 10
         layer.borderColor = UIColor.white.cgColor
         
-        let imageView = UIImageView(image: image)
-        imageView.clipsToBounds = true
+        clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
         addSubview(imageView)
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
+    }
+    
+    func setImage(imageURL: URL) {
+        Task {
+            guard let imageData = await cacheManager.loadCache(from: imageURL, cacheOption: .both) else {
+                imageView.image = UIImage(systemName: "person.fill")
+                return
+            }
+            imageView.image = UIImage(data: imageData)
+        }
     }
 }

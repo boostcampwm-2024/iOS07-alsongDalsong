@@ -1,7 +1,7 @@
 import Foundation
 import ASCacheKitProtocol
 
-internal struct DiskCacheManager: DiskCacheManagerProtocol {
+struct DiskCacheManager: @unchecked Sendable, DiskCacheManagerProtocol {
     private let fileManager = FileManager.default
     let cacheDirectory: URL
 
@@ -10,7 +10,7 @@ internal struct DiskCacheManager: DiskCacheManagerProtocol {
         cacheDirectory = cachesDirectory.appendingPathComponent("MediaDiskCache")
         createCacheDirectory()
     }
-
+    
     private func createCacheDirectory() {
         if !fileManager.fileExists(atPath: cacheDirectory.path) {
             try? fileManager.createDirectory(at: cacheDirectory, withIntermediateDirectories: true, attributes: nil)

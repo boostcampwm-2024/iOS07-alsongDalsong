@@ -97,11 +97,12 @@
 				};
 			};
 			buildConfigurationList = 1B9D3FEB2CE3AD62004C79EE /* Build configuration list for PBXProject "ASEntity" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 1B9D3FE72CE3AD62004C79EE;
 			minimizedProjectReferenceProxies = 1;

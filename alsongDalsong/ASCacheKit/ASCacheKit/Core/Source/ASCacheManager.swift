@@ -1,7 +1,7 @@
 import ASCacheKitProtocol
 import Foundation
 
-public struct ASCacheManager: CacheManagerProtocol {
+public struct ASCacheManager: CacheManagerProtocol, Sendable {
     public let memoryCache: MemoryCacheManagerProtocol
     public let diskCache: DiskCacheManagerProtocol
 
@@ -15,9 +15,9 @@ public struct ASCacheManager: CacheManagerProtocol {
         self.diskCache = diskCache
     }
 
-    public func loadCache(from url: URL, cacheOption: CacheOption) async -> Data? {
+    public func loadCache(from url: URL, cacheOption: CacheOption) -> Data? {
         let cacheKey = url.absoluteString
-        return await loadData(forKey: cacheKey, cacheOption: cacheOption)
+        return loadData(forKey: cacheKey, cacheOption: cacheOption)
     }
 
     public func saveCache(withKey url: URL, data: Data, cacheOption: CacheOption) {
@@ -34,17 +34,17 @@ public struct ASCacheManager: CacheManagerProtocol {
         }
     }
 
-    private func loadData(forKey key: String, cacheOption: CacheOption) async -> Data? {
+    private func loadData(forKey key: String, cacheOption: CacheOption) -> Data? {
         switch cacheOption {
             case .onlyMemory:
-                return await loadFromMemory(forKey: key)
+                return loadFromMemory(forKey: key)
             case .onlyDisk:
-                return await loadFromDisk(forKey: key)
+                return loadFromDisk(forKey: key)
             case .both:
-                if let cachedData = await loadFromMemory(forKey: key) {
+                if let cachedData = loadFromMemory(forKey: key) {
                     return cachedData
                 }
-                if let diskData = await loadFromDisk(forKey: key) {
+                if let diskData = loadFromDisk(forKey: key) {
                     return diskData
                 }
                 return nil
@@ -53,11 +53,11 @@ public struct ASCacheManager: CacheManagerProtocol {
         }
     }
 
-    private func loadFromMemory(forKey key: String) async -> Data? {
+    private func loadFromMemory(forKey key: String) -> Data? {
         return memoryCache.getObject(forKey: key) as? Data
     }
 
-    private func loadFromDisk(forKey key: String) async -> Data? {
+    private func loadFromDisk(forKey key: String) -> Data? {
         if let diskData = diskCache.getData(forKey: key) {
             memoryCache.setObject(diskData as NSData, forKey: key)
             return diskData
