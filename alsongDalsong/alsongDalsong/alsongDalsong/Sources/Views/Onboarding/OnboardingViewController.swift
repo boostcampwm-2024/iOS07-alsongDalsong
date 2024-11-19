@@ -3,6 +3,7 @@ import ASCacheKit
 import ASNetworkKit
 import SwiftUI
 import Combine
+import ASRepository
 
 final class OnboardingViewController: UIViewController {
     private var logoImageView = UIImageView(image: UIImage(named: Constants.logoImageName))
@@ -157,7 +158,7 @@ final class OnboardingViewController: UIViewController {
             .filter { !$0.isEmpty }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
-                let lobbyViewController = UIHostingController(rootView: LobbyView(roomNumber: roomNumber))
+                let lobbyViewController = UIHostingController(rootView: LobbyView(viewModel: LobbyViewModel(mainRepository: MainRepository(roomNumber: roomNumber))))
                 self?.navigationController?.pushViewController(lobbyViewController, animated: false)
             }
             .store(in: &cancleables)
