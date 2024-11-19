@@ -43,7 +43,7 @@ module.exports.joinRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
 
     const player = {
       id: userId,
-      avatar: userData.avatar || '',
+      avatar: userData.avatarUrl || '',
       nickname: userData.nickname || '',
       score: userData.score || 0,
       order: 0,
