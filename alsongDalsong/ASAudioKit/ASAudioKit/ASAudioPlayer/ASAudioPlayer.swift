@@ -17,6 +17,7 @@ public final class ASAudioPlayer: NSObject, Sendable, AVAudioPlayerDelegate {
             audioPlayer = try AVAudioPlayer(data: data)
             audioPlayer?.delegate = self
             audioPlayer?.prepareToPlay()
+            audioPlayer?.isMeteringEnabled = true
         } catch {
             // TODO: 오디오 객체생성 실패 시 처리
         }
@@ -53,6 +54,14 @@ public final class ASAudioPlayer: NSObject, Sendable, AVAudioPlayerDelegate {
             }
         }
         return audioPlayer?.duration ?? 0
+    }
+    
+    public func updateMeters() {
+        audioPlayer?.updateMeters()
+    }
+    /// player에 입력된 평균 dB을 리턴합니다.
+    public func getAveragePower() -> Float? {
+        return audioPlayer?.averagePower(forChannel: 0)
     }
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {

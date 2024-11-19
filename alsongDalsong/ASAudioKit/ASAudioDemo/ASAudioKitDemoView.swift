@@ -6,7 +6,7 @@ struct ASAudioKitDemoView: View {
     var body: some View {
         VStack {
             if viewModel.isRecording {
-                AudioVisualizerViewWrapper(amplitude: $viewModel.amplitude)
+                AudioVisualizerViewWrapper(amplitude: $viewModel.recorderAmplitude)
                     .frame(height: 200)
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 10)
@@ -42,6 +42,11 @@ struct ASAudioKitDemoView: View {
                 
                 ProgressBar(progress: Float(viewModel.playedTime) / Float(viewModel.getDuration(recordedFile: file) ?? 0))
                     .frame(height: 2)
+                    .padding(.bottom, 10)
+                
+                AudioVisualizerViewWrapper(amplitude: $viewModel.playerAmplitude)
+                    .frame(height: 100)
+                    .frame(maxWidth: .infinity)
             }
             else {
                 Image(systemName: "play.slash")

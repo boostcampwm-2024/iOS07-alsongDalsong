@@ -1,5 +1,5 @@
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 import ASAudioKit
 
 @MainActor
@@ -11,10 +11,12 @@ final class ASAudioKitDemoViewModel: Sendable, ObservableObject {
     @Published var isRecording: Bool
     @Published var isPlaying: Bool
     @Published var playedTime: TimeInterval
-    @Published var amplitude: Float = 0.0
+    @Published var recorderAmplitude: Float = 0.0
+    @Published var playerAmplitude: Float = 0.0
+
     private var progressTimer: Timer?
     private var recordProgressTimer: Timer?
-    
+
     init(recordedFile: Data? = nil,
          isRecording: Bool = false,
          isPlaying: Bool = false,
@@ -32,7 +34,6 @@ final class ASAudioKitDemoViewModel: Sendable, ObservableObject {
 extension ASAudioKitDemoViewModel {
     func recordButtonTapped() {
         recordedFile = nil
-        
         if isPlaying {
             stopPlaying()
             startRecording()
@@ -60,7 +61,7 @@ extension ASAudioKitDemoViewModel {
                 
                 guard let averagePower = self.audioRecorder.getAveragePower() else { return }
                 let newAmplitude = 1.1 * pow(10.0, averagePower / 20.0)
-                self.amplitude = min(max(newAmplitude, 0), 1)
+                self.recorderAmplitude = min(max(newAmplitude, 0), 1)
             }
         })
     }
@@ -81,9 +82,15 @@ extension ASAudioKitDemoViewModel {
         }
         audioPlayer.startPlaying(data: recordedFile, option: playType)
         self.isPlaying = true
-        self.progressTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+        self.progressTimer = Timer.scheduledTimer(withTimeInterval: 0.08, repeats: true, block: {[weak self] _ in
             Task { @MainActor in
+                guard let self else {return}
                 self.updateCurrentTime()
+                
+                self.audioPlayer.updateMeters()
+                guard let averagePower = self.audioPlayer.getAveragePower() else { return }
+                let newAmplitude = 1.1 * pow(10.0, averagePower / 20.0)
+                self.playerAmplitude = min(max(newAmplitude, 0), 1)
             }
         })
     }
