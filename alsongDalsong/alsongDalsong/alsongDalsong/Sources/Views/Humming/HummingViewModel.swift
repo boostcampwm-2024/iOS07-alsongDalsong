@@ -15,7 +15,11 @@ private final class HummingViewModel {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    public init(gameStatusRepository: GameStatusRepositoryProtocol, playersRepository: PlayersRepositoryProtocol, submitsRepository: SubmitsRepositoryProtocol) {
+    public init(
+        gameStatusRepository: GameStatusRepositoryProtocol,
+        playersRepository: PlayersRepositoryProtocol,
+        submitsRepository: SubmitsRepositoryProtocol
+    ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
         self.submitsRepository = submitsRepository
