@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         window = UIWindow(windowScene: windowScene)
-        let onboardingVC = OnboardingViewController(roomNumber: inviteCode)
+        let onboardingVC = OnboardingViewController(inviteCode: inviteCode)
         let navigationController = UINavigationController(rootViewController: onboardingVC)
         navigationController.navigationBar.isHidden = true
         window?.rootViewController = navigationController

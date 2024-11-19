@@ -33,7 +33,7 @@ struct LobbyView: View {
                 SnapperView(size: reader.size, modeInfos: ModeInfo.modeInfos, currentMode: $viewModel.mode)
             }
             
-            ShareLink(item: URL(string: "alsongDalsong://roomNumber?\(viewModel.roomNumber)")!) {
+            ShareLink(item: URL(string: "alsongDalsong://?roomnumber=\(viewModel.roomNumber)")!) {
                 Image(systemName: "link")
                 Text("초대코드!")
             }

@@ -20,17 +20,17 @@ final class OnboardingViewController: UIViewController {
             networkManager: ASNetworkManager(cacheManager: ASCacheManager())
         )
     )
-    private var roomNumber: String
+    private var inviteCode: String
     
     private var cancleables = Set<AnyCancellable>()
     
-    init(roomNumber: String) {
-        self.roomNumber = roomNumber
+    init(inviteCode: String) {
+        self.inviteCode = inviteCode
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
-        self.roomNumber = ""
+        self.inviteCode = ""
         super.init(coder: coder)
     }
     
@@ -49,6 +49,10 @@ final class OnboardingViewController: UIViewController {
         [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, nickNameTextField, avatarRefreshButton].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        if !inviteCode.isEmpty {
+            createRoomButton.isHidden = true
         }
     }
     
@@ -110,35 +114,51 @@ final class OnboardingViewController: UIViewController {
                         self?.createRoomButton.isEnabled = true
                         print("error: \(error.localizedDescription)")
                     }
-                    
                 }
             },
             for: .touchUpInside)
         
-        joinRoomButton.addAction(
-            UIAction { [weak self] _ in
-                let joinAlert = ASAlertController(
-                    titleText: Constants.joinAlertTitle,
-                    doneButtonTitle: Constants.doneAlertButtonTitle,
-                    cancelButtonTitle: Constants.cancelAlertButtonTitle,
-                    textFieldPlaceholder: Constants.roomNumberPlaceholder
-                )
-                joinAlert.doneButtonCompletion = { [weak self] in
-                    Task {
-                        do {
-                            if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                                self?.viewModel.setNickname(with: nickname)
+        if inviteCode.isEmpty {
+            joinRoomButton.addAction(
+                UIAction { [weak self] _ in
+                    let joinAlert = ASAlertController(
+                        titleText: Constants.joinAlertTitle,
+                        doneButtonTitle: Constants.doneAlertButtonTitle,
+                        cancelButtonTitle: Constants.cancelAlertButtonTitle,
+                        textFieldPlaceholder: Constants.roomNumberPlaceholder
+                    )
+                    joinAlert.doneButtonCompletion = { [weak self] in
+                        Task {
+                            do {
+                                if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                                    self?.viewModel.setNickname(with: nickname)
+                                }
+                                try self?.viewModel.joinRoom(roomNumber: joinAlert.text)
+                            } catch {
+                                //TODO: 에러 UI 띄우기
+                                print("error: \(error.localizedDescription)")
                             }
-                            try self?.viewModel.joinRoom(roomNumber: joinAlert.text)
-                        } catch {
-                            //TODO: 에러 UI 띄우기
-                            print("error: \(error.localizedDescription)")
                         }
                     }
+                    self?.present(joinAlert, animated: true, completion: nil)
+                },
+                for: .touchUpInside)
+        }else {
+            joinRoomButton.addAction(UIAction { [weak self] _ in
+                Task {
+                    do {
+                        if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                            self?.viewModel.setNickname(with: nickname)
+                        }
+                        guard let roomNumber = self?.inviteCode else { return }
+                        try self?.viewModel.joinRoom(roomNumber: roomNumber)
+                    } catch {
+                        //TODO: 에러 UI 띄우기
+                        print("error: \(error.localizedDescription)")
+                    }
                 }
-                self?.present(joinAlert, animated: true, completion: nil)
-            },
-            for: .touchUpInside)
+            }, for: .touchUpInside)
+        }
         
         avatarRefreshButton.addAction(
             UIAction { [weak self] _ in
