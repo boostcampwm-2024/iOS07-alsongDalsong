@@ -14,7 +14,7 @@ class ASPanel: UIView {
         titleAlign: NSTextAlignment,
         titleSize: CGFloat
     ) {
-        backgroundColor = .white
+        backgroundColor = .asSystem
         
         let label = UILabel()
         label.textColor = .asBlack

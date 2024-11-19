@@ -14,7 +14,7 @@ class ASTextField: UITextField {
     
     func setConfiguration(
         placeholder: String = "텍스트를 입력하세요",
-        backgroundColor: UIColor = .white,
+        backgroundColor: UIColor = .asSystem,
         textSize: CGFloat = 32
     ) {
         layer.cornerRadius = 12
