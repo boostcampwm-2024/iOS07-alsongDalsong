@@ -34,6 +34,7 @@ final class HummingViewController: UIViewController {
         setupUI()
         setupLayout()
         setupPlaceholder()
+        bindToComponents()
     }
 
     private func bindToComponents() {
