@@ -4,6 +4,6 @@ public enum CacheOption {
     case onlyMemory
     case onlyDisk
     case both
-    case nothing
+    case none
 }
 

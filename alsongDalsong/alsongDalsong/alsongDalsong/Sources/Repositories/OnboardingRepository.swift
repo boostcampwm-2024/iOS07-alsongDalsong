@@ -14,12 +14,14 @@ final class OnboradingRepository: OnboardingRepositoryProtocol {
                 .update(\.headers, with: ["Content-Type": "application/json"])
             let bodyData = ["hostID": player.id]
             let body = try JSONSerialization.data(withJSONObject: bodyData, options: [])
-            let data = try await networkManager.sendRequest(to: endpoint, body: body)
+            let data = try await networkManager.sendRequest(to: endpoint, body: body, option: .none)
             let response = try JSONDecoder().decode([String: String].self, from: data)
             guard let roomNumber = response["roomNumber"] else {
                 throw ASNetworkErrors.responseError
             }
+            print(roomNumber)
             return roomNumber
+            
         } catch {
             throw error
         }
@@ -35,7 +37,7 @@ final class OnboradingRepository: OnboardingRepositoryProtocol {
                 .update(\.headers, with: ["Content-Type": "application/json"])
             let bodyData = ["roomNumber": roomNumber, "userId": player.id]
             let body = try JSONSerialization.data(withJSONObject: bodyData, options: [])
-            let room = try await networkManager.sendRequest(to: endpoint, body: body)
+            let room = try await networkManager.sendRequest(to: endpoint, body: body, option: .none)
             if let jsonObject = try JSONSerialization.jsonObject(with: room, options: []) as? [String: Any],
                let roomNumber = jsonObject["number"] as? String {
                 return roomNumber

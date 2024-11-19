@@ -83,6 +83,7 @@ final class OnboardingViewController: UIViewController {
                             self?.viewModel.setNickname(with: nickname)
                         }
                         try self?.viewModel.createRoom()
+                        self?.createRoomButton.isEnabled = true
                     } catch {
                         //TODO: Error UI
                         self?.createRoomButton.isEnabled = true
@@ -105,9 +106,9 @@ final class OnboardingViewController: UIViewController {
                     Task {
                         do {
                             if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                                await self?.viewModel.setNickname(with: nickname)
+                                self?.viewModel.setNickname(with: nickname)
                             }
-                            try await self?.viewModel.joinRoom(roomNumber: joinAlert.text)
+                            try self?.viewModel.joinRoom(roomNumber: joinAlert.text)
                         } catch {
                             //TODO: 에러 UI 띄우기
                             print("error: \(error.localizedDescription)")
