@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Player: Codable, Equatable {
+public struct Player: Codable, Equatable, Identifiable {
     public var id: String
     public var avatarUrl: URL?
     public var nickname: String?
