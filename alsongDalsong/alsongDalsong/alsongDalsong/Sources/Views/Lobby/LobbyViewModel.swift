@@ -22,14 +22,6 @@ final class LobbyViewModel: ObservableObject {
         self.roomInfoRepository = RoomInfoRepository(mainRepository: self.mainRepository)
     }
     
-    let cards: [ModeInfo] = [
-        ModeInfo(title: "허밍", imageName: "fake", description: String(localized: "HummingModeDescription")),
-        ModeInfo(title: "하모니", imageName: "fake", description: String(localized: "HarmonyModeDescription")),
-        ModeInfo(title: "이구동성", imageName: "fake", description: String(localized: "SyncModeDescription")),
-        ModeInfo(title: "찰나의순간", imageName: "fake", description: String(localized: "InstantModeDescription")),
-        ModeInfo(title: "TTS", imageName: "fake", description: String(localized: "TTSModeDescription")),
-    ]
-
     func fetchData() {
         playersRepository.getPlayers()
             .receive(on: DispatchQueue.main)
@@ -62,4 +54,19 @@ final class LobbyViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
+}
+
+struct ModeInfo: Identifiable {
+    var id: UUID = UUID()
+    let title: String
+    let imageName: String
+    let description: String
+    
+    static let modeInfos: [ModeInfo] = [
+        ModeInfo(title: "허밍", imageName: "fake", description: String(localized: "HummingModeDescription")),
+        ModeInfo(title: "하모니", imageName: "fake", description: String(localized: "HarmonyModeDescription")),
+        ModeInfo(title: "이구동성", imageName: "fake", description: String(localized: "SyncModeDescription")),
+        ModeInfo(title: "찰나의순간", imageName: "fake", description: String(localized: "InstantModeDescription")),
+        ModeInfo(title: "TTS", imageName: "fake", description: String(localized: "TTSModeDescription")),
+    ]
 }
