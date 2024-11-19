@@ -7,7 +7,7 @@ final class HummingViewModel {
     @Published public private(set) var dueTime: Date?
     @Published public private(set) var round: UInt8?
     @Published public private(set) var status: Status?
-    @Published public private(set) var submitStatus: (submits: Int, total: Int)?
+    @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
@@ -51,8 +51,8 @@ final class HummingViewModel {
 
         playerPublisher.zip(submitsPublisher)
             .sink { [weak self] players, submits in
-                let submitStatus = (submits: submits.count, total: players.count)
-                self?.submitStatus = submitStatus
+                let submitStatus = (submits: String(submits.count), total: String(players.count))
+                self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)
     }

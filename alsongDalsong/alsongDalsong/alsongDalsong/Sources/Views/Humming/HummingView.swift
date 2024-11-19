@@ -37,7 +37,7 @@ final class HummingViewController: UIViewController {
     }
 
     private func bindToComponents() {
-        submissionStatus.bind(to: vm.$submitStatus)
+        submissionStatus.bind(to: vm.$submissionStatus)
     }
 
     private func setupUI() {
