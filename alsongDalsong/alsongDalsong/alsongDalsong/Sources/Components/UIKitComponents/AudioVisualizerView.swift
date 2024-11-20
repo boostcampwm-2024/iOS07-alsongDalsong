@@ -56,14 +56,14 @@ final class AudioVisualizerView: UIView {
     
     private func setupLayout() {
         NSLayoutConstraint.activate([
-            startButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 17),
-            startButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -18),
-            startButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 14),
-            startButton.trailingAnchor.constraint(equalTo: waveFormView.leadingAnchor, constant: -11),
+            startButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
+            startButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -16),
+            startButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 12),
+            startButton.trailingAnchor.constraint(equalTo: waveFormView.leadingAnchor, constant: -12),
             
             waveFormView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
             waveFormView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),
-            waveFormView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -11)
+            waveFormView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -12)
         ])
     }
     
@@ -80,10 +80,24 @@ final class WaveFormView: UIView {
     var columnWidth: CGFloat?
     var columns: [CAShapeLayer] = []
     var amplitudesHistory: [CGFloat] = []
-    let numOfColumns: Int = 43
+    let numOfColumns: Int
     
     override class func awakeFromNib() {
         super.awakeFromNib()
+    }
+    
+    init(frame: CGRect, numOfColumns: Int =  43) {
+        self.numOfColumns = numOfColumns
+        super.init(frame: frame)
+    }
+    
+    convenience override init(frame: CGRect) {
+        self.init(frame: frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        self.numOfColumns = 43
+        super.init(coder: coder)
     }
     
     override func layoutSubviews() {
