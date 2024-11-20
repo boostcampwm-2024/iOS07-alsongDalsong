@@ -5,7 +5,7 @@ class AudioVisualizerView: UIView {
     var columnWidth: CGFloat?
     var columns: [CAShapeLayer] = []
     var amplitudesHistory: [CGFloat] = []
-    let numOfColumns: Int = 20
+    let numOfColumns: Int = 43
     
     override class func awakeFromNib() {
         super.awakeFromNib()
@@ -81,4 +81,3 @@ struct AudioVisualizerViewWrapper: UIViewRepresentable {
         uiView.updateVisualizerView(with: CGFloat(amplitude))
     }
 }
-
