@@ -1,8 +1,7 @@
 import ASContainer
 import ASNetworkKit
 
-public final class RepsotioryAssembly: Assembly {
-    
+public struct RepsotioryAssembly: Assembly {
     public func assemble(container: Registerable) {
         container.register(MainRepositoryProtocol.self) { r in
             let firebaseManager = r.resolve(ASFirebaseDatabaseProtocol.self)
