@@ -4,14 +4,14 @@ import Foundation
 
 public final class AvatarRepository: AvatarRepositoryProtocol {
     // TODO: - Container로 주입
-    private let firebaseManager: ASFirebaseStorageProtocol
+    private let storageManager: ASFirebaseStorageProtocol
     private let networkManager: ASNetworkManagerProtocol
     
     public init (
-        firebaseManager: ASFirebaseStorageProtocol,
+        storageManager: ASFirebaseStorageProtocol,
         networkManager: ASNetworkManagerProtocol
     ) {
-        self.firebaseManager = firebaseManager
+        self.storageManager = storageManager
         self.networkManager = networkManager
     }
     
@@ -19,7 +19,7 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
         Future { promise in
             Task {
                 do {
-                    let urls = try await self.firebaseManager.getAvatarUrls()
+                    let urls = try await self.storageManager.getAvatarUrls()
                     promise(.success(urls))
                 } catch {
                     promise(.failure(error))

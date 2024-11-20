@@ -1,16 +1,33 @@
-public protocol Assembly {
-    func assemble(container: DIContainer)
+public protocol Registerable {
+    func register<T>(_ type: T.Type, factory: @escaping (Resolvable) -> T)
+    func register<T>(_ type: T.Type, _ object: T)
 }
 
-public final class DIContainer {
+public protocol Resolvable {
+    func resolve<T>(_ type: T.Type) -> T
+}
+
+public protocol Assembly {
+    func assemble(container: Registerable)
+}
+
+public final class DIContainer: Registerable, Resolvable {
+
+    
+    
     nonisolated(unsafe) static let shared = DIContainer()
     private init() {}
     
-    private var factories = [String: () -> Any]()
+    private var factories = [String: (Resolvable) -> Any]()
     
-    public func register<T>(_ type: T.Type, factory: @escaping () -> T) {
+    public func register<T>(_ type: T.Type, factory: @escaping (Resolvable) -> T) {
         let key = "\(type)"
         factories[key] = factory
+    }
+    
+    public func register<T>(_ type: T.Type, _ object: T) {
+        let key = "\(type)"
+        factories[key] = { _ in object }
     }
     
     public func resolve<T>(_ type: T.Type) -> T {
