@@ -36,7 +36,7 @@ public protocol SubmitsRepositoryProtocol {
 
 public protocol AvatarRepositoryProtocol {
     func getAvatarUrls() -> Future<[URL], Error>
-    func getAvatarData(url: URL) -> Future<Data, Error>
+    func getAvatarData(url: URL) -> Future<Data?, Error>
 }
 
 public protocol RoomActionRepositoryProtocol {

@@ -1,4 +1,5 @@
 import Foundation
+import ASCacheKit
 import ASNetworkKit
 import ASEntity
 import ASRepository
@@ -6,8 +7,10 @@ import Combine
 
 final class LobbyViewModel: ObservableObject {
     private var mainRepository: MainRepository
-    private var playersRepository: PlayersRepository
-    private var roomInfoRepository: RoomInfoRepository
+    private var playersRepository: PlayersRepositoryProtocol
+    private var roomInfoRepository: RoomInfoRepositoryProtocol
+    private var avatarRepository: AvatarRepositoryProtocol
+    
     let playerMaxCount = 4
     @Published var players: [Player] = []
     @Published var roomNumber: String = ""
@@ -20,6 +23,20 @@ final class LobbyViewModel: ObservableObject {
         self.mainRepository = mainRepository
         self.playersRepository = PlayersRepository(mainRepository: self.mainRepository)
         self.roomInfoRepository = RoomInfoRepository(mainRepository: self.mainRepository)
+        // TODO: 구체타입을 바로 초기화 ( Container로 수정 예정)
+        self.avatarRepository = AvatarRepository(firebaseManager: ASFirebaseManager(), networkManager: ASNetworkManager(cacheManager: ASCacheManager()))
+        fetchData()
+    }
+    
+    func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
+        if let url {
+            return avatarRepository.getAvatarData(url: url)
+                .eraseToAnyPublisher()
+        }else {
+            return Just(nil)
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        }
     }
     
     func fetchData() {

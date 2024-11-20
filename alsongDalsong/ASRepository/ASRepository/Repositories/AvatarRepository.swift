@@ -28,7 +28,7 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
         }
     }
     
-    public func getAvatarData(url: URL) -> Future<Data, Error> {
+    public func getAvatarData(url: URL) -> Future<Data?, Error> {
         Future { promise in
             Task {
                 do {

@@ -1,9 +1,8 @@
+import ASEntity
 import ASRepository
 import SwiftUI
-import ASEntity
 
 struct LobbyView: View {
-    //    @StateObject var viewModel: LobbyViewModel
     @ObservedObject var viewModel: LobbyViewModel
     @Environment(\.dismiss) var dismiss
     var body: some View {
@@ -23,37 +22,38 @@ struct LobbyView: View {
             }
             .font(.title)
             .padding()
-            HStack(spacing: 15) {
-                ForEach(viewModel.players) { player in
-                    ProfileView(imageURL: player.avatarUrl, name: player.nickname, isHost: player.id == viewModel.host?.id)
+            ScrollView(.horizontal) {
+                HStack(spacing: 16) {
+                    ForEach(viewModel.players) { player in
+                        ProfileView(
+                            imagePublisher: viewModel.getAvatarData(url: player.avatarUrl),
+                            name: player.nickname,
+                            isHost: player.id == viewModel.host?.id
+                        )
+                    }
                 }
             }
             .padding()
+
             GeometryReader { reader in
                 SnapperView(size: reader.size, modeInfos: ModeInfo.modeInfos, currentMode: $viewModel.mode)
             }
-            
+
             ShareLink(item: URL(string: "alsongDalsong://?roomnumber=\(viewModel.roomNumber)")!) {
                 Image(systemName: "link")
                 Text("초대코드!")
             }
             .buttonStyle(ASButtonStyle(backgroundColor: Color(.asYellow)))
             .padding(.vertical, 20)
-            
-            Button {
-                
-            } label: {
+
+            Button {} label: {
                 Image(systemName: "play.fill")
                 Text("시작하기!")
             }
             .buttonStyle(ASButtonStyle(backgroundColor: Color(.asMint)))
             .padding(.bottom, 20)
-
         }
         .background(Color.asLightGray)
-        .onAppear {
-            viewModel.fetchData()
-        }
     }
 }
 
