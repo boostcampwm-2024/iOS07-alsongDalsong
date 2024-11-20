@@ -42,6 +42,7 @@ final class HummingViewController: UIViewController {
 
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
+        hummingPanel.changeBackgroundColor(color: .asYellow)
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)
         view.addSubview(guideLabel)

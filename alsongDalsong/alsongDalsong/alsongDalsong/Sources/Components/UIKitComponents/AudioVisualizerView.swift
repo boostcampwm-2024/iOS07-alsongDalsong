@@ -5,6 +5,7 @@ final class AudioVisualizerView: UIView {
     // + ViewModel에서 @Published로 가지고 있는 amplitude를 구독해 변경이 발생할 시, VC에서 updateWaveFormView 메서드 호출
     private var startButton = UIButton()
     private var waveFormView = WaveFormView()
+    private var customBackgroundColor: UIColor = .asMint
 
     init() {
         super.init(frame: .zero)
@@ -28,7 +29,7 @@ final class AudioVisualizerView: UIView {
     }
 
     func changeBackgroundColor(color: UIColor) {
-        layer.backgroundColor = color.cgColor
+        customBackgroundColor = color
     }
 
     private func setupButton() {
@@ -44,7 +45,7 @@ final class AudioVisualizerView: UIView {
 
     private func setupView() {
         layer.cornerRadius = 12
-        layer.backgroundColor = UIColor.asMint.cgColor
+        layer.backgroundColor = customBackgroundColor.cgColor
     }
 
     private func addSubViews() {
