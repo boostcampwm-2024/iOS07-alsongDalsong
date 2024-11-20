@@ -4,7 +4,7 @@ import UIKit
 final class HummingViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var guideLabel = GuideLabel()
-    private var recordPanel = AudioVisualizerView()
+    private var hummingPanel = AudioVisualizerView()
     private var recordButton = RecordButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
@@ -45,7 +45,7 @@ final class HummingViewController: UIViewController {
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)
         view.addSubview(guideLabel)
-        view.addSubview(recordPanel)
+        view.addSubview(hummingPanel)
         view.addSubview(recordButton)
         view.addSubview(submitButton)
         view.addSubview(submissionStatus)
@@ -58,7 +58,7 @@ final class HummingViewController: UIViewController {
     private func setupLayout() {
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         guideLabel.translatesAutoresizingMaskIntoConstraints = false
-        recordPanel.translatesAutoresizingMaskIntoConstraints = false
+        hummingPanel.translatesAutoresizingMaskIntoConstraints = false
         recordButton.translatesAutoresizingMaskIntoConstraints = false
         submitButton.translatesAutoresizingMaskIntoConstraints = false
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
@@ -72,12 +72,12 @@ final class HummingViewController: UIViewController {
             guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 56),
             guideLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-            recordPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 68),
-            recordPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            recordPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            recordPanel.heightAnchor.constraint(equalToConstant: 64),
+            hummingPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 68),
+            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            hummingPanel.heightAnchor.constraint(equalToConstant: 64),
 
-            recordButton.topAnchor.constraint(equalTo: recordPanel.bottomAnchor, constant: 68),
+            recordButton.topAnchor.constraint(equalTo: hummingPanel.bottomAnchor, constant: 68),
             recordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
             submitButton.bottomAnchor.constraint(equalTo: submissionStatus.topAnchor, constant: -24),
