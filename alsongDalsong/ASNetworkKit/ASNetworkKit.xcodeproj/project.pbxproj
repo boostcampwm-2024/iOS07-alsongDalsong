@@ -21,6 +21,8 @@
 		1697277B2CE66283005B4953 /* ASDecoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; };
 		1697277C2CE66283005B4953 /* ASDecoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169727782CE6627F005B4953 /* ASDecoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		169C06272CEC61030084B082 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 169C06262CEC61030084B082 /* FirebaseStorage */; };
+		16DE64432CEE211C00DFC48F /* ASContainer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16DE64422CEE211100DFC48F /* ASContainer.framework */; };
+		16DE64442CEE211C00DFC48F /* ASContainer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16DE64422CEE211100DFC48F /* ASContainer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1B783B6C2CE4F04E005511AE /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */; };
 		1BF1CB722CEA52D40003EED9 /* ASCacheKitProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */; };
 		1BF1CB732CEA52D40003EED9 /* ASCacheKitProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -50,6 +52,13 @@
 			remoteGlobalIDString = 1B702E612CE5193F00124F73;
 			remoteInfo = ASDecoder;
 		};
+		16DE64412CEE211100DFC48F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16DE643D2CEE211100DFC48F /* ASContainer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 16DE63F52CEE02AC00DFC48F;
+			remoteInfo = ASContainer;
+		};
 		16F8B8A82CE5E50C0059F22A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1B10CAD22CE4C13F002A5B8F /* Project object */;
@@ -74,6 +83,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				1BF1CB732CEA52D40003EED9 /* ASCacheKitProtocol.framework in Embed Frameworks */,
+				16DE64442CEE211C00DFC48F /* ASContainer.framework in Embed Frameworks */,
 				169726A72CE63DCD005B4953 /* ASEntity.framework in Embed Frameworks */,
 				8D64F8DE2CEA05AA0069B77F /* ASDecoder.framework in Embed Frameworks */,
 				169727712CE65D99005B4953 /* ASEncoder.framework in Embed Frameworks */,
@@ -100,6 +110,7 @@
 		169724552CE5F44E005B4953 /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASEntity.xcodeproj; path = ../ASEntity/ASEntity.xcodeproj; sourceTree = "<group>"; };
 		169727672CE65D89005B4953 /* ASEncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASEncoder.xcodeproj; path = ../ASEncoder/ASEncoder.xcodeproj; sourceTree = "<group>"; };
 		169727722CE6627F005B4953 /* ASDecoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASDecoder.xcodeproj; path = ../ASDecoder/ASDecoder.xcodeproj; sourceTree = "<group>"; };
+		16DE643D2CEE211100DFC48F /* ASContainer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASContainer.xcodeproj; path = ../ASContainer/ASContainer.xcodeproj; sourceTree = "<group>"; };
 		16F8B8902CE5E4FD0059F22A /* ASFirebaseDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASFirebaseDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B10CADB2CE4C13F002A5B8F /* ASNetworkKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASNetworkKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B783B682CE4F04E005511AE /* ASNetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASNetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,6 +118,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		16DE643C2CEE207900DFC48F /* Exceptions for "ASNetworkKit" folder in "ASFirebaseDemo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				NetworkAssembly.swift,
+			);
+			target = 16F8B88F2CE5E4FD0059F22A /* ASFirebaseDemo */;
+		};
 		16F8B8A12CE5E4FE0059F22A /* Exceptions for "ASFirebaseDemo" folder in "ASFirebaseDemo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -127,6 +145,9 @@
 		};
 		1B10CADD2CE4C13F002A5B8F /* ASNetworkKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				16DE643C2CEE207900DFC48F /* Exceptions for "ASNetworkKit" folder in "ASFirebaseDemo" target */,
+			);
 			path = ASNetworkKit;
 			sourceTree = "<group>";
 		};
@@ -155,6 +176,7 @@
 				1BF1CB722CEA52D40003EED9 /* ASCacheKitProtocol.framework in Frameworks */,
 				169725542CE5F817005B4953 /* FirebaseDatabase in Frameworks */,
 				8D64F8DD2CEA05A90069B77F /* ASDecoder.framework in Frameworks */,
+				16DE64432CEE211C00DFC48F /* ASContainer.framework in Frameworks */,
 				169727702CE65D99005B4953 /* ASEncoder.framework in Frameworks */,
 				169725562CE5F817005B4953 /* FirebaseFirestore in Frameworks */,
 				169C06272CEC61030084B082 /* FirebaseStorage in Frameworks */,
@@ -198,9 +220,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		16DE643E2CEE211100DFC48F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				16DE64422CEE211100DFC48F /* ASContainer.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		16F8B8A52CE5E50C0059F22A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				16DE643D2CEE211100DFC48F /* ASContainer.xcodeproj */,
 				1BF1CB712CEA52D40003EED9 /* ASCacheKitProtocol.framework */,
 				169727722CE6627F005B4953 /* ASDecoder.xcodeproj */,
 				169727672CE65D89005B4953 /* ASEncoder.xcodeproj */,
@@ -358,6 +389,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 16DE643E2CEE211100DFC48F /* Products */;
+					ProjectRef = 16DE643D2CEE211100DFC48F /* ASContainer.xcodeproj */;
+				},
+				{
 					ProductGroup = 169727732CE6627F005B4953 /* Products */;
 					ProjectRef = 169727722CE6627F005B4953 /* ASDecoder.xcodeproj */;
 				},
@@ -399,6 +434,13 @@
 			fileType = wrapper.framework;
 			path = ASDecoder.framework;
 			remoteRef = 169727772CE6627F005B4953 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16DE64422CEE211100DFC48F /* ASContainer.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASContainer.framework;
+			remoteRef = 16DE64412CEE211100DFC48F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
