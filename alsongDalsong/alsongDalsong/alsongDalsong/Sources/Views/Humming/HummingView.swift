@@ -41,7 +41,7 @@ final class HummingViewController: UIViewController {
     }
 
     private func setupUI() {
-        guideLabel.setText("허밍을 듣고 따라하세요!")
+        guideLabel.setText("노래를 따라해 보세요!")
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)
         view.addSubview(guideLabel)
@@ -69,9 +69,9 @@ final class HummingViewController: UIViewController {
             progressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             progressBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            progressBar.heightAnchor.constraint(equalToConstant: 15),
+            progressBar.heightAnchor.constraint(equalToConstant: 16),
 
-            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 53),
+            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 56),
             guideLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
             recordPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 68),

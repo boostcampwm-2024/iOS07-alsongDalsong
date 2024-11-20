@@ -10,7 +10,6 @@ final class ProgressBar: UIView {
 
     init() {
         super.init(frame: .zero)
-        setupProgressBar()
     }
 
     @available(*, unavailable)
@@ -30,6 +29,11 @@ final class ProgressBar: UIView {
             .store(in: &cancellables)
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupProgressBar()
+    }
+
     private func setupProgressBar() {
         progressBar.backgroundColor = .asYellow
         addSubview(progressBar)
@@ -47,14 +51,6 @@ final class ProgressBar: UIView {
     private func startProgressAnimation() {
         guard let targetDate = targetDate else { return }
         let timeInterval = targetDate.timeIntervalSince(Date.now)
-
-        if timeInterval <= 0 {
-            progressBarWidthConstraint?.constant = 0
-            return
-        }
-
-        progressBarWidthConstraint?.constant = bounds.width
-        layoutIfNeeded()
 
         UIView.animate(
             withDuration: timeInterval,
