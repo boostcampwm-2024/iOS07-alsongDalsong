@@ -16,9 +16,9 @@ class ASButton: UIButton {
     ///   - title: 버튼에 쓰일 텍스트
     ///   - backgroundColor: UIColor 형태로 색깔 입력.  (ex.   .asYellow)
     func setConfiguration(
-        systemImageName: String,
+        systemImageName: String? = nil,
         title: String,
-        backgroundColor: UIColor,
+        backgroundColor: UIColor? = nil,
         textSize: CGFloat = 32
     ) {
         var config = UIButton.Configuration.gray()
@@ -26,9 +26,11 @@ class ASButton: UIButton {
         config.baseBackgroundColor = backgroundColor
         config.baseForegroundColor = .black
         
-        config.imagePlacement = .leading
-        config.image = UIImage(systemName: systemImageName)
-        config.imagePadding = 10
+        if let systemImageName {
+            config.imagePlacement = .leading
+            config.image = UIImage(systemName: systemImageName)
+            config.imagePadding = 10
+        }
         
         config.background.strokeColor = .black
         config.background.strokeWidth = 3
