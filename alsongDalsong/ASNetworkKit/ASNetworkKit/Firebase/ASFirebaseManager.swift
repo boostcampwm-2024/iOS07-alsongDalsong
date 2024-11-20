@@ -67,6 +67,7 @@ extension ASFirebaseManager: ASFirebaseAuthProtocol {
             // MARK: setValue 함수가 Data 타입은 안들어가서 AS Encoder에 Dict로 변환하는 게 필요할듯 합니다.
             let dict = try JSONSerialization.jsonObject(with: playerData, options: .allowFragments) as? [String: Any]
             let userStatusRef = databaseRef.child("players").child(playerID)
+            userStatusRef.keepSynced(true)
             let connectedRef = databaseRef.child(".info/connected")
             connectedRef.observe(.value) { snapshot in
                 guard let isConnected = snapshot.value as? Bool else { return }
