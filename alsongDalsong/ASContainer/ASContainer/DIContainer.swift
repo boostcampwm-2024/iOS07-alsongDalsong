@@ -1,4 +1,4 @@
-protocol Assembly {
+public protocol Assembly {
     func assemble(container: DIContainer)
 }
 
@@ -8,12 +8,12 @@ public final class DIContainer {
     
     private var factories = [String: () -> Any]()
     
-    func register<T>(_ type: T.Type, factory: @escaping () -> T) {
+    public func register<T>(_ type: T.Type, factory: @escaping () -> T) {
         let key = "\(type)"
         factories[key] = factory
     }
     
-    func resolve<T>(_ type: T.Type) -> T {
+    public func resolve<T>(_ type: T.Type) -> T {
         let key = "\(type)"
         
         guard let dependency = factories[key] as? T else {
@@ -23,7 +23,7 @@ public final class DIContainer {
         return dependency
     }
     
-    func addAssemblies(_ assemblies: [Assembly]) {
+    public func addAssemblies(_ assemblies: [Assembly]) {
         assemblies.forEach { $0.assemble(container: self) }
     }
 }

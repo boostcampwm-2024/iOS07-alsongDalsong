@@ -4,7 +4,7 @@ import Combine
 import Foundation
 
 public final class MainRepository: MainRepositoryProtocol {
-    private let firebaseManager = ASFirebaseManager()
+    private let firebaseManager: ASFirebaseDatabaseProtocol
 
     @PublishedValue public var number: String?
     @PublishedValue public var host: Player?
@@ -20,8 +20,8 @@ public final class MainRepository: MainRepositoryProtocol {
     
     private var cancellables: Set<AnyCancellable> = []
     
-    public init(roomNumber: String) {
-        connectRoom(roomNumber: roomNumber)
+    public init(firebaseManager: ASFirebaseDatabaseProtocol) {
+        self.firebaseManager = firebaseManager
     }
     
     public func connectRoom(roomNumber: String) {

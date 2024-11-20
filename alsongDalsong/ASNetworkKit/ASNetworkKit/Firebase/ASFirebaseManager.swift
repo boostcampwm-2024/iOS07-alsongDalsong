@@ -13,15 +13,12 @@ public final class ASFirebaseManager: Sendable {
     private let firestoreRef = Firestore.firestore()
     private var roomListeners: ListenerRegistration?
     private let storageRef = Storage.storage().reference()
-    
     private var roomPublisher = PassthroughSubject<Room, Error>()
-    
+
     public init() {}
-    
-    public func getCurrentUserID() -> String {
-        return Auth.auth().currentUser?.uid ?? ""
-    }
-    
+}
+
+extension ASFirebaseManager: ASFirebaseStorageProtocol {
     public func getAvatarUrls() async throws -> [URL] {
         let avatarRef = storageRef.child("avatar")
         do {
@@ -61,6 +58,10 @@ public final class ASFirebaseManager: Sendable {
 }
 
 extension ASFirebaseManager: ASFirebaseAuthProtocol {
+    public func getCurrentUserID() -> String {
+        return Auth.auth().currentUser?.uid ?? ""
+    }
+    
     public func signInAnonymously(nickname: String, avatarURL: URL?) async throws -> Player {
         do {
             let authResult = try await Auth.auth().signInAnonymously()
@@ -123,3 +124,6 @@ extension ASFirebaseManager: ASFirebaseDatabaseProtocol {
         roomListeners?.remove()
     }
 }
+
+
+

@@ -4,7 +4,7 @@ import Foundation
 
 public final class AvatarRepository: AvatarRepositoryProtocol {
     // TODO: - Container로 주입
-    private let firebaseManager: ASFirebaseManager
+    private let firebaseManager: ASFirebaseStorageProtocol
     private let networkManager: ASNetworkManager
     
     public init (
