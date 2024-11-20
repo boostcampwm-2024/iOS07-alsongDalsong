@@ -1,9 +1,9 @@
-import UIKit
 import ASCacheKit
 import ASNetworkKit
-import SwiftUI
-import Combine
 import ASRepository
+import Combine
+import SwiftUI
+import UIKit
 
 final class OnboardingViewController: UIViewController {
     private var logoImageView = UIImageView(image: UIImage(named: Constants.logoImageName))
@@ -15,11 +15,12 @@ final class OnboardingViewController: UIViewController {
     private var avatarRefreshButton = ASRefreshButton(size: 28)
     // 뷰모델에 주입해줄 때 Container 가 필요할 거 같습니다.
     private var viewModel = OnboardingViewModel(
-        repository: OnboardingRepository(
+        avatarRepository: AvatarRepository(
             firebaseManager: ASFirebaseManager(),
-            networkManager: ASNetworkManager(cacheManager: ASCacheManager())
-        )
-    )
+            networkManager: ASNetworkManager(cacheManager: ASCacheManager())),
+        roomActionRepository: RoomActionRepository(
+            firebaseManager: ASFirebaseManager(),
+            networkManager: ASNetworkManager(cacheManager: ASCacheManager())))
     private var inviteCode: String
     
     private var cancleables = Set<AnyCancellable>()
@@ -41,14 +42,13 @@ final class OnboardingViewController: UIViewController {
         setAction()
         setConfiguration()
         bind()
-        viewModel.refreshAvatars()
     }
     
     private func setupUI() {
         view.backgroundColor = .asLightGray
-        [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, nickNameTextField, avatarRefreshButton].forEach {
-            view.addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
+        for item in [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, nickNameTextField, avatarRefreshButton] {
+            view.addSubview(item)
+            item.translatesAutoresizingMaskIntoConstraints = false
         }
         
         if !inviteCode.isEmpty {
@@ -57,7 +57,7 @@ final class OnboardingViewController: UIViewController {
     }
     
     private func setupLayout() {
-        let safeArea = self.view.safeAreaLayoutGuide
+        let safeArea = view.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
             joinRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
@@ -94,27 +94,18 @@ final class OnboardingViewController: UIViewController {
             avatarRefreshButton.widthAnchor.constraint(equalToConstant: 60),
             avatarRefreshButton.heightAnchor.constraint(equalToConstant: 60)
         ])
-        
     }
     
     /// 화면상의 컴포넌트들에게 Action을 추가함
     private func setAction() {
         createRoomButton.addAction(
             UIAction { [weak self] _ in
-                Task {
-                    self?.createRoomButton.isEnabled = false
-                    do {
-                        if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                            self?.viewModel.setNickname(with: nickname)
-                        }
-                        try self?.viewModel.createRoom()
-                        self?.createRoomButton.isEnabled = true
-                    } catch {
-                        //TODO: Error UI
-                        self?.createRoomButton.isEnabled = true
-                        print("error: \(error.localizedDescription)")
-                    }
+                self?.createRoomButton.isEnabled = false
+                if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                    self?.viewModel.setNickname(with: nickname)
                 }
+                self?.viewModel.createRoom()
+                self?.createRoomButton.isEnabled = true
             },
             for: .touchUpInside)
         
@@ -125,38 +116,25 @@ final class OnboardingViewController: UIViewController {
                         titleText: Constants.joinAlertTitle,
                         doneButtonTitle: Constants.doneAlertButtonTitle,
                         cancelButtonTitle: Constants.cancelAlertButtonTitle,
-                        textFieldPlaceholder: Constants.roomNumberPlaceholder
-                    )
+                        textFieldPlaceholder: Constants.roomNumberPlaceholder)
+                    
                     joinAlert.doneButtonCompletion = { [weak self] in
-                        Task {
-                            do {
-                                if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                                    self?.viewModel.setNickname(with: nickname)
-                                }
-                                try self?.viewModel.joinRoom(roomNumber: joinAlert.text)
-                            } catch {
-                                //TODO: 에러 UI 띄우기
-                                print("error: \(error.localizedDescription)")
-                            }
+                        if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                            self?.viewModel.setNickname(with: nickname)
                         }
+                        self?.viewModel.joinRoom(roomNumber: joinAlert.text)
                     }
                     self?.present(joinAlert, animated: true, completion: nil)
                 },
                 for: .touchUpInside)
-        }else {
+        } else {
             joinRoomButton.addAction(UIAction { [weak self] _ in
-                Task {
-                    do {
-                        if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                            self?.viewModel.setNickname(with: nickname)
-                        }
-                        guard let roomNumber = self?.inviteCode else { return }
-                        try self?.viewModel.joinRoom(roomNumber: roomNumber)
-                    } catch {
-                        //TODO: 에러 UI 띄우기
-                        print("error: \(error.localizedDescription)")
-                    }
+                if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                    self?.viewModel.setNickname(with: nickname)
                 }
+                guard let roomNumber = self?.inviteCode else { return }
+                self?.viewModel.joinRoom(roomNumber: roomNumber)
+                
             }, for: .touchUpInside)
         }
         
@@ -167,9 +145,18 @@ final class OnboardingViewController: UIViewController {
     }
     
     func setConfiguration() {
-        createRoomButton.setConfiguration(systemImageName: "", title: Constants.craeteButtonTitle, backgroundColor: .asYellow)
-        joinRoomButton.setConfiguration(systemImageName: "", title: Constants.joinButtonTitle, backgroundColor: .asMint)
-        nickNamePanel.setConfiguration(title: Constants.nickNameTitle, titleAlign: .left, titleSize: 24)
+        createRoomButton.setConfiguration(
+            systemImageName: "",
+            title: Constants.craeteButtonTitle,
+            backgroundColor: .asYellow)
+        joinRoomButton.setConfiguration(
+            systemImageName: "",
+            title: Constants.joinButtonTitle,
+            backgroundColor: .asMint)
+        nickNamePanel.setConfiguration(
+            title: Constants.nickNameTitle,
+            titleAlign: .left,
+            titleSize: 24)
     }
     
     private func bind() {
@@ -190,7 +177,10 @@ final class OnboardingViewController: UIViewController {
             .filter { !$0.isEmpty }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
-                let lobbyViewController = UIHostingController(rootView: LobbyView(viewModel: LobbyViewModel(mainRepository: MainRepository(roomNumber: roomNumber))))
+                let mainRepository = MainRepository(roomNumber: roomNumber)
+                let lobbyViewModel = LobbyViewModel(mainRepository: mainRepository)
+                let lobbyView = LobbyView(viewModel: lobbyViewModel)
+                let lobbyViewController = UIHostingController(rootView: lobbyView)
                 self?.navigationController?.pushViewController(lobbyViewController, animated: false)
             }
             .store(in: &cancleables)

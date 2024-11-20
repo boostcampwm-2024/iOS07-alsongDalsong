@@ -1,78 +1,104 @@
-import Foundation
-import Combine
-import ASRepository
 import ASNetworkKit
+import ASRepository
+import Combine
+import Foundation
 
 final class OnboardingViewModel {
     // TODO: 닉네임 생성기 + 이미지 fetch (배열) + 참가하기 로직, 생성하기 로직
-    private var onboardingRepository: OnboardingRepositoryProtocol
+    private var avatarRepository: AvatarRepositoryProtocol
+    private var roomActionRepository: RoomActionRepositoryProtocol
     private var avatars: [URL] = []
     private var selectedAvatar: URL?
+    private var cancellables: Set<AnyCancellable> = []
     
     @Published var nickname: String = NickNameGenerator.generate()
     @Published var avatarData: Data?
-    
     @Published var roomNumber: String = ""
     
-    init(repository: OnboardingRepositoryProtocol) {
-        self.onboardingRepository = repository
+    init(avatarRepository: AvatarRepositoryProtocol,
+         roomActionRepository: RoomActionRepositoryProtocol)
+    {
+        self.avatarRepository = avatarRepository
+        self.roomActionRepository = roomActionRepository
+        refreshAvatars()
     }
     
     func setNickname(with nickname: String) {
         self.nickname = nickname
     }
     
-    @MainActor
-    func fetchAvatars() async {
-        do {
-            avatars = try await onboardingRepository.getAvatarUrls() ?? []
-        }
-        catch {
-            print(error.localizedDescription)
-        }
+    private func fetchAvatars() {
+        avatarRepository.getAvatarUrls()
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] urls in
+                self?.avatars = urls
+                self?.refreshAvatars()
+            }
+            .store(in: &cancellables)
     }
     
-    @MainActor
     func refreshAvatars() {
-        Task {
-            do {
-                if avatars.isEmpty {
-                    await fetchAvatars()
-                }
-                guard let url = avatars.randomElement() else { return }
-                selectedAvatar = url
-                
-                guard let selectedAvatar else { return }
-                avatarData = try await self.onboardingRepository.getAvatarData(url: selectedAvatar)
-            } catch {
-                print(error.localizedDescription)
-            }
+        if avatars.isEmpty {
+            fetchAvatars()
         }
+        guard let randomAvatar = avatars.randomElement() else { return }
+        selectedAvatar = randomAvatar
+        
+        avatarRepository.getAvatarData(url: randomAvatar)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] data in
+                self?.avatarData = data
+            }
+            .store(in: &cancellables)
     }
     
-    @MainActor
-    func joinRoom(roomNumber id: String) throws {
-        Task {
-            do {
-                roomNumber = try await onboardingRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
-            } catch {
-                print(error)
-                throw error
+    func joinRoom(roomNumber id: String) {
+        guard let selectedAvatar else { return }
+        roomActionRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] isSuccess in
+                if isSuccess {
+                    self?.roomNumber = id
+                }
             }
-        }
+            .store(in: &cancellables)
     }
     
-    @MainActor
-    func createRoom() throws {
-        Task {
-            do {
-                let roomNumber = try await onboardingRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
-                if !roomNumber.isEmpty {
-                    try joinRoom(roomNumber: roomNumber)
+    func createRoom() {
+        guard let selectedAvatar else { return }
+        roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
                 }
-            } catch {
-                throw error
+            } receiveValue: { [weak self] roomNumber in
+                self?.joinRoom(roomNumber: roomNumber)
             }
-        }
+            .store(in: &cancellables)
     }
 }
