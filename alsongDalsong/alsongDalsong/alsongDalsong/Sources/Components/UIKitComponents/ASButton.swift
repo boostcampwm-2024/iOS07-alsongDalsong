@@ -24,7 +24,7 @@ class ASButton: UIButton {
         var config = UIButton.Configuration.gray()
         
         config.baseBackgroundColor = backgroundColor
-        config.baseForegroundColor = .black
+        config.baseForegroundColor = .asBlack
         
         if let systemImageName {
             config.imagePlacement = .leading

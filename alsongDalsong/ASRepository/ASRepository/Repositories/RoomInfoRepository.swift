@@ -5,7 +5,7 @@ import ASEntity
 public struct RoomInfoRepository: RoomInfoRepositoryProtocol {
     private var mainRepository: MainRepository
     
-    init(mainRepository: MainRepository) {
+    public init(mainRepository: MainRepository) {
         self.mainRepository = mainRepository
     }
     

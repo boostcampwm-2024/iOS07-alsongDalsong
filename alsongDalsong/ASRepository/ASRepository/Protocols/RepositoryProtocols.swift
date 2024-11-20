@@ -33,3 +33,14 @@ public protocol SelectedRecordsRepositoryProtocol {
 public protocol SubmitsRepositoryProtocol {
     func getSubmits() -> AnyPublisher<[Answer], Never>
 }
+
+public protocol AvatarRepositoryProtocol {
+    func getAvatarUrls() -> Future<[URL], Error>
+    func getAvatarData(url: URL) -> Future<Data?, Error>
+}
+
+public protocol RoomActionRepositoryProtocol {
+    func createRoom(nickname: String, avatar: URL) -> Future<String, Error>
+    func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, Error>
+    func leaveRoom() -> Future<Bool, Error>
+}

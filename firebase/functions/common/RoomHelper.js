@@ -9,7 +9,7 @@ const firestore = admin.firestore();
 function createRoomData(roomNumber, hostData) {
   const host = {
     id: hostData.id,
-    avatar: hostData.avatar || '',
+    avatar: hostData.avatarUrl || '',
     nickname: hostData.nickname || '',
     score: hostData.score || 0,
     order: 0,
