@@ -29,10 +29,15 @@ public final class ASAudioPlayer: NSObject, Sendable, AVAudioPlayerDelegate {
             audioPlayer?.currentTime = 0
             audioPlayer?.play()
             let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(time), repeats: false) { [weak self] _ in
-                self?.audioPlayer?.stop()
+                self?.stopPlaying()
             }
         }
     }
+    
+    public func stopPlaying() {
+        audioPlayer?.stop()
+    }
+    
     /// AVPlayer객체의 재생여부를 확인합니다.
     public func isPlaying() -> Bool {
         if let audioPlayer {
