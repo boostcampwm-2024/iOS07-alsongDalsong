@@ -51,9 +51,7 @@ final class HummingViewController: UIViewController {
         view.addSubview(submissionStatus)
     }
 
-    /// 구현되지 않은 컴포넌트들의 placeholder
     private func setupPlaceholder() {
-        recordPanel.backgroundColor = .asMint
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asGreen)
     }
 
