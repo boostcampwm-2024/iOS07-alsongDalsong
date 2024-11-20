@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 
 class ASButton: UIButton {
     init() {
@@ -45,5 +46,21 @@ class ASButton: UIButton {
         
         self.configuration = config
         setShadow()
+    }
+}
+
+struct ASButtonWrapper: UIViewRepresentable {
+    let systemImageName: String
+    let title: String
+    let backgroundColor: UIColor
+    let textSize: CGFloat = 32
+    func makeUIView(context: Context) -> ASButton {
+        let view = ASButton()
+        view.setConfiguration(systemImageName: systemImageName, title: title, backgroundColor: backgroundColor, textSize: textSize)
+        return view
+    }
+
+    func updateUIView(_ uiView: ASButton, context: Context) {
+
     }
 }

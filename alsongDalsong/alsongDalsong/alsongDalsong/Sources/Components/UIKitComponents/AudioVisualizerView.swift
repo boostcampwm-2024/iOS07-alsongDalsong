@@ -1,10 +1,11 @@
 import UIKit
+import SwiftUI
 
 final class AudioVisualizerView: UIView {
     //TODO: Button을 누르면 ViewModel에 존재하는 ASPlayer가 실행되고 Button의 이미지 변경
     // + ViewModel에서 @Published로 가지고 있는 amplitude를 구독해 변경이 발생할 시, VC에서 updateWaveFormView 메서드 호출
     private var startButton = UIButton()
-    private var waveFormView = WaveFormView()
+    private var waveFormView = WaveFormView(frame: .zero)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -86,13 +87,9 @@ final class WaveFormView: UIView {
         super.awakeFromNib()
     }
     
-    init(frame: CGRect, numOfColumns: Int =  43) {
+    init(frame: CGRect, numOfColumns: Int = 43) {
         self.numOfColumns = numOfColumns
         super.init(frame: frame)
-    }
-    
-    convenience override init(frame: CGRect) {
-        self.init(frame: frame)
     }
     
     required init?(coder: NSCoder) {
@@ -140,7 +137,7 @@ final class WaveFormView: UIView {
     private func computeNewPath(for layer: CAShapeLayer, with amplitude: CGFloat) -> CGPath {
         let width = self.columnWidth ?? 8.0
         let maxHeightGain = self.bounds.height - 3 * width
-        let heightGain =  maxHeightGain * amplitude
+        let heightGain = maxHeightGain * amplitude
         let newHeight = width + heightGain
         let newOrigin = CGPoint(x: layer.path?.boundingBox.origin.x ?? 0,
                                 y: (layer.superlayer?.bounds.midY ?? 0) - (newHeight / 2))
@@ -175,5 +172,19 @@ final class WaveFormView: UIView {
                 self.columns[i].fillColor = UIColor.white.cgColor
             }
         }
+    }
+}
+
+struct WaveFormViewWrapper: UIViewRepresentable {
+    @Binding var amplitude: Float
+    
+    func makeUIView(context: Context) -> WaveFormView {
+        let view = WaveFormView(frame: .zero)
+        
+        return view
+    }
+    
+    func updateUIView(_ uiView: WaveFormView, context: Context) {
+        uiView.updateVisualizerView(with: CGFloat(amplitude))
     }
 }

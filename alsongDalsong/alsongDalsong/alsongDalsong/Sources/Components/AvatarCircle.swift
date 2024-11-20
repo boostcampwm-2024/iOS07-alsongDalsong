@@ -50,18 +50,18 @@ final class AvatarCircle: UIView {
     }
 }
 
-struct AvatarCircleView: UIViewRepresentable {
-    //TODO: 추후에 Data타입 또는 URL을 받아 이미지 표시
-    // SpeechBubbleCell은 SwiftUI이므로 적용하기 위해 SwiftUI화
-    let imageName: String
-    
-    func makeUIView(context: Context) -> some AvatarCircle {
-        let avatarCircle = AvatarCircle(frame: .zero)
-        avatarCircle.setData(imageName: imageName)
-        return avatarCircle
-    }
-    
-    func updateUIView(_ uiView: UIViewType, context: Context) {
-        
-    }
-}
+//struct AvatarCircleView: UIViewRepresentable {
+//    //TODO: 추후에 Data타입 또는 URL을 받아 이미지 표시
+//    // SpeechBubbleCell은 SwiftUI이므로 적용하기 위해 SwiftUI화
+//    let imageName: String
+//    
+//    func makeUIView(context: Context) -> some AvatarCircle {
+//        let avatarCircle = AvatarCircle(frame: .zero)
+//        avatarCircle.setData(imageName: imageName)
+//        return avatarCircle
+//    }
+//    
+//    func updateUIView(_ uiView: UIViewType, context: Context) {
+//        
+//    }
+//}
