@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import ASEntity
 
-public struct SelectedRecordsRepository: SelectedRecordsRepositoryProtocol {
+public final class SelectedRecordsRepository: SelectedRecordsRepositoryProtocol {
     private var mainRepository: MainRepository
     
     public init(mainRepository: MainRepository) {

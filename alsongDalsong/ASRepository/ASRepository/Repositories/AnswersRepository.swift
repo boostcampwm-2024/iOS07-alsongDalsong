@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import ASEntity
 
-public struct AnswersRepository: AnswersRepositoryProtocol {
+public final class AnswersRepository: AnswersRepositoryProtocol {
     private var mainRepository: MainRepository
     
     public init(mainRepository: MainRepository) {

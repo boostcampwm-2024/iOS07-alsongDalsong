@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import ASEntity
 
-public struct RoomInfoRepository: RoomInfoRepositoryProtocol {
+public final class RoomInfoRepository: RoomInfoRepositoryProtocol {
     private var mainRepository: MainRepository
     
     public init(mainRepository: MainRepository) {
