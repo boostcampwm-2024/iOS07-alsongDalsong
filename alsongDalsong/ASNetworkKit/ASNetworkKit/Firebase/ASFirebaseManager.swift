@@ -24,35 +24,38 @@ public final class ASFirebaseManager: Sendable {
     
     public func getAvatarUrls() async throws -> [URL] {
         let avatarRef = storageRef.child("avatar")
-
         do {
             let result = try await avatarRef.listAll()
-            
-            // TaskGroup으로 비동기 작업 처리
-            return try await withThrowingTaskGroup(of: URL.self) { taskGroup in
-                for item in result.items {
-                    taskGroup.addTask {
-                        try await withCheckedThrowingContinuation { continuation in
-                            item.downloadURL { url, error in
-                                if let url = url {
-                                    continuation.resume(returning: url)
-                                } else if let error = error {
-                                    continuation.resume(throwing: error)
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // 모든 작업 완료 후 결과 수집
-                var urls: [URL] = []
-                for try await url in taskGroup {
-                    urls.append(url)
-                }
-                return urls
-            }
+            return try await fetchDownloadURLs(from: result.items)
         } catch {
             throw ASNetworkErrors.responseError
+        }
+    }
+    
+    // 다운로드 URL 가져오기
+    private func fetchDownloadURLs(from items: [StorageReference]) async throws -> [URL] {
+        try await withThrowingTaskGroup(of: URL.self) { taskGroup in
+            for item in items {
+                taskGroup.addTask {
+                    try await self.downloadURL(for: item)
+                }
+            }
+            
+            return try await taskGroup.reduce(into: []) { urls, url in
+                urls.append(url)
+            }
+        }
+    }
+
+    private func downloadURL(for item: StorageReference) async throws -> URL {
+        try await withCheckedThrowingContinuation { continuation in
+            item.downloadURL { url, error in
+                if let url = url {
+                    continuation.resume(returning: url)
+                } else if let error = error {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
 }
@@ -64,7 +67,6 @@ extension ASFirebaseManager: ASFirebaseAuthProtocol {
             let playerID = authResult.user.uid
             let player = Player(id: playerID, avatarUrl: avatarURL, nickname: nickname, score: 0, order: 0)
             let playerData = try ASEncoder.encode(player)
-            // MARK: setValue 함수가 Data 타입은 안들어가서 AS Encoder에 Dict로 변환하는 게 필요할듯 합니다.
             let dict = try JSONSerialization.jsonObject(with: playerData, options: .allowFragments) as? [String: Any]
             let userStatusRef = databaseRef.child("players").child(playerID)
             userStatusRef.keepSynced(true)
