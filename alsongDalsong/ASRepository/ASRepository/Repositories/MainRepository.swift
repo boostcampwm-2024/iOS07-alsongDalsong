@@ -3,7 +3,7 @@ import ASNetworkKit
 import Combine
 import Foundation
 
-public final class MainRepository {
+public final class MainRepository: MainRepositoryProtocol {
     private let firebaseManager = ASFirebaseManager()
 
     @PublishedValue public var number: String?
