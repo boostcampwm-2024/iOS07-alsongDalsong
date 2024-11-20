@@ -4,7 +4,7 @@ import UIKit
 final class HummingViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var guideLabel = GuideLabel()
-    private var recordPanel = ASPanel()
+    private var recordPanel = AudioVisualizerView()
     private var recordButton = RecordButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
