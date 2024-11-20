@@ -13,10 +13,9 @@ final class RepsotioryAssembly: Assembly {
         }
         
         container.register(AvatarRepositoryProtocol.self) {
-            
-            AvatarRepository(firebaseManager: <#T##ASFirebaseManager#>, networkManager: <#T##ASNetworkManager#>)
+            let firebaseManager = container.resolve(ASFirebaseStorageProtocol.self)
+            let networkManager = container.resolve(ASNetworkManagerProtocol.self)
+            return AvatarRepository(firebaseManager: firebaseManager, networkManager: networkManager)
         }
-        
-        
     }
 }

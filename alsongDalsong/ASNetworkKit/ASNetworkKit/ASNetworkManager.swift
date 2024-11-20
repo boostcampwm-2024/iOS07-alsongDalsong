@@ -1,7 +1,7 @@
 import ASCacheKitProtocol
 import Foundation
 
-public struct ASNetworkManager: Sendable {
+public struct ASNetworkManager: ASNetworkManagerProtocol {
     private let urlSession: URLSessionProtocol
     private let cacheManager: CacheManagerProtocol
 
@@ -32,7 +32,7 @@ public struct ASNetworkManager: Sendable {
 
     private func urlRequest(for endpoint: any Endpoint, body: Data? = nil) throws -> URLRequest {
         guard let url = endpoint.url else { throw ASNetworkErrors.urlError }
-        var header = endpoint.headers
+        let header = endpoint.headers
         return RequestBuilder(using: url)
             .setHeader(header)
             .setHttpMethod(endpoint.method)

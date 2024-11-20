@@ -5,11 +5,11 @@ import Foundation
 public final class AvatarRepository: AvatarRepositoryProtocol {
     // TODO: - Container로 주입
     private let firebaseManager: ASFirebaseStorageProtocol
-    private let networkManager: ASNetworkManager
+    private let networkManager: ASNetworkManagerProtocol
     
     public init (
-        firebaseManager: ASFirebaseManager,
-        networkManager: ASNetworkManager
+        firebaseManager: ASFirebaseStorageProtocol,
+        networkManager: ASNetworkManagerProtocol
     ) {
         self.firebaseManager = firebaseManager
         self.networkManager = networkManager
@@ -33,7 +33,7 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
             Task {
                 do {
                     guard let endpoint = ImageEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint)
+                    let data = try await self.networkManager.sendRequest(to: endpoint, body: nil, option: .both)
                     promise(.success(data))
                 } catch {
                     promise(.failure(error))
