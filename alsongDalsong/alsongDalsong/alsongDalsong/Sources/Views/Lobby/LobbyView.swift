@@ -32,8 +32,8 @@ struct LobbyView: View {
                         )
                     }
                 }
+                .padding()
             }
-            .padding()
 
             GeometryReader { reader in
                 SnapperView(size: reader.size, modeInfos: ModeInfo.modeInfos, currentMode: $viewModel.mode)

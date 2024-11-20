@@ -86,7 +86,7 @@ final class WaveFormView: UIView {
         super.awakeFromNib()
     }
     
-    init(frame: CGRect, numOfColumns: Int =  43) {
+    init(frame: CGRect, numOfColumns: Int = 43) {
         self.numOfColumns = numOfColumns
         super.init(frame: frame)
     }
@@ -140,7 +140,7 @@ final class WaveFormView: UIView {
     private func computeNewPath(for layer: CAShapeLayer, with amplitude: CGFloat) -> CGPath {
         let width = self.columnWidth ?? 8.0
         let maxHeightGain = self.bounds.height - 3 * width
-        let heightGain =  maxHeightGain * amplitude
+        let heightGain = maxHeightGain * amplitude
         let newHeight = width + heightGain
         let newOrigin = CGPoint(x: layer.path?.boundingBox.origin.x ?? 0,
                                 y: (layer.superlayer?.bounds.midY ?? 0) - (newHeight / 2))
