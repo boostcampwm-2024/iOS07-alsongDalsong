@@ -100,12 +100,10 @@ final class OnboardingViewController: UIViewController {
     private func setAction() {
         createRoomButton.addAction(
             UIAction { [weak self] _ in
-                self?.createRoomButton.isEnabled = false
                 if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
                     self?.viewModel.setNickname(with: nickname)
                 }
                 self?.viewModel.createRoom()
-                self?.createRoomButton.isEnabled = true
             },
             for: .touchUpInside)
         
@@ -182,6 +180,13 @@ final class OnboardingViewController: UIViewController {
                 let lobbyView = LobbyView(viewModel: lobbyViewModel)
                 let lobbyViewController = UIHostingController(rootView: lobbyView)
                 self?.navigationController?.pushViewController(lobbyViewController, animated: false)
+            }
+            .store(in: &cancleables)
+        viewModel.$buttonEnabled
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] enabled in
+                self?.createRoomButton.isEnabled = enabled
+                self?.joinRoomButton.isEnabled = enabled
             }
             .store(in: &cancleables)
     }

@@ -14,6 +14,7 @@ final class OnboardingViewModel {
     @Published var nickname: String = NickNameGenerator.generate()
     @Published var avatarData: Data?
     @Published var roomNumber: String = ""
+    @Published var buttonEnabled: Bool = true
     
     init(avatarRepository: AvatarRepositoryProtocol,
          roomActionRepository: RoomActionRepositoryProtocol)
@@ -30,6 +31,7 @@ final class OnboardingViewModel {
     private func fetchAvatars() {
         avatarRepository.getAvatarUrls()
             .receive(on: DispatchQueue.main)
+            .map { $0.shuffled() }
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -68,18 +70,21 @@ final class OnboardingViewModel {
     
     func joinRoom(roomNumber id: String) {
         guard let selectedAvatar else { return }
+        self.buttonEnabled = false
         roomActionRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
+            .sink { [weak self] completion in
                 switch completion {
                 case .finished:
                     break
                 case .failure(let error):
                     print(error.localizedDescription)
+                    self?.buttonEnabled = true
                 }
             } receiveValue: { [weak self] isSuccess in
                 if isSuccess {
                     self?.roomNumber = id
+                    self?.buttonEnabled = true
                 }
             }
             .store(in: &cancellables)
@@ -87,14 +92,16 @@ final class OnboardingViewModel {
     
     func createRoom() {
         guard let selectedAvatar else { return }
+        self.buttonEnabled = false
         roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
+            .sink { [weak self] completion in
                 switch completion {
                 case .finished:
                     break
                 case .failure(let error):
                     print(error.localizedDescription)
+                    self?.buttonEnabled = true
                 }
             } receiveValue: { [weak self] roomNumber in
                 self?.joinRoom(roomNumber: roomNumber)
