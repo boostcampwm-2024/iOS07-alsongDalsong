@@ -27,7 +27,7 @@ final class HummingViewModel {
         bindSubmitStatus()
     }
 
-    func bindGameStatus() {
+    private func bindGameStatus() {
         gameStatusRepository.getDueTime()
             .sink { [weak self] newDueTime in
                 self?.dueTime = newDueTime
@@ -45,7 +45,7 @@ final class HummingViewModel {
             .store(in: &cancellables)
     }
 
-    func bindSubmitStatus() {
+    private func bindSubmitStatus() {
         let playerPublisher = playersRepository.getPlayers()
         let submitsPublisher = submitsRepository.getSubmits()
 
@@ -57,6 +57,15 @@ final class HummingViewModel {
             .store(in: &cancellables)
     }
 
+    
+    // TODO: - FB에 humming 보내기
+    func submitHumming() {
+        var myHumming = ASEntity.Record()
+        myHumming.file = humming
+//        myHumming.player = me
+//        myHumming.round = round
+    }
+    
     @MainActor
     func startRecording() {
         Task {

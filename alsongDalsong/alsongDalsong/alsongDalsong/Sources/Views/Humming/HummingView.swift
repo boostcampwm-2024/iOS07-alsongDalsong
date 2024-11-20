@@ -31,7 +31,6 @@ final class HummingViewController: UIViewController {
     override func viewDidLoad() {
         setupUI()
         setupLayout()
-        setupPlaceholder()
         bindToComponents()
     }
 
@@ -43,6 +42,10 @@ final class HummingViewController: UIViewController {
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
         hummingPanel.changeBackgroundColor(color: .asYellow)
+        submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asYellow)
+        submitButton.addAction(UIAction { [weak self] _ in self?.vm.submitHumming() },
+                               for: .touchUpInside)
+        submitButton.isEnabled = false
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)
         view.addSubview(guideLabel)
@@ -50,10 +53,6 @@ final class HummingViewController: UIViewController {
         view.addSubview(recordButton)
         view.addSubview(submitButton)
         view.addSubview(submissionStatus)
-    }
-
-    private func setupPlaceholder() {
-        submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asGreen)
     }
 
     private func setupLayout() {
