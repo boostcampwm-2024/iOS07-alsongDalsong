@@ -13,8 +13,6 @@ public protocol Assembly {
 
 public final class DIContainer: Registerable, Resolvable {
 
-    
-    
     nonisolated(unsafe) static let shared = DIContainer()
     private init() {}
     
