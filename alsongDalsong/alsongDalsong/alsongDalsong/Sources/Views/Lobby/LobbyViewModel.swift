@@ -6,7 +6,7 @@ import ASRepository
 import Combine
 
 final class LobbyViewModel: ObservableObject {
-    private var mainRepository: MainRepository
+    private var mainRepository: MainRepositoryProtocol
     private var playersRepository: PlayersRepositoryProtocol
     private var roomInfoRepository: RoomInfoRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
@@ -19,12 +19,17 @@ final class LobbyViewModel: ObservableObject {
     
     private var cancellables: Set<AnyCancellable> = []
     
-    init(mainRepository: MainRepository) {
+    init(mainRepository: MainRepositoryProtocol,
+         playersRepository: PlayersRepositoryProtocol,
+         roomInfoRepository: RoomInfoRepositoryProtocol,
+         avatarRepository: AvatarRepositoryProtocol,
+         roomNumber: String)
+    {
         self.mainRepository = mainRepository
-        self.playersRepository = PlayersRepository(mainRepository: self.mainRepository)
-        self.roomInfoRepository = RoomInfoRepository(mainRepository: self.mainRepository)
-        // TODO: 구체타입을 바로 초기화 ( Container로 수정 예정)
-        self.avatarRepository = AvatarRepository(firebaseManager: ASFirebaseManager(), networkManager: ASNetworkManager(cacheManager: ASCacheManager()))
+        self.playersRepository = playersRepository
+        self.roomInfoRepository = roomInfoRepository
+        self.avatarRepository = avatarRepository
+        self.roomNumber = roomNumber
         fetchData()
     }
     
@@ -70,6 +75,8 @@ final class LobbyViewModel: ObservableObject {
                 self?.roomNumber = roomNumber
             }
             .store(in: &cancellables)
+        
+        self.mainRepository.connectRoom(roomNumber: roomNumber)
     }
 }
 

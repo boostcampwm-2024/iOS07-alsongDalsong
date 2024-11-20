@@ -4,49 +4,48 @@ import Combine
 import Foundation
 
 public final class MainRepository: MainRepositoryProtocol {
-    private let firebaseManager: ASFirebaseDatabaseProtocol
-
-    @PublishedValue public var number: String?
-    @PublishedValue public var host: Player?
-    @PublishedValue public var players: [Player]?
-    @PublishedValue public var mode: Mode?
-    @PublishedValue public var round: UInt8?
-    @PublishedValue public var status: Status?
-    @PublishedValue public var records: [ASEntity.Record]?
-    @PublishedValue public var answers: [Answer]?
-    @PublishedValue public var dueTime: Date?
-    @PublishedValue public var selectedRecords: [UInt8]?
-    @PublishedValue public var submits: [Answer]?
     
+    public var number = PassthroughSubject<String?, Never>()
+    public var host = PassthroughSubject<Player?, Never>()
+    public var players = PassthroughSubject<[Player]?, Never>()
+    public var mode = PassthroughSubject<ASEntity.Mode?, Never>()
+    public var round = PassthroughSubject<UInt8?, Never>()
+    public var status = PassthroughSubject<ASEntity.Status?, Never>()
+    public var answers = PassthroughSubject<[ASEntity.Answer]?, Never>()
+    public var dueTime = PassthroughSubject<Date?, Never>()
+    public var submits = PassthroughSubject<[ASEntity.Answer]?, Never>()
+    public var records = PassthroughSubject<[ASEntity.Record]?, Never>()
+    public var selectedRecords = PassthroughSubject<[UInt8]?, Never>()
+    
+    private let databaseManager: ASFirebaseDatabaseProtocol
     private var cancellables: Set<AnyCancellable> = []
     
-    public init(firebaseManager: ASFirebaseDatabaseProtocol) {
-        self.firebaseManager = firebaseManager
+    public init(databaseManager: ASFirebaseDatabaseProtocol) {
+        self.databaseManager = databaseManager
     }
     
     public func connectRoom(roomNumber: String) {
-        firebaseManager.addRoomListener(roomNumber: roomNumber)
+        databaseManager.addRoomListener(roomNumber: roomNumber)
             .receive(on: DispatchQueue.global())
             .sink { completion in
                 switch completion {
                 case .failure(let error):
-                    // TODO:- Error Handling
+                    // TODO: - Error Handling
                     print(error.localizedDescription)
                 case .finished:
                     return
                 }
             } receiveValue: { [weak self] room in
-                self?.number = room.number
-                self?.host = room.host
-                self?.players = room.players
-                self?.mode = room.mode
-                self?.round = room.round
-                self?.status = room.status
-//                self?.records = room.records
-                self?.answers = room.answers
-                self?.dueTime = room.dueTime
-                self?.selectedRecords = room.selectedRecords
-                self?.submits = room.submits
+                guard let self = self else { return }
+                self.number.send(room.number)
+                self.host.send(room.host)
+                self.players.send(room.players)
+                self.mode.send(room.mode)
+                self.round.send(room.round)
+                self.status.send(room.status)
+                self.answers.send(room.answers)
+                self.dueTime.send(room.dueTime)
+                self.submits.send(room.submits)
             }
             .store(in: &cancellables)
     }

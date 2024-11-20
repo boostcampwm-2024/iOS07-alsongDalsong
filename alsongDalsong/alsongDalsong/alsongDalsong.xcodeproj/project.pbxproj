@@ -11,6 +11,8 @@
 		169725692CE5F863005B4953 /* ASNetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169725632CE5F859005B4953 /* ASNetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		169C069D2CECE8860084B082 /* ASCacheKitProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */; };
 		169C069E2CECE8860084B082 /* ASCacheKitProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16DE64562CEE249300DFC48F /* ASContainer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16DE64552CEE248F00DFC48F /* ASContainer.framework */; };
+		16DE64572CEE249300DFC48F /* ASContainer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16DE64552CEE248F00DFC48F /* ASContainer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D1355A62CEB2B8600868316 /* ASCacheKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */; };
 		8D1355A72CEB2B8600868316 /* ASCacheKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64F9402CEB1D600069B77F /* ASEntity.framework */; };
@@ -33,6 +35,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 1BF1C9582CEA3C270003EED9;
 			remoteInfo = ASCacheKitProtocol;
+		};
+		16DE64542CEE248F00DFC48F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16DE64502CEE248F00DFC48F /* ASContainer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 16DE63F52CEE02AC00DFC48F;
+			remoteInfo = ASContainer;
 		};
 		8D13559A2CEB2B7E00868316 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -64,6 +73,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				16DE64572CEE249300DFC48F /* ASContainer.framework in Embed Frameworks */,
 				8D1355A72CEB2B8600868316 /* ASCacheKit.framework in Embed Frameworks */,
 				169725692CE5F863005B4953 /* ASNetworkKit.framework in Embed Frameworks */,
 				8D95AF222CEB8BC000C211AD /* ASRepository.framework in Embed Frameworks */,
@@ -77,6 +87,7 @@
 
 /* Begin PBXFileReference section */
 		1697255C2CE5F859005B4953 /* ASNetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASNetworkKit.xcodeproj; path = ../ASNetworkKit/ASNetworkKit.xcodeproj; sourceTree = "<group>"; };
+		16DE64502CEE248F00DFC48F /* ASContainer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASContainer.xcodeproj; path = ../ASContainer/ASContainer.xcodeproj; sourceTree = "<group>"; };
 		16F8B7772CE59B7F0059F22A /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASCacheKit.xcodeproj; path = ../ASCacheKit/ASCacheKit.xcodeproj; sourceTree = "<group>"; };
@@ -110,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16DE64562CEE249300DFC48F /* ASContainer.framework in Frameworks */,
 				8D1355A62CEB2B8600868316 /* ASCacheKit.framework in Frameworks */,
 				169725682CE5F863005B4953 /* ASNetworkKit.framework in Frameworks */,
 				8D95AF212CEB8BC000C211AD /* ASRepository.framework in Frameworks */,
@@ -124,6 +136,7 @@
 		169725572CE5F82F005B4953 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				16DE64502CEE248F00DFC48F /* ASContainer.xcodeproj */,
 				8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */,
 				8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */,
 				8D64F93B2CEB1D600069B77F /* ASEntity.xcodeproj */,
@@ -136,6 +149,14 @@
 			isa = PBXGroup;
 			children = (
 				169725632CE5F859005B4953 /* ASNetworkKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		16DE64512CEE248F00DFC48F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				16DE64552CEE248F00DFC48F /* ASContainer.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -238,6 +259,10 @@
 					ProjectRef = 8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */;
 				},
 				{
+					ProductGroup = 16DE64512CEE248F00DFC48F /* Products */;
+					ProjectRef = 16DE64502CEE248F00DFC48F /* ASContainer.xcodeproj */;
+				},
+				{
 					ProductGroup = 8D64F93C2CEB1D600069B77F /* Products */;
 					ProjectRef = 8D64F93B2CEB1D600069B77F /* ASEntity.xcodeproj */;
 				},
@@ -270,6 +295,13 @@
 			fileType = wrapper.framework;
 			path = ASCacheKitProtocol.framework;
 			remoteRef = 169C06872CEC9FE60084B082 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16DE64552CEE248F00DFC48F /* ASContainer.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASContainer.framework;
+			remoteRef = 16DE64542CEE248F00DFC48F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */ = {

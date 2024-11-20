@@ -2,11 +2,14 @@ import ASContainer
 import ASNetworkKit
 
 public struct RepsotioryAssembly: Assembly {
+    
+    public init() {}
+    
     public func assemble(container: Registerable) {
         container.register(MainRepositoryProtocol.self) { r in
-            let firebaseManager = r.resolve(ASFirebaseDatabaseProtocol.self)
+            let databaseManager = r.resolve(ASFirebaseDatabaseProtocol.self)
             return MainRepository(
-                firebaseManager: firebaseManager
+                databaseManager: databaseManager
             )
         }
         
@@ -27,21 +30,21 @@ public struct RepsotioryAssembly: Assembly {
         }
         
         container.register(GameStatusRepositoryProtocol.self) { r in
-            let mainRepository = r.resolve(MainRepository.self)
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return GameStatusRepository(
                 mainRepository: mainRepository
             )
         }
         
         container.register(PlayersRepositoryProtocol.self) { r in
-            let mainRepository = r.resolve(MainRepository.self)
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return PlayersRepository(
                 mainRepository: mainRepository
             )
         }
         
         container.register(RecordsRepositoryProtocol.self) { r in
-            let mainRepository = r.resolve(MainRepository.self)
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return RecordsRepository(
                 mainRepository: mainRepository
             )
@@ -57,21 +60,21 @@ public struct RepsotioryAssembly: Assembly {
         }
         
         container.register(RoomInfoRepositoryProtocol.self) { r in
-            let mainRepository = r.resolve(MainRepository.self)
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return RoomInfoRepository(
                 mainRepository: mainRepository
             )
         }
         
         container.register(SelectedRecordsRepositoryProtocol.self) { r in
-            let mainRepository = r.resolve(MainRepository.self)
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return SelectedRecordsRepository(
                 mainRepository: mainRepository
             )
         }
         
         container.register(SubmitsRepositoryProtocol.self) { r in
-            let mainRepository = r.resolve(MainRepository.self)
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return SubmitsRepository(
                 mainRepository: mainRepository
             )

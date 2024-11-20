@@ -2,6 +2,9 @@ import ASCacheKitProtocol
 import ASContainer
 
 public struct NetworkAssembly: Assembly {
+    
+    public init() {}
+    
     public func assemble(container: Registerable) {
         container.register(ASNetworkManagerProtocol.self) { r in
             let cacheManager = r.resolve(CacheManagerProtocol.self)

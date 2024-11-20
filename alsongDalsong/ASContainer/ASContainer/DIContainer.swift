@@ -13,7 +13,7 @@ public protocol Assembly {
 
 public final class DIContainer: Registerable, Resolvable {
 
-    nonisolated(unsafe) static let shared = DIContainer()
+    nonisolated(unsafe) public static let shared = DIContainer()
     private init() {}
     
     private var factories = [String: (Resolvable) -> Any]()
@@ -31,8 +31,12 @@ public final class DIContainer: Registerable, Resolvable {
     public func resolve<T>(_ type: T.Type) -> T {
         let key = "\(type)"
         
-        guard let dependency = factories[key] as? T else {
+        guard let factory = factories[key] else {
             fatalError("등록되지 않은 의존성 타입: \(type)")
+        }
+        
+        guard let dependency = factory(self) as? T else {
+            fatalError("의존성 팩토리가 \(type) 타입의 인스턴스를 반환하지 않았습니다")
         }
         
         return dependency

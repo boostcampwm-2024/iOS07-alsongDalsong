@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		16DE64612CEE29DB00DFC48F /* ASContainer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16DE64602CEE29D800DFC48F /* ASContainer.framework */; };
+		16DE64622CEE29DB00DFC48F /* ASContainer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16DE64602CEE29D800DFC48F /* ASContainer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1B0630BD2CE66867005300BF /* ASCacheKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */; };
 		1B0630BE2CE66867005300BF /* ASCacheKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BF1C9682CEA3CAF0003EED9 /* ASCacheKitProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF1C9582CEA3C270003EED9 /* ASCacheKitProtocol.framework */; };
@@ -18,6 +20,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		16DE645F2CEE29D800DFC48F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16DE645B2CEE29D800DFC48F /* ASContainer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 16DE63F52CEE02AC00DFC48F;
+			remoteInfo = ASContainer;
+		};
 		1B0630BF2CE66867005300BF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1BD3B68C2CE203680037A6E1 /* Project object */;
@@ -66,6 +75,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				16DE64622CEE29DB00DFC48F /* ASContainer.framework in Embed Frameworks */,
 				1BF1C9692CEA3CAF0003EED9 /* ASCacheKitProtocol.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -86,6 +96,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		16DE645B2CEE29D800DFC48F /* ASContainer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASContainer.xcodeproj; path = ../ASContainer/ASContainer.xcodeproj; sourceTree = "<group>"; };
 		1B0630AC2CE66729005300BF /* ASCacheKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASCacheKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD3B6952CE203680037A6E1 /* ASCacheKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASCacheKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD3B9162CE329160037A6E1 /* ASCacheKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASCacheKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -128,6 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16DE64612CEE29DB00DFC48F /* ASContainer.framework in Frameworks */,
 				1BF1C9682CEA3CAF0003EED9 /* ASCacheKitProtocol.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -151,9 +163,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		16DE645C2CEE29D800DFC48F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				16DE64602CEE29D800DFC48F /* ASContainer.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1B0630BC2CE66867005300BF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				16DE645B2CEE29D800DFC48F /* ASContainer.xcodeproj */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -337,6 +358,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1BD3B6962CE203680037A6E1 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 16DE645C2CEE29D800DFC48F /* Products */;
+					ProjectRef = 16DE645B2CEE29D800DFC48F /* ASContainer.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				1BD3B6942CE203680037A6E1 /* ASCacheKit */,
@@ -346,6 +373,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		16DE64602CEE29D800DFC48F /* ASContainer.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASContainer.framework;
+			remoteRef = 16DE645F2CEE29D800DFC48F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		1B0630AA2CE66729005300BF /* Resources */ = {

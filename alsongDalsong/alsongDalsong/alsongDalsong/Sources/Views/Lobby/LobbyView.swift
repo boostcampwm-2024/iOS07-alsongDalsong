@@ -56,7 +56,3 @@ struct LobbyView: View {
         .background(Color.asLightGray)
     }
 }
-
-#Preview {
-    LobbyView(viewModel: LobbyViewModel(mainRepository: MainRepository(roomNumber: "ASDKFJ")))
-}
