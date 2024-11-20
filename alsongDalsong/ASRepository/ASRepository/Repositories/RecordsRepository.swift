@@ -16,7 +16,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    public func getHumming(on round: UInt8) -> AnyPublisher<[ASEntity.Record], Never> {
+    public func getHumming(on round: UInt8) -> AnyPublisher<Data?, Never> {
         // 임시로 내가 몇 번째 player인지 인식하는 인덱스
         let myIndex = 1
         let playersCount = 4
@@ -26,7 +26,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
             .map { records in
                 let index = (myIndex - 1 + playersCount) % playersCount
                 let hummings = records.filter { $0.round ?? -1 == (round - 1) }
-                return index < hummings.count ? [hummings[index]] : []
+                return (index < hummings.count) ? hummings[index].file : Data()
             }
             .eraseToAnyPublisher()
     }
