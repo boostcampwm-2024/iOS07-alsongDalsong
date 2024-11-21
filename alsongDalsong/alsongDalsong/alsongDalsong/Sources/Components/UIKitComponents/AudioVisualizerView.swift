@@ -8,11 +8,10 @@ final class AudioVisualizerView: UIView {
     private var waveFormView = WaveFormView()
     private var customBackgroundColor: UIColor = .asMint
     private var cancellables = Set<AnyCancellable>()
-    
+
     init() {
         super.init(frame: .zero)
         setupButton()
-        setupWaveFormView()
         addSubViews()
         setupLayout()
     }
@@ -20,7 +19,6 @@ final class AudioVisualizerView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupButton()
-        setupWaveFormView()
         addSubViews()
         setupLayout()
     }
@@ -39,10 +37,6 @@ final class AudioVisualizerView: UIView {
         let playImage = UIImage(systemName: "play.fill", withConfiguration: config)
         startButton.setImage(playImage, for: .normal)
         startButton.tintColor = UIColor.white
-    }
-
-    private func setupWaveFormView() {
-        waveFormView.drawVisualizerCircles()
     }
 
     private func setupView() {
@@ -164,7 +158,6 @@ final class WaveFormView: UIView {
         guard columns.count == numOfColumns else { return }
         amplitudesHistory.append(amplitude)
         amplitudesHistory.removeFirst()
-
         for i in 0 ..< columns.count {
             columns[i].path = computeNewPath(for: columns[i], with: amplitudesHistory[i])
             if amplitudesHistory[i] != 0 {
