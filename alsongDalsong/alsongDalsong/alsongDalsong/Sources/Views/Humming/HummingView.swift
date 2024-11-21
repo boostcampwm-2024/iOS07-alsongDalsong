@@ -37,14 +37,21 @@ final class HummingViewController: UIViewController {
     private func bindToComponents() {
         submissionStatus.bind(to: vm.$submissionStatus)
         progressBar.bind(to: vm.$dueTime)
+        hummingPanel.bind(to: vm.$recorderAmplitude)
     }
 
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
         hummingPanel.changeBackgroundColor(color: .asYellow)
-        submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asYellow)
-        submitButton.addAction(UIAction { [weak self] _ in self?.vm.submitHumming() },
-                               for: .touchUpInside)
+        recordButton.addAction(UIAction {
+            [weak self] _ in self?.vm.startRecording()
+        },
+        for: .touchUpInside)
+        submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
+        submitButton.addAction(UIAction {
+            [weak self] _ in self?.vm.submitHumming()
+        },
+        for: .touchUpInside)
         submitButton.isEnabled = false
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)

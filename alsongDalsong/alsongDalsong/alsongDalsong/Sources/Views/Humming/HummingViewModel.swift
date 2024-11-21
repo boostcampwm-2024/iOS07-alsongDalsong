@@ -3,12 +3,13 @@ import ASRepository
 import Combine
 import Foundation
 
-final class HummingViewModel {
+final class HummingViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var dueTime: Date?
     @Published public private(set) var round: UInt8?
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
     @Published public private(set) var humming: Data?
+    @Published public private(set) var recorderAmplitude: Float = 0.0
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
@@ -25,6 +26,19 @@ final class HummingViewModel {
         self.submitsRepository = submitsRepository
         bindGameStatus()
         bindSubmitStatus()
+        bindAmplitudeUpdates()
+    }
+
+    private func bindAmplitudeUpdates() {
+        Task {
+            await AudioHelper.shared.amplitudePubisher()
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] newAmplitude in
+                    guard let self = self else { return }
+                    self.recorderAmplitude = newAmplitude
+                }
+                .store(in: &self.cancellables)
+        }
     }
 
     private func bindGameStatus() {
@@ -57,7 +71,6 @@ final class HummingViewModel {
             .store(in: &cancellables)
     }
 
-    
     // TODO: - FB에 humming 보내기
     func submitHumming() {
         var myHumming = ASEntity.Record()
@@ -65,7 +78,7 @@ final class HummingViewModel {
 //        myHumming.player = me
 //        myHumming.round = round
     }
-    
+
     @MainActor
     func startRecording() {
         Task {
@@ -73,7 +86,7 @@ final class HummingViewModel {
             humming = data
         }
     }
-    
+
     @MainActor
     func startPlaying() {
         Task {

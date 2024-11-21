@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 final class AudioVisualizerView: UIView {
@@ -6,7 +7,8 @@ final class AudioVisualizerView: UIView {
     private var startButton = UIButton()
     private var waveFormView = WaveFormView()
     private var customBackgroundColor: UIColor = .asMint
-
+    private var cancellables = Set<AnyCancellable>()
+    
     init() {
         super.init(frame: .zero)
         setupButton()
@@ -68,6 +70,17 @@ final class AudioVisualizerView: UIView {
         ])
     }
 
+    func bind(
+        to dataSource: Published<Float>.Publisher
+    ) {
+        dataSource
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] amplitude in
+                self?.updateWaveForm(amplitude: CGFloat(amplitude))
+            }
+            .store(in: &cancellables)
+    }
+    
     func updateWaveForm(amplitude: CGFloat) {
         waveFormView.updateVisualizerView(with: amplitude)
     }
