@@ -1,16 +1,17 @@
 import AVFoundation
 
-public enum PlayType {
+public enum PlayType: Sendable {
     case full
     case partial(time: Int)
 }
 
-public final class ASAudioPlayer: NSObject, Sendable, AVAudioPlayerDelegate {
+public actor ASAudioPlayer: NSObject {
     private var audioPlayer: AVAudioPlayer?
 
-    public override init() {}
+    override public init() {}
+
+    public var onPlaybackFinished: (@Sendable () async -> Void)?
     
-    public var onPlaybackFinished: (() -> Void)?
     /// 녹음파일을 재생하고 옵션에 따라 재생시간을 설정합니다.
     public func startPlaying(data: Data, option: PlayType) {
         do {
@@ -23,16 +24,23 @@ public final class ASAudioPlayer: NSObject, Sendable, AVAudioPlayerDelegate {
         }
 
         switch option {
-        case .full:
-            audioPlayer?.play()
-        case .partial(let time):
-            audioPlayer?.currentTime = 0
-            audioPlayer?.play()
-            let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(time), repeats: false) { [weak self] _ in
-                self?.audioPlayer?.stop()
-            }
+            case .full:
+                audioPlayer?.play()
+            case let .partial(time):
+                audioPlayer?.currentTime = 0
+                audioPlayer?.play()
+                DispatchQueue.main.asyncAfter(deadline: .now() + TimeInterval(time)) {
+                    Task {
+                        await self.stopPlaying()
+                    }
+                }
         }
     }
+
+    public func stopPlaying() {
+        audioPlayer?.stop()
+    }
+
     /// AVPlayer객체의 재생여부를 확인합니다.
     public func isPlaying() -> Bool {
         if let audioPlayer {
@@ -40,10 +48,12 @@ public final class ASAudioPlayer: NSObject, Sendable, AVAudioPlayerDelegate {
         }
         return false
     }
+
     /// 현재 플레이되고 있는 파일의 진행시간을 리턴합니다.
     public func getCurrentTime() -> TimeInterval {
         return audioPlayer?.currentTime ?? 0
     }
+
     /// 녹음파일의 총 녹음시간을 리턴합니다.
     public func getDuration(data: Data) -> TimeInterval {
         if audioPlayer == nil {
@@ -55,16 +65,26 @@ public final class ASAudioPlayer: NSObject, Sendable, AVAudioPlayerDelegate {
         }
         return audioPlayer?.duration ?? 0
     }
-    
+
     public func updateMeters() {
         audioPlayer?.updateMeters()
     }
+
     /// player에 입력된 평균 dB을 리턴합니다.
     public func getAveragePower() -> Float? {
         return audioPlayer?.averagePower(forChannel: 0)
     }
-    
-    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        onPlaybackFinished?()
+
+    public func setOnPlaybackFinished(_ handler: @Sendable @escaping () async -> Void) {
+        onPlaybackFinished = handler
+    }
+}
+
+extension ASAudioPlayer: @preconcurrency AVAudioPlayerDelegate {
+    @MainActor
+    public func audioPlayerDidFinishPlaying(_: AVAudioPlayer, successfully _: Bool) {
+        Task {
+            await onPlaybackFinished?()
+        }
     }
 }
