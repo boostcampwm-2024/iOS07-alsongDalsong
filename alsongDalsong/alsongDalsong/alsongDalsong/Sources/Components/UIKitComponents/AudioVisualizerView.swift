@@ -186,7 +186,7 @@ struct WaveFormViewWrapper: UIViewRepresentable {
     //@Binding var amplitude: Float
     
     func makeUIView(context: Context) -> WaveFormView {
-        let view = WaveFormView(frame: .zero)
+        let view = WaveFormView()
         
         return view
     }
