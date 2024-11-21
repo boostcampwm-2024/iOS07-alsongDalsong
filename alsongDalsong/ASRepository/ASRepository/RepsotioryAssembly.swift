@@ -5,7 +5,6 @@ public struct RepsotioryAssembly: Assembly {
     public init() {}
     
     public func assemble(container: Registerable) {
-        
         container.registerSingleton(MainRepositoryProtocol.self) { r in
             let databaseManager = r.resolve(ASFirebaseDatabaseProtocol.self)
             return MainRepository(

@@ -1,55 +1,30 @@
 import Foundation
-import ASCacheKit
-import ASNetworkKit
 import ASEntity
 import ASRepository
 import Combine
 
 final class LobbyViewModel: ObservableObject {
-    private var mainRepository: MainRepositoryProtocol
     private var playersRepository: PlayersRepositoryProtocol
     private var roomInfoRepository: RoomInfoRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
     
     let playerMaxCount = 4
-    @Published var players: [Player] = [] {
-        didSet {
-            print("current Player: \(players)")
-        }
-    }
-    @Published var roomNumber: String = "" {
-        didSet {
-            print("roomNumber Player: \(roomNumber)")
-        }
-    }
-    @Published var mode: Mode = .humming{
-        didSet {
-            print("mode Player: \(mode)")
-        }
-    }
-    @Published var host: Player?{
-        didSet {
-            print("host Player: \(host)")
-        }
-    }
+    @Published var players: [Player] = []
+    @Published var roomNumber: String = ""
+    @Published var mode: Mode = .humming
+    @Published var host: Player?
     
     private var cancellables: Set<AnyCancellable> = []
     
-    init(mainRepository: MainRepositoryProtocol,
-         playersRepository: PlayersRepositoryProtocol,
+    init(playersRepository: PlayersRepositoryProtocol,
          roomInfoRepository: RoomInfoRepositoryProtocol,
-         avatarRepository: AvatarRepositoryProtocol,
-         roomNumber: String)
+         avatarRepository: AvatarRepositoryProtocol)
     {
-        self.mainRepository = mainRepository
         self.playersRepository = playersRepository
         self.roomInfoRepository = roomInfoRepository
         self.avatarRepository = avatarRepository
-        self.roomNumber = roomNumber
         
         fetchData()
-        
-        mainRepository.connectRoom(roomNumber: roomNumber)
     }
     
     func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {

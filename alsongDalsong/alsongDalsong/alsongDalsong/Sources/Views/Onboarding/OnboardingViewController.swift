@@ -1,6 +1,4 @@
 import ASContainer
-import ASCacheKit
-import ASNetworkKit
 import ASRepository
 import Combine
 import SwiftUI
@@ -176,12 +174,11 @@ final class OnboardingViewController: UIViewController {
                 let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
                 let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
                 
+                mainRepository.connectRoom(roomNumber: roomNumber)
                 let lobbyViewModel = LobbyViewModel(
-                    mainRepository: mainRepository,
                     playersRepository: playersRepository,
                     roomInfoRepository: roomInfoRepository,
-                    avatarRepository: avatarRepository,
-                    roomNumber: roomNumber
+                    avatarRepository: avatarRepository
                 )
                 let lobbyView = LobbyView(viewModel: lobbyViewModel)
                 let lobbyViewController = UIHostingController(rootView: lobbyView)

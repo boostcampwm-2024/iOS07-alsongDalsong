@@ -2,7 +2,6 @@ import ASCacheKitProtocol
 import ASContainer
 
 public struct NetworkAssembly: Assembly {
-    
     public init() {}
     
     public func assemble(container: Registerable) {
