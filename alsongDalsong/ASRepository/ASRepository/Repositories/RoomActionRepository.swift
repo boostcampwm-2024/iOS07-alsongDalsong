@@ -3,14 +3,14 @@ import Combine
 import Foundation
 
 public final class RoomActionRepository: RoomActionRepositoryProtocol {
-    private let firebaseManager: ASFirebaseManager
-    private let networkManager: ASNetworkManager
+    private let authManager: ASFirebaseAuthProtocol
+    private let networkManager: ASNetworkManagerProtocol
     
     public init(
-        firebaseManager: ASFirebaseManager,
-        networkManager: ASNetworkManager
+        authManager: ASFirebaseAuthProtocol,
+        networkManager: ASNetworkManagerProtocol
     ) {
-        self.firebaseManager = firebaseManager
+        self.authManager = authManager
         self.networkManager = networkManager
     }
     
@@ -18,7 +18,7 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         Future { promise in
             Task {
                 do {
-                    let player = try await self.firebaseManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
+                    let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
                     let roomNumber = try await self.sendRequest(
                         endpointPath: .createRoom,
                         requestBody: ["hostID": player.id]
@@ -35,7 +35,7 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         Future { promise in
             Task {
                 do {
-                    let player = try await self.firebaseManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
+                    let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
                     let roomNumber = try await self.sendRequest(
                         endpointPath: .joinRoom,
                         requestBody: ["roomNumber": roomNumber, "userId": player.id]

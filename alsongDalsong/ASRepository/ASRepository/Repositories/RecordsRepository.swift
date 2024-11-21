@@ -3,14 +3,14 @@ import Combine
 import Foundation
 
 public final class RecordsRepository: RecordsRepositoryProtocol {
-    private var mainRepository: MainRepository
-
-    public init(mainRepository: MainRepository) {
+    private var mainRepository: MainRepositoryProtocol
+    
+    public init(mainRepository: MainRepositoryProtocol) {
         self.mainRepository = mainRepository
     }
 
     public func getRecords() -> AnyPublisher<[ASEntity.Record], Never> {
-        mainRepository.$records
+        mainRepository.records
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
             .eraseToAnyPublisher()

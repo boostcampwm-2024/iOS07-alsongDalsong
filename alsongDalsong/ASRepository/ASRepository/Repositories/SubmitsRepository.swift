@@ -3,14 +3,14 @@ import Combine
 import ASEntity
 
 public final class SubmitsRepository: SubmitsRepositoryProtocol {
-    private var mainRepository: MainRepository
+    private var mainRepository: MainRepositoryProtocol
     
-    public init(mainRepository: MainRepository) {
+    public init(mainRepository: MainRepositoryProtocol) {
         self.mainRepository = mainRepository
     }
     
     public func getSubmits() -> AnyPublisher<[Answer], Never> {
-        mainRepository.$answers
+        mainRepository.answers
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
             .eraseToAnyPublisher()

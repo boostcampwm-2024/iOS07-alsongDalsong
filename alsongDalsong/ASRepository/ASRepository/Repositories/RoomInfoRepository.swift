@@ -3,21 +3,21 @@ import Combine
 import ASEntity
 
 public final class RoomInfoRepository: RoomInfoRepositoryProtocol {
-    private var mainRepository: MainRepository
+    private var mainRepository: MainRepositoryProtocol
     
-    public init(mainRepository: MainRepository) {
+    public init(mainRepository: MainRepositoryProtocol) {
         self.mainRepository = mainRepository
     }
     
     public func getRoomNumber() -> AnyPublisher<String, Never> {
-        mainRepository.$number
+        mainRepository.number
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
             .eraseToAnyPublisher()
     }
     
     public func getMode() -> AnyPublisher<Mode, Never> {
-        mainRepository.$mode
+        mainRepository.mode
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
             .eraseToAnyPublisher()
