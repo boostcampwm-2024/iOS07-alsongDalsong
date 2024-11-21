@@ -9,6 +9,7 @@ struct LobbyView: View {
         VStack {
             HStack {
                 Button {
+                    viewModel.leaveRoom()
                     dismiss()
                 } label: {
                     Image(systemName: "square.and.arrow.up")
@@ -46,7 +47,9 @@ struct LobbyView: View {
             .buttonStyle(ASButtonStyle(backgroundColor: Color(.asYellow)))
             .padding(.vertical, 20)
 
-            Button {} label: {
+            Button {
+                viewModel.gameStart()
+            } label: {
                 Image(systemName: "play.fill")
                 Text("시작하기!")
             }

@@ -43,4 +43,5 @@ public protocol RoomActionRepositoryProtocol {
     func createRoom(nickname: String, avatar: URL) -> Future<String, Error>
     func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, Error>
     func leaveRoom() -> Future<Bool, Error>
+    func startGame(roomNumber: String) -> Future<Bool, any Error>
 }
