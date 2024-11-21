@@ -6,6 +6,7 @@ import Combine
 final class LobbyViewModel: ObservableObject {
     private var playersRepository: PlayersRepositoryProtocol
     private var roomInfoRepository: RoomInfoRepositoryProtocol
+    private var roomActionRepository: RoomActionRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
     
     let playerMaxCount = 4
@@ -13,14 +14,17 @@ final class LobbyViewModel: ObservableObject {
     @Published var roomNumber: String = ""
     @Published var mode: Mode = .humming
     @Published var host: Player?
+    @Published var isGameStrted: Bool = false
     
     private var cancellables: Set<AnyCancellable> = []
     
     init(playersRepository: PlayersRepositoryProtocol,
          roomInfoRepository: RoomInfoRepositoryProtocol,
+         roomActionRepository: RoomActionRepositoryProtocol,
          avatarRepository: AvatarRepositoryProtocol)
     {
         self.playersRepository = playersRepository
+        self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
         self.avatarRepository = avatarRepository
         
@@ -36,6 +40,41 @@ final class LobbyViewModel: ObservableObject {
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()
         }
+    }
+    
+    func gameStart() {
+        // HOST인지 검사 필요
+        roomActionRepository.startGame(roomNumber: roomNumber)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] isSuccess in
+                self?.isGameStrted = isSuccess
+            }
+            .store(in: &cancellables)
+    }
+    
+    func leaveRoom() {
+        roomActionRepository.leaveRoom()
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] isSuccess in
+                if isSuccess {
+                    // navigate to Onboarding
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func fetchData() {

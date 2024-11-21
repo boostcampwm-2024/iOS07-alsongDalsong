@@ -172,12 +172,14 @@ final class OnboardingViewController: UIViewController {
                 let mainRepository = DIContainer.shared.resolve(MainRepositoryProtocol.self)
                 let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
                 let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
+                let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
                 let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
                 
                 mainRepository.connectRoom(roomNumber: roomNumber)
                 let lobbyViewModel = LobbyViewModel(
                     playersRepository: playersRepository,
                     roomInfoRepository: roomInfoRepository,
+                    roomActionRepository: roomActionRepository,
                     avatarRepository: avatarRepository
                 )
                 let lobbyView = LobbyView(viewModel: lobbyViewModel)
