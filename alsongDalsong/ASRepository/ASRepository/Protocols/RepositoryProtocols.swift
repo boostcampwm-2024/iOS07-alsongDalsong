@@ -48,6 +48,5 @@ public protocol RoomActionRepositoryProtocol {
 }
 
 public protocol MusicRepositoryProtocol {
-    func getMusicUrls() -> Future<[URL], Error>
     func getMusicData(url: URL) -> Future<Data?, Error>
 }

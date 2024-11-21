@@ -1,12 +1,8 @@
-import Foundation
-import MusicKit
 import ASMusicKit
 import ASRepository
-import ASNetworkKit
 import Combine
-import ASCacheKit
-import ASAudioKit
-import ASMusicKit
+import Foundation
+import MusicKit
 
 final class SelectMusicViewModel: ObservableObject {
     @Published var musicData: Data? {
@@ -14,13 +10,17 @@ final class SelectMusicViewModel: ObservableObject {
             playingMusic()
         }
     }
+
     var cancellable = Set<AnyCancellable>()
-    let musicRepository = MusicRepository(firebaseManager: ASFirebaseManager(), networkManager: ASNetworkManager(cacheManager: ASCacheManager()))
-    let audioPlayer = ASAudioPlayer()
+    let musicRepository: MusicRepositoryProtocol
     let musicAPI = ASMusicAPI()
     
+    init(musicRepository: MusicRepositoryProtocol) {
+        self.musicRepository = musicRepository
+    }
+    
     @Published var searchList: [ASSong] = []
-    @Published var selectedSong: ASSong = ASSong(id: "12345", title: "선택된 곡 없음", artistName: "아티스트", artwork: nil, previewURL: URL(string: ""))
+    @Published var selectedSong: ASSong = .init(id: "12345", title: "선택된 곡 없음", artistName: "아티스트", artwork: nil, previewURL: URL(string: ""))
     
     func downloadMusic(url: URL?) {
         guard let url else { return }
@@ -47,7 +47,7 @@ final class SelectMusicViewModel: ObservableObject {
     }
     
     func handleSelectedSong(song: ASSong) {
-        self.selectedSong = song
+        selectedSong = song
         beginPlaying(song: song)
     }
     

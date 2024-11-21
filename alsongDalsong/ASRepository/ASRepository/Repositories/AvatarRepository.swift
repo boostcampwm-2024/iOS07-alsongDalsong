@@ -33,7 +33,7 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
             Task {
                 do {
                     guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint)
+                    let data = try await self.networkManager.sendRequest(to: endpoint, body: nil, option: .both)
                     promise(.success(data))
                 } catch {
                     promise(.failure(error))

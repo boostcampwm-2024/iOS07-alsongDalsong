@@ -20,7 +20,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
         // 임시로 내가 몇 번째 player인지 인식하는 인덱스
         let myIndex = 1
         let playersCount = 4
-        return mainRepository.$records
+        return mainRepository.records
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
             .map { records in

@@ -1,17 +1,20 @@
-//
-//  SelectMusicViewController.swift
-//  alsongDalsong
-//
-//  Created by Minha Lee on 11/21/24.
-//
-
 import UIKit
 import SwiftUI
 
 class SelectMusicViewController: UIViewController {
     
-    let selectMusicViewModel = SelectMusicViewModel()
+    let selectMusicViewModel: SelectMusicViewModel!
     let selectCompleteButton = ASButton()
+    
+    init(selectMusicViewModel: SelectMusicViewModel) {
+        self.selectMusicViewModel = selectMusicViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        self.selectMusicViewModel = nil
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
