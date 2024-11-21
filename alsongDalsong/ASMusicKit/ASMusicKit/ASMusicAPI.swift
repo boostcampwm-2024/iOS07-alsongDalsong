@@ -20,7 +20,13 @@ public struct ASMusicAPI {
                     
                     let result = try await request.response()
                     let asSongs = result.songs.map { song in
-                        return ASSong(id: song.isrc, title: song.title, artistName: song.artistName, artwork: song.artwork, previewURL: song.previewAssets?.first?.url)
+                        return ASSong(
+                            id: song.isrc,
+                            title: song.title,
+                            artistName: song.artistName,
+                            artwork: song.artwork,
+                            previewURL: song.previewAssets?.first?.url
+                        )
                     }
                     return asSongs
                 } catch {
