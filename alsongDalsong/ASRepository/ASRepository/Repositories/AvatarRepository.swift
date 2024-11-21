@@ -32,7 +32,7 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
         Future { promise in
             Task {
                 do {
-                    guard let endpoint = ImageEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
+                    guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
                     let data = try await self.networkManager.sendRequest(to: endpoint)
                     promise(.success(data))
                 } catch {
