@@ -12,12 +12,7 @@ public final class PlayersRepository: PlayersRepositoryProtocol {
     public func getPlayers() -> AnyPublisher<[Player], Never> {
         mainRepository.players
             .receive(on: DispatchQueue.main)
-            .compactMap { [weak self] players in
-                print(players)
-                print(self?.mainRepository)
-                
-                return players
-            }
+            .compactMap { $0 }
             .eraseToAnyPublisher()
     }
     

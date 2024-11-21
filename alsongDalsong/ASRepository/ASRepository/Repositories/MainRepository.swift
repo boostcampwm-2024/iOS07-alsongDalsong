@@ -37,16 +37,28 @@ public final class MainRepository: MainRepositoryProtocol {
                 }
             } receiveValue: { [weak self] room in
                 guard let self = self else { return }
-                self.number.send(room.number)
-                self.host.send(room.host)
-                self.players.send(room.players)
-                self.mode.send(room.mode)
-                self.round.send(room.round)
-                self.status.send(room.status)
-                self.answers.send(room.answers)
-                self.dueTime.send(room.dueTime)
-                self.submits.send(room.submits)
+                self.update(\.number, with: room.number)
+                self.update(\.host, with: room.host)
+                self.update(\.players, with: room.players)
+                self.update(\.mode, with: room.mode)
+                self.update(\.round, with: room.round)
+                self.update(\.status, with: room.status)
+                self.update(\.answers, with: room.answers)
+                self.update(\.dueTime, with: room.dueTime)
+                self.update(\.submits, with: room.submits)
+                self.update(\.records, with: room.records)
+                self.update(\.selectedRecords, with: room.selectedRecords)
             }
             .store(in: &cancellables)
+    }
+    
+    private func update<Value: Equatable>(
+        _ keyPath: ReferenceWritableKeyPath<MainRepository, CurrentValueSubject<Value?, Never>>,
+        with newValue: Value?
+    ) {
+        let subject = self[keyPath: keyPath]
+        if subject.value != newValue {
+            subject.send(newValue)
+        }
     }
 }
