@@ -20,8 +20,7 @@ public struct ASMusicAPI {
                     
                     let result = try await request.response()
                     let asSongs = result.songs.map { song in
-                        let artworkURL = song.artwork?.url(width: 100, height: 100)
-                        return ASSong(id: song.isrc, title: song.title, artistName: song.artistName, artwork: artworkURL, previewURL: song.previewAssets?.first?.url)
+                        return ASSong(id: song.isrc, title: song.title, artistName: song.artistName, artwork: song.artwork, previewURL: song.previewAssets?.first?.url)
                     }
                     return asSongs
                 } catch {
@@ -36,7 +35,7 @@ public struct ASMusicAPI {
 }
 
 public struct ASSong: Equatable, Identifiable {
-    public init(id: String? = nil, title: String, artistName: String, artwork: URL?, previewURL: URL?) {
+    public init(id: String? = nil, title: String, artistName: String, artwork: Artwork?, previewURL: URL?) {
         self.id = id
         self.title = title
         self.artistName = artistName
@@ -46,6 +45,6 @@ public struct ASSong: Equatable, Identifiable {
     public var id: String?
     public let title: String
     public let artistName: String
-    public let artwork: URL?
+    public let artwork: Artwork?
     public let previewURL: URL?
 }

@@ -1,18 +1,15 @@
 import SwiftUI
+import MusicKit
 
 struct ASMusicItemCell: View {
-    let imageURL: URL?
+    let artwork: Artwork?
     let title: String
     let artist: String
     var body: some View {
         HStack {
-            if let imageURL {
-                AsyncImage(url: imageURL) { image in
-                    image.resizable()
-                } placeholder: {
-                    ProgressView()
-                }
-                .frame(width: 60, height: 60)
+            if let artwork {
+                ArtworkImage(artwork, width: 60)
+//                .frame(width: 60, height: 60)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
                 .padding(.horizontal,8)
             } else {
@@ -31,5 +28,5 @@ struct ASMusicItemCell: View {
 }
 
 #Preview {
-    ASMusicItemCell(imageURL: URL(string: "https://i.namu.wiki/i/Xy0ciMmQU5kRJEWrNBKejOFZbQu7kLwZhCbXLuaY9cWQH_maTUCfT8njMyT3EbOK2nXSPo-3Go5FgJ5Na4aeTw.webp")!, title: "Dumb Dumb", artist: "레드벨벳")
+    ASMusicItemCell(artwork: nil, title: "Dumb Dumb", artist: "레드벨벳")
 }

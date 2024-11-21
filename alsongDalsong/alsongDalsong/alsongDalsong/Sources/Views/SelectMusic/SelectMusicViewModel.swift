@@ -20,7 +20,7 @@ final class SelectMusicViewModel: ObservableObject {
     let musicAPI = ASMusicAPI()
     
     @Published var searchList: [ASSong] = []
-    @Published var selectedSong: ASSong = ASSong(id: "12345", title: "선택된 곡 없음", artistName: "아티스트", artwork: URL(string: ""), previewURL: URL(string: ""))
+    @Published var selectedSong: ASSong = ASSong(id: "12345", title: "선택된 곡 없음", artistName: "아티스트", artwork: nil, previewURL: URL(string: ""))
     
     func downloadMusic(url: URL?) {
         guard let url else { return }
