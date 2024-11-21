@@ -4,6 +4,8 @@
 <dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>알쏭달쏭은 Apple Music을 이용하여 음악을 찾는 것을 돕습니다</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>허밍해보세요!</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

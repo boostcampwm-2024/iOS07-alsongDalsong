@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ImageEndpoint: Endpoint {
+public struct ResourceEndpoint: Endpoint {
     public var scheme: String
     public var host: String
     public var path: Path
@@ -16,15 +16,15 @@ public struct ImageEndpoint: Endpoint {
         self.scheme = components.scheme ?? ""
         self.host = components.host ?? ""
         self.method = .get
-        self.path = .image
+        self.path = .base
         self.headers = [:]
     }
 
     public enum Path: CustomStringConvertible {
-        case image
+        case base
         public var description: String {
             switch self {
-            case .image:
+            case .base:
                 ""
             }
         }
