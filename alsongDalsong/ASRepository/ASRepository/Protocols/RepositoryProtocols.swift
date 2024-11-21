@@ -45,3 +45,8 @@ public protocol RoomActionRepositoryProtocol {
     func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, Error>
     func leaveRoom() -> Future<Bool, Error>
 }
+
+public protocol MusicRepositoryProtocol {
+    func getMusicUrls() -> Future<[URL], Error>
+    func getMusicData(url: URL) -> Future<Data?, Error>
+}

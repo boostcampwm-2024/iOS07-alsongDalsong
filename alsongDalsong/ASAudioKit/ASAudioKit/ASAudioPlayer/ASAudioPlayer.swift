@@ -7,11 +7,11 @@ public enum PlayType: Sendable {
 
 public actor ASAudioPlayer: NSObject {
     private var audioPlayer: AVAudioPlayer?
-
+  
     override public init() {}
 
     public var onPlaybackFinished: (@Sendable () async -> Void)?
-    
+  
     /// 녹음파일을 재생하고 옵션에 따라 재생시간을 설정합니다.
     public func startPlaying(data: Data, option: PlayType) {
         do {

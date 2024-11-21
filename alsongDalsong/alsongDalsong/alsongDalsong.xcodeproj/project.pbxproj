@@ -11,10 +11,12 @@
 		169725692CE5F863005B4953 /* ASNetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169725632CE5F859005B4953 /* ASNetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		169C069D2CECE8860084B082 /* ASCacheKitProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */; };
 		169C069E2CECE8860084B082 /* ASCacheKitProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1BDF06AD2CEE382E002148B2 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BDF06AC2CEE382E002148B2 /* ASAudioKit.framework */; };
-		1BDF06AE2CEE382E002148B2 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1BDF06AC2CEE382E002148B2 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D1355A62CEB2B8600868316 /* ASCacheKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */; };
 		8D1355A72CEB2B8600868316 /* ASCacheKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D37A1FF2CEE19AF0015DC56 /* ASMusicKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D37A1FE2CEE19A40015DC56 /* ASMusicKit.framework */; };
+		8D37A2002CEE19AF0015DC56 /* ASMusicKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D37A1FE2CEE19A40015DC56 /* ASMusicKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D37A22A2CEF22F20015DC56 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D37A2252CEF22EE0015DC56 /* ASAudioKit.framework */; };
+		8D37A22B2CEF22F20015DC56 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D37A2252CEF22EE0015DC56 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64F9402CEB1D600069B77F /* ASEntity.framework */; };
 		8D64F9422CEB1D6C0069B77F /* ASEntity.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64F9402CEB1D600069B77F /* ASEntity.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D95AF212CEB8BC000C211AD /* ASRepository.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D95AF202CEB8BB900C211AD /* ASRepository.framework */; };
@@ -43,6 +45,20 @@
 			remoteGlobalIDString = 1BD3B6952CE203680037A6E1;
 			remoteInfo = ASCacheKit;
 		};
+		8D37A1FD2CEE19A40015DC56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8D37A1F92CEE19A40015DC56 /* ASMusicKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1635A4282CE59833002246E0;
+			remoteInfo = ASMusicKit;
+		};
+		8D37A2242CEF22EE0015DC56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8D37A21E2CEF22EE0015DC56 /* ASAudioKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4E89071E2CE23D1B00D5B547;
+			remoteInfo = ASAudioKit;
+		};
 		8D64F93F2CEB1D600069B77F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8D64F93B2CEB1D600069B77F /* ASEntity.xcodeproj */;
@@ -68,6 +84,8 @@
 			files = (
 				1BDF06AE2CEE382E002148B2 /* ASAudioKit.framework in Embed Frameworks */,
 				8D1355A72CEB2B8600868316 /* ASCacheKit.framework in Embed Frameworks */,
+				8D37A2002CEE19AF0015DC56 /* ASMusicKit.framework in Embed Frameworks */,
+				8D37A22B2CEF22F20015DC56 /* ASAudioKit.framework in Embed Frameworks */,
 				169725692CE5F863005B4953 /* ASNetworkKit.framework in Embed Frameworks */,
 				8D95AF222CEB8BC000C211AD /* ASRepository.framework in Embed Frameworks */,
 				8D64F9422CEB1D6C0069B77F /* ASEntity.framework in Embed Frameworks */,
@@ -84,6 +102,8 @@
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		1BDF06AC2CEE382E002148B2 /* ASAudioKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ASAudioKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASCacheKit.xcodeproj; path = ../ASCacheKit/ASCacheKit.xcodeproj; sourceTree = "<group>"; };
+		8D37A1F92CEE19A40015DC56 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASMusicKit.xcodeproj; path = ../ASMusicKit/ASMusicKit.xcodeproj; sourceTree = "<group>"; };
+		8D37A21E2CEF22EE0015DC56 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASAudioKit.xcodeproj; path = ../ASAudioKit/ASAudioKit.xcodeproj; sourceTree = "<group>"; };
 		8D64F93B2CEB1D600069B77F /* ASEntity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASEntity.xcodeproj; path = ../ASEntity/ASEntity.xcodeproj; sourceTree = "<group>"; };
 		8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASRepository.xcodeproj; path = ../ASRepository/ASRepository.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,8 +135,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BDF06AD2CEE382E002148B2 /* ASAudioKit.framework in Frameworks */,
 				8D1355A62CEB2B8600868316 /* ASCacheKit.framework in Frameworks */,
+				8D37A1FF2CEE19AF0015DC56 /* ASMusicKit.framework in Frameworks */,
+				8D37A22A2CEF22F20015DC56 /* ASAudioKit.framework in Frameworks */,
 				169725682CE5F863005B4953 /* ASNetworkKit.framework in Frameworks */,
 				8D95AF212CEB8BC000C211AD /* ASRepository.framework in Frameworks */,
 				8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */,
@@ -130,7 +151,8 @@
 		169725572CE5F82F005B4953 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1BDF06AC2CEE382E002148B2 /* ASAudioKit.framework */,
+				8D37A21E2CEF22EE0015DC56 /* ASAudioKit.xcodeproj */,
+				8D37A1F92CEE19A40015DC56 /* ASMusicKit.xcodeproj */,
 				8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */,
 				8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */,
 				8D64F93B2CEB1D600069B77F /* ASEntity.xcodeproj */,
@@ -152,6 +174,22 @@
 			children = (
 				8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */,
 				169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8D37A1FA2CEE19A40015DC56 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D37A1FE2CEE19A40015DC56 /* ASMusicKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8D37A21F2CEF22EE0015DC56 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D37A2252CEF22EE0015DC56 /* ASAudioKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -241,12 +279,20 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 8D37A21F2CEF22EE0015DC56 /* Products */;
+					ProjectRef = 8D37A21E2CEF22EE0015DC56 /* ASAudioKit.xcodeproj */;
+				},
+				{
 					ProductGroup = 8D1355962CEB2B7E00868316 /* Products */;
 					ProjectRef = 8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */;
 				},
 				{
 					ProductGroup = 8D64F93C2CEB1D600069B77F /* Products */;
 					ProjectRef = 8D64F93B2CEB1D600069B77F /* ASEntity.xcodeproj */;
+				},
+				{
+					ProductGroup = 8D37A1FA2CEE19A40015DC56 /* Products */;
+					ProjectRef = 8D37A1F92CEE19A40015DC56 /* ASMusicKit.xcodeproj */;
 				},
 				{
 					ProductGroup = 1697255D2CE5F859005B4953 /* Products */;
@@ -284,6 +330,20 @@
 			fileType = wrapper.framework;
 			path = ASCacheKit.framework;
 			remoteRef = 8D13559A2CEB2B7E00868316 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8D37A1FE2CEE19A40015DC56 /* ASMusicKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASMusicKit.framework;
+			remoteRef = 8D37A1FD2CEE19A40015DC56 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8D37A2252CEF22EE0015DC56 /* ASAudioKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASAudioKit.framework;
+			remoteRef = 8D37A2242CEF22EE0015DC56 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		8D64F9402CEB1D600069B77F /* ASEntity.framework */ = {
