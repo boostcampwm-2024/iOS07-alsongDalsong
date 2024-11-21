@@ -82,6 +82,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1BDF06AE2CEE382E002148B2 /* ASAudioKit.framework in Embed Frameworks */,
 				8D1355A72CEB2B8600868316 /* ASCacheKit.framework in Embed Frameworks */,
 				8D37A2002CEE19AF0015DC56 /* ASMusicKit.framework in Embed Frameworks */,
 				8D37A22B2CEF22F20015DC56 /* ASAudioKit.framework in Embed Frameworks */,
@@ -99,6 +100,7 @@
 		1697255C2CE5F859005B4953 /* ASNetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASNetworkKit.xcodeproj; path = ../ASNetworkKit/ASNetworkKit.xcodeproj; sourceTree = "<group>"; };
 		16F8B7772CE59B7F0059F22A /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		1BDF06AC2CEE382E002148B2 /* ASAudioKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ASAudioKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASCacheKit.xcodeproj; path = ../ASCacheKit/ASCacheKit.xcodeproj; sourceTree = "<group>"; };
 		8D37A1F92CEE19A40015DC56 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASMusicKit.xcodeproj; path = ../ASMusicKit/ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		8D37A21E2CEF22EE0015DC56 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASAudioKit.xcodeproj; path = ../ASAudioKit/ASAudioKit.xcodeproj; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
+				Resources/Secret.xcconfig,
 			);
 			target = 8D69A5912CDC5A83006B9075 /* alsongDalsong */;
 		};
@@ -252,7 +255,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					8D69A5912CDC5A83006B9075 = {
 						CreatedOnToolsVersion = 16.0;
@@ -485,6 +488,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -551,6 +555,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

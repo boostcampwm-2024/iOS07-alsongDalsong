@@ -19,6 +19,7 @@ public protocol PlayersRepositoryProtocol {
 
 public protocol RecordsRepositoryProtocol {
     func getRecords() -> AnyPublisher<[ASEntity.Record], Never>
+    func getHumming(on round: UInt8) -> AnyPublisher<Data?, Never>
 }
 
 public protocol RoomInfoRepositoryProtocol {

@@ -1,6 +1,6 @@
 import AVFoundation
 
-public final class ASAudioRecorder: Sendable {
+public actor ASAudioRecorder {
     private var audioRecorder: AVAudioRecorder?
 
     public init() {}
