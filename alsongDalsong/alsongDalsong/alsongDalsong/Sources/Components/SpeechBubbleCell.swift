@@ -16,7 +16,7 @@ struct SpeechBubbleCell: View {
     let alignment: MessageAlignment
     let messageType: MessageType
     @State var avatarURL: URL? = nil
-    @Binding var amplitude: Float
+    //@Binding var amplitude: Float
     
     var body: some View {
         HStack {
@@ -88,7 +88,7 @@ struct SpeechBubbleCell: View {
                 case .record(let record):
                     // 여기서 record를 줄 필요가 있을까요? ViewModel에서 해당 파일을 그냥 실행하면 될 거 같은데
                     HStack {
-                        WaveFormViewWrapper(amplitude: $amplitude)
+                        WaveFormViewWrapper()
                     }
                     .frame(width: 220)
                     .offset(x: alignment == .left ? 20 : 5, y: -4)
@@ -127,6 +127,5 @@ struct BubbleShape: Shape {
 
 #Preview {
     SpeechBubbleCell(alignment: .right,
-                     messageType: .music(Music(title: "Hello", artist: "허각")),
-                     amplitude: .constant(1.1))
+                     messageType: .music(Music(title: "Hello", artist: "허각")))
 }

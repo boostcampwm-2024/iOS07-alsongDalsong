@@ -176,7 +176,7 @@ final class WaveFormView: UIView {
 }
 
 struct WaveFormViewWrapper: UIViewRepresentable {
-    @Binding var amplitude: Float
+    //@Binding var amplitude: Float
     
     func makeUIView(context: Context) -> WaveFormView {
         let view = WaveFormView(frame: .zero)
@@ -185,6 +185,6 @@ struct WaveFormViewWrapper: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WaveFormView, context: Context) {
-        uiView.updateVisualizerView(with: CGFloat(amplitude))
+        //uiView.updateVisualizerView(with: CGFloat(amplitude))
     }
 }
