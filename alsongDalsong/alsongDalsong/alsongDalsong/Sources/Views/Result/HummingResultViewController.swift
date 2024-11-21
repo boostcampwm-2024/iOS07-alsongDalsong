@@ -9,20 +9,26 @@ class HummingResultViewController: UIViewController {
     private let button = ASButton()
     let testArr = [1,2,3,4]
     
+    private var viewModel = HummingResultViewModel()
+    private var cancellables = Set<AnyCancellable>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setMusicResultView()
+        viewModel.fetchResult()
+        setMusicResultView(musicName: "", singerName: "")
         setResultTableView()
         setButton()
         setConstraints()
+        bind()
     }
     
-    private func setMusicResultView() {
+    //TODO: 앨범 커버URL 던지기
+    private func setMusicResultView(musicName: String, singerName: String) {
         musicResultView.setConfig(albumImagePublisher: Just(Data())
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher(),
-                                  musicName: "모조조조",
-                                  singerName: "이게 모죠")
+                                  musicName: musicName,
+                                  singerName: singerName)
         view.addSubview(musicResultView)
     }
     
@@ -59,28 +65,70 @@ class HummingResultViewController: UIViewController {
             button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
         ])
     }
+    
+    private func bind() {
+        viewModel.$currentResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] answer in
+                self?.setMusicResultView(musicName: answer?.music.title ?? "", singerName: answer?.music.artist ?? "")
+            }
+            .store(in: &cancellables)
+        viewModel.$resultRecords
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.resultTableView.reloadData()
+            }
+            .store(in: &cancellables)
+        viewModel.$answer
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] answer in
+                //TODO: 정답 제출한 음악 뷰에 주는 거 (TableView가 보고 있는 배열에 추가?)
+                // OR 뷰 하나를 새로 해서 테이블 뷰 바로 아래에 뷰 추가
+            }
+            .store(in: &cancellables)
+    }
 }
 
 extension HummingResultViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        4
+        if section == 0 {
+            return viewModel.resultRecords.count
+        }
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.contentConfiguration = UIHostingConfiguration {
-            if indexPath.row % 2 == 0 {
-                SpeechBubbleCell(alignment: .left,
-                                 messageType: .music(Music(title: "Hello", artist: "허각")))
-            } else {
-                SpeechBubbleCell(alignment: .right,
-                                 messageType: .record(.init()))
+        
+        if indexPath.section == 0 {
+            cell.contentConfiguration = UIHostingConfiguration {
+                if indexPath.row % 2 == 0 {
+                    SpeechBubbleCell(alignment: .left,
+                                     messageType: .record(viewModel.resultRecords[indexPath.row]))
+                } else {
+                    SpeechBubbleCell(alignment: .right,
+                                     messageType: .record(viewModel.resultRecords[indexPath.row]))
+                }
+            }
+        } else {
+            cell.contentConfiguration = UIHostingConfiguration {
+                if viewModel.resultRecords.count % 2 == 0 {
+                    SpeechBubbleCell(alignment: .left, messageType: .music(.init(title: viewModel.answer?.music.title ?? "",
+                                                                                 artist: viewModel.answer?.music.artist ?? "")))
+                }
+                else {
+                    SpeechBubbleCell(alignment: .right, messageType: .music(.init(title: viewModel.answer?.music.title ?? "",
+                                                                                 artist: viewModel.answer?.music.artist ?? "")))
+                }
             }
         }
         
         return cell
     }
-    
 }
 
 final class MusicResultView: UIView {
