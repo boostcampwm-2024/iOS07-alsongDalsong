@@ -25,15 +25,8 @@ struct SelectMusicView: View {
                         .tint(.black)
                 }
             }
-            Button {
-                
-            } label: {
-                Text("선택 완료")
-            }
-            .buttonStyle(ASButtonStyle(backgroundColor: .asGreen))
         }
     }
-
 }
 
 #Preview {

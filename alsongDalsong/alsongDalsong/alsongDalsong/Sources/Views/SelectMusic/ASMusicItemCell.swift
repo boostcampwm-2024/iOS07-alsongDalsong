@@ -9,7 +9,6 @@ struct ASMusicItemCell: View {
         HStack {
             if let artwork {
                 ArtworkImage(artwork, width: 60)
-//                .frame(width: 60, height: 60)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
                 .padding(.horizontal,8)
             } else {
