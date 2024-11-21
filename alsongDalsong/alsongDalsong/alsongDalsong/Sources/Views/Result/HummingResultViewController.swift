@@ -42,6 +42,11 @@ class HummingResultViewController: UIViewController {
     private func setButton() {
         button.setConfiguration(systemImageName: "play.fill", title: "다음으로", backgroundColor: .asMint)
         view.addSubview(button)
+        button.addAction(UIAction { [weak self] _ in
+            let vc = self?.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
+            guard let vc else { return }
+            self?.navigationController?.popToViewController(vc, animated: true)
+        }, for: .touchUpInside)
     }
     
     private func setConstraints() {
@@ -49,21 +54,23 @@ class HummingResultViewController: UIViewController {
         resultTableView.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false
         
+        let layoutGuide = view.safeAreaLayoutGuide
+        
         NSLayoutConstraint.activate([
-            musicResultView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-                musicResultView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                musicResultView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                musicResultView.heightAnchor.constraint(equalToConstant: 130),
+            musicResultView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: 20),
+            musicResultView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 16),
+            musicResultView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -16),
+            musicResultView.heightAnchor.constraint(equalToConstant: 130),
             
             resultTableView.topAnchor.constraint(equalTo: musicResultView.bottomAnchor, constant: 20),
             resultTableView.leadingAnchor.constraint(equalTo: musicResultView.leadingAnchor),
             resultTableView.trailingAnchor.constraint(equalTo: musicResultView.trailingAnchor),
             resultTableView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -30),
             
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            button.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 24),
+            button.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -24),
             button.heightAnchor.constraint(equalToConstant: 64),
-            button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
+            button.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor, constant: -25)
         ])
     }
     
@@ -104,6 +111,7 @@ extension HummingResultViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
+        cell.backgroundColor = .clear
         
         if indexPath.section == 0 {
             cell.contentConfiguration = UIHostingConfiguration {
@@ -118,12 +126,26 @@ extension HummingResultViewController: UITableViewDataSource {
         } else {
             cell.contentConfiguration = UIHostingConfiguration {
                 if viewModel.resultRecords.count % 2 == 0 {
-                    SpeechBubbleCell(alignment: .left, messageType: .music(.init(title: viewModel.answer?.music.title ?? "",
-                                                                                 artist: viewModel.answer?.music.artist ?? "")))
+                    SpeechBubbleCell(
+                        alignment: .left,
+                        messageType: .music(
+                            .init(
+                                title: viewModel.answer?.music.title ?? "",
+                                artist: viewModel.answer?.music.artist ?? ""
+                            )
+                        )
+                    )
                 }
                 else {
-                    SpeechBubbleCell(alignment: .right, messageType: .music(.init(title: viewModel.answer?.music.title ?? "",
-                                                                                 artist: viewModel.answer?.music.artist ?? "")))
+                    SpeechBubbleCell(
+                        alignment: .right,
+                        messageType: .music(
+                            .init(
+                                title: viewModel.answer?.music.title ?? "",
+                                artist: viewModel.answer?.music.artist ?? ""
+                            )
+                        )
+                    )
                 }
             }
         }

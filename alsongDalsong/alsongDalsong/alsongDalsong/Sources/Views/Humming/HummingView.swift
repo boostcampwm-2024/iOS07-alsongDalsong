@@ -1,3 +1,4 @@
+import ASContainer
 import ASRepository
 import UIKit
 
@@ -10,16 +11,8 @@ final class HummingViewController: UIViewController {
     private var submissionStatus = SubmissionStatusView()
     private let vm: HummingViewModel
 
-    init(
-        gameStatusRepository: GameStatusRepositoryProtocol,
-        playersRepository: PlayersRepositoryProtocol,
-        submitsRepository: SubmitsRepositoryProtocol
-    ) {
-        vm = HummingViewModel(
-            gameStatusRepository: gameStatusRepository,
-            playersRepository: playersRepository,
-            submitsRepository: submitsRepository
-        )
+    init(vm: HummingViewModel) {
+        self.vm = vm
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -38,6 +31,7 @@ final class HummingViewController: UIViewController {
         submissionStatus.bind(to: vm.$submissionStatus)
         progressBar.bind(to: vm.$dueTime)
         hummingPanel.bind(to: vm.$recorderAmplitude)
+        submitButton.bind(to: vm.$humming)
     }
 
     private func setupUI() {
@@ -48,10 +42,22 @@ final class HummingViewController: UIViewController {
         },
         for: .touchUpInside)
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
-        submitButton.addAction(UIAction {
-            [weak self] _ in self?.vm.submitHumming()
-        },
-        for: .touchUpInside)
+        submitButton.addAction(
+            UIAction { [weak self] _ in
+                self?.vm.submitHumming()
+                let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
+                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
+                let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
+                let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
+                let vm = RehummingViewModel(
+                    gameStatusRepository: gameStatusRepository,
+                    playersRepository: playersRepository,
+                    recordsRepository: recordsRepository,
+                    submitsRepository: submitsRepository
+                )
+                let vc = RehummingViewController(vm: vm)
+                self?.navigationController?.pushViewController(vc, animated: true)
+        }, for: .touchUpInside)
         submitButton.isEnabled = false
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)

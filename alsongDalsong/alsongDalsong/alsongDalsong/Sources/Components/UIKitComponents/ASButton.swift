@@ -52,7 +52,7 @@ class ASButton: UIButton {
     }
 
     func bind(
-        to dataSource: Published<Date?>.Publisher
+        to dataSource: Published<Data?>.Publisher
     ) {
         dataSource
             .receive(on: DispatchQueue.main)

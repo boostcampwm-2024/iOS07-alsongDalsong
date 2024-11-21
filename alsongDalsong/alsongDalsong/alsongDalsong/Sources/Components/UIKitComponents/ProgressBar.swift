@@ -60,13 +60,9 @@ final class ProgressBar: UIView {
                 self.progressBarWidthConstraint?.constant = 0
                 self.layoutIfNeeded()
             },
-            completion: nil
+            completion: { [weak self] _ in
+                self?.timer?.invalidate()
+            }
         )
-    }
-
-    deinit {
-        DispatchQueue.main.async { [weak self] in
-            self?.timer?.invalidate()
-        }
     }
 }

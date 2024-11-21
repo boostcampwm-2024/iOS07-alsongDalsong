@@ -35,6 +35,12 @@ public struct RepsotioryAssembly: Assembly {
             )
         }
         
+        container.register(MusicRepositoryProtocol.self) { r in
+            let firebaseManager = r.resolve(ASFirebaseStorageProtocol.self)
+            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
+            return MusicRepository(firebaseManager: firebaseManager, networkManager: networkManager)
+        }
+        
         container.register(PlayersRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return PlayersRepository(

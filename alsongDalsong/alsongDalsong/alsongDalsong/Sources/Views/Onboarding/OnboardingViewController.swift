@@ -182,8 +182,7 @@ final class OnboardingViewController: UIViewController {
                     roomActionRepository: roomActionRepository,
                     avatarRepository: avatarRepository
                 )
-                let lobbyView = LobbyView(viewModel: lobbyViewModel)
-                let lobbyViewController = UIHostingController(rootView: lobbyView)
+                let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
                 self?.navigationController?.pushViewController(lobbyViewController, animated: false)
             }
             .store(in: &cancleables)

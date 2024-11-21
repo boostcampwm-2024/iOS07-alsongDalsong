@@ -25,6 +25,7 @@ struct SelectMusicView: View {
                         .tint(.black)
                 }
             }
+            .listStyle(.plain)
         }
     }
 }

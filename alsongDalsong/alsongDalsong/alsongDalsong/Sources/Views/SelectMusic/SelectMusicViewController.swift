@@ -1,9 +1,11 @@
+import ASContainer
+import ASRepository
 import UIKit
 import SwiftUI
 
 class SelectMusicViewController: UIViewController {
     
-    let selectMusicViewModel: SelectMusicViewModel!
+    let selectMusicViewModel: SelectMusicViewModel
     let selectCompleteButton = ASButton()
     
     init(selectMusicViewModel: SelectMusicViewModel) {
@@ -12,13 +14,26 @@ class SelectMusicViewController: UIViewController {
     }
     
     required init?(coder: NSCoder) {
-        self.selectMusicViewModel = nil
-        super.init(coder: coder)
+       fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setAction()
+        setupUI()
+        setupLayout()
+        bindToComponents()
+    }
+    
+    private func bindToComponents() {
+        selectCompleteButton.bind(to: selectMusicViewModel.$musicData)
+    }
+    
+    func setupUI() {
         view.backgroundColor = .asLightGray
+    }
+    
+    func setupLayout() {
         let selectMusicView = SelectMusicView(viewModel: selectMusicViewModel)
         let hostingController = UIHostingController(rootView: selectMusicView)
         addChild(hostingController)
@@ -40,9 +55,27 @@ class SelectMusicViewController: UIViewController {
             
             selectCompleteButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
             selectCompleteButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
-            selectCompleteButton.heightAnchor.constraint(equalToConstant: 45),
-            selectCompleteButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -30)
+            selectCompleteButton.heightAnchor.constraint(equalToConstant: 64),
+            selectCompleteButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -25)
         ])
+    }
+    
+    func setAction() {
+        selectCompleteButton.addAction(UIAction { [weak self] _ in
+            self?.selectMusicViewModel.stopMusic()
+            let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
+            let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
+            let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
+            
+            let hummingViewModel = HummingViewModel(
+                gameStatusRepository: gameStatusRepository,
+                playersRepository: playersRepository,
+                submitsRepository: submitsRepository
+            )
+            
+            self?.navigationController?.pushViewController(HummingViewController(vm: hummingViewModel), animated: true)
+        }, for: .touchUpInside)
+        selectCompleteButton.isEnabled = false
     }
 
 }

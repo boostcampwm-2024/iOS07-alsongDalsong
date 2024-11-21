@@ -1,3 +1,4 @@
+import ASContainer
 import ASRepository
 import UIKit
 
@@ -11,18 +12,8 @@ final class RehummingViewController: UIViewController {
     private var submissionStatus = SubmissionStatusView()
     private let vm: RehummingViewModel
 
-    init(
-        gameStatusRepository: GameStatusRepositoryProtocol,
-        playersRepository: PlayersRepositoryProtocol,
-        recordsRepository: RecordsRepositoryProtocol,
-        submitsRepository: SubmitsRepositoryProtocol
-    ) {
-        vm = RehummingViewModel(
-            gameStatusRepository: gameStatusRepository,
-            playersRepository: playersRepository,
-            recordsRepository: recordsRepository,
-            submitsRepository: submitsRepository
-        )
+    init(vm: RehummingViewModel) {
+        self.vm = vm
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -41,6 +32,7 @@ final class RehummingViewController: UIViewController {
     private func bindToComponents() {
         submissionStatus.bind(to: vm.$submissionStatus)
         progressBar.bind(to: vm.$dueTime)
+        submitButton.bind(to: vm.$humming)
     }
 
     private func setupUI() {
@@ -54,6 +46,12 @@ final class RehummingViewController: UIViewController {
         view.addSubview(recordButton)
         view.addSubview(submitButton)
         view.addSubview(submissionStatus)
+        submitButton.addAction(
+            UIAction { [weak self] _ in
+                let vc = HummingResultViewController()
+                self?.navigationController?.pushViewController(vc, animated: true)
+        }, for: .touchUpInside)
+        submitButton.isEnabled = false
     }
 
     private func setupPlaceholder() {
@@ -82,12 +80,12 @@ final class RehummingViewController: UIViewController {
             hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             hummingPanel.heightAnchor.constraint(equalToConstant: 64),
-            
+
             rehummingPanel.topAnchor.constraint(equalTo: hummingPanel.bottomAnchor, constant: 16),
             rehummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             rehummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             rehummingPanel.heightAnchor.constraint(equalToConstant: 64),
-            
+
             recordButton.topAnchor.constraint(equalTo: rehummingPanel.bottomAnchor, constant: 68),
             recordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 

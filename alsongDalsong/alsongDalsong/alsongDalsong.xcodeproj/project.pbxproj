@@ -110,7 +110,6 @@
 		16DE64502CEE248F00DFC48F /* ASContainer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASContainer.xcodeproj; path = ../ASContainer/ASContainer.xcodeproj; sourceTree = "<group>"; };
 		16F8B7772CE59B7F0059F22A /* alsongDalsong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = alsongDalsong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BBE1CA82CE47C660052A698 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		1BDF06AC2CEE382E002148B2 /* ASAudioKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ASAudioKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASCacheKit.xcodeproj; path = ../ASCacheKit/ASCacheKit.xcodeproj; sourceTree = "<group>"; };
 		8D37A1F92CEE19A40015DC56 /* ASMusicKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASMusicKit.xcodeproj; path = ../ASMusicKit/ASMusicKit.xcodeproj; sourceTree = "<group>"; };
 		8D37A21E2CEF22EE0015DC56 /* ASAudioKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASAudioKit.xcodeproj; path = ../ASAudioKit/ASAudioKit.xcodeproj; sourceTree = "<group>"; };
