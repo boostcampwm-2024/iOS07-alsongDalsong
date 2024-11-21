@@ -57,7 +57,6 @@ actor AudioHelper {
     private func setTimer() {
         timer = Timer(timeInterval: 0.08, repeats: true) { [weak self] _ in
             Task {
-                print("calculate amplitude")
                 await self?.calculateRecorderAmplitude()
             }
         }
@@ -69,7 +68,6 @@ actor AudioHelper {
         guard let averagePower = await recorder?.getAveragePower() else { return }
         let newAmplitude = 1.1 * pow(10.0, averagePower / 20.0)
         let clampedAmplitude = min(max(newAmplitude, 0), 1)
-        print("clampedAmplitude")
         amplitudeSubject.send(clampedAmplitude)
     }
 
