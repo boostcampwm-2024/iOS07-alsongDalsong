@@ -1,10 +1,10 @@
 import UIKit
 import SwiftUI
 import ASCacheKit
+import ASNetworkKit
 
 final class ASAvatarCircleView: UIView {
     private var imageView = UIImageView()
-    private let cacheManager = ASCacheManager()
     
     init(backgroundColor: UIColor = .asMint) {
         super.init(frame: .zero)
@@ -36,14 +36,8 @@ final class ASAvatarCircleView: UIView {
         ])
     }
     
-    func setImage(imageURL: URL) {
-        Task {
-            guard let imageData = await cacheManager.loadCache(from: imageURL, cacheOption: .both) else {
-                imageView.image = UIImage(systemName: "person.fill")
-                return
-            }
-            imageView.image = UIImage(data: imageData)
-        }
+    func setImage(imageData: Data) {
+        imageView.image = UIImage(data: imageData)
     }
 }
 

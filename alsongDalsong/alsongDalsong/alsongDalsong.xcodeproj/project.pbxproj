@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		169725682CE5F863005B4953 /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169725632CE5F859005B4953 /* ASNetworkKit.framework */; };
 		169725692CE5F863005B4953 /* ASNetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169725632CE5F859005B4953 /* ASNetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		169C069D2CECE8860084B082 /* ASCacheKitProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */; };
+		169C069E2CECE8860084B082 /* ASCacheKitProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D1355A62CEB2B8600868316 /* ASCacheKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */; };
 		8D1355A72CEB2B8600868316 /* ASCacheKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64F9402CEB1D600069B77F /* ASEntity.framework */; };
@@ -24,6 +26,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 1B10CADB2CE4C13F002A5B8F;
 			remoteInfo = ASNetworkKit;
+		};
+		169C06872CEC9FE60084B082 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8D1355952CEB2B7E00868316 /* ASCacheKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1BF1C9582CEA3C270003EED9;
+			remoteInfo = ASCacheKitProtocol;
 		};
 		8D13559A2CEB2B7E00868316 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -59,6 +68,7 @@
 				169725692CE5F863005B4953 /* ASNetworkKit.framework in Embed Frameworks */,
 				8D95AF222CEB8BC000C211AD /* ASRepository.framework in Embed Frameworks */,
 				8D64F9422CEB1D6C0069B77F /* ASEntity.framework in Embed Frameworks */,
+				169C069E2CECE8860084B082 /* ASCacheKitProtocol.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -104,6 +114,7 @@
 				169725682CE5F863005B4953 /* ASNetworkKit.framework in Frameworks */,
 				8D95AF212CEB8BC000C211AD /* ASRepository.framework in Frameworks */,
 				8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */,
+				169C069D2CECE8860084B082 /* ASCacheKitProtocol.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */,
+				169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -251,6 +263,13 @@
 			fileType = wrapper.framework;
 			path = ASNetworkKit.framework;
 			remoteRef = 169725622CE5F859005B4953 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		169C06882CEC9FE60084B082 /* ASCacheKitProtocol.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASCacheKitProtocol.framework;
+			remoteRef = 169C06872CEC9FE60084B082 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		8D13559B2CEB2B7E00868316 /* ASCacheKit.framework */ = {

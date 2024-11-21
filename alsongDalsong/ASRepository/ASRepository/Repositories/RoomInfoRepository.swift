@@ -2,10 +2,10 @@ import Foundation
 import Combine
 import ASEntity
 
-public struct RoomInfoRepository: RoomInfoRepositoryProtocol {
+public final class RoomInfoRepository: RoomInfoRepositoryProtocol {
     private var mainRepository: MainRepository
     
-    init(mainRepository: MainRepository) {
+    public init(mainRepository: MainRepository) {
         self.mainRepository = mainRepository
     }
     

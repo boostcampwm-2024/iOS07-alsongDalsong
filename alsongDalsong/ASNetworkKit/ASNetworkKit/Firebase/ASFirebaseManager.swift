@@ -5,12 +5,14 @@ import Combine
 internal import FirebaseAuth
 @preconcurrency internal import FirebaseFirestore
 @preconcurrency internal import FirebaseDatabase
+@preconcurrency internal import FirebaseStorage
 import Foundation
 
 public final class ASFirebaseManager: Sendable {
     private let databaseRef = Database.database().reference()
     private let firestoreRef = Firestore.firestore()
     private var roomListeners: ListenerRegistration?
+    private let storageRef = Storage.storage().reference()
     
     private var roomPublisher = PassthroughSubject<Room, Error>()
     
@@ -18,6 +20,43 @@ public final class ASFirebaseManager: Sendable {
     
     public func getCurrentUserID() -> String {
         return Auth.auth().currentUser?.uid ?? ""
+    }
+    
+    public func getAvatarUrls() async throws -> [URL] {
+        let avatarRef = storageRef.child("avatar")
+        do {
+            let result = try await avatarRef.listAll()
+            return try await fetchDownloadURLs(from: result.items)
+        } catch {
+            throw ASNetworkErrors.responseError
+        }
+    }
+    
+    // 다운로드 URL 가져오기
+    private func fetchDownloadURLs(from items: [StorageReference]) async throws -> [URL] {
+        try await withThrowingTaskGroup(of: URL.self) { taskGroup in
+            for item in items {
+                taskGroup.addTask {
+                    try await self.downloadURL(for: item)
+                }
+            }
+            
+            return try await taskGroup.reduce(into: []) { urls, url in
+                urls.append(url)
+            }
+        }
+    }
+
+    private func downloadURL(for item: StorageReference) async throws -> URL {
+        try await withCheckedThrowingContinuation { continuation in
+            item.downloadURL { url, error in
+                if let url = url {
+                    continuation.resume(returning: url)
+                } else if let error = error {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 }
 
@@ -28,9 +67,9 @@ extension ASFirebaseManager: ASFirebaseAuthProtocol {
             let playerID = authResult.user.uid
             let player = Player(id: playerID, avatarUrl: avatarURL, nickname: nickname, score: 0, order: 0)
             let playerData = try ASEncoder.encode(player)
-            // MARK: setValue 함수가 Data 타입은 안들어가서 AS Encoder에 Dict로 변환하는 게 필요할듯 합니다.
             let dict = try JSONSerialization.jsonObject(with: playerData, options: .allowFragments) as? [String: Any]
             let userStatusRef = databaseRef.child("players").child(playerID)
+            userStatusRef.keepSynced(true)
             let connectedRef = databaseRef.child(".info/connected")
             connectedRef.observe(.value) { snapshot in
                 guard let isConnected = snapshot.value as? Bool else { return }

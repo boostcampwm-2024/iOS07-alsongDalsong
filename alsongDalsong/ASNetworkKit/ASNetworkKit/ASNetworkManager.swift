@@ -11,23 +11,23 @@ public struct ASNetworkManager: Sendable {
     }
 
     @discardableResult
-    public func sendRequest(to endpoint: any Endpoint, body: Data? = nil) async throws -> Data {
+    public func sendRequest(to endpoint: any Endpoint, body: Data? = nil, option: CacheOption = .both) async throws -> Data {
         guard let url = endpoint.url else { throw ASNetworkErrors.urlError }
         // cache 먼저 체크 후 urlRequest 생성
-        if let cache = try await loadCache(from: url) { return cache }
+        if let cache = try await loadCache(from: url, option: option) { return cache }
         let request = try urlRequest(for: endpoint, body: body)
         let (data, response) = try await urlSession.data(for: request)
         try validate(response: response)
-        saveCache(from: url, with: data)
+        saveCache(from: url, with: data, option: option)
         return data
     }
 
-    private func loadCache(from url: URL) async throws -> Data? {
-        await cacheManager.loadCache(from: url, cacheOption: .both)
+    private func loadCache(from url: URL, option: CacheOption) async throws -> Data? {
+        cacheManager.loadCache(from: url, cacheOption: option)
     }
 
-    private func saveCache(from url: URL, with data: Data) {
-        cacheManager.saveCache(withKey: url, data: data, cacheOption: .both)
+    private func saveCache(from url: URL, with data: Data, option: CacheOption) {
+        cacheManager.saveCache(withKey: url, data: data, cacheOption: option)
     }
 
     private func urlRequest(for endpoint: any Endpoint, body: Data? = nil) throws -> URLRequest {

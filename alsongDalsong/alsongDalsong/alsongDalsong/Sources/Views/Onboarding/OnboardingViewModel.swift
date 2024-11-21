@@ -1,17 +1,26 @@
-import Foundation
-import Combine
+import ASNetworkKit
 import ASRepository
+import Combine
+import Foundation
 
 final class OnboardingViewModel {
     // TODO: 닉네임 생성기 + 이미지 fetch (배열) + 참가하기 로직, 생성하기 로직
-    private var onboardingRepository: OnboardingRepositoryProtocol = OnboradingRepository()
+    private var avatarRepository: AvatarRepositoryProtocol
+    private var roomActionRepository: RoomActionRepositoryProtocol
     private var avatars: [URL] = []
+    private var selectedAvatar: URL?
+    private var cancellables: Set<AnyCancellable> = []
     
     @Published var nickname: String = NickNameGenerator.generate()
-    @Published var avatarURL: URL?
+    @Published var avatarData: Data?
     @Published var roomNumber: String = ""
+    @Published var buttonEnabled: Bool = true
     
-    init() {
+    init(avatarRepository: AvatarRepositoryProtocol,
+         roomActionRepository: RoomActionRepositoryProtocol)
+    {
+        self.avatarRepository = avatarRepository
+        self.roomActionRepository = roomActionRepository
         refreshAvatars()
     }
     
@@ -19,14 +28,22 @@ final class OnboardingViewModel {
         self.nickname = nickname
     }
     
-    func fetchAvatars() {
-        self.avatars = [
-            URL(string: "https://i.namu.wiki/i/UPNrk6CU0c-W4lE4dt9ire9gJQEcF3FnlSnZG6v_RgDzP40M6Xhm0aIWrr4bakrmJFl2zQbbCJsiWe_QKuNbag.webp")!,
-            URL(string: "https://i.namu.wiki/i/ipynokVLK3TAvWxj4zzJ9fnLjvz6IRnTYy8lKkgnJYquv1vWl4SDnA9OOdB0OiDYfG13WusRKc_j6zdxkCislQ.webp")!,
-            URL(string: "https://i.namu.wiki/i/chcr-vg2cJIbKZ4eoQDh0_1iVnK41MRfV5fQJ4hjvAhT7gyBuTzr2PvnxUExDvXFA9aXFV02VqjLKkkxVa8N1Q.webp")!,
-            URL(string: "https://i.namu.wiki/i/NAAI2TdyvYSIaKl_rjCCARFDbrn-W8vB18NAfS7DTR2rAF3lMkAdXkexG-TqyavIaWO0PphIVJMO6HGjusL5qA.webp")!,
-            URL(string: "https://i.namu.wiki/i/UeV-hSjVoUixzROj9YmJhIu6bL4En7AkCOeuUMuhxSXhY9VlKaUy9e1a9KReU_dYqE0WQw5PQH_APL_R1iDrtA.webp")!
-        ]
+    private func fetchAvatars() {
+        avatarRepository.getAvatarUrls()
+            .receive(on: DispatchQueue.main)
+            .map { $0.shuffled() }
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] urls in
+                self?.avatars = urls
+                self?.refreshAvatars()
+            }
+            .store(in: &cancellables)
     }
     
     func refreshAvatars() {
@@ -34,31 +51,61 @@ final class OnboardingViewModel {
             fetchAvatars()
         }
         guard let randomAvatar = avatars.randomElement() else { return }
-        avatarURL = randomAvatar
-    }
-    
-    @MainActor
-    func joinRoom(roomNumber id: String) throws {
-        Task {
-            do {
-                roomNumber = try await onboardingRepository.joinRoom(nickname: nickname, avatar: avatarURL, roomNumber: id)
-            } catch {
-                throw error
-            }
-        }
-    }
-    
-    @MainActor
-    func createRoom() throws {
-        Task {
-            do {
-                let roomNumber = try await onboardingRepository.createRoom(nickname: nickname, avatar: avatarURL)
-                if !roomNumber.isEmpty {
-                    try joinRoom(roomNumber: roomNumber)
+        selectedAvatar = randomAvatar
+        
+        avatarRepository.getAvatarData(url: randomAvatar)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
                 }
-            } catch {
-                throw error
+            } receiveValue: { [weak self] data in
+                self?.avatarData = data
             }
-        }
+            .store(in: &cancellables)
+    }
+    
+    func joinRoom(roomNumber id: String) {
+        guard let selectedAvatar else { return }
+        self.buttonEnabled = false
+        roomActionRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    self?.buttonEnabled = true
+                }
+            } receiveValue: { [weak self] isSuccess in
+                if isSuccess {
+                    self?.roomNumber = id
+                    self?.buttonEnabled = true
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func createRoom() {
+        guard let selectedAvatar else { return }
+        self.buttonEnabled = false
+        roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    self?.buttonEnabled = true
+                }
+            } receiveValue: { [weak self] roomNumber in
+                self?.joinRoom(roomNumber: roomNumber)
+            }
+            .store(in: &cancellables)
     }
 }

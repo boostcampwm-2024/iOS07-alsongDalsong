@@ -2,10 +2,10 @@ import Foundation
 import Combine
 import ASEntity
 
-public struct GameStatusRepository: GameStatusRepositoryProtocol {
+public final class GameStatusRepository: GameStatusRepositoryProtocol {
     private var mainRepository: MainRepository
     
-    init(mainRepository: MainRepository) {
+    public init(mainRepository: MainRepository) {
         self.mainRepository = mainRepository
     }
     
