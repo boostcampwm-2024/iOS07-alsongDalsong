@@ -39,7 +39,6 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
       await roomRef.update({
         status: 'humming',
         round: 1,
-        records: Array.from({ length: roomData.players.length * roomData.players.length }, () => ({ data: {} })),
       });
 
       res.status(200).json({ status: 'success' });
