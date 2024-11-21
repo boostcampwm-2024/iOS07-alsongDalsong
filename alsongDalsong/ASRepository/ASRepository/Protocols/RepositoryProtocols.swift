@@ -19,6 +19,7 @@ public protocol PlayersRepositoryProtocol {
 
 public protocol RecordsRepositoryProtocol {
     func getRecords() -> AnyPublisher<[ASEntity.Record], Never>
+    func getHumming(on round: UInt8) -> AnyPublisher<Data?, Never>
 }
 
 public protocol RoomInfoRepositoryProtocol {
@@ -43,4 +44,9 @@ public protocol RoomActionRepositoryProtocol {
     func createRoom(nickname: String, avatar: URL) -> Future<String, Error>
     func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, Error>
     func leaveRoom() -> Future<Bool, Error>
+}
+
+public protocol MusicRepositoryProtocol {
+    func getMusicUrls() -> Future<[URL], Error>
+    func getMusicData(url: URL) -> Future<Data?, Error>
 }

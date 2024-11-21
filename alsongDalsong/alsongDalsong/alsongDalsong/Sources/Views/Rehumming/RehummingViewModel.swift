@@ -3,45 +3,36 @@ import ASRepository
 import Combine
 import Foundation
 
-final class HummingViewModel: ObservableObject, @unchecked Sendable {
+final class RehummingViewModel {
     @Published public private(set) var dueTime: Date?
     @Published public private(set) var round: UInt8?
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
     @Published public private(set) var humming: Data?
-    @Published public private(set) var recorderAmplitude: Float = 0.0
+    @Published public private(set) var rehumming: Data?
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
+    private let recordsRepository: RecordsRepositoryProtocol
     private let submitsRepository: SubmitsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
 
     public init(
         gameStatusRepository: GameStatusRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
+        recordsRepository: RecordsRepositoryProtocol,
         submitsRepository: SubmitsRepositoryProtocol
     ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
+        self.recordsRepository = recordsRepository
         self.submitsRepository = submitsRepository
         bindGameStatus()
         bindSubmitStatus()
-        bindAmplitudeUpdates()
+        bindHumming()
     }
 
-    private func bindAmplitudeUpdates() {
-        Task {
-            await AudioHelper.shared.amplitudePubisher()
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] newAmplitude in
-                    guard let self = self else { return }
-                    self.recorderAmplitude = newAmplitude
-                }
-                .store(in: &self.cancellables)
-        }
-    }
-
-    private func bindGameStatus() {
+    func bindGameStatus() {
         gameStatusRepository.getDueTime()
             .sink { [weak self] newDueTime in
                 self?.dueTime = newDueTime
@@ -59,38 +50,45 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
             .store(in: &cancellables)
     }
 
-    private func bindSubmitStatus() {
+    func bindSubmitStatus() {
         let playerPublisher = playersRepository.getPlayers()
         let submitsPublisher = submitsRepository.getSubmits()
 
         playerPublisher.zip(submitsPublisher)
             .sink { [weak self] players, submits in
-                let submitStatus = (submits: String(submits.count), total: String(players.count))
+                let submitStatus = (submits: String(submits.count),
+                                    total: String(players.count))
                 self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)
     }
 
-    // TODO: - FB에 humming 보내기
-    func submitHumming() {
-        var myHumming = ASEntity.Record()
-        myHumming.file = humming
-//        myHumming.player = me
-//        myHumming.round = round
+    func bindHumming() {
+        recordsRepository.getHumming(on: round ?? 0)
+            .sink { [weak self] newHumming in
+                self?.humming = newHumming
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor
     func startRecording() {
         Task {
             let data = await AudioHelper.shared.startRecording()
-            humming = data
+            rehumming = data
         }
     }
 
     @MainActor
-    func startPlaying() {
+    func startPlaying(_ type: HummingType) {
         Task {
-            await AudioHelper.shared.startPlaying(file: humming)
+            await AudioHelper.shared.startPlaying(
+                file: type == .humming ? humming : rehumming
+            )
         }
+    }
+
+    enum HummingType {
+        case humming, rehumming
     }
 }

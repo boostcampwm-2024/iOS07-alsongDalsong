@@ -2,24 +2,24 @@ import ASNetworkKit
 import Combine
 import Foundation
 
-public final class AvatarRepository: AvatarRepositoryProtocol {
+public final class MusicRepository: MusicRepositoryProtocol {
     // TODO: - Container로 주입
-    private let storageManager: ASFirebaseStorageProtocol
-    private let networkManager: ASNetworkManagerProtocol
+    private let firebaseManager: ASFirebaseManager
+    private let networkManager: ASNetworkManager
     
     public init (
-        storageManager: ASFirebaseStorageProtocol,
-        networkManager: ASNetworkManagerProtocol
+        firebaseManager: ASFirebaseManager,
+        networkManager: ASNetworkManager
     ) {
-        self.storageManager = storageManager
+        self.firebaseManager = firebaseManager
         self.networkManager = networkManager
     }
     
-    public func getAvatarUrls() -> Future<[URL], Error> {
+    public func getMusicUrls() -> Future<[URL], Error> {
         Future { promise in
             Task {
                 do {
-                    let urls = try await self.storageManager.getAvatarUrls()
+                    let urls = try await self.firebaseManager.getAvatarUrls()
                     promise(.success(urls))
                 } catch {
                     promise(.failure(error))
@@ -28,7 +28,7 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
         }
     }
     
-    public func getAvatarData(url: URL) -> Future<Data?, Error> {
+    public func getMusicData(url: URL) -> Future<Data?, Error> {
         Future { promise in
             Task {
                 do {
