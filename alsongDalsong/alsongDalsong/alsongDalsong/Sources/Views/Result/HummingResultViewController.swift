@@ -14,6 +14,7 @@ class HummingResultViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .asLightGray
         viewModel.fetchResult()
         setMusicResultView(musicName: "", singerName: "")
         setResultTableView()
