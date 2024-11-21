@@ -41,7 +41,9 @@ final class SelectMusicViewModel: ObservableObject {
     
     func playingMusic() {
         guard let data = musicData else { return }
-        audioPlayer.startPlaying(data: data, option: .full)
+        Task {
+            await AudioHelper.shared.startPlaying(file: data)
+        }
     }
     
     func handleSelectedSong(song: ASSong) {
