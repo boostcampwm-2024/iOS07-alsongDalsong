@@ -5,17 +5,17 @@ import Foundation
 
 public final class MainRepository: MainRepositoryProtocol {
     
-    public var number = PassthroughSubject<String?, Never>()
-    public var host = PassthroughSubject<Player?, Never>()
-    public var players = PassthroughSubject<[Player]?, Never>()
-    public var mode = PassthroughSubject<ASEntity.Mode?, Never>()
-    public var round = PassthroughSubject<UInt8?, Never>()
-    public var status = PassthroughSubject<ASEntity.Status?, Never>()
-    public var answers = PassthroughSubject<[ASEntity.Answer]?, Never>()
-    public var dueTime = PassthroughSubject<Date?, Never>()
-    public var submits = PassthroughSubject<[ASEntity.Answer]?, Never>()
-    public var records = PassthroughSubject<[ASEntity.Record]?, Never>()
-    public var selectedRecords = PassthroughSubject<[UInt8]?, Never>()
+    public var number = CurrentValueSubject<String?, Never>(nil)
+    public var host = CurrentValueSubject<Player?, Never>(nil)
+    public var players = CurrentValueSubject<[Player]?, Never>(nil)
+    public var mode = CurrentValueSubject<ASEntity.Mode?, Never>(nil)
+    public var round = CurrentValueSubject<UInt8?, Never>(nil)
+    public var status = CurrentValueSubject<ASEntity.Status?, Never>(nil)
+    public var answers = CurrentValueSubject<[ASEntity.Answer]?, Never>(nil)
+    public var dueTime = CurrentValueSubject<Date?, Never>(nil)
+    public var submits = CurrentValueSubject<[ASEntity.Answer]?, Never>(nil)
+    public var records = CurrentValueSubject<[ASEntity.Record]?, Never>(nil)
+    public var selectedRecords = CurrentValueSubject<[UInt8]?, Never>(nil)
     
     private let databaseManager: ASFirebaseDatabaseProtocol
     private var cancellables: Set<AnyCancellable> = []
@@ -26,7 +26,7 @@ public final class MainRepository: MainRepositoryProtocol {
     
     public func connectRoom(roomNumber: String) {
         databaseManager.addRoomListener(roomNumber: roomNumber)
-            .receive(on: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .failure(let error):

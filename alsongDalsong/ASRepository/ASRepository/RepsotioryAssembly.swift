@@ -2,11 +2,11 @@ import ASContainer
 import ASNetworkKit
 
 public struct RepsotioryAssembly: Assembly {
-    
     public init() {}
     
     public func assemble(container: Registerable) {
-        container.register(MainRepositoryProtocol.self) { r in
+        
+        container.registerSingleton(MainRepositoryProtocol.self) { r in
             let databaseManager = r.resolve(ASFirebaseDatabaseProtocol.self)
             return MainRepository(
                 databaseManager: databaseManager
@@ -14,7 +14,7 @@ public struct RepsotioryAssembly: Assembly {
         }
         
         container.register(AnswersRepositoryProtocol.self) { r in
-            let mainRepository = r.resolve(MainRepository.self)
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return AnswersRepository(
                 mainRepository: mainRepository
             )

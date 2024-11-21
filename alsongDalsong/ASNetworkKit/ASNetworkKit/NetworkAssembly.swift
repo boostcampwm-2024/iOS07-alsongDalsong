@@ -6,13 +6,13 @@ public struct NetworkAssembly: Assembly {
     public init() {}
     
     public func assemble(container: Registerable) {
-        container.register(ASNetworkManagerProtocol.self) { r in
+        container.registerSingleton(ASNetworkManagerProtocol.self) { r in
             let cacheManager = r.resolve(CacheManagerProtocol.self)
             return ASNetworkManager(cacheManager: cacheManager)
         }
         
-        container.register(ASFirebaseAuthProtocol.self, ASFirebaseAuth())
-        container.register(ASFirebaseDatabaseProtocol.self, ASFirebaseDatabase())
-        container.register(ASFirebaseStorageProtocol.self, ASFirebaseStorage())
+        container.registerSingleton(ASFirebaseAuthProtocol.self, ASFirebaseAuth())
+        container.registerSingleton(ASFirebaseDatabaseProtocol.self, ASFirebaseDatabase())
+        container.registerSingleton(ASFirebaseStorageProtocol.self, ASFirebaseStorage())
     }
 }

@@ -5,6 +5,6 @@ public struct CacheAssembly: Assembly {
     public init() {}
     
     public func assemble(container: Registerable) {
-        container.register(CacheManagerProtocol.self, ASCacheManager())
+        container.registerSingleton(CacheManagerProtocol.self, ASCacheManager())
     }
 }

@@ -12,10 +12,26 @@ final class LobbyViewModel: ObservableObject {
     private var avatarRepository: AvatarRepositoryProtocol
     
     let playerMaxCount = 4
-    @Published var players: [Player] = []
-    @Published var roomNumber: String = ""
-    @Published var mode: Mode = .humming
-    @Published var host: Player?
+    @Published var players: [Player] = [] {
+        didSet {
+            print("current Player: \(players)")
+        }
+    }
+    @Published var roomNumber: String = "" {
+        didSet {
+            print("roomNumber Player: \(roomNumber)")
+        }
+    }
+    @Published var mode: Mode = .humming{
+        didSet {
+            print("mode Player: \(mode)")
+        }
+    }
+    @Published var host: Player?{
+        didSet {
+            print("host Player: \(host)")
+        }
+    }
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -30,7 +46,10 @@ final class LobbyViewModel: ObservableObject {
         self.roomInfoRepository = roomInfoRepository
         self.avatarRepository = avatarRepository
         self.roomNumber = roomNumber
+        
         fetchData()
+        
+        mainRepository.connectRoom(roomNumber: roomNumber)
     }
     
     func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
@@ -75,8 +94,6 @@ final class LobbyViewModel: ObservableObject {
                 self?.roomNumber = roomNumber
             }
             .store(in: &cancellables)
-        
-        self.mainRepository.connectRoom(roomNumber: roomNumber)
     }
 }
 
