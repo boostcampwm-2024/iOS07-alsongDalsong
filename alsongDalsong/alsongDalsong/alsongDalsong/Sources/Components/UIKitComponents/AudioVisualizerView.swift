@@ -1,5 +1,6 @@
 import Combine
 import UIKit
+import SwiftUI
 
 final class AudioVisualizerView: UIView {
     // TODO: Button을 누르면 ViewModel에 존재하는 ASPlayer가 실행되고 Button의 이미지 변경
@@ -178,5 +179,19 @@ final class WaveFormView: UIView {
                 columns[i].fillColor = UIColor.white.cgColor
             }
         }
+    }
+}
+
+struct WaveFormViewWrapper: UIViewRepresentable {
+    //@Binding var amplitude: Float
+    
+    func makeUIView(context: Context) -> WaveFormView {
+        let view = WaveFormView(frame: .zero)
+        
+        return view
+    }
+    
+    func updateUIView(_ uiView: WaveFormView, context: Context) {
+        //uiView.updateVisualizerView(with: CGFloat(amplitude))
     }
 }

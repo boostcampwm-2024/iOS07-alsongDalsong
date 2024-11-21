@@ -7,4 +7,9 @@ public struct Music: Codable, Equatable {
     public var lyrics: String?
 
     public init() {}
+    
+    public init(title: String, artist: String) {
+        self.title = title
+        self.artist = artist
+    }
 }
