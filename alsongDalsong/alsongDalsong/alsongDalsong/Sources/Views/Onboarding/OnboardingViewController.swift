@@ -35,6 +35,7 @@ final class OnboardingViewController: UIViewController {
         setupLayout()
         setAction()
         setConfiguration()
+        hideKeyboard()
         bind()
     }
     

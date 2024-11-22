@@ -261,8 +261,8 @@ extension UIViewController {
 }
 #endif
 
-struct HummingResultPreview: PreviewProvider {
-    static var previews: some View {
-        HummingResultViewController().toPreview()
-    }
-}
+//struct HummingResultPreview: PreviewProvider {
+//    static var previews: some View {
+//        HummingResultViewController().toPreview()
+//    }
+//}
