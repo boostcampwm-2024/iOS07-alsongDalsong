@@ -14,7 +14,7 @@ public protocol Assembly {
 }
 
 public final class DIContainer: Registerable, Resolvable {
-    public nonisolated(unsafe) static let shared = DIContainer()
+    @MainActor public static let shared = DIContainer()
     private init() {}
     
     private var factories = [String: (Resolvable) -> Any]()
