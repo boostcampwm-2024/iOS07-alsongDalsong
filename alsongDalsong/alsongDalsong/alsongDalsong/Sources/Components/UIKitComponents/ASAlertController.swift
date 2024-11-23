@@ -15,6 +15,7 @@ class ASAlertController: UIViewController {
     private var doneButtonTitle: String = ""
     private var cancelButtonTitle: String = ""
     private var isUppercased: Bool = false
+    private var textMaxCount: Int = 6
     
     var doneButtonCompletion: (() -> Void)?
     var cancelButtonCompletion: (() -> Void)?
@@ -111,16 +112,19 @@ extension ASAlertController {
 extension ASAlertController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let uppercaseString = string.uppercased()
-        if string == uppercaseString {
-            return true
-        } else {
-            if let text = textField.text,
-               let textRange = Range(range, in: text)
-            {
-                let updatedText = text.replacingCharacters(in: textRange, with: uppercaseString)
+        
+        if let text = textField.text,
+           let textRange = Range(range, in: text)
+        {
+            let updatedText = text.replacingCharacters(in: textRange, with: uppercaseString)
+            if updatedText.count <= textMaxCount {
                 textField.text = updatedText
+                return false
+            } else {
+                return false
             }
-            return false
         }
+        
+        return true
     }
 }
