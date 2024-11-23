@@ -6,9 +6,10 @@ final class HummingViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var guideLabel = GuideLabel()
     private var hummingPanel = AudioVisualizerView()
-    private var recordButton = RecordButton()
+    private var recordButton = ASButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
+    private var buttonStack = UIStackView()
     private let vm: HummingViewModel
 
     init(vm: HummingViewModel) {
@@ -37,8 +38,9 @@ final class HummingViewController: UIViewController {
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
         hummingPanel.changeBackgroundColor(color: .asYellow)
-        recordButton.addAction(UIAction {
-            [weak self] _ in self?.vm.startRecording()
+        recordButton.setConfiguration(title: "녹음하기", backgroundColor: .asLightRed)
+        recordButton.addAction(UIAction { [weak self] _ in
+            self?.vm.startRecording()
         },
         for: .touchUpInside)
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
@@ -57,24 +59,26 @@ final class HummingViewController: UIViewController {
                 )
                 let vc = RehummingViewController(vm: vm)
                 self?.navigationController?.pushViewController(vc, animated: true)
-        }, for: .touchUpInside)
+            }, for: .touchUpInside
+        )
         submitButton.isEnabled = false
+        buttonStack.axis = .horizontal
+        buttonStack.spacing = 16
+        buttonStack.addArrangedSubview(recordButton)
+        buttonStack.addArrangedSubview(submitButton)
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)
         view.addSubview(guideLabel)
         view.addSubview(hummingPanel)
-        view.addSubview(recordButton)
-        view.addSubview(submitButton)
-        view.addSubview(submissionStatus)
+        view.addSubview(buttonStack)
     }
 
     private func setupLayout() {
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         guideLabel.translatesAutoresizingMaskIntoConstraints = false
         hummingPanel.translatesAutoresizingMaskIntoConstraints = false
-        recordButton.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             progressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -90,16 +94,11 @@ final class HummingViewController: UIViewController {
             hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             hummingPanel.heightAnchor.constraint(equalToConstant: 64),
 
-            recordButton.topAnchor.constraint(equalTo: hummingPanel.bottomAnchor, constant: 68),
-            recordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-            submitButton.bottomAnchor.constraint(equalTo: submissionStatus.topAnchor, constant: -24),
-            submitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            submitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            submitButton.heightAnchor.constraint(equalToConstant: 64),
-
-            submissionStatus.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
-            submissionStatus.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
+            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
 }
