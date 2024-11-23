@@ -10,6 +10,7 @@ final class LobbyViewController: UIViewController {
     let codeLabel = UILabel()
     let inviteButton = ASButton()
     let startButton = ASButton()
+    private var hostingController: UIHostingController<LobbyView>?
     
     let viewmodel: LobbyViewModel
     private var cancellables: Set<AnyCancellable> = []
@@ -30,6 +31,12 @@ final class LobbyViewController: UIViewController {
         setupLayout()
         setAction()
         bindToComponents()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        hostingController?.view.removeFromSuperview()
+        hostingController = nil
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -104,9 +111,8 @@ final class LobbyViewController: UIViewController {
     
     private func setupLayout() {
         let lobbyView = UIHostingController(rootView: LobbyView(viewModel: viewmodel))
-        lobbyView.didMove(toParent: self)
+       hostingController = lobbyView
         lobbyView.view.translatesAutoresizingMaskIntoConstraints = false
-        addChild(lobbyView)
         view.addSubview(lobbyView.view)
         view.addSubview(startButton)
         view.addSubview(inviteButton)

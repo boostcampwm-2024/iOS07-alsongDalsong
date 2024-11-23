@@ -24,7 +24,7 @@ struct SnapperView: View {
     var body: some View {
         let offset: CGFloat = maxSwipeDistance - (maxSwipeDistance * CGFloat(currentMode.Index))
         
-        LazyHStack(spacing: spacing) {
+        HStack(spacing: spacing) {
             ForEach(modeInfos, id: \.id) { card in
                 ModeView(modeInfo: card, width: cardWidth)
                     .offset(x: isDragging ? totalDrag : 0)
