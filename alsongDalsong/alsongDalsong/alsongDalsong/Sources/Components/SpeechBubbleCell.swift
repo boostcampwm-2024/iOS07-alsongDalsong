@@ -91,7 +91,7 @@ struct SpeechBubbleCell: View {
                         WaveFormViewWrapper()
                     }
                     .frame(width: 220)
-                    .offset(x: alignment == .left ? 20 : 5, y: -4)
+                    .offset(x: alignment == .left ? 30 : 0, y: -4)
                 }
             }
         }
@@ -107,20 +107,23 @@ struct BubbleShape: Shape {
         if alignment == .right {
             path.move(to: CGPoint(x: rect.maxX - 40, y: rect.minY))
             path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.maxX - 20, y: rect.minY + 25))
+            path.addLine(to: CGPoint(x: rect.maxX - 20, y: rect.minY + 12))
+            path.addLine(to: CGPoint(x: rect.maxX - 40, y: rect.minY))
             path.addRoundedRect(in: CGRect(x: rect.minX - 10,
                                            y: rect.minY,
                                            width: rect.width - 10,
-                                           height: rect.height - 10), cornerSize: CGSize(width: 15, height: 15))
+                                           height: rect.height - 10), cornerSize: CGSize(width: 12, height: 12))
         } else {
-            path.move(to: CGPoint(x: rect.minX + 10, y: rect.minY + 25))
-            path.addLine(to: CGPoint(x: rect.minX - 10, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.minX + 50, y: rect.minY))
-            path.addRoundedRect(in: CGRect(x: rect.minX + 10,
+            path.addRoundedRect(in: CGRect(x: rect.minX + 20,
                                            y: rect.minY,
                                            width: rect.width - 10,
-                                           height: rect.height - 10), cornerSize: CGSize(width: 15, height: 15))
+                                           height: rect.height - 10), cornerSize: CGSize(width: 12, height: 12))
+            path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.minX + 40, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.minX + 20, y: rect.minY + 12))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
         }
+        path.closeSubpath()
         return path
     }
 }
