@@ -9,7 +9,6 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
     @Published public private(set) var music: Music?
-    @Published public private(set) var musicArtwork: Data?
     @Published public private(set) var musicPreview: Data?
     @Published public private(set) var humming: Data?
     @Published public private(set) var recorderAmplitude: Float = 0.0
