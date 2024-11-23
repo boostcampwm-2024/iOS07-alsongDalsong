@@ -38,6 +38,9 @@ final class HummingViewController: UIViewController {
         musicPanel.onPlayButtonTapped { [weak self] isPlaying in
             self?.vm.togglePlayPause(of: .preview, isPlaying: isPlaying)
         }
+        hummingPanel.onPlayButtonTapped = { [weak self] isPlaying in
+            self?.vm.togglePlayPause(of: .humming, isPlaying: isPlaying)
+        }
     }
 
     private func setupUI() {
