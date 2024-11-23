@@ -35,8 +35,10 @@ final class LobbyViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        hostingController?.view.removeFromSuperview()
-        hostingController = nil
+        if viewmodel.isLeaveRoom {
+            hostingController?.view.removeFromSuperview()
+            hostingController = nil
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {

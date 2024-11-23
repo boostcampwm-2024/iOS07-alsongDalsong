@@ -3,7 +3,7 @@ import ASEntity
 import ASRepository
 import Combine
 
-final class LobbyViewModel: ObservableObject {
+final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     private var playersRepository: PlayersRepositoryProtocol
     private var roomInfoRepository: RoomInfoRepositoryProtocol
     private var roomActionRepository: RoomActionRepositoryProtocol
@@ -14,12 +14,13 @@ final class LobbyViewModel: ObservableObject {
     @Published var roomNumber: String = ""
     @Published var mode: Mode = .humming {
         didSet {
-            print("mode: \(mode)")
+            self.changeMode()
         }
     }
     @Published var host: Player?
     @Published var isGameStrted: Bool = false
     @Published var isHost: Bool = false
+    var isLeaveRoom = false
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -75,9 +76,7 @@ final class LobbyViewModel: ObservableObject {
                     print(error.localizedDescription)
                 }
             } receiveValue: { [weak self] isSuccess in
-                if isSuccess {
-                    // navigate to Onboarding
-                }
+                self?.isLeaveRoom = !isSuccess
             }
             .store(in: &cancellables)
     }
@@ -117,5 +116,15 @@ final class LobbyViewModel: ObservableObject {
                 self?.isHost = isHost
             }
             .store(in: &cancellables)
+    }
+    
+    func changeMode() {
+        Task{
+            do {
+                let isSuccess = try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
