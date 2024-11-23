@@ -86,7 +86,7 @@ final class HummingViewController: UIViewController {
             progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             progressBar.heightAnchor.constraint(equalToConstant: 16),
 
-            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 56),
+            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 20),
             guideLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
             hummingPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 68),
