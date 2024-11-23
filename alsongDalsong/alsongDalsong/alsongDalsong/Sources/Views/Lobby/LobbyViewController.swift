@@ -44,6 +44,13 @@ final class LobbyViewController: UIViewController {
                 self?.codeLabel.text = "#\(roomNumber)"
             }
             .store(in: &cancellables)
+        
+        viewmodel.$isHost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHost in
+                self?.startButton.isEnabled = isHost
+            }
+            .store(in: &cancellables)
     }
     
     private func setupUI() {

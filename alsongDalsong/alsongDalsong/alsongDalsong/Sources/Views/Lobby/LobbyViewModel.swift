@@ -12,7 +12,11 @@ final class LobbyViewModel: ObservableObject {
     let playerMaxCount = 4
     @Published var players: [Player] = []
     @Published var roomNumber: String = ""
-    @Published var mode: Mode = .humming
+    @Published var mode: Mode = .humming {
+        didSet {
+            print("mode: \(mode)")
+        }
+    }
     @Published var host: Player?
     @Published var isGameStrted: Bool = false
     @Published var isHost: Bool = false

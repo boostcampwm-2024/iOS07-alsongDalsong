@@ -2,8 +2,8 @@ import SwiftUI
 import ASEntity
 
 struct SnapperView: View {
-    let size: CGSize
-    let modeInfos: [ModeInfo]
+    private let size: CGSize
+    private let modeInfos = Mode.allCases
     private let padding: CGFloat
     private let cardWidth: CGFloat
     private let spacing: CGFloat = 15.0
@@ -13,9 +13,8 @@ struct SnapperView: View {
     @State private var isDragging: Bool = false
     @State private var totalDrag: CGFloat = 0.0
     
-    init(size: CGSize, modeInfos: [ModeInfo], currentMode: Binding<Mode>) {
+    init(size: CGSize, currentMode: Binding<Mode>) {
         self.size = size
-        self.modeInfos = modeInfos
         self.cardWidth = size.width * 0.85
         self.padding = (size.width - cardWidth) / 2.0
         self.maxSwipeDistance = cardWidth + spacing
@@ -24,6 +23,7 @@ struct SnapperView: View {
     
     var body: some View {
         let offset: CGFloat = maxSwipeDistance - (maxSwipeDistance * CGFloat(currentMode.Index))
+        
         LazyHStack(spacing: spacing) {
             ForEach(modeInfos, id: \.id) { card in
                 ModeView(modeInfo: card, width: cardWidth)
@@ -40,8 +40,8 @@ struct SnapperView: View {
                     totalDrag = value.translation.width
                 }
                 .onEnded { value in
-                    totalDrag = 0.0
                     isDragging = false
+                    totalDrag = 0.0
                     
                     if (value.translation.width < -(cardWidth / 2.0) && self.currentMode.Index < modeInfos.count) {
                         self.currentMode = Mode.fromIndex(self.currentMode.Index + 1) ?? .harmony
@@ -55,5 +55,11 @@ struct SnapperView: View {
 }
 
 #Preview {
-//    SnapperView(size: CGSize(width: 300, height: 200), modeInfos: [ModeInfo(title: "하이", imageName: "photo.artframe", description: "설명설명설명")], currentCardIndex: 1)
+    SnapperView(
+        size: CGSize(
+            width: 300,
+            height: 400
+        ),
+        currentMode: .constant(.harmony)
+    )
 }
