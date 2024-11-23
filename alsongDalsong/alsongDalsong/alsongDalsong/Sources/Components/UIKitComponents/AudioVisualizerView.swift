@@ -3,12 +3,11 @@ import UIKit
 import SwiftUI
 
 final class AudioVisualizerView: UIView {
-    // TODO: Button을 누르면 ViewModel에 존재하는 ASPlayer가 실행되고 Button의 이미지 변경
-    // + ViewModel에서 @Published로 가지고 있는 amplitude를 구독해 변경이 발생할 시, VC에서 updateWaveFormView 메서드 호출
-    private var startButton = UIButton()
+    private var playButton = UIButton()
     private var waveFormView = WaveFormView()
     private var customBackgroundColor: UIColor = .asMint
     private var cancellables = Set<AnyCancellable>()
+    var onPlayButtonTapped: ((_ isPlaying: Bool) -> Void)?
 
     init() {
         super.init(frame: .zero)
@@ -36,8 +35,11 @@ final class AudioVisualizerView: UIView {
     private func setupButton() {
         let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular)
         let playImage = UIImage(systemName: "play.fill", withConfiguration: config)
-        startButton.setImage(playImage, for: .normal)
-        startButton.tintColor = UIColor.white
+        let stopImage = UIImage(systemName: "stop.fill", withConfiguration: config)
+        playButton.setImage(playImage, for: .normal)
+        playButton.setImage(stopImage, for: .selected)
+        playButton.tintColor = .white
+        playButton.adjustsImageWhenHighlighted = false
     }
 
     private func setupView() {
@@ -46,18 +48,18 @@ final class AudioVisualizerView: UIView {
     }
 
     private func addSubViews() {
-        addSubview(startButton)
-        startButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(playButton)
+        playButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(waveFormView)
         waveFormView.translatesAutoresizingMaskIntoConstraints = false
     }
 
     private func setupLayout() {
         NSLayoutConstraint.activate([
-            startButton.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            startButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-            startButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            startButton.trailingAnchor.constraint(equalTo: waveFormView.leadingAnchor, constant: -12),
+            playButton.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            playButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            playButton.trailingAnchor.constraint(equalTo: waveFormView.leadingAnchor, constant: -12),
 
             waveFormView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             waveFormView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
