@@ -38,6 +38,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
+    func sceneDidDisconnect(_: UIScene) {
+        let firebaseManager = DIContainer.shared.resolve(ASFirebaseAuthProtocol.self)
+        Task {
+            do {
+                try await firebaseManager.signOut()
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
     private func assembleDependencies() {
         DIContainer.shared.addAssemblies([CacheAssembly(), NetworkAssembly(), RepsotioryAssembly()])
     }

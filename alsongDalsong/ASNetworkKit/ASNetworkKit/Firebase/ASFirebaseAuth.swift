@@ -21,7 +21,7 @@ public final class ASFirebaseAuth: ASFirebaseAuthProtocol {
                 guard let isConnected = snapshot.value as? Bool else { return }
                 if isConnected {
                     userStatusRef.setValue(dict)
-                    userStatusRef.onDisconnectRemoveValue()
+//                    userStatusRef.onDisconnectRemoveValue()
                 }
             }
             return player
