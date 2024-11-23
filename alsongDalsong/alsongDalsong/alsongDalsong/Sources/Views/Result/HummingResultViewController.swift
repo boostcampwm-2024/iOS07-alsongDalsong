@@ -36,6 +36,7 @@ class HummingResultViewController: UIViewController {
     private func setResultTableView() {
         resultTableView.dataSource = self
         resultTableView.separatorStyle = .none
+        resultTableView.backgroundColor = .asLightGray
         view.addSubview(resultTableView)
     }
     
@@ -63,8 +64,8 @@ class HummingResultViewController: UIViewController {
             musicResultView.heightAnchor.constraint(equalToConstant: 130),
             
             resultTableView.topAnchor.constraint(equalTo: musicResultView.bottomAnchor, constant: 20),
-            resultTableView.leadingAnchor.constraint(equalTo: musicResultView.leadingAnchor),
-            resultTableView.trailingAnchor.constraint(equalTo: musicResultView.trailingAnchor),
+            resultTableView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
+            resultTableView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
             resultTableView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -30),
             
             button.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 24),
@@ -261,8 +262,8 @@ extension UIViewController {
 }
 #endif
 
-//struct HummingResultPreview: PreviewProvider {
-//    static var previews: some View {
-//        HummingResultViewController().toPreview()
-//    }
-//}
+struct HummingResultPreview: PreviewProvider {
+    static var previews: some View {
+        HummingResultViewController().toPreview()
+    }
+}
