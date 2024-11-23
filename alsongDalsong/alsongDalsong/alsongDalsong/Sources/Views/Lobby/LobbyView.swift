@@ -1,6 +1,7 @@
 import ASContainer
 import ASEntity
 import ASRepository
+import Combine
 import SwiftUI
 
 struct LobbyView: View {
@@ -9,15 +10,23 @@ struct LobbyView: View {
     @Environment(\.dismiss) var dismiss
     var body: some View {
         VStack {
-        
             ScrollView(.horizontal) {
                 HStack(spacing: 16) {
-                    ForEach(viewModel.players) { player in
-                        ProfileView(
-                            imagePublisher: viewModel.getAvatarData(url: player.avatarUrl),
-                            name: player.nickname,
-                            isHost: player.id == viewModel.host?.id
-                        )
+                    ForEach(0 ..< viewModel.playerMaxCount) { index in
+                        if index < viewModel.players.count {
+                            let player = viewModel.players[index]
+                            ProfileView(
+                                imagePublisher: viewModel.getAvatarData(url: player.avatarUrl),
+                                name: player.nickname,
+                                isHost: player.id == viewModel.host?.id
+                            )
+                        } else {
+                            ProfileView(
+                                imagePublisher: Just(Data()).setFailureType(to: Error.self).eraseToAnyPublisher(),
+                                name: nil,
+                                isHost: false
+                            )
+                        }
                     }
                 }
                 .padding()

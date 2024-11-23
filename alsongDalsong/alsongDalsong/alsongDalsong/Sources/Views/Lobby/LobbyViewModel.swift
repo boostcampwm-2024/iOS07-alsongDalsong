@@ -82,9 +82,6 @@ final class LobbyViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] players in
                 self?.players = players
-                for i in 0..<(self?.playerMaxCount ?? 4) - players.count {
-                    self?.players.append(Player(id: "0000000\(i)"))
-                }
             }
             .store(in: &cancellables)
         
