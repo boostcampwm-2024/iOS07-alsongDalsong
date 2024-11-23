@@ -36,6 +36,7 @@ final class HummingViewController: UIViewController {
         hummingPanel.bind(to: vm.$recorderAmplitude)
         submitButton.bind(to: vm.$humming)
         musicPanel.onPlayButtonTapped { [weak self] isPlaying in
+            self?.vm.togglePlayPause(of: .preview, isPlaying: isPlaying)
         }
     }
 

@@ -33,6 +33,15 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
         bindAmplitudeUpdates()
     }
 
+    func togglePlayPause(of type: AudioType, isPlaying: Bool = true) {
+        Task {
+            switch type {
+                case .humming:
+                    await AudioHelper.shared.startPlaying(file: humming)
+                case .preview:
+            }
+        }
+    }
     private func bindAmplitudeUpdates() {
         Task {
             await AudioHelper.shared.amplitudePubisher()
@@ -91,10 +100,7 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
         }
     }
 
-    @MainActor
-    func startPlaying() {
-        Task {
-            await AudioHelper.shared.startPlaying(file: humming)
-        }
+    enum AudioType {
+        case preview, humming
     }
 }
