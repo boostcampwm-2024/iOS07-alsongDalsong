@@ -14,7 +14,7 @@ final class OnboardingViewController: UIViewController {
     private var avatarRefreshButton = ASRefreshButton(size: 28)
     private var viewmodel: OnboardingViewModel?
     private var inviteCode: String
-    
+    private var nickNameTextFieldMaxCount = 12
     private var cancleables = Set<AnyCancellable>()
     
     init(viewmodel: OnboardingViewModel, inviteCode: String) {
@@ -60,6 +60,8 @@ final class OnboardingViewController: UIViewController {
         if !inviteCode.isEmpty {
             createRoomButton.isHidden = true
         }
+        
+        nickNameTextField.delegate = self
     }
     
     private func setupLayout() {
@@ -224,6 +226,23 @@ extension OnboardingViewController {
         UIView.animate(withDuration: 0.3) {
             self.view.transform = .identity
         }
+    }
+}
+
+extension OnboardingViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let currentText = textField.text,
+              let stringRange = Range(range, in: currentText)
+        else {
+            return false
+        }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        guard updatedText.count <= nickNameTextFieldMaxCount else {
+            return false
+        }
+        let allowedCharacters = CharacterSet.alphanumerics.union(.whitespaces)
+        let characterSet = CharacterSet(charactersIn: string)
+        return allowedCharacters.isSuperset(of: characterSet)
     }
 }
 
