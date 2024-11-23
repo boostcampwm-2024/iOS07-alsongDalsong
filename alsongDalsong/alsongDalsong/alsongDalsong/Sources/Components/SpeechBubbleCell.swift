@@ -84,7 +84,7 @@ struct SpeechBubbleCell: View {
                         Spacer()
                     }
                     .frame(width: 250)
-                    .offset(x: alignment == .left ? 20 : 5, y: -4)
+                    .offset(x: alignment == .left ? 30 : 5, y: -4)
                 case .record(let record):
                     // 여기서 record를 줄 필요가 있을까요? ViewModel에서 해당 파일을 그냥 실행하면 될 거 같은데
                     HStack {

@@ -90,7 +90,9 @@ class HummingResultViewController: UIViewController {
         viewModel?.$currentResult
             .receive(on: DispatchQueue.main)
             .sink { [weak self] answer in
-                self?.setMusicResultView(musicName: answer?.music.title ?? "", singerName: answer?.music.artist ?? "")
+                guard let answer,
+                      let music = answer.music else {return}
+                self?.setMusicResultView(musicName: music.title ?? "", singerName: music.artist ?? "")
             }
             .store(in: &cancellables)
         viewModel?.$resultRecords
@@ -144,8 +146,8 @@ extension HummingResultViewController: UITableViewDataSource {
                         alignment: .left,
                         messageType: .music(
                             .init(
-                                title: viewModel.answer?.music.title ?? "",
-                                artist: viewModel.answer?.music.artist ?? ""
+                                title: viewModel.answer?.music?.title ?? "",
+                                artist: viewModel.answer?.music?.artist ?? ""
                             )
                         )
                     )
@@ -155,8 +157,8 @@ extension HummingResultViewController: UITableViewDataSource {
                         alignment: .right,
                         messageType: .music(
                             .init(
-                                title: viewModel.answer?.music.title ?? "",
-                                artist: viewModel.answer?.music.artist ?? ""
+                                title: viewModel.answer?.music?.title ?? "",
+                                artist: viewModel.answer?.music?.artist ?? ""
                             )
                         )
                     )

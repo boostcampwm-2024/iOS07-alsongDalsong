@@ -48,12 +48,10 @@ final class RehummingViewController: UIViewController {
         view.addSubview(submissionStatus)
         submitButton.addAction(
             UIAction { [weak self] _ in
-                let answerRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
-                let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
-                let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
-                let resultViewModel = HummingResultViewModel(answerRepository: answerRepository,
-                                                             recordsRepository: recordsRepository,
-                                                             submitsRepository: submitsRepository)
+                //test
+//                let hummingResultRepository = DIContainer.shared.resolve(HummingResultRepositoryProtocol.self)
+                let hummingResultRepository = LocalHummingResultRepository()
+                let resultViewModel = HummingResultViewModel(hummingResultRepository: hummingResultRepository)
                 let vc = HummingResultViewController(viewModel: resultViewModel)
                 self?.navigationController?.pushViewController(vc, animated: true)
         }, for: .touchUpInside)
