@@ -159,7 +159,7 @@ final class OnboardingViewController: UIViewController {
             systemImageName: "",
             title: Constants.joinButtonTitle,
             backgroundColor: .asMint)
-        nickNamePanel.setConfiguration(
+        nickNamePanel.setTitle(
             title: Constants.nickNameTitle,
             titleAlign: .left,
             titleSize: 24)
