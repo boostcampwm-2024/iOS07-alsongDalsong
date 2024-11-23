@@ -41,13 +41,6 @@ struct LobbyView: View {
             GeometryReader { reader in
                 SnapperView(size: reader.size, modeInfos: ModeInfo.modeInfos, currentMode: $viewModel.mode)
             }
-            // TODO:- 버튼 사이즈 안맞음
-            ShareLink(item: URL(string: "alsongDalsong://invite/?roomnumber=\(viewModel.roomNumber)")!) {
-                Image(systemName: "link")
-                Text("초대코드!")
-            }
-            .buttonStyle(ASButtonStyle(backgroundColor: Color(.asYellow)))
-            .padding(.top, 20)
         }
         .background(Color.asLightGray)
     }
