@@ -36,6 +36,7 @@ class HummingResultViewController: UIViewController {
     private func setResultTableView() {
         resultTableView.dataSource = self
         resultTableView.separatorStyle = .none
+        resultTableView.allowsSelection = false
         resultTableView.backgroundColor = .asLightGray
         view.addSubview(resultTableView)
     }
