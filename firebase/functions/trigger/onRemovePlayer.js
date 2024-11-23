@@ -1,5 +1,28 @@
 const { onValueDeleted } = require('firebase-functions/v2/database');
+const { onDocumentWritten } = require('firebase-functions/v2/firestore');
+
 const admin = require('../FirebaseAdmin.js');
+
+module.exports.onRemoveRoom = onDocumentWritten(
+  {
+    ref: '/rooms/{roomNumber}',
+    region: 'asia-southeast1',
+  },
+  async (event) => {
+    const roomData = event.data.after.data(); // 업데이트된 문서 데이터
+
+    if (!roomData || !roomData.players) {
+      console.log('필수 필드 누락');
+      return;
+    }
+
+    const playersCount = roomData.players.length;
+    if (playersCount === 0) {
+      await event.data.after.ref.delete();
+      console.log(`Room ${event.params.roomNumber} deleted because all players left.`);
+    }
+  }
+);
 
 module.exports.onRemovePlayer = onValueDeleted(
   {

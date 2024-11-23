@@ -1,4 +1,5 @@
 import ASNetworkKit
+import ASEntity
 import Combine
 import Foundation
 
@@ -78,13 +79,31 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
                         endpointPath: .gameStart,
                         requestBody: ["roomNumber": roomNumber, "userId": id]
                     )
-                    guard let response = response, let status = response["status"] else {
+                    guard let response, let status = response["status"] else {
                         promise(.failure(ASNetworkErrors.responseError))
                         return
                     }
-                    response["status"] == "success" ? promise(.success(true)) : promise(.success(false))
+                    response["status"] == "success"
+                    ? promise(.success(true))
+                    : promise(.success(false))
                 }
             }
+        }
+    }
+    
+    public func changeMode(roomNumber: String, mode: Mode) async throws -> Bool {
+        do {
+            let id = self.authManager.getCurrentUserID()
+            let response = try await self.sendRequest(
+                endpointPath: .changeMode,
+                requestBody: ["roomNumber": roomNumber, "userId": id, "mode": mode.rawValue]
+            )
+            guard let status = response["status"] else {
+                throw ASNetworkErrors.responseError
+            }
+            return response["status"] == "success"
+        } catch {
+            throw error
         }
     }
     
@@ -95,6 +114,5 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         let data = try await networkManager.sendRequest(to: endpoint, body: body, option: .none)
         let response = try JSONDecoder().decode([String: String].self, from: data)
         return response
-        
     }
 }

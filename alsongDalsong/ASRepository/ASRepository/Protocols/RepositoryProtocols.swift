@@ -46,6 +46,7 @@ public protocol RoomActionRepositoryProtocol {
     func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, Error>
     func leaveRoom() -> Future<Bool, Error>
     func startGame(roomNumber: String) -> Future<Bool, any Error>
+    func changeMode(roomNumber: String, mode: Mode) async throws -> Bool
 }
 
 public protocol MusicRepositoryProtocol {
