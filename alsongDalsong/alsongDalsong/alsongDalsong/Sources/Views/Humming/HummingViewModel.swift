@@ -8,21 +8,25 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var round: UInt8?
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
+    @Published public private(set) var music: Music?
     @Published public private(set) var humming: Data?
     @Published public private(set) var recorderAmplitude: Float = 0.0
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
+    private var musicRepository: MusicRepositoryProtocol
     private let submitsRepository: SubmitsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
 
     public init(
         gameStatusRepository: GameStatusRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
+        musicRepository: MusicRepositoryProtocol,
         submitsRepository: SubmitsRepositoryProtocol
     ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
+        self.musicRepository = musicRepository
         self.submitsRepository = submitsRepository
         bindGameStatus()
         bindSubmitStatus()
