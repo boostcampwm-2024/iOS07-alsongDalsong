@@ -14,7 +14,9 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     @Published var roomNumber: String = ""
     @Published var mode: Mode = .humming {
         didSet {
-            self.changeMode()
+            if mode != oldValue {
+                self.changeMode()
+            }
         }
     }
     @Published var host: Player?
@@ -121,7 +123,9 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     func changeMode() {
         Task{
             do {
-                let isSuccess = try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
+                if isHost {
+                    try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
+                }
             } catch {
                 print(error.localizedDescription)
             }

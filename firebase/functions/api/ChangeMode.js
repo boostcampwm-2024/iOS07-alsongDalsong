@@ -31,9 +31,8 @@ module.exports.changeMode = onRequest({ region: 'asia-southeast1' }, async (req,
     }
 
     const roomData = roomSnapshot.data();
-    const isHost = roomData.host.some((host) => host.id === userId);
 
-    if (isHost) {
+    if (roomData.host === userId) {
       return res.status(400).json({ error: 'is not host' });
     }
 

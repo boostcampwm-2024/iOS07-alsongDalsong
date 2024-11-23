@@ -1,5 +1,5 @@
-import ASNetworkKit
 import ASEntity
+import ASNetworkKit
 import Combine
 import Foundation
 
@@ -20,14 +20,14 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
     
     public func createRoom(nickname: String, avatar: URL) -> Future<String, any Error> {
         Future { promise in
-            Task {
+            Task { [weak self] in
                 do {
-                    let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
-                    let response = try await self.sendRequest(
+                    let player = try await self?.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
+                    let response: [String: String]? = try await self?.sendRequest(
                         endpointPath: .createRoom,
-                        requestBody: ["hostID": player.id]
+                        requestBody: ["hostID": player?.id]
                     )
-                    guard let roomNumber = response["number"] else {
+                    guard let roomNumber = response?["number"] as? String else {
                         throw ASNetworkErrors.responseError
                     }
                     promise(.success(roomNumber))
@@ -40,15 +40,17 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
     
     public func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, any Error> {
         Future { promise in
-            Task {
+            Task { [weak self] in
                 do {
-                    let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
-                    let response = try await self.sendRequest(
+                    let player = try await self?.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
+                    let response: [String: String]? = try await self?.sendRequest(
                         endpointPath: .joinRoom,
-                        requestBody: ["roomNumber": roomNumber, "userId": player.id]
+                        requestBody: ["roomNumber": roomNumber, "userId": player?.id]
                     )
-                    let responseRoomNumber = response["number"]
-                    responseRoomNumber == roomNumber ? promise(.success(true)) : promise(.success(false))
+                    guard let roomNumberResponse = response?["number"] as? String else {
+                        throw ASNetworkErrors.responseError
+                    }
+                    roomNumberResponse == roomNumber ? promise(.success(true)) : promise(.success(false))
                 } catch {
                     promise(.failure(error))
                 }
@@ -75,17 +77,15 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
             Task { [weak self] in
                 do {
                     let id = self?.authManager.getCurrentUserID()
-                    let response = try await self?.sendRequest(
+                    let response: [String: Bool]? = try await self?.sendRequest(
                         endpointPath: .gameStart,
                         requestBody: ["roomNumber": roomNumber, "userId": id]
                     )
-                    guard let response, let status = response["status"] else {
+                    guard let response = response?["success"] as? Bool else {
                         promise(.failure(ASNetworkErrors.responseError))
                         return
                     }
-                    response["status"] == "success"
-                    ? promise(.success(true))
-                    : promise(.success(false))
+                    promise(.success(response))
                 }
             }
         }
@@ -94,25 +94,25 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
     public func changeMode(roomNumber: String, mode: Mode) async throws -> Bool {
         do {
             let id = self.authManager.getCurrentUserID()
-            let response = try await self.sendRequest(
+            let response: [String: Bool] = try await self.sendRequest(
                 endpointPath: .changeMode,
                 requestBody: ["roomNumber": roomNumber, "userId": id, "mode": mode.rawValue]
             )
-            guard let status = response["status"] else {
+            guard let isSuccess = response["success"] as? Bool else {
                 throw ASNetworkErrors.responseError
             }
-            return response["status"] == "success"
+            return isSuccess
         } catch {
             throw error
         }
     }
     
-    private func sendRequest(endpointPath: FirebaseEndpoint.Path, requestBody: [String: Any]) async throws -> [String: String] {
+    private func sendRequest<T: Decodable>(endpointPath: FirebaseEndpoint.Path, requestBody: [String: Any]) async throws -> T {
         let endpoint = FirebaseEndpoint(path: endpointPath, method: .post)
             .update(\.headers, with: ["Content-Type": "application/json"])
         let body = try JSONSerialization.data(withJSONObject: requestBody, options: [])
         let data = try await networkManager.sendRequest(to: endpoint, body: body, option: .none)
-        let response = try JSONDecoder().decode([String: String].self, from: data)
+        let response = try JSONDecoder().decode(T.self, from: data)
         return response
     }
 }
