@@ -9,12 +9,15 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
     @Published public private(set) var music: Music?
+    @Published public private(set) var musicArtwork: Data?
+    @Published public private(set) var musicPreview: Data?
     @Published public private(set) var humming: Data?
     @Published public private(set) var recorderAmplitude: Float = 0.0
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
     private var musicRepository: MusicRepositoryProtocol
+    private let answersRepository: AnswersRepositoryProtocol
     private let submitsRepository: SubmitsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
 
@@ -22,15 +25,34 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
         gameStatusRepository: GameStatusRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
         musicRepository: MusicRepositoryProtocol,
+        answersRepository: AnswersRepositoryProtocol,
         submitsRepository: SubmitsRepositoryProtocol
     ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
         self.musicRepository = musicRepository
+        self.answersRepository = answersRepository
         self.submitsRepository = submitsRepository
         bindGameStatus()
         bindSubmitStatus()
+        bindAnswer()
         bindAmplitudeUpdates()
+    }
+
+    // TODO: - FB에 humming 보내기
+    func submitHumming() {
+        var myHumming = ASEntity.Record()
+        myHumming.file = humming
+//        myHumming.player = me
+//        myHumming.round = round
+    }
+
+    @MainActor
+    func startRecording() {
+        Task {
+            let data = await AudioHelper.shared.startRecording()
+            humming = data
+        }
     }
 
     func togglePlayPause(of type: AudioType, isPlaying: Bool = true) {
@@ -39,9 +61,40 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
                 case .humming:
                     await AudioHelper.shared.startPlaying(file: humming)
                 case .preview:
+                    isPlaying ?
+                        await AudioHelper.shared.stopPlaying() :
+                        await AudioHelper.shared.startPlaying(file: musicPreview)
             }
         }
     }
+
+    private func getPreview() {
+        guard let music, let previewUrl = music.previewUrl else { return }
+        musicRepository.getMusicData(url: previewUrl)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                    case .finished:
+                        break
+                    case let .failure(error):
+                        print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] preview in
+                self?.musicPreview = preview
+            }
+            .store(in: &cancellables)
+    }
+
+    private func bindAnswer() {
+        answersRepository.getMyAnswer()
+            .eraseToAnyPublisher()
+            .sink { [weak self] answer in
+                self?.music = answer?.music
+                self?.getPreview()
+            }
+            .store(in: &cancellables)
+    }
+
     private func bindAmplitudeUpdates() {
         Task {
             await AudioHelper.shared.amplitudePubisher()
@@ -82,22 +135,6 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
                 self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)
-    }
-
-    // TODO: - FB에 humming 보내기
-    func submitHumming() {
-        var myHumming = ASEntity.Record()
-        myHumming.file = humming
-//        myHumming.player = me
-//        myHumming.round = round
-    }
-
-    @MainActor
-    func startRecording() {
-        Task {
-            let data = await AudioHelper.shared.startRecording()
-            humming = data
-        }
     }
 
     enum AudioType {
