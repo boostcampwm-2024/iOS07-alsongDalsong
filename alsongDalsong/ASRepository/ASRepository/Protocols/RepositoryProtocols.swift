@@ -50,3 +50,7 @@ public protocol RoomActionRepositoryProtocol {
 public protocol MusicRepositoryProtocol {
     func getMusicData(url: URL) -> Future<Data?, Error>
 }
+
+public protocol HummingResultRepositoryProtocol {
+    func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer)], Never>
+}

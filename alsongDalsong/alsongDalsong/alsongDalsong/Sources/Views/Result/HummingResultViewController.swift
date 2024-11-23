@@ -9,13 +9,23 @@ class HummingResultViewController: UIViewController {
     private let button = ASButton()
     let testArr = [1,2,3,4]
     
-    private var viewModel = HummingResultViewModel()
+    private var viewModel: HummingResultViewModel?
     private var cancellables = Set<AnyCancellable>()
+    
+    init(viewModel: HummingResultViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        self.viewModel = nil
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .asLightGray
-        viewModel.fetchResult()
+        viewModel?.fetchResult()
         setMusicResultView(musicName: "", singerName: "")
         setResultTableView()
         setButton()
@@ -77,19 +87,19 @@ class HummingResultViewController: UIViewController {
     }
     
     private func bind() {
-        viewModel.$currentResult
+        viewModel?.$currentResult
             .receive(on: DispatchQueue.main)
             .sink { [weak self] answer in
                 self?.setMusicResultView(musicName: answer?.music.title ?? "", singerName: answer?.music.artist ?? "")
             }
             .store(in: &cancellables)
-        viewModel.$resultRecords
+        viewModel?.$resultRecords
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.resultTableView.reloadData()
             }
             .store(in: &cancellables)
-        viewModel.$answer
+        viewModel?.$answer
             .receive(on: DispatchQueue.main)
             .sink { [weak self] answer in
                 //TODO: 정답 제출한 음악 뷰에 주는 거 (TableView가 보고 있는 배열에 추가?)
@@ -105,6 +115,7 @@ extension HummingResultViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let viewModel else {return 0}
         if section == 0 {
             return viewModel.resultRecords.count
         }
@@ -114,6 +125,7 @@ extension HummingResultViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         cell.backgroundColor = .clear
+        guard let viewModel else {return cell}
         
         if indexPath.section == 0 {
             cell.contentConfiguration = UIHostingConfiguration {
@@ -263,8 +275,8 @@ extension UIViewController {
 }
 #endif
 
-struct HummingResultPreview: PreviewProvider {
-    static var previews: some View {
-        HummingResultViewController().toPreview()
-    }
-}
+//struct HummingResultPreview: PreviewProvider {
+//    static var previews: some View {
+//        HummingResultViewController().toPreview()
+//    }
+//}
