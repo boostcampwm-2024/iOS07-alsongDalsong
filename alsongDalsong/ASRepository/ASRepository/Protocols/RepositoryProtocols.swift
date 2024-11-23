@@ -15,6 +15,7 @@ public protocol GameStatusRepositoryProtocol {
 public protocol PlayersRepositoryProtocol {
     func getPlayers() -> AnyPublisher<[Player], Never>
     func getHost() -> AnyPublisher<Player, Never>
+    func isHost() -> AnyPublisher<Bool, Never>
 }
 
 public protocol RecordsRepositoryProtocol {

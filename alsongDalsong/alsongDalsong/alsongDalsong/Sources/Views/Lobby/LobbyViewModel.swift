@@ -15,6 +15,7 @@ final class LobbyViewModel: ObservableObject {
     @Published var mode: Mode = .humming
     @Published var host: Player?
     @Published var isGameStrted: Bool = false
+    @Published var isHost: Bool = false
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -103,6 +104,13 @@ final class LobbyViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
                 self?.roomNumber = roomNumber
+            }
+            .store(in: &cancellables)
+        
+        playersRepository.isHost()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHost in
+                self?.isHost = isHost
             }
             .store(in: &cancellables)
     }
