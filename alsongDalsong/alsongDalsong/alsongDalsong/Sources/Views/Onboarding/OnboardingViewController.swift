@@ -39,6 +39,17 @@ final class OnboardingViewController: UIViewController {
         bind()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     private func setupUI() {
         view.backgroundColor = .asLightGray
         for item in [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, nickNameTextField, avatarRefreshButton] {
@@ -181,8 +192,7 @@ final class OnboardingViewController: UIViewController {
                     playersRepository: playersRepository,
                     roomInfoRepository: roomInfoRepository,
                     roomActionRepository: roomActionRepository,
-                    avatarRepository: avatarRepository
-                )
+                    avatarRepository: avatarRepository)
                 let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
                 self?.navigationController?.pushViewController(lobbyViewController, animated: false)
             }
@@ -194,6 +204,25 @@ final class OnboardingViewController: UIViewController {
                 self?.joinRoomButton.isEnabled = enabled
             }
             .store(in: &cancleables)
+    }
+}
+
+extension OnboardingViewController {
+    @objc func keyboardWillShow(_ notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            
+            UIView.animate(withDuration: 0.3) {
+                self.view.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight)
+            }
+        }
+    }
+
+    @objc func keyboardWillHide(_ notification: NSNotification) {
+        UIView.animate(withDuration: 0.3) {
+            self.view.transform = .identity
+        }
     }
 }
 
