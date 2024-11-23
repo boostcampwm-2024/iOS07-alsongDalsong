@@ -120,8 +120,9 @@ final class OnboardingViewController: UIViewController {
                         titleText: Constants.joinAlertTitle,
                         doneButtonTitle: Constants.doneAlertButtonTitle,
                         cancelButtonTitle: Constants.cancelAlertButtonTitle,
-                        textFieldPlaceholder: Constants.roomNumberPlaceholder)
-                    
+                        textFieldPlaceholder: Constants.roomNumberPlaceholder,
+                        isUppercased: true)
+                        
                     joinAlert.doneButtonCompletion = { [weak self] in
                         if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
                             self?.viewmodel?.setNickname(with: nickname)

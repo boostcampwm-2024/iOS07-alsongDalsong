@@ -5,7 +5,7 @@ class ASAlertController: UIViewController {
     private var textField = ASTextField()
     private var doneButton = ASButton()
     private var cancelButton = ASButton()
-    //Alert창에 입력한 text
+    // Alert창에 입력한 text
     var text: String {
         textField.text ?? ""
     }
@@ -14,6 +14,7 @@ class ASAlertController: UIViewController {
     private var textFieldPlaceholder: String = ""
     private var doneButtonTitle: String = ""
     private var cancelButtonTitle: String = ""
+    private var isUppercased: Bool = false
     
     var doneButtonCompletion: (() -> Void)?
     var cancelButtonCompletion: (() -> Void)?
@@ -22,6 +23,10 @@ class ASAlertController: UIViewController {
         super.viewDidLoad()
         setupUI(titleText: titleText, textFieldPlaceholder: textFieldPlaceholder, doneButtonTitle: doneButtonTitle, cancelButtonTitle: cancelButtonTitle)
         setupLayout()
+        
+        if isUppercased {
+            textField.delegate = self
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -33,7 +38,7 @@ class ASAlertController: UIViewController {
     }
     
     private func setupUI(titleText: String, textFieldPlaceholder: String, doneButtonTitle: String, cancelButtonTitle: String) {
-        self.view.backgroundColor = .black.withAlphaComponent(0.3)
+        view.backgroundColor = .black.withAlphaComponent(0.3)
         alertView.setConfiguration(title: titleText, titleAlign: .center, titleSize: 24)
         alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         alertView.backgroundColor = .asLightGray
@@ -90,14 +95,32 @@ class ASAlertController: UIViewController {
 }
 
 extension ASAlertController {
-    convenience init(titleText: String, doneButtonTitle: String, cancelButtonTitle: String, textFieldPlaceholder: String) {
+    convenience init(titleText: String, doneButtonTitle: String, cancelButtonTitle: String, textFieldPlaceholder: String, isUppercased: Bool = false) {
         self.init()
         self.titleText = titleText
         self.textFieldPlaceholder = textFieldPlaceholder
         self.doneButtonTitle = doneButtonTitle
         self.cancelButtonTitle = cancelButtonTitle
+        self.isUppercased = isUppercased
         
         self.modalTransitionStyle = .crossDissolve
         self.modalPresentationStyle = .overFullScreen
+    }
+}
+
+extension ASAlertController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let uppercaseString = string.uppercased()
+        if string == uppercaseString {
+            return true
+        } else {
+            if let text = textField.text,
+               let textRange = Range(range, in: text)
+            {
+                let updatedText = text.replacingCharacters(in: textRange, with: uppercaseString)
+                textField.text = updatedText
+            }
+            return false
+        }
     }
 }
