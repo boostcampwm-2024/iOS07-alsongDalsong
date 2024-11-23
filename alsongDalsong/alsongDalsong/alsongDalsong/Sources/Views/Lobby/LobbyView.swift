@@ -9,22 +9,7 @@ struct LobbyView: View {
     @Environment(\.dismiss) var dismiss
     var body: some View {
         VStack {
-            HStack {
-                Button {
-                    viewModel.leaveRoom()
-                    dismiss()
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .rotationEffect(.degrees(-90))
-                        .tint(.asBlack)
-                }
-                Spacer()
-                Text(viewModel.roomNumber)
-                    .foregroundStyle(.gray)
-                    .font(.custom("DoHyeon-Regular", size: 48))
-            }
-            .font(.title)
-            .padding()
+        
             ScrollView(.horizontal) {
                 HStack(spacing: 16) {
                     ForEach(viewModel.players) { player in
