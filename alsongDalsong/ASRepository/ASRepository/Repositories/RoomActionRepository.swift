@@ -3,13 +3,16 @@ import Combine
 import Foundation
 
 public final class RoomActionRepository: RoomActionRepositoryProtocol {
+    private let mainRepository: MainRepositoryProtocol
     private let authManager: ASFirebaseAuthProtocol
     private let networkManager: ASNetworkManagerProtocol
     
     public init(
+        mainRepository: MainRepositoryProtocol,
         authManager: ASFirebaseAuthProtocol,
         networkManager: ASNetworkManagerProtocol
     ) {
+        self.mainRepository = mainRepository
         self.authManager = authManager
         self.networkManager = networkManager
     }
@@ -54,9 +57,10 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
     
     public func leaveRoom() -> Future<Bool, any Error> {
         Future { promise in
-            Task {
+            Task { [weak self] in
                 do {
-                    try await self.authManager.signOut()
+                    self?.mainRepository.disconnecRoom()
+                    try await self?.authManager.signOut()
                     promise(.success(true))
                 } catch {
                     promise(.failure(error))
@@ -67,14 +71,17 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
     
     public func startGame(roomNumber: String) -> Future<Bool, any Error> {
         Future { promise in
-            Task {
+            Task { [weak self] in
                 do {
-                    let id = self.authManager.getCurrentUserID()
-                    let response = try await self.sendRequest(
+                    let id = self?.authManager.getCurrentUserID()
+                    let response = try await self?.sendRequest(
                         endpointPath: .gameStart,
                         requestBody: ["roomNumber": roomNumber, "userId": id]
                     )
-                    let status = response["status"]
+                    guard let response = response, let status = response["status"] else {
+                        promise(.failure(ASNetworkErrors.responseError))
+                        return
+                    }
                     response["status"] == "success" ? promise(.success(true)) : promise(.success(false))
                 }
             }

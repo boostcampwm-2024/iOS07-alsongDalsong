@@ -24,19 +24,13 @@ module.exports.exitRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
   try {
     const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
     const roomData = await roomRef.get();
-    const userData = await getUserData(userId);
+    const players = roomData.data().players;
 
     if (!roomData.exists) {
       return res.status(404).json({ error: 'Room not found' });
     }
 
-    if (!userData) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
     if (roomData.data().host.id === userId) {
-      // 호스트가 나간 경우
-      const players = roomData.data().players;
       if (players.length > 1) {
         const newHost = players.find((player) => player.id !== userId);
         await roomRef.update({
@@ -47,8 +41,6 @@ module.exports.exitRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
         await roomRef.delete();
       }
     } else {
-      // 일반 플레이어가 나간 경우
-      const players = roomData.data().players;
       const updatedPlayers = players.filter((player) => player.id !== userId);
       await roomRef.update({
         players: updatedPlayers,

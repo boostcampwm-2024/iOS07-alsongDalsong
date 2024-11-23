@@ -52,6 +52,21 @@ public final class MainRepository: MainRepositoryProtocol {
             .store(in: &cancellables)
     }
     
+    public func disconnecRoom() {
+        self.update(\.number, with: nil)
+        self.update(\.host, with: nil)
+        self.update(\.players, with: nil)
+        self.update(\.mode, with: nil)
+        self.update(\.round, with: nil)
+        self.update(\.status, with: nil)
+        self.update(\.answers, with: nil)
+        self.update(\.dueTime, with: nil)
+        self.update(\.submits, with: nil)
+        self.update(\.records, with: nil)
+        self.update(\.selectedRecords, with: nil)
+        databaseManager.removeRoomListener()
+    }
+    
     private func update<Value: Equatable>(
         _ keyPath: ReferenceWritableKeyPath<MainRepository, CurrentValueSubject<Value?, Never>>,
         with newValue: Value?

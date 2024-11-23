@@ -56,9 +56,11 @@ public struct RepsotioryAssembly: Assembly {
         }
         
         container.register(RoomActionRepositoryProtocol.self) { r in
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             let authManager = r.resolve(ASFirebaseAuthProtocol.self)
             let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return RoomActionRepository(
+                mainRepository: mainRepository,
                 authManager: authManager,
                 networkManager: networkManager
             )

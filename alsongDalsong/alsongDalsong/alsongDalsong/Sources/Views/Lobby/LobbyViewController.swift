@@ -26,6 +26,11 @@ final class LobbyViewController: UIViewController {
         setAction()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        viewmodel.leaveRoom()
+    }
+    
     private func setupUI() {
         view.backgroundColor = .asLightGray
         inviteButton.setConfiguration(systemImageName: "link", title: "초대하기!", backgroundColor: .asYellow)
