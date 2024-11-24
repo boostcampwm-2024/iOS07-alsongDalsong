@@ -2,7 +2,6 @@ import Foundation
 import ASEntity
 import Combine
 import ASRepository
-
 final class MusicPanelViewModel {
     @Published var music: Music?
     @Published var artwork: Data?

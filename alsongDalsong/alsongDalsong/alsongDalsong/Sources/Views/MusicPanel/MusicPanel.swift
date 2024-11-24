@@ -18,7 +18,7 @@ final class MusicPanel: UIView {
         super.init(frame: .zero)
         setupUI()
         setupLayout()
-        setupAction()
+        bindWithPlayer()
     }
 
     @available(*, unavailable)
@@ -32,15 +32,18 @@ final class MusicPanel: UIView {
         dataSource
             .receive(on: DispatchQueue.main)
             .sink { [weak self] music in
-                self?.vm = MusicPanelViewModel(music: music, musicRepository: self?.musicRepository)
+                self?.vm = MusicPanelViewModel(
+                    music: music,
+                    musicRepository: self?.musicRepository
+                )
+                self?.observeViewModel()
                 self?.titleLabel.text = music?.title ?? "???"
                 self?.artistLabel.text = music?.artist ?? "????"
-//                self?.setNeedsLayout()
             }
             .store(in: &cancellables)
     }
 
-    private func setupAction() {
+    private func bindWithPlayer() {
         player.onPlayButtonTapped = { [weak self] isPlaying in
             self?.vm?.togglePlayPause(isPlaying: isPlaying)
         }
@@ -50,12 +53,7 @@ final class MusicPanel: UIView {
         vm?.$artwork
             .receive(on: DispatchQueue.main)
             .sink { [weak self] artwork in
-                self?.player.updateImage(with: artwork)
-            }
-            .store(in: &cancellables)
-        vm?.$preview
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] artwork in
+                print("artwork changed")
                 self?.player.updateImage(with: artwork)
             }
             .store(in: &cancellables)
