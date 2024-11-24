@@ -76,6 +76,7 @@ final class HummingViewController: UIViewController {
         view.addSubview(musicPanel)
         view.addSubview(hummingPanel)
         view.addSubview(buttonStack)
+        view.addSubview(submissionStatus)
     }
 
     private func setupLayout() {
@@ -100,13 +101,16 @@ final class HummingViewController: UIViewController {
             musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -48),
 
             hummingPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 36),
-            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             hummingPanel.heightAnchor.constraint(equalToConstant: 84),
 
+            submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
+            submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
+            
             buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
