@@ -9,8 +9,8 @@ final class HummingViewModel: @unchecked Sendable {
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
     @Published public private(set) var music: Music?
-    @Published public private(set) var humming: Data?
-    @Published public private(set) var recorderAmplitude: Float = 0.0
+    @Published public private(set) var recordedData: Data?
+    @Published public private(set) var isRecording: Bool = false
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
@@ -34,31 +34,31 @@ final class HummingViewModel: @unchecked Sendable {
         bindGameStatus()
         bindSubmitStatus()
         bindAnswer()
-        bindAmplitudeUpdates()
     }
 
     // TODO: - FB에 humming 보내기
     func submitHumming() {
         var myHumming = ASEntity.Record()
-        myHumming.file = humming
-//        myHumming.player = me
-//        myHumming.round = round
+        myHumming.file = recordedData
     }
 
-    @MainActor
     func startRecording() {
-        Task {
-            let data = await AudioHelper.shared.startRecording()
-            humming = data
-        }
+        isRecording = true
     }
 
     func togglePlayPause() {
         Task {
-            await AudioHelper.shared.startPlaying(file: humming)
+            await AudioHelper.shared.startPlaying(file: recordedData)
         }
     }
 
+    func updateRecordedData(with data: Data) {
+        // TODO: - data가 empty일 때(녹음이 제대로 되지 않았을 때 사용자 오류처리 필요
+        guard !data.isEmpty else { return }
+        recordedData = data
+        isRecording = false
+    }
+    
     private func bindAnswer() {
         answersRepository.getMyAnswer()
             .eraseToAnyPublisher()
@@ -66,18 +66,6 @@ final class HummingViewModel: @unchecked Sendable {
                 self?.music = answer?.music
             }
             .store(in: &cancellables)
-    }
-
-    private func bindAmplitudeUpdates() {
-        Task {
-            await AudioHelper.shared.amplitudePubisher()
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] newAmplitude in
-                    guard let self = self else { return }
-                    self.recorderAmplitude = newAmplitude
-                }
-                .store(in: &self.cancellables)
-        }
     }
 
     private func bindGameStatus() {
