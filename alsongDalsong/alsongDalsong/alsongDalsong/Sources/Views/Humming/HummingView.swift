@@ -6,7 +6,7 @@ final class HummingViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var guideLabel = GuideLabel()
     private var musicPanel = MusicPanel()
-    private var hummingPanel = AudioVisualizerView()
+    private var hummingPanel = RecordingPanel()
     private var recordButton = ASButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
@@ -33,8 +33,11 @@ final class HummingViewController: UIViewController {
         submissionStatus.bind(to: vm.$submissionStatus)
         progressBar.bind(to: vm.$dueTime)
         musicPanel.bind(to: vm.$music)
-        hummingPanel.bind(to: vm.$recorderAmplitude)
-        submitButton.bind(to: vm.$humming)
+        hummingPanel.bind(to: vm.$isRecording)
+        hummingPanel.onRecordingFinished = { [weak self] recordedData in
+            self?.vm.updateRecordedData(with: recordedData)
+        }
+        submitButton.bind(to: vm.$recordedData)
     }
 
     private func setupUI() {
