@@ -18,10 +18,13 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         Future { promise in
             Task {
                 do {
-                    let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
+                    guard let id = ASFirebaseAuth.myID else {
+                        throw ASNetworkErrors.FirebaseSignInError
+                    }
+                    try await self.authManager.signIn(nickname: nickname, avatarURL: avatar)
                     let response = try await self.sendRequest(
                         endpointPath: .createRoom,
-                        requestBody: ["hostID": player.id]
+                        requestBody: ["hostID": id]
                     )
                     guard let roomNumber = response["number"] else {
                         throw ASNetworkErrors.responseError
@@ -38,10 +41,13 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         Future { promise in
             Task {
                 do {
-                    let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
+                    guard let id = ASFirebaseAuth.myID else {
+                        throw ASNetworkErrors.FirebaseSignInError
+                    }
+                    try await self.authManager.signIn(nickname: nickname, avatarURL: avatar)
                     let response = try await self.sendRequest(
                         endpointPath: .joinRoom,
-                        requestBody: ["roomNumber": roomNumber, "userId": player.id]
+                        requestBody: ["roomNumber": roomNumber, "userId": id]
                     )
                     let responseRoomNumber = response["number"]
                     responseRoomNumber == roomNumber ? promise(.success(true)) : promise(.success(false))
@@ -69,7 +75,9 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         Future { promise in
             Task {
                 do {
-                    let id = self.authManager.getCurrentUserID()
+                    guard let id = ASFirebaseAuth.myID else {
+                        throw ASNetworkErrors.FirebaseSignInError
+                    }
                     let response = try await self.sendRequest(
                         endpointPath: .gameStart,
                         requestBody: ["roomNumber": roomNumber, "userId": id]
