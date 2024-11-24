@@ -9,7 +9,6 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
     @Published public private(set) var music: Music?
-    @Published public private(set) var musicPreview: Data?
     @Published public private(set) var humming: Data?
     @Published public private(set) var recorderAmplitude: Float = 0.0
 
@@ -54,34 +53,10 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
         }
     }
 
-    func togglePlayPause(of type: AudioType, isPlaying: Bool = true) {
+    func togglePlayPause() {
         Task {
-            switch type {
-                case .humming:
-                    await AudioHelper.shared.startPlaying(file: humming)
-                case .preview:
-                    isPlaying ?
-                        await AudioHelper.shared.stopPlaying() :
-                        await AudioHelper.shared.startPlaying(file: musicPreview)
-            }
+            await AudioHelper.shared.startPlaying(file: humming)
         }
-    }
-
-    private func getPreview() {
-        guard let music, let previewUrl = music.previewUrl else { return }
-        musicRepository.getMusicData(url: previewUrl)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] preview in
-                self?.musicPreview = preview
-            }
-            .store(in: &cancellables)
     }
 
     private func bindAnswer() {
@@ -89,7 +64,6 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
             .eraseToAnyPublisher()
             .sink { [weak self] answer in
                 self?.music = answer?.music
-                self?.getPreview()
             }
             .store(in: &cancellables)
     }
@@ -134,9 +108,5 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
                 self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)
-    }
-
-    enum AudioType {
-        case preview, humming
     }
 }
