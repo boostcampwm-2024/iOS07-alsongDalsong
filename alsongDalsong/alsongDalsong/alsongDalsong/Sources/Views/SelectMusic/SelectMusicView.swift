@@ -10,6 +10,15 @@ struct SelectMusicView: View {
                 ASMusicItemCell(artwork: viewModel.selectedSong.artwork, title: viewModel.selectedSong.title, artist: viewModel.selectedSong.artistName)
                     .padding(EdgeInsets(top: 4, leading: 32, bottom: 4, trailing: 32))
                 Spacer()
+                Button {
+                    viewModel.isPlaying.toggle()
+                } label: {
+                    viewModel.isPlaying ?
+                        Image(systemName: "pause.fill") : Image(systemName: "play.fill")
+                }
+                .tint(.primary)
+                .frame(width: 60)
+                .padding(.trailing, 12)
             }
             .frame(height: 100)
 

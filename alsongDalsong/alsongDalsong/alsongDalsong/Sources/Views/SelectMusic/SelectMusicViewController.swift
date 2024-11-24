@@ -1,10 +1,9 @@
 import ASContainer
 import ASRepository
-import UIKit
 import SwiftUI
+import UIKit
 
 class SelectMusicViewController: UIViewController {
-    
     let selectMusicViewModel: SelectMusicViewModel
     let selectCompleteButton = ASButton()
     
@@ -13,8 +12,9 @@ class SelectMusicViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-       fatalError("init(coder:) has not been implemented")
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -77,5 +77,4 @@ class SelectMusicViewController: UIViewController {
         }, for: .touchUpInside)
         selectCompleteButton.isEnabled = false
     }
-
 }

@@ -7,7 +7,7 @@ import MusicKit
 final class SelectMusicViewModel: ObservableObject {
     @Published var musicData: Data? {
         didSet {
-            playingMusic()
+            isPlaying = true
         }
     }
 
@@ -27,6 +27,16 @@ final class SelectMusicViewModel: ObservableObject {
         artwork: nil,
         previewURL: URL(string: "")
     )
+    @Published var isPlaying: Bool = false {
+        didSet {
+            if isPlaying {
+                playingMusic()
+            }
+            else {
+                stopMusic()
+            }
+        }
+    }
     
     func downloadMusic(url: URL?) {
         guard let url else { return }
