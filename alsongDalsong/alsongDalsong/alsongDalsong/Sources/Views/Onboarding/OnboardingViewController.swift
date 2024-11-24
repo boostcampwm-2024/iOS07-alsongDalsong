@@ -214,6 +214,7 @@ final class OnboardingViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] success in
                 if !success {
+                    self?.createRoomButton.isHidden = false
                     let joinFailedAlert = ASAlertController(
                         titleText: "참가에 실패하였습니다.",
                         doneButtonTitle: "확인",
