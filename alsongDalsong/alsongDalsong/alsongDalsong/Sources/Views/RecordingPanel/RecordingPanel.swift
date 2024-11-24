@@ -53,6 +53,12 @@ final class RecordingPanel: UIView {
                 self?.updateWaveForm(amplitude: CGFloat(amplitude))
             }
             .store(in: &cancellables)
+        vm.$isPlaying
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isPlaying in
+                self?.playButton.isSelected = isPlaying
+            }
+            .store(in: &cancellables)
     }
 
     private func setupButton() {
@@ -69,7 +75,7 @@ final class RecordingPanel: UIView {
     }
 
     private func didButtonTapped() {
-        playButton.isSelected.toggle()
+        vm.togglePlayPause()
     }
 
     private func setupUI() {
