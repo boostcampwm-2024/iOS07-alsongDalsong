@@ -12,7 +12,7 @@ final class RecordingPanelViewModel: @unchecked Sendable {
 
     private func bindAmplitudeUpdates() {
         Task {
-            await AudioHelper.shared.amplitudePubisher()
+            await AudioHelper.shared.amplitudePublisher
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] newAmplitude in
                     guard let self = self else { return }

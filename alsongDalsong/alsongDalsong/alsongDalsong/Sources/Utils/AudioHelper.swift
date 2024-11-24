@@ -10,11 +10,11 @@ actor AudioHelper {
     private var player: ASAudioPlayer?
     private var timer: Timer?
     private let amplitudeSubject = PassthroughSubject<Float, Never>()
-    private init() {}
-
-    func amplitudePubisher() -> AnyPublisher<Float, Never> {
+    var amplitudePublisher: AnyPublisher<Float, Never> {
         return amplitudeSubject.eraseToAnyPublisher()
     }
+    
+    private init() {}
 
     func isRecording() async -> Bool {
         guard let recorder else { return false }
