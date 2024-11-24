@@ -36,7 +36,7 @@ final class MusicPanel: UIView {
                     music: music,
                     musicRepository: self?.musicRepository
                 )
-                self?.observeViewModel()
+                self?.bindViewModel()
                 self?.titleLabel.text = music?.title ?? "???"
                 self?.artistLabel.text = music?.artist ?? "????"
             }
@@ -49,7 +49,7 @@ final class MusicPanel: UIView {
         }
     }
 
-    private func observeViewModel() {
+    private func bindViewModel() {
         vm?.$artwork
             .receive(on: DispatchQueue.main)
             .sink { [weak self] artwork in

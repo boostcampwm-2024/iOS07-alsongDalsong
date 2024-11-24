@@ -14,7 +14,7 @@ final class RecordingPanel: UIView {
         setupButton()
         setupUI()
         setupLayout()
-        observeViewModel()
+        bindViewModel()
     }
 
     required init?(coder: NSCoder) {
@@ -28,7 +28,7 @@ final class RecordingPanel: UIView {
         customBackgroundColor = color
     }
 
-    private func observeViewModel() {
+    private func bindViewModel() {
         vm.$recordedData
             .filter { $0 != nil }
             .receive(on: DispatchQueue.main)
