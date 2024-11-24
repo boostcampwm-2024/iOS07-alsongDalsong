@@ -15,7 +15,7 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
-    private var musicRepository: MusicRepositoryProtocol
+    private let musicRepository: MusicRepositoryProtocol
     private let answersRepository: AnswersRepositoryProtocol
     private let submitsRepository: SubmitsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []

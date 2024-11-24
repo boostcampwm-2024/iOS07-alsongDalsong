@@ -36,6 +36,7 @@ public final class MainRepository: MainRepositoryProtocol {
                     return
                 }
             } receiveValue: { [weak self] room in
+                print(room)
                 guard let self = self else { return }
                 self.update(\.number, with: room.number)
                 self.update(\.host, with: room.host)
