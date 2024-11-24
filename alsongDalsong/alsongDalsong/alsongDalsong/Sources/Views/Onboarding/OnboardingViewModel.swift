@@ -15,6 +15,7 @@ final class OnboardingViewModel {
     @Published var avatarData: Data?
     @Published var roomNumber: String = ""
     @Published var buttonEnabled: Bool = true
+    @Published var joinResponse: Bool = true
     
     init(avatarRepository: AvatarRepositoryProtocol,
          roomActionRepository: RoomActionRepositoryProtocol)
@@ -80,6 +81,7 @@ final class OnboardingViewModel {
                 case .failure(let error):
                     print(error.localizedDescription)
                     self?.buttonEnabled = true
+                    self?.joinResponse = false
                 }
             } receiveValue: { [weak self] isSuccess in
                 if isSuccess {

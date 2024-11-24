@@ -124,8 +124,9 @@ final class OnboardingViewController: UIViewController {
                         doneButtonTitle: Constants.doneAlertButtonTitle,
                         cancelButtonTitle: Constants.cancelAlertButtonTitle,
                         textFieldPlaceholder: Constants.roomNumberPlaceholder,
-                        isUppercased: true)
-                        
+                        isUppercased: true,
+                        style: .input)
+                    
                     joinAlert.doneButtonCompletion = { [weak self] in
                         if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
                             self?.viewmodel?.setNickname(with: nickname)
@@ -206,6 +207,22 @@ final class OnboardingViewController: UIViewController {
             .sink { [weak self] enabled in
                 self?.createRoomButton.isEnabled = enabled
                 self?.joinRoomButton.isEnabled = enabled
+            }
+            .store(in: &cancleables)
+        
+        viewmodel?.$joinResponse
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] success in
+                if !success {
+                    let joinFailedAlert = ASAlertController(
+                        titleText: "참가에 실패하였습니다.",
+                        doneButtonTitle: "확인",
+                        cancelButtonTitle: Constants.cancelAlertButtonTitle,
+                        textFieldPlaceholder: Constants.roomNumberPlaceholder,
+                        isUppercased: true,
+                        style: .default)
+                    self?.present(joinFailedAlert, animated: true, completion: nil)
+                }
             }
             .store(in: &cancleables)
     }
