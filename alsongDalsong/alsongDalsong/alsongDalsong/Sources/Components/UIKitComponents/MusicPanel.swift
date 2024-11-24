@@ -120,6 +120,7 @@ private final class ASMusicPlayer: UIView {
 
     func updateImage(with image: Data?) {
         if let image, !image.isEmpty {
+            backgroundImageView.layer.sublayers?.removeAll()
             backgroundImageView.image = UIImage(data: image)
         } else {
             let gradientLayer = makeGradientLayer()
