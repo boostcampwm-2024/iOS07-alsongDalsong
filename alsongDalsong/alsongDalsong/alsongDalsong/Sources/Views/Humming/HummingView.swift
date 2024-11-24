@@ -6,7 +6,7 @@ final class HummingViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var guideLabel = GuideLabel()
     private var musicPanel = MusicPanel()
-    private var hummingPanel = RecordingPanel()
+    private var hummingPanel = RecordingPanel(.asYellow)
     private var recordButton = ASButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
@@ -42,7 +42,6 @@ final class HummingViewController: UIViewController {
 
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
-        hummingPanel.changeBackgroundColor(color: .asYellow)
         recordButton.setConfiguration(title: "녹음하기", backgroundColor: .asLightRed)
         recordButton.addAction(UIAction { [weak self] _ in
             self?.vm.startRecording()

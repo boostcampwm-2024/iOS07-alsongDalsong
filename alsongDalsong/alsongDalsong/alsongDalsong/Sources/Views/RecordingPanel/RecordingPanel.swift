@@ -4,12 +4,13 @@ import UIKit
 final class RecordingPanel: UIView {
     private var playButton = UIButton()
     private var waveFormView = WaveForm()
-    private var customBackgroundColor: UIColor = .asMint
+    private var customBackgroundColor: UIColor
     private var cancellables = Set<AnyCancellable>()
     private let vm = RecordingPanelViewModel()
     var onRecordingFinished: ((Data) -> Void)?
 
-    init() {
+    init(_ color: UIColor = .asMint) {
+        customBackgroundColor = color
         super.init(frame: .zero)
         setupButton()
         setupUI()
@@ -18,14 +19,13 @@ final class RecordingPanel: UIView {
     }
 
     required init?(coder: NSCoder) {
+        customBackgroundColor = .asMint
         super.init(coder: coder)
         setupButton()
         setupUI()
         setupLayout()
     }
 
-    func changeBackgroundColor(color: UIColor) {
-        customBackgroundColor = color
     }
 
     private func bindViewModel() {
@@ -94,7 +94,6 @@ final class RecordingPanel: UIView {
                 }
             }
             .store(in: &cancellables)
-    }
 
     func updateWaveForm(amplitude: CGFloat) {
         waveFormView.updateVisualizerView(with: amplitude)
