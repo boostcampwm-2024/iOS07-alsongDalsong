@@ -21,11 +21,22 @@ final class RecordingPanel: UIView {
     required init?(coder: NSCoder) {
         customBackgroundColor = .asMint
         super.init(coder: coder)
-        setupButton()
         setupUI()
         setupLayout()
+        setupButton()
     }
 
+    func bind(
+        to dataSource: Published<Bool>.Publisher
+    ) {
+        dataSource
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isRecording in
+                if isRecording {
+                    self?.vm.startRecording()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     private func bindViewModel() {
@@ -83,27 +94,15 @@ final class RecordingPanel: UIView {
         ])
     }
 
-    func bind(
-        to dataSource: Published<Bool>.Publisher
-    ) {
-        dataSource
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isRecording in
-                if isRecording {
-                    self?.vm.startRecording()
-                }
-            }
-            .store(in: &cancellables)
-
-    func updateWaveForm(amplitude: CGFloat) {
+    private func updateWaveForm(amplitude: CGFloat) {
         waveFormView.updateVisualizerView(with: amplitude)
     }
 
-    func stopWaveForm() {
+    private func stopWaveForm() {
         waveFormView.removeVisualizerCircles()
     }
 
-    func reset() {
+    private func reset() {
         waveFormView.removeVisualizerCircles()
     }
 }
