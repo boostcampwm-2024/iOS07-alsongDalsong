@@ -25,7 +25,6 @@ class HummingResultViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .asLightGray
-        viewModel?.fetchResult()
         setMusicResultView(musicName: "", singerName: "")
         setResultTableView()
         setButton()
@@ -59,6 +58,7 @@ class HummingResultViewController: UIViewController {
             guard let vc else { return }
             self?.navigationController?.popToViewController(vc, animated: true)
         }, for: .touchUpInside)
+        button.isHidden = true
     }
     
     private func setConstraints() {
@@ -93,19 +93,22 @@ class HummingResultViewController: UIViewController {
                 guard let answer,
                       let music = answer.music else {return}
                 self?.setMusicResultView(musicName: music.title ?? "", singerName: music.artist ?? "")
+                self?.viewModel?.startPlaying()
             }
             .store(in: &cancellables)
-        viewModel?.$resultRecords
+        viewModel?.$currentRecords
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.resultTableView.reloadData()
             }
             .store(in: &cancellables)
-        viewModel?.$answer
+        viewModel?.$currentsubmit
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] answer in
-                //TODO: 정답 제출한 음악 뷰에 주는 거 (TableView가 보고 있는 배열에 추가?)
-                // OR 뷰 하나를 새로 해서 테이블 뷰 바로 아래에 뷰 추가
+            .sink { [weak self] submit in
+                if (submit != nil) {
+                    self?.resultTableView.reloadData()
+                    self?.button.isHidden = false
+                }
             }
             .store(in: &cancellables)
     }
@@ -119,9 +122,12 @@ extension HummingResultViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let viewModel else {return 0}
         if section == 0 {
-            return viewModel.resultRecords.count
+            return viewModel.currentRecords.count
         }
-        return 1
+        if (viewModel.currentsubmit != nil) {
+            return 1
+        }
+        else { return 0 }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -133,21 +139,21 @@ extension HummingResultViewController: UITableViewDataSource {
             cell.contentConfiguration = UIHostingConfiguration {
                 if indexPath.row % 2 == 0 {
                     SpeechBubbleCell(alignment: .left,
-                                     messageType: .record(viewModel.resultRecords[indexPath.row]))
+                                     messageType: .record(viewModel.currentRecords[indexPath.row]))
                 } else {
                     SpeechBubbleCell(alignment: .right,
-                                     messageType: .record(viewModel.resultRecords[indexPath.row]))
+                                     messageType: .record(viewModel.currentRecords[indexPath.row]))
                 }
             }
         } else {
             cell.contentConfiguration = UIHostingConfiguration {
-                if viewModel.resultRecords.count % 2 == 0 {
+                if viewModel.currentRecords.count % 2 == 0 {
                     SpeechBubbleCell(
                         alignment: .left,
                         messageType: .music(
                             .init(
-                                title: viewModel.answer?.music?.title ?? "",
-                                artist: viewModel.answer?.music?.artist ?? ""
+                                title: viewModel.currentsubmit?.music?.title ?? "",
+                                artist: viewModel.currentsubmit?.music?.artist ?? ""
                             )
                         )
                     )
@@ -157,8 +163,8 @@ extension HummingResultViewController: UITableViewDataSource {
                         alignment: .right,
                         messageType: .music(
                             .init(
-                                title: viewModel.answer?.music?.title ?? "",
-                                artist: viewModel.answer?.music?.artist ?? ""
+                                title: viewModel.currentsubmit?.music?.title ?? "",
+                                artist: viewModel.currentsubmit?.music?.artist ?? ""
                             )
                         )
                     )
