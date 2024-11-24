@@ -53,7 +53,6 @@ final class MusicPanel: UIView {
         vm?.$artwork
             .receive(on: DispatchQueue.main)
             .sink { [weak self] artwork in
-                print("artwork changed")
                 self?.player.updateImage(with: artwork)
             }
             .store(in: &cancellables)
