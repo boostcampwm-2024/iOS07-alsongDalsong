@@ -5,30 +5,25 @@ import Combine
 import UIKit
 
 final class MusicPanel: UIView {
-    private var music: Music?
     private let panel = ASPanel()
     private let player = ASMusicPlayer()
     private let titleLabel = UILabel()
     private let artistLabel = UILabel()
     private var cancellables = Set<AnyCancellable>()
     private let musicRepository: MusicRepositoryProtocol
+    private var vm: MusicPanelViewModel? = nil
 
     init() {
         musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
         super.init(frame: .zero)
         setupUI()
         setupLayout()
+        setupAction()
     }
 
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    func onPlayButtonTapped(completion: ((_ isPlaying: Bool) -> Void)?) {
-        player.onPlayButtonTapped = { isPlaying in
-            completion?(isPlaying)
-        }
     }
 
     func bind(
@@ -37,11 +32,31 @@ final class MusicPanel: UIView {
         dataSource
             .receive(on: DispatchQueue.main)
             .sink { [weak self] music in
-                self?.music = music
-                self?.getArtworkData()
+                self?.vm = MusicPanelViewModel(music: music, musicRepository: self?.musicRepository)
                 self?.titleLabel.text = music?.title ?? "???"
                 self?.artistLabel.text = music?.artist ?? "????"
-                self?.setNeedsLayout()
+//                self?.setNeedsLayout()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func setupAction() {
+        player.onPlayButtonTapped = { [weak self] isPlaying in
+            self?.vm?.togglePlayPause(isPlaying: isPlaying)
+        }
+    }
+
+    private func observeViewModel() {
+        vm?.$artwork
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] artwork in
+                self?.player.updateImage(with: artwork)
+            }
+            .store(in: &cancellables)
+        vm?.$preview
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] artwork in
+                self?.player.updateImage(with: artwork)
             }
             .store(in: &cancellables)
     }
@@ -81,23 +96,6 @@ final class MusicPanel: UIView {
             artistLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             artistLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24),
         ])
-    }
-
-    private func getArtworkData() {
-        guard let artworkUrl = music?.artworkUrl else { return player.updateImage(with: nil) }
-        musicRepository.getMusicData(url: artworkUrl)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] artwork in
-                self?.player.updateImage(with: artwork)
-            }
-            .store(in: &cancellables)
     }
 }
 
