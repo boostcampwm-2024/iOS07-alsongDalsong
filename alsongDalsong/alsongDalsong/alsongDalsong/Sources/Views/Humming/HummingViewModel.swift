@@ -3,7 +3,7 @@ import ASRepository
 import Combine
 import Foundation
 
-final class HummingViewModel: ObservableObject, @unchecked Sendable {
+final class HummingViewModel: @unchecked Sendable {
     @Published public private(set) var dueTime: Date?
     @Published public private(set) var round: UInt8?
     @Published public private(set) var status: Status?
