@@ -70,7 +70,7 @@ final class OnboardingViewModel {
     
     func joinRoom(roomNumber id: String) {
         guard let selectedAvatar else { return }
-        self.buttonEnabled = false
+        buttonEnabled = false
         roomActionRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
@@ -92,7 +92,7 @@ final class OnboardingViewModel {
     
     func createRoom() {
         guard let selectedAvatar else { return }
-        self.buttonEnabled = false
+        buttonEnabled = false
         roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
