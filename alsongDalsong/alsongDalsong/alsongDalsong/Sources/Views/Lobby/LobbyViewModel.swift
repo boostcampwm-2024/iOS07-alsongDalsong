@@ -36,7 +36,6 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
         self.avatarRepository = avatarRepository
-        
         fetchData()
     }
     
@@ -49,39 +48,6 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()
         }
-    }
-    
-    func gameStart() {
-        // HOST인지 검사 필요
-        roomActionRepository.startGame(roomNumber: roomNumber)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] isSuccess in
-                self?.isGameStrted = isSuccess
-            }
-            .store(in: &cancellables)
-    }
-    
-    func leaveRoom() {
-        roomActionRepository.leaveRoom()
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] isSuccess in
-                self?.isLeaveRoom = !isSuccess
-            }
-            .store(in: &cancellables)
     }
     
     func fetchData() {
@@ -102,7 +68,10 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
         roomInfoRepository.getMode()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] mode in
-                self?.mode = mode
+                guard let isHost = self?.isHost else { return }
+                if !isHost {
+                    self?.mode = mode
+                }
             }
             .store(in: &cancellables)
         
@@ -119,6 +88,26 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
                 self?.isHost = isHost
             }
             .store(in: &cancellables)
+    }
+    
+    func gameStart() {
+        Task {
+            do {
+                let isGameStarted = try await roomActionRepository.startGame(roomNumber: roomNumber)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func leaveRoom() {
+        Task {
+            do {
+                isLeaveRoom = try await roomActionRepository.leaveRoom()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
     func changeMode() {

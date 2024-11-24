@@ -18,76 +18,61 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         self.networkManager = networkManager
     }
     
-    public func createRoom(nickname: String, avatar: URL) -> Future<String, any Error> {
-        Future { promise in
-            Task { [weak self] in
-                do {
-                    let player = try await self?.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
-                    let response: [String: String]? = try await self?.sendRequest(
-                        endpointPath: .createRoom,
-                        requestBody: ["hostID": player?.id]
-                    )
-                    guard let roomNumber = response?["number"] as? String else {
-                        throw ASNetworkErrors.responseError
-                    }
-                    promise(.success(roomNumber))
-                } catch {
-                    promise(.failure(error))
-                }
+    public func createRoom(nickname: String, avatar: URL) async throws -> String {
+        do {
+            let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
+            let response: [String: String]? = try await self.sendRequest(
+                endpointPath: .createRoom,
+                requestBody: ["hostID": player.id]
+            )
+            guard let roomNumber = response?["number"] as? String else {
+                throw ASNetworkErrors.responseError
             }
+            return roomNumber
+        } catch {
+            throw error
         }
     }
     
-    public func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, any Error> {
-        Future { promise in
-            Task { [weak self] in
-                do {
-                    let player = try await self?.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
-                    let response: [String: String]? = try await self?.sendRequest(
-                        endpointPath: .joinRoom,
-                        requestBody: ["roomNumber": roomNumber, "userId": player?.id]
-                    )
-                    guard let roomNumberResponse = response?["number"] as? String else {
-                        throw ASNetworkErrors.responseError
-                    }
-                    roomNumberResponse == roomNumber ? promise(.success(true)) : promise(.success(false))
-                } catch {
-                    promise(.failure(error))
-                }
+    public func joinRoom(nickname: String, avatar: URL, roomNumber: String) async throws -> Bool {
+        do {
+            let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
+            let response: [String: String]? = try await self.sendRequest(
+                endpointPath: .joinRoom,
+                requestBody: ["roomNumber": roomNumber, "userId": player.id]
+            )
+            guard let roomNumberResponse = response?["number"] as? String else {
+                throw ASNetworkErrors.responseError
             }
+            return roomNumberResponse == roomNumber
+        } catch {
+            throw error
         }
     }
     
-    public func leaveRoom() -> Future<Bool, any Error> {
-        Future { promise in
-            Task { [weak self] in
-                do {
-                    self?.mainRepository.disconnecRoom()
-                    try await self?.authManager.signOut()
-                    promise(.success(true))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
+    public func leaveRoom() async throws -> Bool {
+        do {
+            self.mainRepository.disconnectRoom()
+            try await self.authManager.signOut()
+            return true
+        } catch {
+            throw error
         }
     }
     
-    public func startGame(roomNumber: String) -> Future<Bool, any Error> {
-        Future { promise in
-            Task { [weak self] in
-                do {
-                    let id = self?.authManager.getCurrentUserID()
-                    let response: [String: Bool]? = try await self?.sendRequest(
-                        endpointPath: .gameStart,
-                        requestBody: ["roomNumber": roomNumber, "userId": id]
-                    )
-                    guard let response = response?["success"] as? Bool else {
-                        promise(.failure(ASNetworkErrors.responseError))
-                        return
-                    }
-                    promise(.success(response))
-                }
+    public func startGame(roomNumber: String) async throws -> Bool {
+        do {
+            let id = self.authManager.getCurrentUserID()
+            let response: [String: Bool]? = try await self.sendRequest(
+                endpointPath: .gameStart,
+                requestBody: ["roomNumber": roomNumber, "userId": id]
+            )
+            guard let response = response?["success"] as? Bool else {
+                throw ASNetworkErrors.responseError
             }
+            return response
+        } catch {
+            throw error
         }
     }
     

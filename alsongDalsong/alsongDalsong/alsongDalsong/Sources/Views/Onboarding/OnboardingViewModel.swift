@@ -4,7 +4,6 @@ import Combine
 import Foundation
 
 final class OnboardingViewModel {
-    // TODO: 닉네임 생성기 + 이미지 fetch (배열) + 참가하기 로직, 생성하기 로직
     private var avatarRepository: AvatarRepositoryProtocol
     private var roomActionRepository: RoomActionRepositoryProtocol
     private var avatars: [URL] = []
@@ -68,44 +67,38 @@ final class OnboardingViewModel {
             .store(in: &cancellables)
     }
     
+    @MainActor
     func joinRoom(roomNumber id: String) {
         guard let selectedAvatar else { return }
         self.buttonEnabled = false
-        roomActionRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    self?.buttonEnabled = true
-                }
-            } receiveValue: { [weak self] isSuccess in
+        Task {
+            do {
+                self.buttonEnabled = false
+                let isSuccess = try await roomActionRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
                 if isSuccess {
-                    self?.roomNumber = id
-                    self?.buttonEnabled = true
+                    self.roomNumber = id
+                    self.buttonEnabled = true
                 }
+            } catch {
+                print(error.localizedDescription)
+                self.buttonEnabled = true
             }
-            .store(in: &cancellables)
+        }
     }
     
+    @MainActor
     func createRoom() {
         guard let selectedAvatar else { return }
-        self.buttonEnabled = false
-        roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    self?.buttonEnabled = true
-                }
-            } receiveValue: { [weak self] roomNumber in
-                self?.joinRoom(roomNumber: roomNumber)
+        Task {
+            do {
+                self.buttonEnabled = false
+                let id = try await roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
+                self.joinRoom(roomNumber: id)
+                self.buttonEnabled = true
+            } catch {
+                print(error.localizedDescription)
+                self.buttonEnabled = true
             }
-            .store(in: &cancellables)
+        }
     }
 }

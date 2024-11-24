@@ -52,7 +52,7 @@ public final class MainRepository: MainRepositoryProtocol {
             .store(in: &cancellables)
     }
     
-    public func disconnecRoom() {
+    public func disconnectRoom() {
         self.update(\.number, with: nil)
         self.update(\.host, with: nil)
         self.update(\.players, with: nil)

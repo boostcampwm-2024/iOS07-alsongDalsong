@@ -16,5 +16,5 @@ public protocol MainRepositoryProtocol {
     var submits: CurrentValueSubject<[Answer]?, Never> { get }
 
     func connectRoom(roomNumber: String)
-    func disconnecRoom()
+    func disconnectRoom()
 }
