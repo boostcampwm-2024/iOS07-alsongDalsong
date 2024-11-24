@@ -43,7 +43,9 @@ final class LobbyViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        viewmodel.leaveRoom()
+        if viewmodel.isLeaveRoom {
+            viewmodel.leaveRoom()
+        }
     }
     
     private func bindToComponents() {

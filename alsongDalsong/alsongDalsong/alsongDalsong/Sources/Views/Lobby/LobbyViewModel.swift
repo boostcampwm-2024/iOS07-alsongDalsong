@@ -1,7 +1,7 @@
-import Foundation
 import ASEntity
 import ASRepository
 import Combine
+import Foundation
 
 final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     private var playersRepository: PlayersRepositoryProtocol
@@ -15,10 +15,11 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     @Published var mode: Mode = .humming {
         didSet {
             if mode != oldValue {
-                self.changeMode()
+                changeMode()
             }
         }
     }
+
     @Published var host: Player?
     @Published var isGameStrted: Bool = false
     @Published var isHost: Bool = false
@@ -41,10 +42,10 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     
     func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
         if let url {
-            return avatarRepository.getAvatarData(url: url)
+            avatarRepository.getAvatarData(url: url)
                 .eraseToAnyPublisher()
-        }else {
-            return Just(nil)
+        } else {
+            Just(nil)
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()
         }
@@ -121,7 +122,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     }
     
     func changeMode() {
-        Task{
+        Task {
             do {
                 if isHost {
                     try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
