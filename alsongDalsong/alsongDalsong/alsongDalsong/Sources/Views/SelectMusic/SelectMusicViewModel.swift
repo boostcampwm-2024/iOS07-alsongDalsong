@@ -1,3 +1,4 @@
+import ASEntity
 import ASMusicKit
 import ASRepository
 import Combine
@@ -7,16 +8,18 @@ import MusicKit
 final class SelectMusicViewModel: ObservableObject {
     @Published var musicData: Data? {
         didSet {
-            playingMusic()
+            isPlaying = true
         }
     }
 
     var cancellable = Set<AnyCancellable>()
     let musicRepository: MusicRepositoryProtocol
+    let answerRepository: AnswersRepositoryProtocol
     let musicAPI = ASMusicAPI()
     
-    init(musicRepository: MusicRepositoryProtocol) {
+    init(musicRepository: MusicRepositoryProtocol, answerRepository: AnswersRepositoryProtocol) {
         self.musicRepository = musicRepository
+        self.answerRepository = answerRepository
     }
     
     @Published var searchList: [ASSong] = []
@@ -27,6 +30,15 @@ final class SelectMusicViewModel: ObservableObject {
         artwork: nil,
         previewURL: URL(string: "")
     )
+    @Published var isPlaying: Bool = false {
+        didSet {
+            if isPlaying {
+                playingMusic()
+            } else {
+                stopMusic()
+            }
+        }
+    }
     
     func downloadMusic(url: URL?) {
         guard let url else { return }
@@ -60,13 +72,26 @@ final class SelectMusicViewModel: ObservableObject {
     
     func handleSelectedSong(song: ASSong) {
         selectedSong = song
-        beginPlaying(song: song)
+        beginPlaying()
     }
     
-    func beginPlaying(song: ASSong) {
-        downloadMusic(url: song.previewURL)
+    func beginPlaying() {
+        downloadMusic(url: selectedSong.previewURL)
     }
     
+    @MainActor
+    func submitMusic() {
+        guard let artworkBackgroundColor = selectedSong.artwork?.backgroundColor?.toHex() else { return }
+        let answer = ASEntity.Music(title: selectedSong.title, artist: selectedSong.artistName, artworkUrl: selectedSong.artwork?.url(width: 300, height: 300), previewUrl: selectedSong.previewURL, artworkBackgroundColor: artworkBackgroundColor)
+        Task {
+            do {
+                let response = try await answerRepository.submitMusic(answer: answer)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+ 
     @MainActor
     func searchMusic(text: String) {
         Task {

@@ -1,93 +1,81 @@
+import ASEntity
 import ASNetworkKit
 import Combine
 import Foundation
 
 public final class RoomActionRepository: RoomActionRepositoryProtocol {
+    private let mainRepository: MainRepositoryProtocol
     private let authManager: ASFirebaseAuthProtocol
     private let networkManager: ASNetworkManagerProtocol
     
     public init(
+        mainRepository: MainRepositoryProtocol,
         authManager: ASFirebaseAuthProtocol,
         networkManager: ASNetworkManagerProtocol
     ) {
+        self.mainRepository = mainRepository
         self.authManager = authManager
         self.networkManager = networkManager
     }
-    
-    public func createRoom(nickname: String, avatar: URL) -> Future<String, any Error> {
-        Future { promise in
-            Task {
-                do {
-                    let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
-                    let response = try await self.sendRequest(
-                        endpointPath: .createRoom,
-                        requestBody: ["hostID": player.id]
-                    )
-                    guard let roomNumber = response["number"] else {
-                        throw ASNetworkErrors.responseError
-                    }
-                    promise(.success(roomNumber))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
+
+    public func createRoom(nickname: String, avatar: URL) async throws -> String {
+        try await self.authManager.signIn(nickname: nickname, avatarURL: avatar)
+        let response: [String: String]? = try await self.sendRequest(
+            endpointPath: .createRoom,
+            requestBody: ["hostID": ASFirebaseAuth.myID]
+        )
+        guard let roomNumber = response?["number"] as? String else {
+            throw ASNetworkErrors.responseError
         }
+        return roomNumber
     }
     
-    public func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, any Error> {
-        Future { promise in
-            Task {
-                do {
-                    let player = try await self.authManager.signInAnonymously(nickname: nickname, avatarURL: avatar)
-                    let response = try await self.sendRequest(
-                        endpointPath: .joinRoom,
-                        requestBody: ["roomNumber": roomNumber, "userId": player.id]
-                    )
-                    let responseRoomNumber = response["number"]
-                    responseRoomNumber == roomNumber ? promise(.success(true)) : promise(.success(false))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
+    public func joinRoom(nickname: String, avatar: URL, roomNumber: String) async throws -> Bool {
+        let player = try await self.authManager.signIn(nickname: nickname, avatarURL: avatar)
+        let response: [String: String]? = try await self.sendRequest(
+            endpointPath: .joinRoom,
+            requestBody: ["roomNumber": roomNumber, "userId": ASFirebaseAuth.myID]
+        )
+        guard let roomNumberResponse = response?["number"] as? String else {
+            throw ASNetworkErrors.responseError
         }
+        return roomNumberResponse == roomNumber
     }
     
-    public func leaveRoom() -> Future<Bool, any Error> {
-        Future { promise in
-            Task {
-                do {
-                    try await self.authManager.signOut()
-                    promise(.success(true))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
-        }
+    public func leaveRoom() async throws -> Bool {
+        self.mainRepository.disconnectRoom()
+        try await self.authManager.signOut()
+        return true
     }
     
-    public func startGame(roomNumber: String) -> Future<Bool, any Error> {
-        Future { promise in
-            Task {
-                do {
-                    let id = self.authManager.getCurrentUserID()
-                    let response = try await self.sendRequest(
-                        endpointPath: .gameStart,
-                        requestBody: ["roomNumber": roomNumber, "userId": id]
-                    )
-                    let status = response["status"]
-                    response["status"] == "success" ? promise(.success(true)) : promise(.success(false))
-                }
-            }
+    public func startGame(roomNumber: String) async throws -> Bool {
+        let response: [String: Bool]? = try await self.sendRequest(
+            endpointPath: .gameStart,
+            requestBody: ["roomNumber": roomNumber, "userId": ASFirebaseAuth.myID]
+        )
+        guard let response = response?["success"] as? Bool else {
+            throw ASNetworkErrors.responseError
         }
+        return response
     }
     
-    private func sendRequest(endpointPath: FirebaseEndpoint.Path, requestBody: [String: Any]) async throws -> [String: String] {
+    public func changeMode(roomNumber: String, mode: Mode) async throws -> Bool {
+        let response: [String: Bool] = try await self.sendRequest(
+            endpointPath: .changeMode,
+            requestBody: ["roomNumber": roomNumber, "userId": ASFirebaseAuth.myID, "mode": mode.rawValue]
+        )
+        guard let isSuccess = response["success"] as? Bool else {
+            throw ASNetworkErrors.responseError
+        }
+        return isSuccess
+    }
+    
+    private func sendRequest<T: Decodable>(endpointPath: FirebaseEndpoint.Path, requestBody: [String: Any]) async throws -> T {
         let endpoint = FirebaseEndpoint(path: endpointPath, method: .post)
             .update(\.headers, with: ["Content-Type": "application/json"])
         let body = try JSONSerialization.data(withJSONObject: requestBody, options: [])
         let data = try await networkManager.sendRequest(to: endpoint, body: body, option: .none)
-        let response = try JSONDecoder().decode([String: String].self, from: data)
+        let response = try JSONDecoder().decode(T.self, from: data)
         return response
-        
     }
 }

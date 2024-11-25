@@ -3,42 +3,66 @@ import ASRepository
 import Combine
 import Foundation
 
-final class HummingViewModel: ObservableObject, @unchecked Sendable {
+final class HummingViewModel: @unchecked Sendable {
     @Published public private(set) var dueTime: Date?
     @Published public private(set) var round: UInt8?
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
-    @Published public private(set) var humming: Data?
-    @Published public private(set) var recorderAmplitude: Float = 0.0
+    @Published public private(set) var music: Music?
+    @Published public private(set) var recordedData: Data?
+    @Published public private(set) var isRecording: Bool = false
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
+    private let answersRepository: AnswersRepositoryProtocol
     private let submitsRepository: SubmitsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
 
     public init(
         gameStatusRepository: GameStatusRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
+        answersRepository: AnswersRepositoryProtocol,
         submitsRepository: SubmitsRepositoryProtocol
     ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
+        self.answersRepository = answersRepository
         self.submitsRepository = submitsRepository
         bindGameStatus()
         bindSubmitStatus()
-        bindAmplitudeUpdates()
+        bindAnswer()
     }
 
-    private func bindAmplitudeUpdates() {
+    // TODO: - FB에 humming 보내기
+    func submitHumming() {
+        var myHumming = ASEntity.Record()
+        myHumming.file = recordedData
+    }
+
+    func startRecording() {
+        isRecording = true
+    }
+
+    func togglePlayPause() {
         Task {
-            await AudioHelper.shared.amplitudePubisher()
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] newAmplitude in
-                    guard let self = self else { return }
-                    self.recorderAmplitude = newAmplitude
-                }
-                .store(in: &self.cancellables)
+            await AudioHelper.shared.startPlaying(file: recordedData)
         }
+    }
+
+    func updateRecordedData(with data: Data) {
+        // TODO: - data가 empty일 때(녹음이 제대로 되지 않았을 때 사용자 오류처리 필요
+        guard !data.isEmpty else { return }
+        recordedData = data
+        isRecording = false
+    }
+    
+    private func bindAnswer() {
+        answersRepository.getMyAnswer()
+            .eraseToAnyPublisher()
+            .sink { [weak self] answer in
+                self?.music = answer?.music
+            }
+            .store(in: &cancellables)
     }
 
     private func bindGameStatus() {
@@ -69,28 +93,5 @@ final class HummingViewModel: ObservableObject, @unchecked Sendable {
                 self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)
-    }
-
-    // TODO: - FB에 humming 보내기
-    func submitHumming() {
-        var myHumming = ASEntity.Record()
-        myHumming.file = humming
-//        myHumming.player = me
-//        myHumming.round = round
-    }
-
-    @MainActor
-    func startRecording() {
-        Task {
-            let data = await AudioHelper.shared.startRecording()
-            humming = data
-        }
-    }
-
-    @MainActor
-    func startPlaying() {
-        Task {
-            await AudioHelper.shared.startPlaying(file: humming)
-        }
     }
 }

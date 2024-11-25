@@ -7,13 +7,14 @@ public enum PlayType: Sendable {
 
 public actor ASAudioPlayer: NSObject {
     private var audioPlayer: AVAudioPlayer?
-  
+
     override public init() {}
 
     public var onPlaybackFinished: (@Sendable () async -> Void)?
-  
+
     /// 녹음파일을 재생하고 옵션에 따라 재생시간을 설정합니다.
     public func startPlaying(data: Data, option: PlayType) {
+        configureAudioSession()
         do {
             audioPlayer = try AVAudioPlayer(data: data)
             audioPlayer?.delegate = self
@@ -77,6 +78,16 @@ public actor ASAudioPlayer: NSObject {
 
     public func setOnPlaybackFinished(_ handler: @Sendable @escaping () async -> Void) {
         onPlaybackFinished = handler
+    }
+
+    private func configureAudioSession() {
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
+            try session.setActive(true, options: .notifyOthersOnDeactivation)
+        } catch {
+            // TODO: 세션 설정 실패에 따른 처리
+        }
     }
 }
 

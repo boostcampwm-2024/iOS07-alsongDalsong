@@ -14,8 +14,10 @@ public struct RepsotioryAssembly: Assembly {
         
         container.register(AnswersRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return AnswersRepository(
-                mainRepository: mainRepository
+                mainRepository: mainRepository,
+                networkManager: networkManager
             )
         }
         
@@ -38,13 +40,18 @@ public struct RepsotioryAssembly: Assembly {
         container.register(MusicRepositoryProtocol.self) { r in
             let firebaseManager = r.resolve(ASFirebaseStorageProtocol.self)
             let networkManager = r.resolve(ASNetworkManagerProtocol.self)
-            return MusicRepository(firebaseManager: firebaseManager, networkManager: networkManager)
+            return MusicRepository(
+                firebaseManager: firebaseManager,
+                networkManager: networkManager
+            )
         }
         
         container.register(PlayersRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            let firebaseAuthManager = r.resolve(ASFirebaseAuthProtocol.self)
             return PlayersRepository(
-                mainRepository: mainRepository
+                mainRepository: mainRepository,
+                firebaseAuthManager: firebaseAuthManager
             )
         }
         
@@ -56,9 +63,11 @@ public struct RepsotioryAssembly: Assembly {
         }
         
         container.register(RoomActionRepositoryProtocol.self) { r in
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             let authManager = r.resolve(ASFirebaseAuthProtocol.self)
             let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return RoomActionRepository(
+                mainRepository: mainRepository,
                 authManager: authManager,
                 networkManager: networkManager
             )

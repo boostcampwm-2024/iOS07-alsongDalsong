@@ -1,8 +1,8 @@
 import Combine
-import UIKit
 import SwiftUI
+import UIKit
 
-class ASButton: UIButton {
+final class ASButton: UIButton {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
@@ -25,7 +25,6 @@ class ASButton: UIButton {
         textSize: CGFloat = 32
     ) {
         var config = UIButton.Configuration.gray()
-
         config.baseBackgroundColor = backgroundColor
         config.baseForegroundColor = .asBlack
 
@@ -47,8 +46,27 @@ class ASButton: UIButton {
 
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
         config.cornerStyle = .medium
-        configuration = config
+
         setShadow()
+        config.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
+            color.withAlphaComponent(1.0)
+        }
+
+        configurationUpdateHandler = { [weak self] _ in
+            guard let self else { return }
+            if self.isHighlighted {
+                self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+            }
+            else {
+                self.transform = .identity
+            }
+        }
+        self.configuration = config
+    }
+
+    private func disable(_ color: UIColor = .systemGray2) {
+        configuration?.baseBackgroundColor = color
+        isEnabled = false
     }
 
     func bind(
@@ -63,6 +81,19 @@ class ASButton: UIButton {
             }
             .store(in: &cancellables)
     }
+
+    func updateButton(_ type: ASButton.ASButtonType) {
+        switch type {
+            case .disabled: disable()
+            case let .idle(string, color): setConfiguration(title: string, backgroundColor: color)
+            case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
+            case .reRecord: setConfiguration(systemImageName: "arrow.clockwise", title: "재녹음", backgroundColor: .asOrange)
+        }
+    }
+
+    enum ASButtonType {
+        case disabled, idle(String, UIColor?), recording, reRecord
+    }
 }
 
 struct ASButtonWrapper: UIViewRepresentable {
@@ -70,13 +101,11 @@ struct ASButtonWrapper: UIViewRepresentable {
     let title: String
     let backgroundColor: UIColor
     let textSize: CGFloat = 32
-    func makeUIView(context: Context) -> ASButton {
+    func makeUIView(context _: Context) -> ASButton {
         let view = ASButton()
         view.setConfiguration(systemImageName: systemImageName, title: title, backgroundColor: backgroundColor, textSize: textSize)
         return view
     }
 
-    func updateUIView(_ uiView: ASButton, context: Context) {
-
-    }
+    func updateUIView(_: ASButton, context _: Context) {}
 }

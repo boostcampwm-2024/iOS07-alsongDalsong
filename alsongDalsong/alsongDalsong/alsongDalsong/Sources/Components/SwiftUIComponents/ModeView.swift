@@ -1,7 +1,8 @@
 import SwiftUI
+import ASEntity
 
 struct ModeView: View {
-    let modeInfo: ModeInfo
+    let modeInfo: Mode
     let width: CGFloat
     var body: some View {
         ZStack {

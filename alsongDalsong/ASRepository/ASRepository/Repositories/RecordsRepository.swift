@@ -4,7 +4,7 @@ import Foundation
 
 public final class RecordsRepository: RecordsRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
-    
+
     public init(mainRepository: MainRepositoryProtocol) {
         self.mainRepository = mainRepository
     }
@@ -16,17 +16,22 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    public func getHumming(on round: UInt8) -> AnyPublisher<Data?, Never> {
-        // 임시로 내가 몇 번째 player인지 인식하는 인덱스
-        let myIndex = 1
-        let playersCount = 4
-        return mainRepository.records
-            .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
-            .map { records in
-                let index = (myIndex - 1 + playersCount) % playersCount
-                let hummings = records.filter { $0.recordOrder ?? 0 == (round - 1) }
-                return (index < hummings.count) ? hummings[index].file : Data()
+    public func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never> {
+        let recordsPublisher = mainRepository.records
+        let playersPublisher = mainRepository.players
+        return recordsPublisher
+            .combineLatest(playersPublisher)
+            .map { [weak self] records, players -> ASEntity.Record? in
+                guard let records, let players else { return nil }
+                let myId = self?.mainRepository.myId
+                guard let myIndex = players.firstIndex(where: { $0.id == myId }) else { return nil }
+                let playersCount = players.count
+                let targetIndex = (myIndex - 1 + playersCount) % playersCount
+                guard playersCount > targetIndex else { return nil }
+                let targetId = players[targetIndex].id
+                let hummings = records.filter { $0.recordOrder == (recordOrder - 1) }
+                
+                return hummings.first(where: { $0.player?.id == targetId })
             }
             .eraseToAnyPublisher()
     }

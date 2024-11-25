@@ -14,6 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         FirebaseApp.configure()
+        ASFirebaseAuth.configure()
         assembleDependencies()
         var inviteCode = ""
         
@@ -36,6 +37,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navigationController.navigationBar.isHidden = true
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
+    }
+    
+    func sceneDidDisconnect(_: UIScene) {
+        let firebaseManager = DIContainer.shared.resolve(ASFirebaseAuthProtocol.self)
+        Task {
+            do {
+                try await firebaseManager.signOut()
+            } catch {
+                print(error)
+            }
+        }
     }
     
     private func assembleDependencies() {

@@ -5,10 +5,12 @@ import UIKit
 final class HummingViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var guideLabel = GuideLabel()
-    private var hummingPanel = AudioVisualizerView()
-    private var recordButton = RecordButton()
+    private var musicPanel = MusicPanel()
+    private var hummingPanel = RecordingPanel(.asYellow)
+    private var recordButton = ASButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
+    private var buttonStack = UIStackView()
     private let vm: HummingViewModel
 
     init(vm: HummingViewModel) {
@@ -30,15 +32,21 @@ final class HummingViewController: UIViewController {
     private func bindToComponents() {
         submissionStatus.bind(to: vm.$submissionStatus)
         progressBar.bind(to: vm.$dueTime)
-        hummingPanel.bind(to: vm.$recorderAmplitude)
-        submitButton.bind(to: vm.$humming)
+        musicPanel.bind(to: vm.$music)
+        hummingPanel.bind(to: vm.$isRecording)
+        hummingPanel.onRecordingFinished = { [weak self] recordedData in
+            self?.recordButton.updateButton(.reRecord)
+            self?.vm.updateRecordedData(with: recordedData)
+        }
+        submitButton.bind(to: vm.$recordedData)
     }
 
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
-        hummingPanel.changeBackgroundColor(color: .asYellow)
-        recordButton.addAction(UIAction {
-            [weak self] _ in self?.vm.startRecording()
+        recordButton.setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
+        recordButton.addAction(UIAction { [weak self] _ in
+            self?.recordButton.updateButton(.recording)
+            self?.vm.startRecording()
         },
         for: .touchUpInside)
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
@@ -57,24 +65,29 @@ final class HummingViewController: UIViewController {
                 )
                 let vc = RehummingViewController(vm: vm)
                 self?.navigationController?.pushViewController(vc, animated: true)
-        }, for: .touchUpInside)
-        submitButton.isEnabled = false
+            }, for: .touchUpInside
+        )
+        submitButton.updateButton(.disabled)
+        buttonStack.axis = .horizontal
+        buttonStack.spacing = 16
+        buttonStack.addArrangedSubview(recordButton)
+        buttonStack.addArrangedSubview(submitButton)
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)
         view.addSubview(guideLabel)
+        view.addSubview(musicPanel)
         view.addSubview(hummingPanel)
-        view.addSubview(recordButton)
-        view.addSubview(submitButton)
+        view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
     }
 
     private func setupLayout() {
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         guideLabel.translatesAutoresizingMaskIntoConstraints = false
+        musicPanel.translatesAutoresizingMaskIntoConstraints = false
         hummingPanel.translatesAutoresizingMaskIntoConstraints = false
-        recordButton.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             progressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -82,24 +95,25 @@ final class HummingViewController: UIViewController {
             progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             progressBar.heightAnchor.constraint(equalToConstant: 16),
 
-            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 56),
+            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 20),
             guideLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-            hummingPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 68),
-            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            hummingPanel.heightAnchor.constraint(equalToConstant: 64),
+            musicPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 20),
+            musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 48),
+            musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -48),
 
-            recordButton.topAnchor.constraint(equalTo: hummingPanel.bottomAnchor, constant: 68),
-            recordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            hummingPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 36),
+            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            hummingPanel.heightAnchor.constraint(equalToConstant: 84),
 
-            submitButton.bottomAnchor.constraint(equalTo: submissionStatus.topAnchor, constant: -24),
-            submitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            submitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            submitButton.heightAnchor.constraint(equalToConstant: 64),
-
-            submissionStatus.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
-            submissionStatus.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
+            submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
+            
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
+            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
 }

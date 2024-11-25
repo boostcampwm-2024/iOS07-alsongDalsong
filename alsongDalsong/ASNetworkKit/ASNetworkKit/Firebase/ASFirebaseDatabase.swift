@@ -5,14 +5,13 @@ import Combine
 public final class ASFirebaseDatabase: ASFirebaseDatabaseProtocol {
     private let firestoreRef = Firestore.firestore()
     private var roomListeners: ListenerRegistration?
-    
     private var roomPublisher = PassthroughSubject<Room, Error>()
     
     public func addRoomListener(roomNumber: String) -> AnyPublisher<Room, Error> {
         let roomRef = firestoreRef.collection("rooms").document(roomNumber)
         let listener = roomRef.addSnapshotListener { documentSnapshot, error in
             if let error {
-                return
+                return self.roomPublisher.send(completion: .failure(error))
             }
             
             guard let document = documentSnapshot, document.exists else {
@@ -31,7 +30,7 @@ public final class ASFirebaseDatabase: ASFirebaseDatabaseProtocol {
         return roomPublisher.eraseToAnyPublisher()
     }
     
-    public func removeRoomListener(roomNumber: String) {
+    public func removeRoomListener() {
         roomListeners?.remove()
     }
 }

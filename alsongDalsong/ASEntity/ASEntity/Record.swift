@@ -2,8 +2,8 @@ import Foundation
 
 public struct Record: Codable, Equatable {
     public var player: Player?
-    public var recordOrder: UInt8?
-    public var file: Data?
+    public var recordOrder: UInt8?=
+    public var fileUrl: URL?
     
     public init(player: Player? = nil, recordOrder: UInt8? = nil, file: Data? = nil) {
         self.player = player

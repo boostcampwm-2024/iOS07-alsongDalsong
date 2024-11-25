@@ -4,13 +4,14 @@ import Combine
 import Foundation
 
 public final class MainRepository: MainRepositoryProtocol {
-    
+    public var myId = ASFirebaseAuth.myID
     public var number = CurrentValueSubject<String?, Never>(nil)
     public var host = CurrentValueSubject<Player?, Never>(nil)
     public var players = CurrentValueSubject<[Player]?, Never>(nil)
     public var mode = CurrentValueSubject<ASEntity.Mode?, Never>(nil)
     public var round = CurrentValueSubject<UInt8?, Never>(nil)
     public var status = CurrentValueSubject<ASEntity.Status?, Never>(nil)
+    public var recordOrder = CurrentValueSubject<UInt8?, Never>(nil)
     public var answers = CurrentValueSubject<[ASEntity.Answer]?, Never>(nil)
     public var dueTime = CurrentValueSubject<Date?, Never>(nil)
     public var submits = CurrentValueSubject<[ASEntity.Answer]?, Never>(nil)
@@ -43,6 +44,7 @@ public final class MainRepository: MainRepositoryProtocol {
                 self.update(\.mode, with: room.mode)
                 self.update(\.round, with: room.round)
                 self.update(\.status, with: room.status)
+                self.update(\.recordOrder, with: room.recordOrder)
                 self.update(\.answers, with: room.answers)
                 self.update(\.dueTime, with: room.dueTime)
                 self.update(\.submits, with: room.submits)
@@ -50,6 +52,22 @@ public final class MainRepository: MainRepositoryProtocol {
                 self.update(\.selectedRecords, with: room.selectedRecords)
             }
             .store(in: &cancellables)
+    }
+    
+    public func disconnectRoom() {
+        self.update(\.number, with: nil)
+        self.update(\.host, with: nil)
+        self.update(\.players, with: nil)
+        self.update(\.mode, with: nil)
+        self.update(\.round, with: nil)
+        self.update(\.status, with: nil)
+        self.update(\.recordOrder, with: nil)
+        self.update(\.answers, with: nil)
+        self.update(\.dueTime, with: nil)
+        self.update(\.submits, with: nil)
+        self.update(\.records, with: nil)
+        self.update(\.selectedRecords, with: nil)
+        databaseManager.removeRoomListener()
     }
     
     private func update<Value: Equatable>(
