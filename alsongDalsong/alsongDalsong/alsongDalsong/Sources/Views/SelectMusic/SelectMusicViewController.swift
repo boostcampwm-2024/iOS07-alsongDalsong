@@ -72,7 +72,6 @@ class SelectMusicViewController: UIViewController {
             let hummingViewModel = HummingViewModel(
                 gameStatusRepository: gameStatusRepository,
                 playersRepository: playersRepository,
-                musicRepository: musicRepository,
                 answersRepository: answersRepository,
                 submitsRepository: submitsRepository
             )
