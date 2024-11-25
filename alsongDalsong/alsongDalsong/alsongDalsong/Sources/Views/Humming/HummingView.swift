@@ -35,6 +35,7 @@ final class HummingViewController: UIViewController {
         musicPanel.bind(to: vm.$music)
         hummingPanel.bind(to: vm.$isRecording)
         hummingPanel.onRecordingFinished = { [weak self] recordedData in
+            self?.recordButton.updateButton(.reRecord)
             self?.vm.updateRecordedData(with: recordedData)
         }
         submitButton.bind(to: vm.$recordedData)
@@ -42,8 +43,9 @@ final class HummingViewController: UIViewController {
 
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
-        recordButton.setConfiguration(title: "녹음하기", backgroundColor: .asLightRed)
+        recordButton.setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
         recordButton.addAction(UIAction { [weak self] _ in
+            self?.recordButton.updateButton(.recording)
             self?.vm.startRecording()
         },
         for: .touchUpInside)
@@ -65,7 +67,7 @@ final class HummingViewController: UIViewController {
                 self?.navigationController?.pushViewController(vc, animated: true)
             }, for: .touchUpInside
         )
-        submitButton.disable()
+        submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
         buttonStack.addArrangedSubview(recordButton)

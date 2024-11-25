@@ -64,7 +64,7 @@ final class ASButton: UIButton {
         }
     }
 
-    func disable(_ color: UIColor = .systemGray2) {
+    private func disable(_ color: UIColor = .systemGray2) {
         configuration?.baseBackgroundColor = color
         isEnabled = false
     }
@@ -80,6 +80,19 @@ final class ASButton: UIButton {
                 self?.configuration?.baseBackgroundColor = .asGreen
             }
             .store(in: &cancellables)
+    }
+
+    func updateButton(_ type: ASButton.ASButtonType) {
+        switch type {
+            case .disabled: disable()
+            case let .idle(string, color): setConfiguration(title: string, backgroundColor: color)
+            case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
+            case .reRecord: setConfiguration(systemImageName: "arrow.clockwise", title: "재녹음", backgroundColor: .asOrange)
+        }
+    }
+
+    enum ASButtonType {
+        case disabled, idle(String, UIColor?), recording, reRecord
     }
 }
 
