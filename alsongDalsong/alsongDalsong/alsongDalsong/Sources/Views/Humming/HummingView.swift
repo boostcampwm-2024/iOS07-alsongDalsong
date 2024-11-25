@@ -65,7 +65,7 @@ final class HummingViewController: UIViewController {
                 self?.navigationController?.pushViewController(vc, animated: true)
             }, for: .touchUpInside
         )
-        submitButton.isEnabled = false
+        submitButton.disable()
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
         buttonStack.addArrangedSubview(recordButton)

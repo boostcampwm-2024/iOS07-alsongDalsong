@@ -2,7 +2,7 @@ import Combine
 import SwiftUI
 import UIKit
 
-class ASButton: UIButton {
+final class ASButton: UIButton {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
@@ -64,6 +64,11 @@ class ASButton: UIButton {
         }
     }
 
+    func disable(_ color: UIColor = .asOrange) {
+        configuration?.baseBackgroundColor = .systemGray2
+        isEnabled = false
+    }
+
     func bind(
         to dataSource: Published<Data?>.Publisher
     ) {
@@ -83,11 +88,11 @@ struct ASButtonWrapper: UIViewRepresentable {
     let title: String
     let backgroundColor: UIColor
     let textSize: CGFloat = 32
-    func makeUIView(context: Context) -> ASButton {
+    func makeUIView(context _: Context) -> ASButton {
         let view = ASButton()
         view.setConfiguration(systemImageName: systemImageName, title: title, backgroundColor: backgroundColor, textSize: textSize)
         return view
     }
 
-    func updateUIView(_ uiView: ASButton, context: Context) {}
+    func updateUIView(_: ASButton, context _: Context) {}
 }
