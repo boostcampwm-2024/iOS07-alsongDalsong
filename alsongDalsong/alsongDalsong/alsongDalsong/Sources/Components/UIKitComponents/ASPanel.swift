@@ -44,6 +44,7 @@ class ASPanel: UIView {
         layer.cornerRadius = 12
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 3
+        backgroundColor = panelColor
         setShadow()
     }
 }
