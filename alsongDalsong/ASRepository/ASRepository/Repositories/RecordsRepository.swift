@@ -21,13 +21,14 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
         let playersPublisher = mainRepository.players
         return recordsPublisher
             .combineLatest(playersPublisher)
-            .map { [weak self] records, players in
+            .map { [weak self] records, players -> ASEntity.Record? in
                 guard let records, let players else { return nil }
                 let myId = self?.mainRepository.myId
                 guard let myIndex = players.firstIndex(where: { $0.id == myId }) else { return nil }
                 let playersCount = players.count
                 let targetIndex = (myIndex - 1 + playersCount) % playersCount
-                let targetId = players[safe: targetIndex]?.id
+                guard playersCount > targetIndex else { return nil }
+                let targetId = players[targetIndex].id
                 let hummings = records.filter { $0.recordOrder == (recordOrder - 1) }
                 
                 return hummings.first(where: { $0.player?.id == targetId })
