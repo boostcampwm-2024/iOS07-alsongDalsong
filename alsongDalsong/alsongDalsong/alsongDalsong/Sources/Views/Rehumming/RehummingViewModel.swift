@@ -57,7 +57,7 @@ final class RehummingViewModel: @unchecked Sendable {
         recordsRepository.getHumming(on: recordOrder)
             .sink { [weak self] record in
                 guard let record else { return }
-                self?.music = record.mapToMusic()
+                self?.music = Music(record)
             }
             .store(in: &cancellables)
     }

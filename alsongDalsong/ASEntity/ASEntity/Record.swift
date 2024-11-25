@@ -7,9 +7,3 @@ public struct Record: Codable, Equatable {
     
     public init() {}
 }
-
-public extension ASEntity.Record {
-    func mapToMusic() -> Music {
-        Music(title: nil, artist: nil, artworkUrl: nil, previewUrl: fileUrl)
-    }
-}

@@ -22,3 +22,9 @@ public struct Music: Codable, Equatable {
         self.previewUrl = previewUrl
     }
 }
+
+extension Music {
+    public init(_ record: ASEntity.Record) {
+        self.previewUrl = record.fileUrl
+    }
+}
