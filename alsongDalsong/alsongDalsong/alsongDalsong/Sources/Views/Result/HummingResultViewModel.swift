@@ -5,7 +5,6 @@ import ASAudioKit
 import ASEntity
 
 final class HummingResultViewModel {
-    private let player = ASAudioPlayer()
     private var hummingResultRepository: HummingResultRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -14,7 +13,7 @@ final class HummingResultViewModel {
     @Published var currentRecords: [ASEntity.Record] = []
     @Published var currentsubmit: Answer?
     
-    // 미리 받아놓을 정보 배열(2차원) ([(선택된 음악: [record, record]), ...])
+    // 미리 받아놓을 정보 배열
     private var recordsResult: [ASEntity.Record] = []
     private var submitsResult: Answer?
     

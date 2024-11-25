@@ -57,6 +57,9 @@ class HummingResultViewController: UIViewController {
             guard let self,
                   let viewModel = self.viewModel else {return}
             if !(viewModel.hummingResult.isEmpty) {
+                if viewModel.hummingResult.count == 1 {
+                    button.setConfiguration(title: "완료", backgroundColor: .asYellow)
+                }
                 viewModel.nextResultFetch()
                 setMusicResultView(musicName: viewModel.currentResult?.music?.title ?? "",
                                    singerName: viewModel.currentResult?.music?.artist ?? "")
@@ -273,28 +276,3 @@ final class MusicResultView: UIView {
             .store(in: &cancellables)
     }
 }
-
-#if DEBUG
-extension UIViewController {
-    private struct Preview: UIViewControllerRepresentable {
-        let viewController: UIViewController
-        
-        func makeUIViewController(context: Context) -> UIViewController {
-            return viewController
-        }
-        
-        func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        }
-    }
-    
-    func toPreview() -> some View {
-        Preview(viewController: self)
-    }
-}
-#endif
-
-//struct HummingResultPreview: PreviewProvider {
-//    static var previews: some View {
-//        HummingResultViewController().toPreview()
-//    }
-//}
