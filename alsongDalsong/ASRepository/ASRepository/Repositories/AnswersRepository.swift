@@ -40,12 +40,6 @@ public final class AnswersRepository: AnswersRepositoryProtocol {
             .update(\.headers, with: ["Content-Type": "application/json"])
         
         let body = try ASEncoder.encode(answer)
-//        let encoder = JSONEncoder()
-//        encoder.outputFormatting = [.prettyPrinted]
-//        let body = try encoder.encode(answer)
-//        if let jsonString = String(data: body, encoding: .utf8) {
-//            print(jsonString)
-//        }
         try print(JSONSerialization.jsonObject(with: body, options: []))
         
         let response = try await networkManager.sendRequest(to: endPoint, body: body, option: .none)
