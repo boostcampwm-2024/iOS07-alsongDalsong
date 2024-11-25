@@ -16,7 +16,7 @@ public struct Music: Codable, Equatable {
         self.artist = artist
     }
   
-    public init(title: String, artist: String, artworkUrl: URL?, previewUrl: URL?, artworkBackgroundColor: String) {
+    public init(title: String?, artist: String?, artworkUrl: URL?, previewUrl: URL?, artworkBackgroundColor: String?) {
         self.title = title
         self.artist = artist
         self.artworkUrl = artworkUrl
