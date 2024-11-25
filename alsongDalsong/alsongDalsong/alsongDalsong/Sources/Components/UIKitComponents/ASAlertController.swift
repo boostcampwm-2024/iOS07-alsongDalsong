@@ -40,7 +40,7 @@ class ASAlertController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .black.withAlphaComponent(0.3)
-        alertView.setConfiguration(title: titleText, titleAlign: .center, titleSize: 24)
+        alertView.setTitle(title: titleText, titleAlign: .center, titleSize: 24)
         alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         alertView.backgroundColor = .asLightGray
         alertView.layer.borderWidth = 0
@@ -86,7 +86,7 @@ class ASAlertController: UIViewController {
     }
     
     private func setTitle() {
-        alertView.setConfiguration(title: titleText, titleAlign: .center, titleSize: 24)
+        alertView.setTitle(title: titleText, titleAlign: .center, titleSize: 24)
         alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         alertView.backgroundColor = .asLightGray
         alertView.layer.borderWidth = 0

@@ -7,12 +7,12 @@ public struct Room: Codable {
     public var mode: Mode?
     public var round: UInt8?
     public var status: Status?
+    public var recordOrder: UInt8?
     public var records: [Record]?
     public var answers: [Answer]?
     public var dueTime: Date?
     public var selectedRecords: [UInt8]?
     public var submits: [Answer]?
-    public var recordOrder: UInt8?
     
     public init(
         number: String? = nil,
@@ -21,12 +21,12 @@ public struct Room: Codable {
         mode: Mode? = nil,
         round: UInt8? = nil,
         status: Status? = nil,
+        recordOrder: UInt8? = nil,
         records: [Record]? = nil,
         answers: [Answer]? = nil,
         dueTime: Date? = nil,
         selectedRecords: [UInt8]? = nil,
-        submits: [Answer]? = nil,
-        recordOrder: UInt8?
+        submits: [Answer]? = nil
     ) {
         self.number = number
         self.host = host
@@ -34,11 +34,11 @@ public struct Room: Codable {
         self.mode = mode
         self.round = round
         self.status = status
+        self.recordOrder = recordOrder
         self.records = records
         self.answers = answers
         self.dueTime = dueTime
         self.selectedRecords = selectedRecords
         self.submits = submits
-        self.recordOrder = recordOrder
     }
 }

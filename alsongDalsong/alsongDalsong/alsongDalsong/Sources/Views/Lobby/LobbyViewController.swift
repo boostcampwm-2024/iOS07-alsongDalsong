@@ -96,10 +96,11 @@ final class LobbyViewController: UIViewController {
                 let leaveAlert = ASAlertController(
                     titleText: "방을 나가시겠습니까?",
                     doneButtonTitle: "나가기",
-                    cancelButtonTitle: "취소") { [weak self] _ in
-                        self?.viewmodel.leaveRoom()
-                        self?.navigationController?.popViewController(animated: true)
-                    }
+                    cancelButtonTitle: "취소")
+                { [weak self] _ in
+                    self?.viewmodel.leaveRoom()
+                    self?.navigationController?.popViewController(animated: true)
+                }
                 self?.present(leaveAlert, animated: true, completion: nil)
             },
             for: .touchUpInside)
@@ -114,16 +115,13 @@ final class LobbyViewController: UIViewController {
         }, for: .touchUpInside)
         
         startButton.addAction(UIAction { [weak self] _ in
-            let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
-            let selectMusicViewModel = SelectMusicViewModel(musicRepository: musicRepository)
-            let selectMusicViewController = SelectMusicViewController(selectMusicViewModel: selectMusicViewModel)
-            self?.navigationController?.pushViewController(selectMusicViewController, animated: true)
+            self?.viewmodel.gameStart()
         }, for: .touchUpInside)
     }
     
     private func setupLayout() {
         let lobbyView = UIHostingController(rootView: LobbyView(viewModel: viewmodel))
-       hostingController = lobbyView
+        hostingController = lobbyView
         lobbyView.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(lobbyView.view)
         view.addSubview(startButton)

@@ -10,11 +10,11 @@ actor AudioHelper {
     private var player: ASAudioPlayer?
     private var timer: Timer?
     private let amplitudeSubject = PassthroughSubject<Float, Never>()
-    private init() {}
-
-    func amplitudePubisher() -> AnyPublisher<Float, Never> {
+    var amplitudePublisher: AnyPublisher<Float, Never> {
         return amplitudeSubject.eraseToAnyPublisher()
     }
+    
+    private init() {}
 
     func isRecording() async -> Bool {
         guard let recorder else { return false }
@@ -55,37 +55,46 @@ actor AudioHelper {
     }
 
     private func setTimer() {
-        timer = Timer(timeInterval: 0.08, repeats: true) { [weak self] _ in
+        timer = Timer(timeInterval: 0.125, repeats: true) { [weak self] _ in
             Task {
                 await self?.calculateRecorderAmplitude()
             }
         }
         RunLoop.main.add(timer!, forMode: .common)
     }
-    
+
     private func calculateRecorderAmplitude() async {
         await recorder?.updateMeters()
         guard let averagePower = await recorder?.getAveragePower() else { return }
-        let newAmplitude = 1.1 * pow(10.0, averagePower / 20.0)
+        let newAmplitude = 1.8 * pow(10.0, averagePower / 20.0)
         let clampedAmplitude = min(max(newAmplitude, 0), 1)
         amplitudeSubject.send(clampedAmplitude)
     }
 
-    func startPlaying(file: Data?, playType: PlayType = .full) async {
+    func startPlaying(
+        file: Data?,
+        playType: PlayType = .full,
+        didPlayingFinshied: (@MainActor () -> Void)? = nil
+    ) async {
         guard let file else { return }
+        if let player = player, await player.isPlaying() { await stopPlaying() }
         makePlayer()
         await player?.setOnPlaybackFinished { [weak self] in
             await self?.stopPlaying()
+            await didPlayingFinshied?()
         }
         await player?.startPlaying(data: file, option: playType)
     }
 
     func stopPlaying() async {
         await player?.stopPlaying()
+        player = nil
     }
 
     private func stopRecording() async -> Data? {
-        await recorder?.stopRecording()
+        let recordedData = await recorder?.stopRecording()
+        recorder = nil
+        return recordedData
     }
 
     private func makeRecorder() {

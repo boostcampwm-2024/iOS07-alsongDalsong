@@ -25,7 +25,7 @@ final class GameNavigationController {
     
     public func setupBinding() {
         let modePublisher = roomInfoRepository.getMode()
-        let recordOrderPublisher = roomInfoRepository.getRecordOrder()
+        let recordOrderPublisher = gameStatusRepository.getRecordOrder()
         let statusPublisher = gameStatusRepository.getStatus()
         let roundPublisher = gameStatusRepository.getRound()
 
@@ -119,8 +119,11 @@ final class GameNavigationController {
     
     private func navigateToSelectMusic() {
         let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
-        
-        let vm = SelectMusicViewModel(musicRepository: musicRepository)
+        let answersRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
+        let vm = SelectMusicViewModel(
+            musicRepository: musicRepository,
+            answerRepository: answersRepository
+        )
         let vc = SelectMusicViewController(selectMusicViewModel: vm)
         navigationController.pushViewController(vc, animated: true)
     }
@@ -128,11 +131,13 @@ final class GameNavigationController {
     private func navigateToHumming() {
         let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
         let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
+        let answersRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
         let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
         
         let vm = HummingViewModel(
             gameStatusRepository: gameStatusRepository,
             playersRepository: playersRepository,
+            answersRepository: answersRepository,
             submitsRepository: submitsRepository
         )
         let vc = HummingViewController(vm: vm)

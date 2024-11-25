@@ -44,7 +44,7 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
       await roomRef.update({
         players: updatedPlayers,
         status: 'humming',
-        round: 1,
+        round: 0,
         recordOrder: 0,
       });
 
