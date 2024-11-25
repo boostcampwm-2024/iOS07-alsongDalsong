@@ -15,6 +15,7 @@ public protocol GameStatusRepositoryProtocol {
 public protocol PlayersRepositoryProtocol {
     func getPlayers() -> AnyPublisher<[Player], Never>
     func getHost() -> AnyPublisher<Player, Never>
+    func isHost() -> AnyPublisher<Bool, Never>
 }
 
 public protocol RecordsRepositoryProtocol {
@@ -41,10 +42,11 @@ public protocol AvatarRepositoryProtocol {
 }
 
 public protocol RoomActionRepositoryProtocol {
-    func createRoom(nickname: String, avatar: URL) -> Future<String, Error>
-    func joinRoom(nickname: String, avatar: URL, roomNumber: String) -> Future<Bool, Error>
-    func leaveRoom() -> Future<Bool, Error>
-    func startGame(roomNumber: String) -> Future<Bool, any Error>
+    func createRoom(nickname: String, avatar: URL) async throws -> String
+    func joinRoom(nickname: String, avatar: URL, roomNumber: String) async throws -> Bool
+    func leaveRoom() async throws -> Bool
+    func startGame(roomNumber: String) async throws -> Bool
+    func changeMode(roomNumber: String, mode: Mode) async throws -> Bool
 }
 
 public protocol MusicRepositoryProtocol {

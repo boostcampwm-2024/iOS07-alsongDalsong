@@ -1,6 +1,7 @@
 import ASContainer
 import ASEntity
 import ASRepository
+import Combine
 import SwiftUI
 
 struct LobbyView: View {
@@ -9,45 +10,40 @@ struct LobbyView: View {
     @Environment(\.dismiss) var dismiss
     var body: some View {
         VStack {
-            HStack {
-                Button {
-                    viewModel.leaveRoom()
-                    dismiss()
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .rotationEffect(.degrees(-90))
-                        .tint(.asBlack)
-                }
-                Spacer()
-                Text(viewModel.roomNumber)
-                    .foregroundStyle(.gray)
-                    .font(.custom("DoHyeon-Regular", size: 48))
-            }
-            .font(.title)
-            .padding()
             ScrollView(.horizontal) {
                 HStack(spacing: 16) {
-                    ForEach(viewModel.players) { player in
-                        ProfileView(
-                            imagePublisher: viewModel.getAvatarData(url: player.avatarUrl),
-                            name: player.nickname,
-                            isHost: player.id == viewModel.host?.id
-                        )
+                    ForEach(0 ..< viewModel.playerMaxCount) { index in
+                        if index < viewModel.players.count {
+                            let player = viewModel.players[index]
+                            ProfileView(
+                                imagePublisher: viewModel.getAvatarData(url: player.avatarUrl),
+                                name: player.nickname,
+                                isHost: player.id == viewModel.host?.id
+                            )
+                        } else {
+                            ProfileView(
+                                imagePublisher: Just(Data()).setFailureType(to: Error.self).eraseToAnyPublisher(),
+                                name: nil,
+                                isHost: false
+                            )
+                        }
                     }
                 }
                 .padding()
             }
-
-            GeometryReader { reader in
-                SnapperView(size: reader.size, modeInfos: ModeInfo.modeInfos, currentMode: $viewModel.mode)
+            VStack {
+                if viewModel.isHost {
+                    GeometryReader { reader in
+                        SnapperView(size: reader.size, currentMode: $viewModel.mode)
+                    }
+                }else {
+                    GeometryReader { geometry in
+                        ModeView(modeInfo: viewModel.mode, width: geometry.size.width * 0.85)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                }
             }
-            // TODO:- 버튼 사이즈 안맞음
-            ShareLink(item: URL(string: "alsongDalsong://invite/?roomnumber=\(viewModel.roomNumber)")!) {
-                Image(systemName: "link")
-                Text("초대코드!")
-            }
-            .buttonStyle(ASButtonStyle(backgroundColor: Color(.asYellow)))
-            .padding(.top, 20)
+           
         }
         .background(Color.asLightGray)
     }

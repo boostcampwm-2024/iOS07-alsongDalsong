@@ -6,12 +6,16 @@ const { startGame } = require('./api/StartGame.js');
 const { uploadRecord } = require('./api/UploadRecord.js');
 const { onRecordAdded } = require('./trigger/onRecordAdded.js');
 const { exitRoom } = require('./api/ExitRoom.js');
-const { onRemovePlayer } = require('./trigger/onRemovePlayer.js');
+const { onRemovePlayer, onRemoveRoom } = require('./trigger/onRemovePlayer.js');
+const { changeMode } = require('./api/ChangeMode.js');
+
 // 방 관련 API
 exports.createRoom = createRoom;
 exports.joinRoom = joinRoom;
 exports.startGame = startGame;
 exports.exitRoom = exitRoom;
+exports.changeMode = changeMode;
+exports.onRemoveRoom = onRemoveRoom;
 
 // GameStart API
 exports.startGame = startGame;

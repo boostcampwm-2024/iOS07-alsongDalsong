@@ -41,7 +41,7 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
         round: 1,
       });
 
-      res.status(200).json({ status: 'success' });
+      res.status(200).json({ success: true });
     } else {
       res.status(400).json({ error: 'Invalid mode' });
     }

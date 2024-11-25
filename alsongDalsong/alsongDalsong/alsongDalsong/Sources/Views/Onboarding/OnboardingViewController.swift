@@ -124,15 +124,12 @@ final class OnboardingViewController: UIViewController {
                         doneButtonTitle: Constants.doneAlertButtonTitle,
                         cancelButtonTitle: Constants.cancelAlertButtonTitle,
                         textFieldPlaceholder: Constants.roomNumberPlaceholder,
-                        isUppercased: true,
-                        style: .input)
-                    
-                    joinAlert.doneButtonCompletion = { [weak self] in
-                        if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                            self?.viewmodel?.setNickname(with: nickname)
+                        isUppercased: true) { [weak self] roomNumber in
+                            if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                                self?.viewmodel?.setNickname(with: nickname)
+                            }
+                            self?.viewmodel?.joinRoom(roomNumber: roomNumber)
                         }
-                        self?.viewmodel?.joinRoom(roomNumber: joinAlert.text)
-                    }
                     self?.present(joinAlert, animated: true, completion: nil)
                 },
                 for: .touchUpInside)
@@ -217,11 +214,7 @@ final class OnboardingViewController: UIViewController {
                     self?.createRoomButton.isHidden = false
                     let joinFailedAlert = ASAlertController(
                         titleText: "참가에 실패하였습니다.",
-                        doneButtonTitle: "확인",
-                        cancelButtonTitle: Constants.cancelAlertButtonTitle,
-                        textFieldPlaceholder: Constants.roomNumberPlaceholder,
-                        isUppercased: true,
-                        style: .default)
+                        doneButtonTitle: "확인")
                     self?.present(joinFailedAlert, animated: true, completion: nil)
                 }
             }

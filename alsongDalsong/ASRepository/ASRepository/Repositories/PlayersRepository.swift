@@ -1,12 +1,16 @@
 import Foundation
+import ASNetworkKit
 import Combine
 import ASEntity
 
 public final class PlayersRepository: PlayersRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
+    private var firebaseAuthManager: ASFirebaseAuthProtocol
     
-    public init(mainRepository: MainRepositoryProtocol) {
+    public init(mainRepository: MainRepositoryProtocol,
+                firebaseAuthManager: ASFirebaseAuthProtocol) {
         self.mainRepository = mainRepository
+        self.firebaseAuthManager = firebaseAuthManager
     }
     
     public func getPlayers() -> AnyPublisher<[Player], Never> {
@@ -20,6 +24,13 @@ public final class PlayersRepository: PlayersRepositoryProtocol {
         mainRepository.host
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
+    
+    public func isHost() -> AnyPublisher<Bool, Never> {
+        self.getHost()
+            .receive(on: DispatchQueue.main)
+            .map { $0.id == ASFirebaseAuth.myID }
             .eraseToAnyPublisher()
     }
 }

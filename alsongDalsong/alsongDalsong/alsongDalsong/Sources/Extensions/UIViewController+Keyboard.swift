@@ -20,7 +20,7 @@ extension UIViewController {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             let keyboardHeight = keyboardRectangle.height
-
+            
             UIView.animate(withDuration: 0.3) {
                 self.view.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight)
             }
