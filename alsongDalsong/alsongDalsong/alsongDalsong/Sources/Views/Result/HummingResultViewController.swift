@@ -24,7 +24,8 @@ class HummingResultViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .asLightGray
-        setMusicResultView(musicName: "", singerName: "")
+        setMusicResultView(musicName: viewModel?.currentResult?.music?.title ?? "",
+                           singerName: viewModel?.currentResult?.music?.artist ?? "")
         setResultTableView()
         setButton()
         setConstraints()
@@ -38,7 +39,6 @@ class HummingResultViewController: UIViewController {
             .eraseToAnyPublisher(),
                                   musicName: musicName,
                                   singerName: singerName)
-        view.addSubview(musicResultView)
     }
     
     private func setResultTableView() {
@@ -53,14 +53,27 @@ class HummingResultViewController: UIViewController {
         button.setConfiguration(systemImageName: "play.fill", title: "다음으로", backgroundColor: .asMint)
         view.addSubview(button)
         button.addAction(UIAction { [weak self] _ in
-            let vc = self?.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
-            guard let vc else { return }
-            self?.navigationController?.popToViewController(vc, animated: true)
+            guard let self,
+                  let viewModel = self.viewModel else {return}
+            if !(viewModel.hummingResult.isEmpty) {
+                viewModel.nextResultFetch()
+                setMusicResultView(musicName: viewModel.currentResult?.music?.title ?? "",
+                                   singerName: viewModel.currentResult?.music?.artist ?? "")
+                resultTableView.reloadData()
+                button.isHidden = true
+            }
+            else {
+                let vc = self.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
+                guard let vc else { return }
+                self.navigationController?.popToViewController(vc, animated: true)
+            }
         }, for: .touchUpInside)
         button.isHidden = true
     }
     
     private func setConstraints() {
+        view.addSubview(musicResultView)
+        
         musicResultView.translatesAutoresizingMaskIntoConstraints = false
         resultTableView.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false

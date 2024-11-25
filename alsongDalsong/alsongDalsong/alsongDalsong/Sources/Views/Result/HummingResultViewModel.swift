@@ -17,7 +17,7 @@ final class HummingResultViewModel {
     private var recordsResult: [ASEntity.Record] = []
     private var submitsResult: Answer?
     
-    private var hummingResult: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)] = []
+    var hummingResult: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)] = []
     
     init(hummingResultRepository: HummingResultRepositoryProtocol) {
         self.hummingResultRepository = hummingResultRepository
@@ -65,5 +65,15 @@ final class HummingResultViewModel {
                 continuation.resume()
             }
         }
+    }
+    
+    func nextResultFetch() {
+        let current = self.hummingResult.removeFirst()
+        
+        self.currentResult = current.answer
+        self.recordsResult = current.records
+        self.submitsResult = current.submit
+        self.currentRecords.removeAll()
+        self.currentsubmit = nil
     }
 }
