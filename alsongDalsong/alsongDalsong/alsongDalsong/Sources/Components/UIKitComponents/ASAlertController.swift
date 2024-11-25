@@ -1,32 +1,32 @@
 import UIKit
 
 class ASAlertController: UIViewController {
-    private var alertView = ASPanel()
-    private var stackView = UIStackView()
-    private var buttonStackView = UIStackView()
-    // Alert창에 입력한 text
+    var textField = ASTextField()
+    private var titleText: ASAlertText.Title?
+    private var textFieldPlaceholder: ASAlertText.Placeholder?
+    private var doneButtonTitle: ASAlertText.ButtonText?
+    private var cancelButtonTitle: ASAlertText.ButtonText?
+    private var isUppercased: Bool = false
+    private var textMaxCount: Int = 6
+    private var style: ASAlertStyle = .default
+    var doneButtonCompletion: ((String) -> Void)?
+    var cancelButtonCompletion: (() -> Void)?
     var text: String {
         textField.text ?? ""
     }
 
-    var textField = ASTextField()
-    private var titleText: String = ""
-    private var textFieldPlaceholder: String = ""
-    private var doneButtonTitle: String = ""
-    private var cancelButtonTitle: String = ""
-    private var isUppercased: Bool = false
-    private var textMaxCount: Int = 6
-    private var style: ASAlertStyle = .default
-    
+    private var alertView = ASPanel()
+    private var stackView = UIStackView()
+    private var buttonStackView = UIStackView()
     private var titleLabel = UILabel()
     private var doneButton = ASButton()
     private var cancelButton = ASButton()
-    var doneButtonCompletion: ((String) -> Void)?
-    var cancelButtonCompletion: (() -> Void)?
+    private var progressView = UIActivityIndicatorView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setStackView()
         setLayout()
         setupStyle()
     }
@@ -41,97 +41,116 @@ class ASAlertController: UIViewController {
 
     private func setupUI() {
         view.backgroundColor = .black.withAlphaComponent(0.3)
-        
-        setTitle()
+        setAlertView()
+    }
+
+    private func setAlertView() {
+        alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+        alertView.backgroundColor = .asLightGray
+        alertView.layer.borderWidth = 0
+        view.addSubview(alertView)
+    }
+
+    private func setStackView() {
         stackView.axis = .vertical
-        stackView.spacing = 17
+        stackView.spacing = 16
         stackView.distribution = .fillProportionally
         stackView.alignment = .center
-
-        buttonStackView.axis = .horizontal
-        buttonStackView.spacing = 21
-        buttonStackView.distribution = .fillEqually
-        buttonStackView.alignment = .center
+        alertView.addSubview(stackView)
     }
 
     private func setLayout() {
-        view.addSubview(alertView)
-        alertView.addSubview(stackView)
         alertView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             alertView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             alertView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             alertView.widthAnchor.constraint(equalToConstant: 345),
 
-            stackView.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 56),
+            stackView.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 16),
             stackView.bottomAnchor.constraint(equalTo: alertView.bottomAnchor, constant: -16),
-            stackView.leadingAnchor.constraint(equalTo: alertView.leadingAnchor, constant: 12),
-            stackView.trailingAnchor.constraint(equalTo: alertView.trailingAnchor, constant: -12),
-
-            textField.widthAnchor.constraint(equalToConstant: 321),
-            textField.heightAnchor.constraint(equalToConstant: 43),
-            buttonStackView.widthAnchor.constraint(equalToConstant: 321),
-            doneButton.heightAnchor.constraint(equalToConstant: 40),
-            cancelButton.heightAnchor.constraint(equalToConstant: 40),
+            stackView.leadingAnchor.constraint(equalTo: alertView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: alertView.trailingAnchor, constant: -16),
         ])
-
-        textField.heightAnchor.constraint(equalToConstant: 43).priority = .defaultHigh
-        buttonStackView.heightAnchor.constraint(equalToConstant: 56).priority = .defaultHigh
     }
 
     private func setTitle() {
-        titleLabel.text = titleText
+        titleLabel.text = titleText?.description
         titleLabel.textAlignment = .center
         titleLabel.font = .font(forTextStyle: .title2)
-        alertView.addSubview(titleLabel)
-        alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-        alertView.backgroundColor = .asLightGray
-        alertView.layer.borderWidth = 0
-        
+        stackView.addArrangedSubview(titleLabel)
+
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: alertView.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 16),
+            titleLabel.centerXAnchor.constraint(equalTo: stackView.centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: stackView.topAnchor),
         ])
     }
 
     private func setTextField() {
-        textField.setConfiguration(placeholder: textFieldPlaceholder)
+        textField.setConfiguration(placeholder: textFieldPlaceholder?.description)
         stackView.addArrangedSubview(textField)
         if isUppercased {
             textField.delegate = self
         }
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            textField.widthAnchor.constraint(equalTo: stackView.widthAnchor),
+            textField.heightAnchor.constraint(equalToConstant: 44),
+        ])
+        textField.heightAnchor.constraint(equalToConstant: 43).priority = .defaultHigh
+    }
+
+    private func setButtonStackView() {
+        buttonStackView.axis = .horizontal
+        buttonStackView.spacing = 20
+        buttonStackView.distribution = .fillEqually
+        buttonStackView.alignment = .center
+        stackView.addArrangedSubview(buttonStackView)
+        NSLayoutConstraint.activate([
+            buttonStackView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
+            buttonStackView.bottomAnchor.constraint(equalTo: stackView.bottomAnchor),
+        ])
+        buttonStackView.heightAnchor.constraint(equalToConstant: 56).priority = .defaultHigh
     }
 
     private func setDoneButton() {
-        stackView.addArrangedSubview(buttonStackView)
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
         buttonStackView.addArrangedSubview(doneButton)
-        doneButton.setConfiguration(systemImageName: "", title: doneButtonTitle, backgroundColor: .asLightSky, textSize: 24)
+        doneButton.setConfiguration(
+            title: doneButtonTitle?.description,
+            backgroundColor: .asLightSky,
+            textSize: 24
+        )
         doneButton.addAction(UIAction { [weak self] _ in
             self?.doneButtonCompletion?(self?.text ?? "")
             self?.dismiss(animated: true)
         }, for: .touchUpInside)
+        doneButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
 
     private func setCancelButton() {
-        if buttonStackView.arrangedSubviews.isEmpty {
-            stackView.addArrangedSubview(buttonStackView)
-            NSLayoutConstraint.activate([
-                buttonStackView.widthAnchor.constraint(equalToConstant: 321),
-                buttonStackView.heightAnchor.constraint(equalToConstant: 40),
-            ])
-        }
         buttonStackView.addArrangedSubview(cancelButton)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        cancelButton.setConfiguration(systemImageName: "", title: cancelButtonTitle, backgroundColor: .asLightRed, textSize: 24)
+        cancelButton.setConfiguration(
+            title: cancelButtonTitle?.description,
+            backgroundColor: .asLightRed,
+            textSize: 24
+        )
         cancelButton.addAction(UIAction { [weak self] _ in
             self?.cancelButtonCompletion?()
             self?.dismiss(animated: true)
         }, for: .touchUpInside)
+        cancelButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+    }
+
+    private func setProgressView() {
+        stackView.addArrangedSubview(progressView)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.startAnimating()
+        progressView.style = .large
+        progressView.hidesWhenStopped = true
     }
 
     private func setupStyle() {
@@ -139,30 +158,39 @@ class ASAlertController: UIViewController {
             case .input:
                 setTitle()
                 setTextField()
+                setButtonStackView()
                 setDoneButton()
                 setCancelButton()
             case .default:
                 setTitle()
+                setButtonStackView()
                 setDoneButton()
                 setCancelButton()
             case .confirm:
                 setTitle()
+                setButtonStackView()
                 setDoneButton()
+            case .load:
+                setProgressView()
         }
     }
 }
 
+// MARK: - Init
+
 extension ASAlertController {
     convenience init(
-        titleText: String,
-        doneButtonTitle: String,
-        cancelButtonTitle: String,
-        textFieldPlaceholder: String = "",
+        style: ASAlertStyle = .input,
+        titleText: ASAlertText.Title,
+        doneButtonTitle: ASAlertText.ButtonText = .done,
+        cancelButtonTitle: ASAlertText.ButtonText = .cancel,
+        textFieldPlaceholder: ASAlertText.Placeholder,
         isUppercased: Bool = false,
         doneButtonCompletion: ((String) -> Void)? = nil,
         cancelButtonTitleCompletion: (() -> Void)? = nil
     ) {
         self.init()
+        self.style = style
         self.titleText = titleText
         self.textFieldPlaceholder = textFieldPlaceholder
         self.doneButtonTitle = doneButtonTitle
@@ -170,46 +198,57 @@ extension ASAlertController {
         self.doneButtonCompletion = doneButtonCompletion
         cancelButtonCompletion = cancelButtonTitleCompletion
         self.isUppercased = isUppercased
-        style = .input
 
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
     }
 
     convenience init(
-        titleText: String,
-        doneButtonTitle: String,
-        cancelButtonTitle: String,
+        style: ASAlertStyle = .default,
+        titleText: ASAlertText.Title,
+        doneButtonTitle: ASAlertText.ButtonText = .done,
+        cancelButtonTitle: ASAlertText.ButtonText = .cancel,
         doneButtonCompletion: ((String) -> Void)? = nil,
         cancelButtonTitleCompletion: (() -> Void)? = nil
     ) {
         self.init()
+        self.style = style
         self.titleText = titleText
         self.doneButtonTitle = doneButtonTitle
         self.cancelButtonTitle = cancelButtonTitle
         self.doneButtonCompletion = doneButtonCompletion
         cancelButtonCompletion = cancelButtonTitleCompletion
-        style = .default
 
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
     }
 
     convenience init(
-        titleText: String,
-        doneButtonTitle: String,
+        style: ASAlertStyle = .confirm,
+        titleText: ASAlertText.Title,
+        doneButtonTitle: ASAlertText.ButtonText = .confirm,
         doneButtonCompletion: ((String) -> Void)? = nil
     ) {
         self.init()
+        self.style = style
         self.titleText = titleText
         self.doneButtonTitle = doneButtonTitle
         self.doneButtonCompletion = doneButtonCompletion
-        style = .confirm
+
+        modalTransitionStyle = .crossDissolve
+        modalPresentationStyle = .overFullScreen
+    }
+
+    convenience init(_ type: ASAlertStyle) {
+        self.init()
+        style = type
 
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
     }
 }
+
+// MARK: - Delegate
 
 extension ASAlertController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -229,8 +268,53 @@ extension ASAlertController: UITextFieldDelegate {
     }
 }
 
+// MARK: - Alert Type
+
 enum ASAlertStyle {
     case input
     case `default`
     case confirm
+    case load
+}
+
+enum ASAlertText {
+    enum Title: String, CustomStringConvertible {
+        case leaveRoom
+        case joinRoom
+        case joinFailed
+
+        var description: String {
+            switch self {
+                case .leaveRoom: "방을 나가시겠습니까?"
+                case .joinRoom: "게임 입장 코드를 입력하세요"
+                case .joinFailed: "참가에 실패하였습니다."
+            }
+        }
+    }
+
+    enum ButtonText: String, CustomStringConvertible {
+        case leave
+        case cancel
+        case done
+        case confirm
+
+        var description: String {
+            switch self {
+                case .leave: "나가기"
+                case .cancel: "취소"
+                case .done: "완료"
+                case .confirm: "확인"
+            }
+        }
+    }
+
+    enum Placeholder: String, CustomStringConvertible {
+        case roomNumber
+
+        var description: String {
+            switch self {
+                case .roomNumber: "000000"
+            }
+        }
+    }
 }

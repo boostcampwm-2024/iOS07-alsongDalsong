@@ -127,12 +127,10 @@ final class OnboardingViewController: UIViewController {
         if inviteCode.isEmpty {
             joinRoomButton.addAction(
                 UIAction { [weak self] _ in
-//                    let joinAlert = ASAlertController(type: .load)
+//                    let joinAlert = ASAlertController(.load)
                     let joinAlert = ASAlertController(
-                        titleText: Constants.joinAlertTitle,
-                        doneButtonTitle: Constants.doneAlertButtonTitle,
-                        cancelButtonTitle: Constants.cancelAlertButtonTitle,
-                        textFieldPlaceholder: Constants.roomNumberPlaceholder,
+                        titleText: .joinRoom,
+                        textFieldPlaceholder: .roomNumber,
                         isUppercased: true
                     ) { [weak self] roomNumber in
                         if let nickname = self?.nickNamePanel.text, !nickname.isEmpty {
@@ -224,8 +222,7 @@ final class OnboardingViewController: UIViewController {
                 if !success {
                     self?.createRoomButton.isHidden = false
                     let joinFailedAlert = ASAlertController(
-                        titleText: "참가에 실패하였습니다.",
-                        doneButtonTitle: "확인"
+                        titleText: .joinFailed
                     )
                     self?.present(joinFailedAlert, animated: true, completion: nil)
                 }
@@ -238,10 +235,6 @@ extension OnboardingViewController {
     enum Constants {
         static let craeteButtonTitle = "방 생성하기!"
         static let joinButtonTitle = "방 참가하기!"
-        static let joinAlertTitle = "게임 입장 코드를 입력하세요"
-        static let doneAlertButtonTitle = "완료"
-        static let cancelAlertButtonTitle = "취소"
-        static let roomNumberPlaceholder = "000000"
         static let logoImageName = "logo"
     }
 }
