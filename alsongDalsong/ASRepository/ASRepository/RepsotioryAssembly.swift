@@ -93,5 +93,12 @@ public struct RepsotioryAssembly: Assembly {
                 mainRepository: mainRepository
             )
         }
+        
+        container.register(GameStateRepositoryProtocol.self) { r in
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            return GameStateRepository(
+                mainRepository: mainRepository
+            )
+        }
     }
 }

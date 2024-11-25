@@ -7,15 +7,21 @@ import UIKit
 @MainActor
 final class GameNavigationController {
     private let navigationController: UINavigationController
+    private let gameStateRepository: GameStateRepositoryProtocol
     private var subscriptions: Set<AnyCancellable> = []
     
-    private let roomInfoRepository: RoomInfoRepositoryProtocol = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
-    private let gameStatusRepository: GameStatusRepositoryProtocol = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
-    private let playersRepository: PlayersRepositoryProtocol = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-    private var players: [Player] = []
-    init(navigationController: UINavigationController) {
+    private var gameInfo: GameState? {
+        didSet {
+            guard let gameInfo = gameInfo else { return }
+            updateViewControllers(state: gameInfo)
+        }
+    }
+    
+    init(navigationController: UINavigationController,
+         gameStateRepository: GameStateRepositoryProtocol)
+    {
         self.navigationController = navigationController
-        setupBinding()
+        self.gameStateRepository = gameStateRepository
     }
 
     @available(*, unavailable)
@@ -23,79 +29,32 @@ final class GameNavigationController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func setupBinding() {
-        let modePublisher = roomInfoRepository.getMode()
-        let recordOrderPublisher = gameStatusRepository.getRecordOrder()
-        let statusPublisher = gameStatusRepository.getStatus()
-        let roundPublisher = gameStatusRepository.getRound()
-
-        Publishers.CombineLatest4(modePublisher, recordOrderPublisher, statusPublisher, roundPublisher)
+    public func setConfiguration() {
+        gameStateRepository.getGameState()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] mode, recordOrder, status, round in
-                self?.updateViewControllers(mode: mode, recordOrder: recordOrder, status: status, round: round)
-            }
-            .store(in: &subscriptions)
-        
-        playersRepository.getPlayers()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] players in
-                self?.players = players
-            }
-            .store(in: &subscriptions)
-        
-        roomInfoRepository.getRoomNumber()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.navigateToLobby()
+            .sink { [weak self] gameState in
+                self?.gameInfo = gameState
             }
             .store(in: &subscriptions)
     }
 
-    private func updateViewControllers(mode: Mode, recordOrder: UInt8, status: Status?, round: UInt8) {
-        guard let status else { navigateToLobby(); return }
-        switch mode {
+    private func updateViewControllers(state: GameState) {
+        let viewType = state.resolveViewType()
+        switch viewType {
+        case .selectMusic:
+            navigateToSelectMusic()
         case .humming:
-            setHummingModeNavigation(status: status, recordOrder: recordOrder, round: round)
-        case .harmony:
-            setHarmonyModeNavigation(status: status, round: round)
-        case .sync:
-            setSyncModeNavigation(status: status, round: round)
-        case .instant:
-            setInstantModeNavigation(status: status, round: round)
-        case .tts:
-            setTTSModeNavigation(status: status, round: round)
+            navigateToHumming()
+        case .rehumming:
+            navigateToRehumming()
+        case .result:
+            navigateToResult()
+        case .lobby:
+            navigateToLobby()
         default:
             break
         }
     }
-    
-    private func setHummingModeNavigation(status: Status, recordOrder: UInt8, round: UInt8) {
-        let playerCount = UInt8(players.count)
-        switch status {
-        case .humming:
-            if round == 0, recordOrder == 0 {
-                navigateToSelectMusic()
-            } else if round == 1, recordOrder == 0 {
-                navigateToHumming()
-            }
-        case .rehumming:
-            if round == 1, recordOrder >= 1, recordOrder <= playerCount - 1 {
-                navigateToRehumming()
-            }
-        case .result:
-            navigateToResult()
-        default:
-            navigateToLobby()
-        }
-    }
-    
-    private func setHarmonyModeNavigation(status: Status, round: UInt8) {}
-    
-    private func setSyncModeNavigation(status: Status, round: UInt8) {}
-    
-    private func setInstantModeNavigation(status: Status, round: UInt8) {}
-    
-    private func setTTSModeNavigation(status: Status, round: UInt8) {}
     
     private func navigateToLobby() {
         if let vc = navigationController.viewControllers.first(where: { $0 is LobbyViewController }) {
@@ -120,6 +79,7 @@ final class GameNavigationController {
     private func navigateToSelectMusic() {
         let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
         let answersRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
+        
         let vm = SelectMusicViewModel(
             musicRepository: musicRepository,
             answerRepository: answersRepository

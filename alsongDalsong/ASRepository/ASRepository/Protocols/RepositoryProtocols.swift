@@ -55,3 +55,7 @@ public protocol RoomActionRepositoryProtocol {
 public protocol MusicRepositoryProtocol {
     func getMusicData(url: URL) -> Future<Data?, Error>
 }
+
+public protocol GameStateRepositoryProtocol {
+    func getGameState() -> AnyPublisher<GameState, Never>
+}

@@ -39,7 +39,6 @@ final class OnboardingViewController: UIViewController {
         setConfiguration()
         hideKeyboard()
         bind()
-        self.gameNavigationController = GameNavigationController(navigationController: self.navigationController!)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -187,10 +186,7 @@ final class OnboardingViewController: UIViewController {
             .filter { !$0.isEmpty }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
-                guard let navigationController = self?.navigationController else { return }
-                let gameController = GameNavigationController(navigationController: navigationController)
-                let mainRepository: MainRepositoryProtocol = DIContainer.shared.resolve(MainRepositoryProtocol.self)
-                mainRepository.connectRoom(roomNumber: roomNumber)
+                self?.setGameNavigationController(roomNumber: roomNumber)
             }
             .store(in: &cancleables)
         viewmodel?.$buttonEnabled
@@ -213,6 +209,21 @@ final class OnboardingViewController: UIViewController {
                 }
             }
             .store(in: &cancleables)
+    }
+    
+    private func setGameNavigationController(roomNumber: String) {
+        let mainRepository: MainRepositoryProtocol = DIContainer.shared.resolve(MainRepositoryProtocol.self)
+        
+        mainRepository.connectRoom(roomNumber: roomNumber)
+        let gameStateRepository = DIContainer.shared.resolve(GameStateRepositoryProtocol.self)
+        
+        guard let navigationController else { return }
+        
+        gameNavigationController = GameNavigationController(
+            navigationController: navigationController,
+            gameStateRepository: gameStateRepository)
+        
+        gameNavigationController?.setConfiguration()
     }
 }
 
