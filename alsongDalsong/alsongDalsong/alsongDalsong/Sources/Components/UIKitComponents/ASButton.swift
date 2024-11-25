@@ -2,7 +2,7 @@ import Combine
 import SwiftUI
 import UIKit
 
-class ASButton: UIButton {
+final class ASButton: UIButton {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
@@ -60,8 +60,13 @@ class ASButton: UIButton {
             else {
                 self.transform = .identity
             }
-            self.configuration = config
         }
+        self.configuration = config
+    }
+
+    private func disable(_ color: UIColor = .systemGray2) {
+        configuration?.baseBackgroundColor = color
+        isEnabled = false
     }
 
     func bind(
@@ -76,6 +81,19 @@ class ASButton: UIButton {
             }
             .store(in: &cancellables)
     }
+
+    func updateButton(_ type: ASButton.ASButtonType) {
+        switch type {
+            case .disabled: disable()
+            case let .idle(string, color): setConfiguration(title: string, backgroundColor: color)
+            case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
+            case .reRecord: setConfiguration(systemImageName: "arrow.clockwise", title: "재녹음", backgroundColor: .asOrange)
+        }
+    }
+
+    enum ASButtonType {
+        case disabled, idle(String, UIColor?), recording, reRecord
+    }
 }
 
 struct ASButtonWrapper: UIViewRepresentable {
@@ -83,11 +101,11 @@ struct ASButtonWrapper: UIViewRepresentable {
     let title: String
     let backgroundColor: UIColor
     let textSize: CGFloat = 32
-    func makeUIView(context: Context) -> ASButton {
+    func makeUIView(context _: Context) -> ASButton {
         let view = ASButton()
         view.setConfiguration(systemImageName: systemImageName, title: title, backgroundColor: backgroundColor, textSize: textSize)
         return view
     }
 
-    func updateUIView(_ uiView: ASButton, context: Context) {}
+    func updateUIView(_: ASButton, context _: Context) {}
 }

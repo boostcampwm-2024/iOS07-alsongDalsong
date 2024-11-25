@@ -11,6 +11,7 @@ public protocol AnswersRepositoryProtocol {
 public protocol GameStatusRepositoryProtocol {
     func getStatus() -> AnyPublisher<Status, Never>
     func getRound() -> AnyPublisher<UInt8, Never>
+    func getRecordOrder() -> AnyPublisher<UInt8, Never>
     func getDueTime() -> AnyPublisher<Date, Never>
 }
 
@@ -22,7 +23,7 @@ public protocol PlayersRepositoryProtocol {
 
 public protocol RecordsRepositoryProtocol {
     func getRecords() -> AnyPublisher<[ASEntity.Record], Never>
-    func getHumming(on round: UInt8) -> AnyPublisher<Data?, Never>
+    func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never>
 }
 
 public protocol RoomInfoRepositoryProtocol {

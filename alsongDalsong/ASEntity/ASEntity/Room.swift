@@ -7,6 +7,7 @@ public struct Room: Codable {
     public var mode: Mode?
     public var round: UInt8?
     public var status: Status?
+    public var recordOrder: UInt8?
     public var records: [Record]?
     public var answers: [Answer]?
     public var dueTime: Date?
@@ -20,6 +21,7 @@ public struct Room: Codable {
         mode: Mode? = nil,
         round: UInt8? = nil,
         status: Status? = nil,
+        recordOrder: UInt8? = nil,
         records: [Record]? = nil,
         answers: [Answer]? = nil,
         dueTime: Date? = nil,
@@ -32,6 +34,7 @@ public struct Room: Codable {
         self.mode = mode
         self.round = round
         self.status = status
+        self.recordOrder = recordOrder
         self.records = records
         self.answers = answers
         self.dueTime = dueTime
@@ -46,6 +49,7 @@ public struct Room: Codable {
         case mode
         case round
         case status = "Status"
+        case recordOrder
         case records
         case answers
         case dueTime

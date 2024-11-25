@@ -15,12 +15,18 @@ public struct Music: Codable, Equatable {
         self.title = title
         self.artist = artist
     }
-
+  
     public init(title: String, artist: String, artworkUrl: URL?, previewUrl: URL?, artworkBackgroundColor: String) {
         self.title = title
         self.artist = artist
         self.artworkUrl = artworkUrl
         self.previewUrl = previewUrl
         self.artworkBackgroundColor = artworkBackgroundColor
+    }
+}
+
+extension Music {
+    public init(_ record: ASEntity.Record) {
+        self.previewUrl = record.fileUrl
     }
 }

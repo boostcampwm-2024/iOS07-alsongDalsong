@@ -53,22 +53,40 @@ final class RecordingPanel: UIView {
                 self?.updateWaveForm(amplitude: CGFloat(amplitude))
             }
             .store(in: &cancellables)
-        vm.$isPlaying
+        vm.$panelState
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isPlaying in
-                self?.playButton.isSelected = isPlaying
+            .sink { [weak self] state in
+                self?.updateButtonImage(with: state)
             }
             .store(in: &cancellables)
     }
 
+    private func updateButtonImage(with state: RecordingPanelViewModel.PanelState) {
+        playButton.configuration?.baseForegroundColor = state.color
+        playButton.configuration?.image = state.symbol
+    }
+
     private func setupButton() {
-        let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular)
-        let playImage = UIImage(systemName: "play.fill", withConfiguration: config)
-        let stopImage = UIImage(systemName: "stop.fill", withConfiguration: config)
-        playButton.setImage(playImage, for: .normal)
-        playButton.setImage(stopImage, for: .selected)
-        playButton.tintColor = .white
-        playButton.adjustsImageWhenHighlighted = false
+        var buttonConfiguration = UIButton.Configuration.borderless()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular)
+        buttonConfiguration.image = vm.panelState.symbol
+        buttonConfiguration.preferredSymbolConfigurationForImage = imageConfig
+        buttonConfiguration.baseForegroundColor = .white
+        buttonConfiguration.contentInsets = .zero
+        buttonConfiguration.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
+            color.withAlphaComponent(0.0)
+        }
+
+        playButton.configurationUpdateHandler = { [weak self] _ in
+            guard let self else { return }
+            if playButton.isHighlighted {
+                playButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            } else {
+                playButton.transform = .identity
+            }
+        }
+
+        playButton.configuration = buttonConfiguration
         playButton.addAction(UIAction { [weak self] _ in
             self?.didButtonTapped()
         }, for: .touchUpInside)
@@ -92,8 +110,9 @@ final class RecordingPanel: UIView {
             playButton.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
             playButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            playButton.trailingAnchor.constraint(equalTo: waveFormView.leadingAnchor, constant: -12),
+            playButton.widthAnchor.constraint(equalToConstant: 32),
 
+            waveFormView.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 12),
             waveFormView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             waveFormView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
             waveFormView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
@@ -102,34 +121,33 @@ final class RecordingPanel: UIView {
 
     private func updateWaveForm(amplitude: CGFloat) {
         waveFormView.updateVisualizerView(with: amplitude)
-    }
-
-    private func stopWaveForm() {
-        waveFormView.removeVisualizerCircles()
+//        waveFormView.reverseUpdateVisualizerView(with: amplitude)
     }
 
     private func reset() {
         waveFormView.removeVisualizerCircles()
+        waveFormView.drawVisualizerCircles()
     }
 }
 
 private final class WaveForm: UIView {
-    var columnWidth: CGFloat?
-    var columns: [CAShapeLayer] = []
-    var amplitudesHistory: [CGFloat] = []
-    let numOfColumns: Int
-
+    private var columnWidth: CGFloat?
+    private var columns: [CAShapeLayer] = []
+    private var amplitudesHistory: [CGFloat] = []
+    private let numOfColumns: Int
+    private var count: Int = 0
+    
     override class func awakeFromNib() {
         super.awakeFromNib()
     }
 
-    init(numOfColumns: Int = 43) {
+    init(numOfColumns: Int = 48) {
         self.numOfColumns = numOfColumns
         super.init(frame: .zero)
     }
 
     required init?(coder: NSCoder) {
-        numOfColumns = 43
+        numOfColumns = 48
         super.init(coder: coder)
     }
 
@@ -184,9 +202,10 @@ private final class WaveForm: UIView {
 
     /// 오른쪽에서 파형이 시작
     fileprivate func updateVisualizerView(with amplitude: CGFloat) {
-        guard columns.count == numOfColumns else { return }
-        amplitudesHistory.append(amplitude)
-        amplitudesHistory.removeFirst()
+        guard columns.count == numOfColumns, count < numOfColumns else { return }
+//        if count >= numOfColumns { count = 0 }
+        amplitudesHistory[count] = amplitude
+        count += 1
         for i in 0 ..< columns.count {
             columns[i].path = computeNewPath(for: columns[i], with: amplitudesHistory[i])
             if amplitudesHistory[i] != 0 {
