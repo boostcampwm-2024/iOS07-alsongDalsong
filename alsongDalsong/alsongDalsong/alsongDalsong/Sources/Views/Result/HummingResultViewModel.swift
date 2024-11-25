@@ -7,11 +7,13 @@ import ASEntity
 final class HummingResultViewModel {
     private var hummingResultRepository: HummingResultRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
+    private var roomInfoRepository: RoomInfoRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
     @Published var currentResult: Answer?
     @Published var currentRecords: [ASEntity.Record] = []
     @Published var currentsubmit: Answer?
+    @Published var recordOrder: UInt8?
     
     // 미리 받아놓을 정보 배열
     private var recordsResult: [ASEntity.Record] = []
@@ -20,9 +22,11 @@ final class HummingResultViewModel {
     var hummingResult: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)] = []
     
     init(hummingResultRepository: HummingResultRepositoryProtocol,
-         avatarRepository: AvatarRepositoryProtocol) {
+         avatarRepository: AvatarRepositoryProtocol,
+         roomInfoRepository: RoomInfoRepositoryProtocol) {
         self.hummingResultRepository = hummingResultRepository
         self.avatarRepository = avatarRepository
+        self.roomInfoRepository = roomInfoRepository
         fetchResult()
     }
     
@@ -42,6 +46,12 @@ final class HummingResultViewModel {
                 self?.submitsResult = current.submit
             }
             .store(in: &cancellables)
+        roomInfoRepository.getRecordOrder()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] order in
+                self?.recordOrder = order
+            }
+            .store(in: &cancellables)
     }
     
     @MainActor
@@ -50,7 +60,7 @@ final class HummingResultViewModel {
         Task {
             while !recordsResult.isEmpty {
                 currentRecords.append(recordsResult.removeFirst())
-                await AudioHelper.shared.startPlaying(file: currentRecords.last?.file)
+//                await AudioHelper.shared.startPlaying(file: currentRecords.last?.file)
                 await waitForPlaybackToFinish()
             }
             currentsubmit = submitsResult

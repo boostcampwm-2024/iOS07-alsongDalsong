@@ -29,6 +29,7 @@ public protocol RecordsRepositoryProtocol {
 public protocol RoomInfoRepositoryProtocol {
     func getRoomNumber() -> AnyPublisher<String, Never>
     func getMode() -> AnyPublisher<Mode, Never>
+    func getRecordOrder() -> AnyPublisher<UInt8, Never>
 }
 
 public protocol SelectedRecordsRepositoryProtocol {
