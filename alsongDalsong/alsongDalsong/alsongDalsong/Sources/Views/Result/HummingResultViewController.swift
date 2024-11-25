@@ -7,16 +7,25 @@ class HummingResultViewController: UIViewController {
     private let musicResultView = MusicResultView(frame: .zero)
     private let resultTableView = UITableView()
     private let button = ASButton()
-    let testArr = [1,2,3,4]
     
-    private var viewModel = HummingResultViewModel()
+    private var viewModel: HummingResultViewModel?
     private var cancellables = Set<AnyCancellable>()
+    
+    init(viewModel: HummingResultViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        self.viewModel = nil
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .asLightGray
-        viewModel.fetchResult()
-        setMusicResultView(musicName: "", singerName: "")
+        setMusicResultView(musicName: viewModel?.currentResult?.music?.title ?? "",
+                           singerName: viewModel?.currentResult?.music?.artist ?? "")
         setResultTableView()
         setButton()
         setConstraints()
@@ -30,12 +39,14 @@ class HummingResultViewController: UIViewController {
             .eraseToAnyPublisher(),
                                   musicName: musicName,
                                   singerName: singerName)
-        view.addSubview(musicResultView)
     }
     
     private func setResultTableView() {
         resultTableView.dataSource = self
         resultTableView.separatorStyle = .none
+        resultTableView.allowsSelection = false
+        resultTableView.backgroundColor = .asLightGray
+        resultTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
         view.addSubview(resultTableView)
     }
     
@@ -43,13 +54,30 @@ class HummingResultViewController: UIViewController {
         button.setConfiguration(systemImageName: "play.fill", title: "다음으로", backgroundColor: .asMint)
         view.addSubview(button)
         button.addAction(UIAction { [weak self] _ in
-            let vc = self?.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
-            guard let vc else { return }
-            self?.navigationController?.popToViewController(vc, animated: true)
+            guard let self,
+                  let viewModel = self.viewModel else {return}
+            if !(viewModel.hummingResult.isEmpty) {
+                if viewModel.hummingResult.count == 1 {
+                    button.setConfiguration(title: "완료", backgroundColor: .asYellow)
+                }
+                viewModel.nextResultFetch()
+                setMusicResultView(musicName: viewModel.currentResult?.music?.title ?? "",
+                                   singerName: viewModel.currentResult?.music?.artist ?? "")
+                resultTableView.reloadData()
+                button.isHidden = true
+            }
+            else {
+                let vc = self.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
+                guard let vc else { return }
+                self.navigationController?.popToViewController(vc, animated: true)
+            }
         }, for: .touchUpInside)
+        button.isHidden = true
     }
     
     private func setConstraints() {
+        view.addSubview(musicResultView)
+        
         musicResultView.translatesAutoresizingMaskIntoConstraints = false
         resultTableView.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -63,8 +91,8 @@ class HummingResultViewController: UIViewController {
             musicResultView.heightAnchor.constraint(equalToConstant: 130),
             
             resultTableView.topAnchor.constraint(equalTo: musicResultView.bottomAnchor, constant: 20),
-            resultTableView.leadingAnchor.constraint(equalTo: musicResultView.leadingAnchor),
-            resultTableView.trailingAnchor.constraint(equalTo: musicResultView.trailingAnchor),
+            resultTableView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
+            resultTableView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
             resultTableView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -30),
             
             button.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 24),
@@ -75,23 +103,28 @@ class HummingResultViewController: UIViewController {
     }
     
     private func bind() {
-        viewModel.$currentResult
+        viewModel?.$currentResult
             .receive(on: DispatchQueue.main)
             .sink { [weak self] answer in
-                self?.setMusicResultView(musicName: answer?.music.title ?? "", singerName: answer?.music.artist ?? "")
+                guard let answer,
+                      let music = answer.music else {return}
+                self?.setMusicResultView(musicName: music.title ?? "", singerName: music.artist ?? "")
+                self?.viewModel?.startPlaying()
             }
             .store(in: &cancellables)
-        viewModel.$resultRecords
+        viewModel?.$currentRecords
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.resultTableView.reloadData()
             }
             .store(in: &cancellables)
-        viewModel.$answer
+        viewModel?.$currentsubmit
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] answer in
-                //TODO: 정답 제출한 음악 뷰에 주는 거 (TableView가 보고 있는 배열에 추가?)
-                // OR 뷰 하나를 새로 해서 테이블 뷰 바로 아래에 뷰 추가
+            .sink { [weak self] submit in
+                if (submit != nil) {
+                    self?.resultTableView.reloadData()
+                    self?.button.isHidden = false
+                }
             }
             .store(in: &cancellables)
     }
@@ -103,49 +136,59 @@ extension HummingResultViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let viewModel else {return 0}
         if section == 0 {
-            return viewModel.resultRecords.count
+            return viewModel.currentRecords.count
         }
-        return 1
+        if (viewModel.currentsubmit != nil) {
+            return 1
+        }
+        else { return 0 }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         cell.backgroundColor = .clear
+        guard let viewModel else {return cell}
         
         if indexPath.section == 0 {
             cell.contentConfiguration = UIHostingConfiguration {
-                if indexPath.row % 2 == 0 {
-                    SpeechBubbleCell(alignment: .left,
-                                     messageType: .record(viewModel.resultRecords[indexPath.row]))
-                } else {
-                    SpeechBubbleCell(alignment: .right,
-                                     messageType: .record(viewModel.resultRecords[indexPath.row]))
+                let currentPlayer = viewModel.currentRecords[indexPath.row].player
+                HStack {
+                    Spacer()
+                    if indexPath.row % 2 == 0 {
+                        SpeechBubbleCell(alignment: .left,
+                                         messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                         imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                         name: currentPlayer?.nickname ?? "")
+                    } else {
+                        SpeechBubbleCell(alignment: .right,
+                                         messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                         imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                         name: currentPlayer?.nickname ?? "")
+                    }
+                    Spacer()
                 }
             }
         } else {
             cell.contentConfiguration = UIHostingConfiguration {
-                if viewModel.resultRecords.count % 2 == 0 {
-                    SpeechBubbleCell(
-                        alignment: .left,
-                        messageType: .music(
-                            .init(
-                                title: viewModel.answer?.music.title ?? "",
-                                artist: viewModel.answer?.music.artist ?? ""
-                            )
-                        )
-                    )
-                }
-                else {
-                    SpeechBubbleCell(
-                        alignment: .right,
-                        messageType: .music(
-                            .init(
-                                title: viewModel.answer?.music.title ?? "",
-                                artist: viewModel.answer?.music.artist ?? ""
-                            )
-                        )
-                    )
+                HStack {
+                    Spacer()
+                    if viewModel.currentRecords.count % 2 == 0 {
+                        SpeechBubbleCell(alignment: .left,
+                                         messageType: .music(viewModel.currentsubmit?.music ??
+                                            .musicStub1),
+                                         imagePublisher: viewModel.getAvatarData(url: nil),
+                                         name: viewModel.currentsubmit?.player?.nickname ?? "")
+                    }
+                    else {
+                        SpeechBubbleCell(alignment: .right,
+                                         messageType: .music(viewModel.currentsubmit?.music ??
+                                            .musicStub1),
+                                         imagePublisher: viewModel.getAvatarData(url: nil),
+                                         name: viewModel.currentsubmit?.player?.nickname ?? "")
+                    }
+                    Spacer()
                 }
             }
         }
@@ -241,28 +284,3 @@ final class MusicResultView: UIView {
             .store(in: &cancellables)
     }
 }
-
-#if DEBUG
-extension UIViewController {
-    private struct Preview: UIViewControllerRepresentable {
-        let viewController: UIViewController
-        
-        func makeUIViewController(context: Context) -> UIViewController {
-            return viewController
-        }
-        
-        func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        }
-    }
-    
-    func toPreview() -> some View {
-        Preview(viewController: self)
-    }
-}
-#endif
-
-//struct HummingResultPreview: PreviewProvider {
-//    static var previews: some View {
-//        HummingResultViewController().toPreview()
-//    }
-//}
