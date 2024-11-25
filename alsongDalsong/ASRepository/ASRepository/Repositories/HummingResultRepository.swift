@@ -31,7 +31,7 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
             let tempCheck: Int = (((answer.player?.order ?? 0) + i) % count)
             if let filteredRecord = records?.first(where: { record in
                 (tempCheck == record.player?.order) &&
-                (record.recordOrder ?? 0 == (i + 1))
+                (record.recordOrder ?? 0 == i)
             }) {
                 filteredRecords.append(filteredRecord)
             }
@@ -83,7 +83,7 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
             let tempCheck: Int = (((answer.player?.order ?? 0) + i) % count)
             if let filteredRecord = records?.first(where: { record in
                 (tempCheck == record.player?.order) &&
-                (record.recordOrder ?? 0 == (i + 1))
+                (record.recordOrder ?? 0 == i)
             }) {
                 filteredRecords.append(filteredRecord)
             }
