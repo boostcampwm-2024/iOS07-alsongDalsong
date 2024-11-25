@@ -28,10 +28,9 @@ module.exports.onRecordAdded = onDocumentWritten(
     const currentRound = roomData.round || 0;
     const records = roomData.records;
     const currentMode = roomData.mode;
-
     // 현재 라운드에서 플레이어 수만큼 녹음이 완료되었는지 확인
-    const currentRoundKey = `R${currentRound}`;
-    const currentRoundRecords = records[0][currentRoundKey] || [];
+    const currentRecordCount = records.length;
+
     console.log('-------------------------------------');
     console.log(`현재 라운드: ${currentRound}`);
     console.log(`현재 라운드 녹음 수: ${currentRoundRecords.length}`);
@@ -41,19 +40,17 @@ module.exports.onRecordAdded = onDocumentWritten(
     console.log('-------------------------------------');
     switch (currentMode) {
       case 'humming':
-        if (currentRoundRecords.length === playersCount) {
-          if (currentRound < playersCount) {
-            await event.data.after.ref.update({
-              round: currentRound + 1,
-              status: 'rehumming',
-            });
-            console.log(`Round ${currentRound} 완료. 다음 라운드로 이동.`);
-          } else {
-            await event.data.after.ref.update({
-              status: 'result',
-            });
-            console.log('모든 라운드 완료. 결과 발표.');
-          }
+        if (currentRecordCount % playersCount === 0) {
+          await event.data.after.ref.update({
+            recordOrder: recordOrder + 1,
+            status: 'rehumming',
+          });
+          console.log(`Round ${currentRound} 완료. 다음 라운드로 이동.`);
+        } else if (currentRecordCount === playersCount * 3) {
+          await event.data.after.ref.update({
+            status: 'result',
+          });
+          console.log('모든 라운드 완료. 결과 발표.');
         }
         break;
       default:

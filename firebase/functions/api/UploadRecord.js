@@ -96,7 +96,7 @@ app.post('/uploadrecording', async (req, res) => {
         const record = {
           player: userData,
           round: roomData.round,
-          file: publicUrl,
+          fileUrl: publicUrl,
         };
 
         await roomRef.update({
