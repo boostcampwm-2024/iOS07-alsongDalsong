@@ -126,26 +126,28 @@ final class RecordingPanel: UIView {
 
     private func reset() {
         waveFormView.removeVisualizerCircles()
+        waveFormView.drawVisualizerCircles()
     }
 }
 
 private final class WaveForm: UIView {
-    var columnWidth: CGFloat?
-    var columns: [CAShapeLayer] = []
-    var amplitudesHistory: [CGFloat] = []
-    let numOfColumns: Int
-
+    private var columnWidth: CGFloat?
+    private var columns: [CAShapeLayer] = []
+    private var amplitudesHistory: [CGFloat] = []
+    private let numOfColumns: Int
+    private var count: Int = 0
+    
     override class func awakeFromNib() {
         super.awakeFromNib()
     }
 
-    init(numOfColumns: Int = 43) {
+    init(numOfColumns: Int = 48) {
         self.numOfColumns = numOfColumns
         super.init(frame: .zero)
     }
 
     required init?(coder: NSCoder) {
-        numOfColumns = 43
+        numOfColumns = 48
         super.init(coder: coder)
     }
 
@@ -200,9 +202,10 @@ private final class WaveForm: UIView {
 
     /// 오른쪽에서 파형이 시작
     fileprivate func updateVisualizerView(with amplitude: CGFloat) {
-        guard columns.count == numOfColumns else { return }
-        amplitudesHistory.append(amplitude)
-        amplitudesHistory.removeFirst()
+        guard columns.count == numOfColumns, count < numOfColumns else { return }
+//        if count >= numOfColumns { count = 0 }
+        amplitudesHistory[count] = amplitude
+        count += 1
         for i in 0 ..< columns.count {
             columns[i].path = computeNewPath(for: columns[i], with: amplitudesHistory[i])
             if amplitudesHistory[i] != 0 {
