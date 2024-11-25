@@ -5,26 +5,24 @@ import Foundation
 @preconcurrency internal import FirebaseDatabase
 
 public final class ASFirebaseAuth: ASFirebaseAuthProtocol {
+    public static var myID: String?
     private let databaseRef = Database.database().reference()
 
-    public func signInAnonymously(nickname: String, avatarURL: URL?) async throws -> Player {
+    public func signIn(nickname: String, avatarURL: URL?) async throws {
         do {
-            let authResult = try await Auth.auth().signInAnonymously()
-            let playerID = authResult.user.uid
-            let player = Player(id: playerID, avatarUrl: avatarURL, nickname: nickname, score: 0, order: 0)
+            guard let myID = ASFirebaseAuth.myID else { throw ASNetworkErrors.FirebaseSignInError }
+            let player = Player(id: myID, avatarUrl: avatarURL, nickname: nickname, score: 0, order: 0)
             let playerData = try ASEncoder.encode(player)
             let dict = try JSONSerialization.jsonObject(with: playerData, options: .allowFragments) as? [String: Any]
-            let userStatusRef = databaseRef.child("players").child(playerID)
+            let userStatusRef = databaseRef.child("players").child(myID)
             userStatusRef.keepSynced(true)
             let connectedRef = databaseRef.child(".info/connected")
             connectedRef.observe(.value) { snapshot in
                 guard let isConnected = snapshot.value as? Bool else { return }
                 if isConnected {
                     userStatusRef.setValue(dict)
-//                    userStatusRef.onDisconnectRemoveValue()
                 }
             }
-            return player
         } catch {
             throw ASNetworkErrors.FirebaseSignInError
         }
@@ -32,7 +30,7 @@ public final class ASFirebaseAuth: ASFirebaseAuthProtocol {
 
     public func signOut() async throws {
         do {
-            guard let userID = Auth.auth().currentUser?.uid else { throw ASNetworkErrors.FirebaseSignOutError }
+            guard let userID = ASFirebaseAuth.myID else { throw ASNetworkErrors.FirebaseSignOutError }
             try await databaseRef.child("players").child(userID).removeValue()
             try Auth.auth().signOut()
         } catch {
@@ -40,7 +38,14 @@ public final class ASFirebaseAuth: ASFirebaseAuthProtocol {
         }
     }
 
-    public func getCurrentUserID() -> String {
-        Auth.auth().currentUser?.uid ?? ""
+    public static func configure() {
+        if let uid = Auth.auth().currentUser?.uid {
+            ASFirebaseAuth.myID = uid
+        } else {
+            Task {
+                let authResult = try await Auth.auth().signInAnonymously()
+                ASFirebaseAuth.myID = authResult.user.uid
+            }
+        }
     }
 }

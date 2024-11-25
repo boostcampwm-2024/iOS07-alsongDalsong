@@ -1,5 +1,5 @@
-import SwiftUI
 import MusicKit
+import SwiftUI
 
 struct ASMusicItemCell: View {
     let artwork: Artwork?
@@ -9,18 +9,21 @@ struct ASMusicItemCell: View {
         HStack {
             if let artwork {
                 ArtworkImage(artwork, width: 60)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
-                .padding(.horizontal,8)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .padding(.horizontal, 8)
             } else {
                 Image(systemName: "music.quarternote.3")
-                .frame(width: 60, height: 60)
-                .padding()
+                    .frame(width: 60, height: 60)
+                    .background(.asSystem)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .padding()
             }
             VStack(alignment: .leading) {
                 Text(title)
-                    .fontWeight(.semibold)
+                    .font(.custom("DoHyeon-Regular", size: 16))
                 Text(artist)
-                    .font(.subheadline)
+                    .foregroundStyle(.gray)
+                    .font(.custom("DoHyeon-Regular", size: 16))
             }
         }
     }

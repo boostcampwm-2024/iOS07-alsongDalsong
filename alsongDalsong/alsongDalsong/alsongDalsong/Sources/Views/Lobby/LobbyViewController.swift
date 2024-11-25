@@ -93,15 +93,13 @@ final class LobbyViewController: UIViewController {
     private func setAction() {
         backButton.addAction(
             UIAction { [weak self] _ in
-                let leaveAlert = ASAlertController2(
-                    titleText: "정말로 나가시겠습니까?",
+                let leaveAlert = ASAlertController(
+                    titleText: "방을 나가시겠습니까?",
                     doneButtonTitle: "나가기",
-                    cancelButtonTitle: "취소"
-                )
-                leaveAlert.doneButtonCompletion = { [weak self] in
-                    self?.viewmodel.leaveRoom()
-                    self?.navigationController?.popViewController(animated: true)
-                }
+                    cancelButtonTitle: "취소") { [weak self] _ in
+                        self?.viewmodel.leaveRoom()
+                        self?.navigationController?.popViewController(animated: true)
+                    }
                 self?.present(leaveAlert, animated: true, completion: nil)
             },
             for: .touchUpInside)

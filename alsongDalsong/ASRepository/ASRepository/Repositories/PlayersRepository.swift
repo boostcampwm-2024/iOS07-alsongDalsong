@@ -30,7 +30,7 @@ public final class PlayersRepository: PlayersRepositoryProtocol {
     public func isHost() -> AnyPublisher<Bool, Never> {
         self.getHost()
             .receive(on: DispatchQueue.main)
-            .map { $0.id == self.firebaseAuthManager.getCurrentUserID() }
+            .map { $0.id == ASFirebaseAuth.myID }
             .eraseToAnyPublisher()
     }
 }

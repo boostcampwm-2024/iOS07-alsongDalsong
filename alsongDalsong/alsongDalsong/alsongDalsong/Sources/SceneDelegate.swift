@@ -14,6 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         FirebaseApp.configure()
+        ASFirebaseAuth.configure()
         assembleDependencies()
         var inviteCode = ""
         

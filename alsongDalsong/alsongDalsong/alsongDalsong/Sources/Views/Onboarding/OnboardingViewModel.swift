@@ -14,6 +14,7 @@ final class OnboardingViewModel {
     @Published var avatarData: Data?
     @Published var roomNumber: String = ""
     @Published var buttonEnabled: Bool = true
+    @Published var joinResponse: Bool = true
     
     init(avatarRepository: AvatarRepositoryProtocol,
          roomActionRepository: RoomActionRepositoryProtocol)
@@ -70,18 +71,14 @@ final class OnboardingViewModel {
     @MainActor
     func joinRoom(roomNumber id: String) {
         guard let selectedAvatar else { return }
-        self.buttonEnabled = false
+        buttonEnabled = false
         Task {
             do {
-                self.buttonEnabled = false
-                let isSuccess = try await roomActionRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
-                if isSuccess {
-                    self.roomNumber = id
-                    self.buttonEnabled = true
-                }
+                self.buttonEnabled = try await roomActionRepository.joinRoom(nickname: nickname, avatar: selectedAvatar, roomNumber: id)
+                self.roomNumber = id
             } catch {
-                print(error.localizedDescription)
                 self.buttonEnabled = true
+                self.joinResponse = false
             }
         }
     }
@@ -89,15 +86,14 @@ final class OnboardingViewModel {
     @MainActor
     func createRoom() {
         guard let selectedAvatar else { return }
+        buttonEnabled = false
         Task {
             do {
-                self.buttonEnabled = false
-                let id = try await roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
-                self.joinRoom(roomNumber: id)
-                self.buttonEnabled = true
+                let roomNumber = try await roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
+                self.joinRoom(roomNumber: roomNumber)
             } catch {
-                print(error.localizedDescription)
                 self.buttonEnabled = true
+                self.joinResponse = false
             }
         }
     }

@@ -14,7 +14,7 @@ final class OnboardingViewController: UIViewController {
     private var avatarRefreshButton = ASRefreshButton(size: 28)
     private var viewmodel: OnboardingViewModel?
     private var inviteCode: String
-    
+    private var nickNameTextFieldMaxCount = 12
     private var cancleables = Set<AnyCancellable>()
     
     init(viewmodel: OnboardingViewModel, inviteCode: String) {
@@ -39,6 +39,18 @@ final class OnboardingViewController: UIViewController {
         bind()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     private func setupUI() {
         view.backgroundColor = .asLightGray
         for item in [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, nickNameTextField, avatarRefreshButton] {
@@ -49,6 +61,8 @@ final class OnboardingViewController: UIViewController {
         if !inviteCode.isEmpty {
             createRoomButton.isHidden = true
         }
+        
+        nickNameTextField.delegate = self
     }
     
     private func setupLayout() {
@@ -109,14 +123,13 @@ final class OnboardingViewController: UIViewController {
                         titleText: Constants.joinAlertTitle,
                         doneButtonTitle: Constants.doneAlertButtonTitle,
                         cancelButtonTitle: Constants.cancelAlertButtonTitle,
-                        textFieldPlaceholder: Constants.roomNumberPlaceholder)
-                    
-                    joinAlert.doneButtonCompletion = { [weak self] in
-                        if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                            self?.viewmodel?.setNickname(with: nickname)
+                        textFieldPlaceholder: Constants.roomNumberPlaceholder,
+                        isUppercased: true) { [weak self] roomNumber in
+                            if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                                self?.viewmodel?.setNickname(with: nickname)
+                            }
+                            self?.viewmodel?.joinRoom(roomNumber: roomNumber)
                         }
-                        self?.viewmodel?.joinRoom(roomNumber: joinAlert.text)
-                    }
                     self?.present(joinAlert, animated: true, completion: nil)
                 },
                 for: .touchUpInside)
@@ -181,8 +194,7 @@ final class OnboardingViewController: UIViewController {
                     playersRepository: playersRepository,
                     roomInfoRepository: roomInfoRepository,
                     roomActionRepository: roomActionRepository,
-                    avatarRepository: avatarRepository
-                )
+                    avatarRepository: avatarRepository)
                 let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
                 self?.navigationController?.pushViewController(lobbyViewController, animated: false)
             }
@@ -194,6 +206,36 @@ final class OnboardingViewController: UIViewController {
                 self?.joinRoomButton.isEnabled = enabled
             }
             .store(in: &cancleables)
+        
+        viewmodel?.$joinResponse
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] success in
+                if !success {
+                    self?.createRoomButton.isHidden = false
+                    let joinFailedAlert = ASAlertController(
+                        titleText: "참가에 실패하였습니다.",
+                        doneButtonTitle: "확인")
+                    self?.present(joinFailedAlert, animated: true, completion: nil)
+                }
+            }
+            .store(in: &cancleables)
+    }
+}
+
+extension OnboardingViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let currentText = textField.text,
+              let stringRange = Range(range, in: currentText)
+        else {
+            return false
+        }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        guard updatedText.count <= nickNameTextFieldMaxCount else {
+            return false
+        }
+        let allowedCharacters = CharacterSet.alphanumerics.union(.whitespaces)
+        let characterSet = CharacterSet(charactersIn: string)
+        return allowedCharacters.isSuperset(of: characterSet)
     }
 }
 
