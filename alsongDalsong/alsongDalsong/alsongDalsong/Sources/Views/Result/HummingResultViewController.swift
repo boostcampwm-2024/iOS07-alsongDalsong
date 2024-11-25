@@ -7,7 +7,6 @@ class HummingResultViewController: UIViewController {
     private let musicResultView = MusicResultView(frame: .zero)
     private let resultTableView = UITableView()
     private let button = ASButton()
-    let testArr = [1,2,3,4]
     
     private var viewModel: HummingResultViewModel?
     private var cancellables = Set<AnyCancellable>()

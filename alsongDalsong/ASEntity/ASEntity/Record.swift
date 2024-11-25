@@ -16,10 +16,8 @@ extension Record {
     private static let stubm4aData: Data? = {
         if let filePath = Bundle.main.path(forResource: "SampleRecord", ofType: "m4a") {
             let fileURL = URL(fileURLWithPath: filePath)
-            print("파일은 찾음")
             return try? Data(contentsOf: fileURL)
         }
-        print("파일도 못찾음")
         return nil
     }()
     public static let recordStub1_1 = Record(player: Player.playerStub1, round: 1, file: stubm4aData)
