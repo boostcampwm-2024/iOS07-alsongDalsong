@@ -17,11 +17,11 @@ class ASAlertController: UIViewController {
 
     private var alertView = ASPanel()
     private var stackView = UIStackView()
-    private var buttonStackView = UIStackView()
-    private var titleLabel = UILabel()
-    private var doneButton = ASButton()
-    private var cancelButton = ASButton()
-    private var progressView = UIActivityIndicatorView()
+    private lazy var buttonStackView = UIStackView()
+    private lazy var titleLabel = UILabel()
+    private lazy var doneButton = ASButton()
+    private lazy var cancelButton = ASButton()
+    private lazy var progressView = UIActivityIndicatorView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
