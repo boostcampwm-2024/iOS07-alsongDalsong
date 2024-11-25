@@ -149,10 +149,8 @@ extension ASAlertController: UITextFieldDelegate {
             let updatedText = text.replacingCharacters(in: textRange, with: uppercaseString)
             if updatedText.count <= textMaxCount {
                 textField.text = updatedText
-                return false
-            } else {
-                return false
             }
+            return false
         }
         
         return true
