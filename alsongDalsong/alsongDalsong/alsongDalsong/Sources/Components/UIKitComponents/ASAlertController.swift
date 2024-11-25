@@ -17,7 +17,8 @@ class ASAlertController: UIViewController {
     private var isUppercased: Bool = false
     private var textMaxCount: Int = 6
     private var style: ASAlertStyle = .default
-
+    
+    private var titleLabel = UILabel()
     private var doneButton = ASButton()
     private var cancelButton = ASButton()
     var doneButtonCompletion: ((String) -> Void)?
@@ -40,11 +41,8 @@ class ASAlertController: UIViewController {
 
     private func setupUI() {
         view.backgroundColor = .black.withAlphaComponent(0.3)
-        alertView.setTitle(title: titleText, titleAlign: .center, titleSize: 24)
-        alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-        alertView.backgroundColor = .asLightGray
-        alertView.layer.borderWidth = 0
-
+        
+        setTitle()
         stackView.axis = .vertical
         stackView.spacing = 17
         stackView.distribution = .fillProportionally
@@ -86,10 +84,19 @@ class ASAlertController: UIViewController {
     }
 
     private func setTitle() {
-        alertView.setTitle(title: titleText, titleAlign: .center, titleSize: 24)
+        titleLabel.text = titleText
+        titleLabel.textAlignment = .center
+        titleLabel.font = .font(forTextStyle: .title2)
+        alertView.addSubview(titleLabel)
         alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         alertView.backgroundColor = .asLightGray
         alertView.layer.borderWidth = 0
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: alertView.centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 16),
+        ])
     }
 
     private func setTextField() {
