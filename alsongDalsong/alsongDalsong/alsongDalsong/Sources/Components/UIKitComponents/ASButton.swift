@@ -64,8 +64,8 @@ final class ASButton: UIButton {
         }
     }
 
-    func disable(_ color: UIColor = .asOrange) {
-        configuration?.baseBackgroundColor = .systemGray2
+    func disable(_ color: UIColor = .systemGray2) {
+        configuration?.baseBackgroundColor = color
         isEnabled = false
     }
 
