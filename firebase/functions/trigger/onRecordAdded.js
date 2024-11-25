@@ -19,27 +19,43 @@ module.exports.onRecordAdded = onDocumentWritten(
       return;
     }
 
-    if (roomData.round < 1) {
+    if (!roomData.status) {
       console.log('라운드 시작 전');
       return;
     }
 
     const playersCount = roomData.players.length;
     const currentRound = roomData.round || 0;
+    const currentOrderRecord = roomData.recordOrder || 0;
+    const currentRoundRecords = roomData.records.filter((record) => record.recordOrder === currentOrderRecord);
     const records = roomData.records;
     const currentMode = roomData.mode;
     // 현재 라운드에서 플레이어 수만큼 녹음이 완료되었는지 확인
     const currentRecordCount = records.length;
+    const currentAnswer = roomData.answers;
+    const currentAnswersCount = currentAnswer.length;
+    const currentStatus = roomData.status;
 
     console.log('-------------------------------------');
     console.log(`현재 라운드: ${currentRound}`);
     console.log(`현재 라운드 녹음 수: ${currentRoundRecords.length}`);
     console.log(`플레이어 수: ${playersCount}`);
     console.log(`현재 모드: ${currentMode}`);
-    console.log(`현재 라운드 녹음: ${currentRoundRecords}`);
+    console.log(`현재 OrderRecord: ${currentOrderRecord}`);
+    console.log(`현재 라운드(OrderRecord) 녹음: ${currentRoundRecords}`);
+    console.log(`현재 Answer 수: ${currentAnswersCount}`);
+    console.log(`현재 Answer: ${currentAnswer}`);
     console.log('-------------------------------------');
     switch (currentMode) {
       case 'humming':
+        if (currentAnswersCount === playersCount && currentStatus === 'humming' && currentRound == 0) {
+          await event.data.after.ref.update({
+            recordOrder: 0,
+            status: 'humming',
+            round: 1,
+          });
+          console.log('모든 플레이어가 답을 제출했습니다. ');
+        }
         if (currentRecordCount % playersCount === 0) {
           await event.data.after.ref.update({
             recordOrder: recordOrder + 1,

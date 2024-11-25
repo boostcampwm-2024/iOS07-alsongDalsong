@@ -95,7 +95,7 @@ app.post('/uploadrecording', async (req, res) => {
         // Firestore에 저장
         const record = {
           player: userData,
-          round: roomData.round,
+          recordOrder: roomData.recordOrder,
           fileUrl: publicUrl,
         };
 
