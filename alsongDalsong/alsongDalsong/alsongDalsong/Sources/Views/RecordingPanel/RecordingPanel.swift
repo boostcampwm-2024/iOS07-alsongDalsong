@@ -61,7 +61,7 @@ final class RecordingPanel: UIView {
             .store(in: &cancellables)
     }
 
-    private func updateButtonImage(with state: PanelState) {
+    private func updateButtonImage(with state: RecordingPanelViewModel.PanelState) {
         playButton.configuration?.baseForegroundColor = state.color
         playButton.configuration?.image = state.symbol
     }
