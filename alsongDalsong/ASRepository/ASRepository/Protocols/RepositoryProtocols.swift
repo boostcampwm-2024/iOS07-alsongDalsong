@@ -5,6 +5,7 @@ import Foundation
 public protocol AnswersRepositoryProtocol {
     func getAnswers() -> AnyPublisher<[Answer], Never>
     func getMyAnswer() -> AnyPublisher<Answer?, Never>
+    func submitMusic(answer: ASEntity.Music) async throws -> Bool
 }
 
 public protocol GameStatusRepositoryProtocol {
