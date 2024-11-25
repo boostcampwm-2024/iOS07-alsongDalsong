@@ -10,6 +10,7 @@ public protocol AnswersRepositoryProtocol {
 public protocol GameStatusRepositoryProtocol {
     func getStatus() -> AnyPublisher<Status, Never>
     func getRound() -> AnyPublisher<UInt8, Never>
+    func getRecordOrder() -> AnyPublisher<UInt8, Never>
     func getDueTime() -> AnyPublisher<Date, Never>
 }
 

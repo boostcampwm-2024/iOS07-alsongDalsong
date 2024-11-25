@@ -9,6 +9,7 @@ public protocol MainRepositoryProtocol {
     var mode: CurrentValueSubject<Mode?, Never> { get }
     var round: CurrentValueSubject<UInt8?, Never> { get }
     var status: CurrentValueSubject<Status?, Never> { get }
+    var recordOrder: CurrentValueSubject<UInt8?, Never> { get }
     var records: CurrentValueSubject<[ASEntity.Record]?, Never> { get }
     var answers: CurrentValueSubject<[Answer]?, Never> { get }
     var dueTime: CurrentValueSubject<Date?, Never> { get }
