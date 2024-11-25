@@ -53,22 +53,40 @@ final class RecordingPanel: UIView {
                 self?.updateWaveForm(amplitude: CGFloat(amplitude))
             }
             .store(in: &cancellables)
-        vm.$isPlaying
+        vm.$panelState
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isPlaying in
-                self?.playButton.isSelected = isPlaying
+            .sink { [weak self] state in
+                self?.updateButtonImage(with: state)
             }
             .store(in: &cancellables)
     }
 
+    private func updateButtonImage(with state: PanelState) {
+        playButton.configuration?.baseForegroundColor = state.color
+        playButton.configuration?.image = state.symbol
+    }
+
     private func setupButton() {
-        let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular)
-        let playImage = UIImage(systemName: "play.fill", withConfiguration: config)
-        let stopImage = UIImage(systemName: "stop.fill", withConfiguration: config)
-        playButton.setImage(playImage, for: .normal)
-        playButton.setImage(stopImage, for: .selected)
-        playButton.tintColor = .white
-        playButton.adjustsImageWhenHighlighted = false
+        var buttonConfiguration = UIButton.Configuration.borderless()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular)
+        buttonConfiguration.image = vm.panelState.symbol
+        buttonConfiguration.preferredSymbolConfigurationForImage = imageConfig
+        buttonConfiguration.baseForegroundColor = .white
+        buttonConfiguration.contentInsets = .zero
+        buttonConfiguration.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
+            color.withAlphaComponent(0.0)
+        }
+
+        playButton.configurationUpdateHandler = { [weak self] _ in
+            guard let self else { return }
+            if playButton.isHighlighted {
+                playButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            } else {
+                playButton.transform = .identity
+            }
+        }
+
+        playButton.configuration = buttonConfiguration
         playButton.addAction(UIAction { [weak self] _ in
             self?.didButtonTapped()
         }, for: .touchUpInside)
@@ -92,8 +110,9 @@ final class RecordingPanel: UIView {
             playButton.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
             playButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            playButton.trailingAnchor.constraint(equalTo: waveFormView.leadingAnchor, constant: -12),
+            playButton.widthAnchor.constraint(equalToConstant: 32),
 
+            waveFormView.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 12),
             waveFormView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             waveFormView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
             waveFormView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
@@ -102,10 +121,7 @@ final class RecordingPanel: UIView {
 
     private func updateWaveForm(amplitude: CGFloat) {
         waveFormView.updateVisualizerView(with: amplitude)
-    }
-
-    private func stopWaveForm() {
-        waveFormView.removeVisualizerCircles()
+//        waveFormView.reverseUpdateVisualizerView(with: amplitude)
     }
 
     private func reset() {
