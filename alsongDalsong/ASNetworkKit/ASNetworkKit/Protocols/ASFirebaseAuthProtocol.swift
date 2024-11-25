@@ -2,7 +2,6 @@ import ASEntity
 import Foundation
 
 public protocol ASFirebaseAuthProtocol: Sendable {
-    func signInAnonymously(nickname: String, avatarURL: URL?) async throws -> Player
+    func signIn(nickname: String, avatarURL: URL?) async throws
     func signOut() async throws
-    func getCurrentUserID() -> String
 }
