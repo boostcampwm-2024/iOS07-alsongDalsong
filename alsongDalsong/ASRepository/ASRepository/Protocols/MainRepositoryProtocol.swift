@@ -3,6 +3,7 @@ import Combine
 import Foundation
 
 public protocol MainRepositoryProtocol {
+    var myId: String? { get }
     var number: CurrentValueSubject<String?, Never> { get }
     var host: CurrentValueSubject<Player?, Never> { get }
     var players: CurrentValueSubject<[Player]?, Never> { get }
