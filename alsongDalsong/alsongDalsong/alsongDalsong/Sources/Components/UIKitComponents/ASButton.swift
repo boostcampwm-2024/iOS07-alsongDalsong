@@ -60,8 +60,8 @@ final class ASButton: UIButton {
             else {
                 self.transform = .identity
             }
-            self.configuration = config
         }
+        self.configuration = config
     }
 
     private func disable(_ color: UIColor = .systemGray2) {
