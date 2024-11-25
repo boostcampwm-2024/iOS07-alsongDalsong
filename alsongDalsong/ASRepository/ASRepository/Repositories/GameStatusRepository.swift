@@ -9,10 +9,9 @@ public final class GameStatusRepository: GameStatusRepositoryProtocol {
         self.mainRepository = mainRepository
     }
     
-    public func getStatus() -> AnyPublisher<Status, Never> {
+    public func getStatus() -> AnyPublisher<Status?, Never> {
         mainRepository.status
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
             .eraseToAnyPublisher()
     }
     

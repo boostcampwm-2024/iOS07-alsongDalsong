@@ -17,6 +17,8 @@ final class OnboardingViewController: UIViewController {
     private var nickNameTextFieldMaxCount = 12
     private var cancleables = Set<AnyCancellable>()
     
+    private var gameNavigationController: GameNavigationController?
+    
     init(viewmodel: OnboardingViewModel, inviteCode: String) {
         self.viewmodel = viewmodel
         self.inviteCode = inviteCode
@@ -37,6 +39,7 @@ final class OnboardingViewController: UIViewController {
         setConfiguration()
         hideKeyboard()
         bind()
+        self.gameNavigationController = GameNavigationController(navigationController: self.navigationController!)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -124,12 +127,13 @@ final class OnboardingViewController: UIViewController {
                         doneButtonTitle: Constants.doneAlertButtonTitle,
                         cancelButtonTitle: Constants.cancelAlertButtonTitle,
                         textFieldPlaceholder: Constants.roomNumberPlaceholder,
-                        isUppercased: true) { [weak self] roomNumber in
-                            if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                                self?.viewmodel?.setNickname(with: nickname)
-                            }
-                            self?.viewmodel?.joinRoom(roomNumber: roomNumber)
+                        isUppercased: true)
+                    { [weak self] roomNumber in
+                        if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
+                            self?.viewmodel?.setNickname(with: nickname)
                         }
+                        self?.viewmodel?.joinRoom(roomNumber: roomNumber)
+                    }
                     self?.present(joinAlert, animated: true, completion: nil)
                 },
                 for: .touchUpInside)
@@ -183,20 +187,10 @@ final class OnboardingViewController: UIViewController {
             .filter { !$0.isEmpty }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
-                let mainRepository = DIContainer.shared.resolve(MainRepositoryProtocol.self)
-                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
-                let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
-                let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
-                
+                guard let navigationController = self?.navigationController else { return }
+                let gameController = GameNavigationController(navigationController: navigationController)
+                let mainRepository: MainRepositoryProtocol = DIContainer.shared.resolve(MainRepositoryProtocol.self)
                 mainRepository.connectRoom(roomNumber: roomNumber)
-                let lobbyViewModel = LobbyViewModel(
-                    playersRepository: playersRepository,
-                    roomInfoRepository: roomInfoRepository,
-                    roomActionRepository: roomActionRepository,
-                    avatarRepository: avatarRepository)
-                let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
-                self?.navigationController?.pushViewController(lobbyViewController, animated: false)
             }
             .store(in: &cancleables)
         viewmodel?.$buttonEnabled

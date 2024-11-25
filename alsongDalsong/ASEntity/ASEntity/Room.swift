@@ -12,6 +12,7 @@ public struct Room: Codable {
     public var dueTime: Date?
     public var selectedRecords: [UInt8]?
     public var submits: [Answer]?
+    public var recordOrder: UInt8?
     
     public init(
         number: String? = nil,
@@ -24,7 +25,8 @@ public struct Room: Codable {
         answers: [Answer]? = nil,
         dueTime: Date? = nil,
         selectedRecords: [UInt8]? = nil,
-        submits: [Answer]? = nil
+        submits: [Answer]? = nil,
+        recordOrder: UInt8?
     ) {
         self.number = number
         self.host = host
@@ -37,19 +39,6 @@ public struct Room: Codable {
         self.dueTime = dueTime
         self.selectedRecords = selectedRecords
         self.submits = submits
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case number
-        case host
-        case players
-        case mode
-        case round
-        case status = "Status"
-        case records
-        case answers
-        case dueTime
-        case selectedRecords
-        case submits
+        self.recordOrder = recordOrder
     }
 }
