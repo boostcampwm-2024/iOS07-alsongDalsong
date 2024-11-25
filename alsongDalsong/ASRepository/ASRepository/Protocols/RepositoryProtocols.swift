@@ -22,7 +22,7 @@ public protocol PlayersRepositoryProtocol {
 
 public protocol RecordsRepositoryProtocol {
     func getRecords() -> AnyPublisher<[ASEntity.Record], Never>
-    func getHumming(on round: UInt8) -> AnyPublisher<Data?, Never>
+    func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never>
 }
 
 public protocol RoomInfoRepositoryProtocol {
