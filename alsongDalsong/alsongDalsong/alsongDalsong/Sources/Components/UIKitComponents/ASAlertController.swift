@@ -5,7 +5,7 @@ class ASAlertController: UIViewController {
     private var textField = ASTextField()
     private var doneButton = ASButton()
     private var cancelButton = ASButton()
-    //Alert창에 입력한 text
+    // Alert창에 입력한 text
     var text: String {
         textField.text ?? ""
     }
@@ -14,6 +14,9 @@ class ASAlertController: UIViewController {
     private var textFieldPlaceholder: String = ""
     private var doneButtonTitle: String = ""
     private var cancelButtonTitle: String = ""
+    private var isUppercased: Bool = false
+    private var textMaxCount: Int = 6
+    private var style: ASAlertStyle = .default
     
     var doneButtonCompletion: (() -> Void)?
     var cancelButtonCompletion: (() -> Void)?
@@ -21,7 +24,16 @@ class ASAlertController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI(titleText: titleText, textFieldPlaceholder: textFieldPlaceholder, doneButtonTitle: doneButtonTitle, cancelButtonTitle: cancelButtonTitle)
-        setupLayout()
+        
+        switch style {
+        case .input:
+            setupInputStyleLayout()
+        case .default:
+            setupDefaultStyleLayout()
+        }
+        if isUppercased {
+            textField.delegate = self
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -33,33 +45,56 @@ class ASAlertController: UIViewController {
     }
     
     private func setupUI(titleText: String, textFieldPlaceholder: String, doneButtonTitle: String, cancelButtonTitle: String) {
-        self.view.backgroundColor = .black.withAlphaComponent(0.3)
+        view.backgroundColor = .black.withAlphaComponent(0.3)
         alertView.setConfiguration(title: titleText, titleAlign: .center, titleSize: 24)
         alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         alertView.backgroundColor = .asLightGray
         alertView.layer.borderWidth = 0
         view.addSubview(alertView)
         
-        textField.setConfiguration(placeholder: textFieldPlaceholder)
-        alertView.addSubview(textField)
-        
         doneButton.setConfiguration(systemImageName: "", title: doneButtonTitle, backgroundColor: .asLightSky, textSize: 24)
-        cancelButton.setConfiguration(systemImageName: "", title: cancelButtonTitle, backgroundColor: .asLightRed, textSize: 24)
+        
         alertView.addSubview(doneButton)
-        alertView.addSubview(cancelButton)
         
         doneButton.addAction(UIAction { [weak self] _ in
             self?.doneButtonCompletion?()
             self?.dismiss(animated: true)
         }, for: .touchUpInside)
         
-        cancelButton.addAction(UIAction { [weak self] _ in
-            self?.cancelButtonCompletion?()
-            self?.dismiss(animated: true)
-        }, for: .touchUpInside)
+        switch style {
+        case .input:
+            textField.setConfiguration(placeholder: textFieldPlaceholder)
+            alertView.addSubview(textField)
+            
+            cancelButton.setConfiguration(systemImageName: "", title: cancelButtonTitle, backgroundColor: .asLightRed, textSize: 24)
+            alertView.addSubview(cancelButton)
+            cancelButton.addAction(UIAction { [weak self] _ in
+                self?.cancelButtonCompletion?()
+                self?.dismiss(animated: true)
+            }, for: .touchUpInside)
+        case .default:
+            break
+        }
     }
-    
-    private func setupLayout() {
+
+    private func setupDefaultStyleLayout() {
+        alertView.translatesAutoresizingMaskIntoConstraints = false
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            alertView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            alertView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            alertView.widthAnchor.constraint(equalToConstant: 345),
+            alertView.heightAnchor.constraint(equalToConstant: 180),
+            
+            doneButton.leadingAnchor.constraint(equalTo: alertView.leadingAnchor, constant: 12),
+            doneButton.trailingAnchor.constraint(equalTo: alertView.trailingAnchor, constant: -12),
+            doneButton.bottomAnchor.constraint(equalTo: alertView.bottomAnchor, constant: -24),
+            doneButton.heightAnchor.constraint(equalToConstant: 40),
+        ])
+    }
+
+    private func setupInputStyleLayout() {
         alertView.translatesAutoresizingMaskIntoConstraints = false
         textField.translatesAutoresizingMaskIntoConstraints = false
         doneButton.translatesAutoresizingMaskIntoConstraints = false
@@ -90,14 +125,39 @@ class ASAlertController: UIViewController {
 }
 
 extension ASAlertController {
-    convenience init(titleText: String, doneButtonTitle: String, cancelButtonTitle: String, textFieldPlaceholder: String) {
+    convenience init(titleText: String, doneButtonTitle: String, cancelButtonTitle: String, textFieldPlaceholder: String, isUppercased: Bool = false, style: ASAlertStyle) {
         self.init()
         self.titleText = titleText
         self.textFieldPlaceholder = textFieldPlaceholder
         self.doneButtonTitle = doneButtonTitle
         self.cancelButtonTitle = cancelButtonTitle
+        self.isUppercased = isUppercased
+        self.style = style
         
         self.modalTransitionStyle = .crossDissolve
         self.modalPresentationStyle = .overFullScreen
     }
+}
+
+extension ASAlertController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let uppercaseString = string.uppercased()
+        
+        if let text = textField.text,
+           let textRange = Range(range, in: text)
+        {
+            let updatedText = text.replacingCharacters(in: textRange, with: uppercaseString)
+            if updatedText.count <= textMaxCount {
+                textField.text = updatedText
+            }
+            return false
+        }
+        
+        return true
+    }
+}
+
+enum ASAlertStyle {
+    case input
+    case `default`
 }

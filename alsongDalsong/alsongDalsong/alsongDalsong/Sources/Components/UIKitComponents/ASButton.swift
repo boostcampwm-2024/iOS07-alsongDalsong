@@ -1,6 +1,6 @@
 import Combine
-import UIKit
 import SwiftUI
+import UIKit
 
 class ASButton: UIButton {
     private var cancellables = Set<AnyCancellable>()
@@ -25,7 +25,6 @@ class ASButton: UIButton {
         textSize: CGFloat = 32
     ) {
         var config = UIButton.Configuration.gray()
-
         config.baseBackgroundColor = backgroundColor
         config.baseForegroundColor = .asBlack
 
@@ -47,8 +46,22 @@ class ASButton: UIButton {
 
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
         config.cornerStyle = .medium
-        configuration = config
+
         setShadow()
+        config.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
+            color.withAlphaComponent(1.0)
+        }
+
+        configurationUpdateHandler = { [weak self] _ in
+            guard let self else { return }
+            if self.isHighlighted {
+                self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+            }
+            else {
+                self.transform = .identity
+            }
+            self.configuration = config
+        }
     }
 
     func bind(
@@ -76,7 +89,5 @@ struct ASButtonWrapper: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ uiView: ASButton, context: Context) {
-
-    }
+    func updateUIView(_ uiView: ASButton, context: Context) {}
 }
