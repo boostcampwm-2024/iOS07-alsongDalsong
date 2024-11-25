@@ -14,7 +14,6 @@ final class HummingViewModel: @unchecked Sendable {
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
-    private let musicRepository: MusicRepositoryProtocol
     private let answersRepository: AnswersRepositoryProtocol
     private let submitsRepository: SubmitsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
@@ -22,13 +21,11 @@ final class HummingViewModel: @unchecked Sendable {
     public init(
         gameStatusRepository: GameStatusRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
-        musicRepository: MusicRepositoryProtocol,
         answersRepository: AnswersRepositoryProtocol,
         submitsRepository: SubmitsRepositoryProtocol
     ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
-        self.musicRepository = musicRepository
         self.answersRepository = answersRepository
         self.submitsRepository = submitsRepository
         bindGameStatus()
