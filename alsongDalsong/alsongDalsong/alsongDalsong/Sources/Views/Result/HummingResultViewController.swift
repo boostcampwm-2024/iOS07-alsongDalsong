@@ -154,33 +154,41 @@ extension HummingResultViewController: UITableViewDataSource {
         if indexPath.section == 0 {
             cell.contentConfiguration = UIHostingConfiguration {
                 let currentPlayer = viewModel.currentRecords[indexPath.row].player
-                if indexPath.row % 2 == 0 {
-                    SpeechBubbleCell(alignment: .left,
-                                     messageType: .record(viewModel.currentRecords[indexPath.row]),
-                                     imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
-                                     name: currentPlayer?.nickname ?? "")
-                } else {
-                    SpeechBubbleCell(alignment: .right,
-                                     messageType: .record(viewModel.currentRecords[indexPath.row]),
-                                     imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
-                                     name: currentPlayer?.nickname ?? "")
+                HStack {
+                    Spacer()
+                    if indexPath.row % 2 == 0 {
+                        SpeechBubbleCell(alignment: .left,
+                                         messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                         imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                         name: currentPlayer?.nickname ?? "")
+                    } else {
+                        SpeechBubbleCell(alignment: .right,
+                                         messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                         imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                         name: currentPlayer?.nickname ?? "")
+                    }
+                    Spacer()
                 }
             }
         } else {
             cell.contentConfiguration = UIHostingConfiguration {
-                if viewModel.currentRecords.count % 2 == 0 {
-                    SpeechBubbleCell(alignment: .left,
-                                     messageType: .music(viewModel.currentsubmit?.music ??
-                                        .musicStub1),
-                                     imagePublisher: viewModel.getAvatarData(url: nil),
-                                     name: viewModel.currentsubmit?.player?.nickname ?? "")
-                }
-                else {
-                    SpeechBubbleCell(alignment: .right,
-                                     messageType: .music(viewModel.currentsubmit?.music ??
-                                        .musicStub1),
-                                     imagePublisher: viewModel.getAvatarData(url: nil),
-                                     name: viewModel.currentsubmit?.player?.nickname ?? "")
+                HStack {
+                    Spacer()
+                    if viewModel.currentRecords.count % 2 == 0 {
+                        SpeechBubbleCell(alignment: .left,
+                                         messageType: .music(viewModel.currentsubmit?.music ??
+                                            .musicStub1),
+                                         imagePublisher: viewModel.getAvatarData(url: nil),
+                                         name: viewModel.currentsubmit?.player?.nickname ?? "")
+                    }
+                    else {
+                        SpeechBubbleCell(alignment: .right,
+                                         messageType: .music(viewModel.currentsubmit?.music ??
+                                            .musicStub1),
+                                         imagePublisher: viewModel.getAvatarData(url: nil),
+                                         name: viewModel.currentsubmit?.player?.nickname ?? "")
+                    }
+                    Spacer()
                 }
             }
         }

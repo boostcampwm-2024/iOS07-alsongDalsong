@@ -18,6 +18,7 @@ struct SpeechBubbleCell: View {
     let messageType: MessageType
     let imagePublisher: AnyPublisher<Data?, Error>
     let name: String
+    @State private var isVisible = false
     
     var body: some View {
         HStack {
@@ -26,17 +27,24 @@ struct SpeechBubbleCell: View {
                             name: name,
                             isHost: false)
                 .frame(width: 75, height: 75)
-                
-                Spacer()
+                .padding(.trailing, 10)
             }
-            speechBubble
+            if isVisible {
+                speechBubble
+                    .transition(.move(edge: alignment == .left ? .leading : .trailing))
+                    .animation(.easeInOut(duration: 1.0), value: isVisible)
+            }
             if alignment == .right {
-                Spacer()
-                
                 ProfileView(imagePublisher: imagePublisher,
                             name: name,
                             isHost: false)
                 .frame(width: 75, height: 75)
+                .padding(.leading, 10)
+            }
+        }
+        .onAppear {
+            withAnimation {
+                isVisible = true
             }
         }
     }
@@ -54,12 +62,12 @@ struct SpeechBubbleCell: View {
         
         ZStack {
             BubbleShape(alignment: alignment)
-                .frame(width: 255, height: height + 5)
+                .frame(width: 235, height: height + 5)
                 .foregroundStyle(Color.asShadow)
                 .offset(x: 5, y: 5)
             
             BubbleShape(alignment: alignment)
-                .frame(width: 250, height: height)
+                .frame(width: 230, height: height)
                 .foregroundStyle(.white)
                 .overlay(
                     BubbleShape(alignment: alignment)
@@ -68,7 +76,7 @@ struct SpeechBubbleCell: View {
             
             ZStack(alignment: .leading) {
                 BubbleShape(alignment: alignment)
-                    .frame(width: 250, height: height)
+                    .frame(width: 230, height: height)
                     .foregroundStyle(.white)
                 
                 switch messageType {
@@ -83,22 +91,24 @@ struct SpeechBubbleCell: View {
                         VStack(alignment: .leading) {
                             Text(music.title ?? "")
                                 .font(.custom("Dohyeon-Regular", size: 24))
+                                .lineLimit(2)
                             
                             Text(music.artist ?? "")
                                 .font(.custom("Dohyeon-Regular", size: 24))
                                 .foregroundStyle(.asLightGray)
+                                .lineLimit(1)
                         }
                         Spacer()
                     }
-                    .frame(width: 250)
+                    .frame(width: 220)
                     .offset(x: alignment == .left ? 30 : 5, y: -4)
                 case .record(let record):
                     // 여기서 record를 줄 필요가 있을까요? ViewModel에서 해당 파일을 그냥 실행하면 될 거 같은데
                     HStack {
                         WaveFormViewWrapper()
                     }
-                    .frame(width: 220)
-                    .offset(x: alignment == .left ? 30 : 0, y: -4)
+                    .frame(width: 215)
+                    .offset(x: alignment == .left ? 22 : -7, y: -4)
                 }
             }
         }
