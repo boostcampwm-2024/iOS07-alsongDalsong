@@ -20,7 +20,7 @@ class ASButton: UIButton {
     ///   - backgroundColor: UIColor 형태로 색깔 입력.  (ex.   .asYellow)
     func setConfiguration(
         systemImageName: String? = nil,
-        title: String,
+        title: String?,
         backgroundColor: UIColor? = nil,
         textSize: CGFloat = 32
     ) {
@@ -40,7 +40,7 @@ class ASButton: UIButton {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .heavy)
         config.preferredSymbolConfigurationForImage = imageConfig
 
-        var titleAttr = AttributedString(title)
+        var titleAttr = AttributedString(title ?? "")
         titleAttr.font = UIFont.font(.dohyeon, ofSize: textSize)
         config.attributedTitle = titleAttr
 
