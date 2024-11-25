@@ -64,7 +64,7 @@ final class MusicPanel: UIView {
         addSubview(titleLabel)
         addSubview(artistLabel)
 
-        panel.panelColor = .asSystem
+        panel.updateBackgroundColor(.asSystem)
         titleLabel.font = .font(forTextStyle: .title3)
         artistLabel.font = .font(forTextStyle: .title3)
         titleLabel.textColor = .label

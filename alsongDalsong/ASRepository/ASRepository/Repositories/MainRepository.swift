@@ -4,7 +4,6 @@ import Combine
 import Foundation
 
 public final class MainRepository: MainRepositoryProtocol {
-    
     public var number = CurrentValueSubject<String?, Never>(nil)
     public var host = CurrentValueSubject<Player?, Never>(nil)
     public var players = CurrentValueSubject<[Player]?, Never>(nil)
@@ -36,7 +35,6 @@ public final class MainRepository: MainRepositoryProtocol {
                     return
                 }
             } receiveValue: { [weak self] room in
-                print(room)
                 guard let self = self else { return }
                 self.update(\.number, with: room.number)
                 self.update(\.host, with: room.host)

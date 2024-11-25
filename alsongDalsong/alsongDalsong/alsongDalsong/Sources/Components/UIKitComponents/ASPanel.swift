@@ -1,7 +1,7 @@
 import UIKit
 
 class ASPanel: UIView {
-    var panelColor: UIColor = .white {
+    private var panelColor: UIColor = .asSystem {
         didSet {
             backgroundColor = panelColor
         }
@@ -16,13 +16,15 @@ class ASPanel: UIView {
         super.init(coder: coder)
     }
 
+    func updateBackgroundColor(_ color: UIColor) {
+        backgroundColor = color
+    }
+    
     func setTitle(
         title: String,
         titleAlign: NSTextAlignment,
         titleSize: CGFloat
     ) {
-        backgroundColor = .asSystem
-
         let label = UILabel()
         label.textColor = .asBlack
         label.text = title
@@ -38,7 +40,7 @@ class ASPanel: UIView {
         ])
     }
 
-    func setupUI() {
+    private func setupUI() {
         layer.cornerRadius = 12
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 3
