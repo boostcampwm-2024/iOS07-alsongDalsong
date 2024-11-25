@@ -10,11 +10,11 @@ actor AudioHelper {
     private var player: ASAudioPlayer?
     private var timer: Timer?
     private let amplitudeSubject = PassthroughSubject<Float, Never>()
-    private init() {}
-
-    func amplitudePubisher() -> AnyPublisher<Float, Never> {
+    var amplitudePublisher: AnyPublisher<Float, Never> {
         return amplitudeSubject.eraseToAnyPublisher()
     }
+    
+    private init() {}
 
     func isRecording() async -> Bool {
         guard let recorder else { return false }
@@ -62,7 +62,7 @@ actor AudioHelper {
         }
         RunLoop.main.add(timer!, forMode: .common)
     }
-    
+
     private func calculateRecorderAmplitude() async {
         await recorder?.updateMeters()
         guard let averagePower = await recorder?.getAveragePower() else { return }
@@ -73,6 +73,7 @@ actor AudioHelper {
 
     func startPlaying(file: Data?, playType: PlayType = .full) async {
         guard let file else { return }
+        if let player = player, await player.isPlaying() { await stopPlaying() }
         makePlayer()
         await player?.setOnPlaybackFinished { [weak self] in
             await self?.stopPlaying()
@@ -82,10 +83,13 @@ actor AudioHelper {
 
     func stopPlaying() async {
         await player?.stopPlaying()
+        player = nil
     }
 
     private func stopRecording() async -> Data? {
-        await recorder?.stopRecording()
+        let recordedData = await recorder?.stopRecording()
+        recorder = nil
+        return recordedData
     }
 
     private func makeRecorder() {

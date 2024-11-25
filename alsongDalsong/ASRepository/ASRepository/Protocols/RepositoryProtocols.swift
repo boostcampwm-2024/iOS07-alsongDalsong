@@ -4,6 +4,7 @@ import Foundation
 
 public protocol AnswersRepositoryProtocol {
     func getAnswers() -> AnyPublisher<[Answer], Never>
+    func getMyAnswer() -> AnyPublisher<Answer?, Never>
 }
 
 public protocol GameStatusRepositoryProtocol {

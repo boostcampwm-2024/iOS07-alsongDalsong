@@ -1,35 +1,64 @@
 import Combine
 import UIKit
-import SwiftUI
 
-final class AudioVisualizerView: UIView {
+final class RecordingPanel: UIView {
     private var playButton = UIButton()
-    private var waveFormView = WaveFormView()
-    private var customBackgroundColor: UIColor = .asMint
+    private var waveFormView = WaveForm()
+    private var customBackgroundColor: UIColor
     private var cancellables = Set<AnyCancellable>()
-    var onPlayButtonTapped: ((_ isPlaying: Bool) -> Void)?
+    private let vm = RecordingPanelViewModel()
+    var onRecordingFinished: ((Data) -> Void)?
 
-    init() {
+    init(_ color: UIColor = .asMint) {
+        customBackgroundColor = color
         super.init(frame: .zero)
         setupButton()
-        addSubViews()
+        setupUI()
         setupLayout()
+        bindViewModel()
     }
 
     required init?(coder: NSCoder) {
+        customBackgroundColor = .asMint
         super.init(coder: coder)
-        setupButton()
-        addSubViews()
+        setupUI()
         setupLayout()
+        setupButton()
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setupView()
+    func bind(
+        to dataSource: Published<Bool>.Publisher
+    ) {
+        dataSource
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isRecording in
+                if isRecording {
+                    self?.vm.startRecording()
+                }
+            }
+            .store(in: &cancellables)
     }
 
-    func changeBackgroundColor(color: UIColor) {
-        customBackgroundColor = color
+    private func bindViewModel() {
+        vm.$recordedData
+            .filter { $0 != nil }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] recordedData in
+                self?.onRecordingFinished?(recordedData ?? Data())
+            }
+            .store(in: &cancellables)
+        vm.$recorderAmplitude
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] amplitude in
+                self?.updateWaveForm(amplitude: CGFloat(amplitude))
+            }
+            .store(in: &cancellables)
+        vm.$isPlaying
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isPlaying in
+                self?.playButton.isSelected = isPlaying
+            }
+            .store(in: &cancellables)
     }
 
     private func setupButton() {
@@ -40,21 +69,25 @@ final class AudioVisualizerView: UIView {
         playButton.setImage(stopImage, for: .selected)
         playButton.tintColor = .white
         playButton.adjustsImageWhenHighlighted = false
+        playButton.addAction(UIAction { [weak self] _ in
+            self?.didButtonTapped()
+        }, for: .touchUpInside)
     }
 
-    private func setupView() {
+    private func didButtonTapped() {
+        vm.togglePlayPause()
+    }
+
+    private func setupUI() {
         layer.cornerRadius = 12
         layer.backgroundColor = customBackgroundColor.cgColor
-    }
-
-    private func addSubViews() {
         addSubview(playButton)
-        playButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(waveFormView)
-        waveFormView.translatesAutoresizingMaskIntoConstraints = false
     }
 
     private func setupLayout() {
+        playButton.translatesAutoresizingMaskIntoConstraints = false
+        waveFormView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             playButton.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
@@ -67,27 +100,20 @@ final class AudioVisualizerView: UIView {
         ])
     }
 
-    func bind(
-        to dataSource: Published<Float>.Publisher
-    ) {
-        dataSource
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] amplitude in
-                self?.updateWaveForm(amplitude: CGFloat(amplitude))
-            }
-            .store(in: &cancellables)
-    }
-    
-    func updateWaveForm(amplitude: CGFloat) {
+    private func updateWaveForm(amplitude: CGFloat) {
         waveFormView.updateVisualizerView(with: amplitude)
     }
 
-    func stopWaveForm() {
+    private func stopWaveForm() {
+        waveFormView.removeVisualizerCircles()
+    }
+
+    private func reset() {
         waveFormView.removeVisualizerCircles()
     }
 }
 
-final class WaveFormView: UIView {
+private final class WaveForm: UIView {
     var columnWidth: CGFloat?
     var columns: [CAShapeLayer] = []
     var amplitudesHistory: [CGFloat] = []
@@ -181,19 +207,5 @@ final class WaveFormView: UIView {
                 columns[i].fillColor = UIColor.white.cgColor
             }
         }
-    }
-}
-
-struct WaveFormViewWrapper: UIViewRepresentable {
-    //@Binding var amplitude: Float
-    
-    func makeUIView(context: Context) -> WaveFormView {
-        let view = WaveFormView()
-        
-        return view
-    }
-    
-    func updateUIView(_ uiView: WaveFormView, context: Context) {
-        //uiView.updateVisualizerView(with: CGFloat(amplitude))
     }
 }

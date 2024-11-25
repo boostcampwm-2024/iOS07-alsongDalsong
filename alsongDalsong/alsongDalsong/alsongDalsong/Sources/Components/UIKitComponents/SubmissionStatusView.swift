@@ -3,13 +3,12 @@ import UIKit
 
 final class SubmissionStatusView: UIStackView {
     let label = UILabel()
+    
     private var cancellables = Set<AnyCancellable>()
 
     init() {
         super.init(frame: .zero)
-        setupStack()
-        setupImage()
-        setupLabel()
+        setupUI()
     }
 
     @available(*, unavailable)
@@ -18,7 +17,19 @@ final class SubmissionStatusView: UIStackView {
     }
 
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 120, height: 48)
+        return CGSize(width: 64, height: 30)
+    }
+
+    private func setupUI() {
+        backgroundColor = .asSystem
+        layer.cornerRadius = intrinsicContentSize.height / 2
+        clipsToBounds = true
+        layer.borderColor = UIColor.label.cgColor
+        layer.borderWidth = 2.5
+        
+        setupStack()
+        setupImage()
+        setupLabel()
     }
 
     func bind(
@@ -27,30 +38,33 @@ final class SubmissionStatusView: UIStackView {
         dataSource
             .receive(on: DispatchQueue.main)
             .sink { [weak self] status in
-                self?.label.text = "\(status.submits) / \(status.total)"
+                self?.label.text = "\(status.submits)/\(status.total)"
             }
             .store(in: &cancellables)
     }
-
-    func setupStack() {
+    
+    private func setupStack() {
         axis = .horizontal
         alignment = .center
-        spacing = 16
+        spacing = 2
+        isLayoutMarginsRelativeArrangement = true
+        layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 8)
     }
 
-    func setupLabel() {
-        label.font = .font(forTextStyle: .largeTitle)
-        addArrangedSubview(label)
-    }
+    private func setupImage() {
+        let configuration = UIImage.SymbolConfiguration(pointSize: 20, weight: .bold)
+        let image = UIImage(systemName: "checkmark", withConfiguration: configuration)
 
-    func setupImage() {
-        let image = UIImage(systemName: "checkmark.square.fill")
         let imageView = UIImageView(image: image)
-        imageView.tintColor = .asGreen
-        addArrangedSubview(imageView)
-
+        imageView.tintColor = .label
+        imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.widthAnchor.constraint(equalToConstant: 48).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 16).isActive = true
+        addArrangedSubview(imageView)
+    }
+    
+    private func setupLabel() {
+        label.font = .font(forTextStyle: .body)
+        addArrangedSubview(label)
     }
 }

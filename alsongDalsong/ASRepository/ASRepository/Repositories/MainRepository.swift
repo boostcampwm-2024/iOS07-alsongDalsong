@@ -4,7 +4,6 @@ import Combine
 import Foundation
 
 public final class MainRepository: MainRepositoryProtocol {
-    
     public var number = CurrentValueSubject<String?, Never>(nil)
     public var host = CurrentValueSubject<Player?, Never>(nil)
     public var players = CurrentValueSubject<[Player]?, Never>(nil)
