@@ -46,6 +46,7 @@ class HummingResultViewController: UIViewController {
         resultTableView.separatorStyle = .none
         resultTableView.allowsSelection = false
         resultTableView.backgroundColor = .asLightGray
+        resultTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
         view.addSubview(resultTableView)
     }
     
@@ -149,37 +150,34 @@ extension HummingResultViewController: UITableViewDataSource {
         
         if indexPath.section == 0 {
             cell.contentConfiguration = UIHostingConfiguration {
+                let currentPlayer = viewModel.currentRecords[indexPath.row].player
                 if indexPath.row % 2 == 0 {
                     SpeechBubbleCell(alignment: .left,
-                                     messageType: .record(viewModel.currentRecords[indexPath.row]))
+                                     messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                     imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                     name: currentPlayer?.nickname ?? "")
                 } else {
                     SpeechBubbleCell(alignment: .right,
-                                     messageType: .record(viewModel.currentRecords[indexPath.row]))
+                                     messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                     imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                     name: currentPlayer?.nickname ?? "")
                 }
             }
         } else {
             cell.contentConfiguration = UIHostingConfiguration {
                 if viewModel.currentRecords.count % 2 == 0 {
-                    SpeechBubbleCell(
-                        alignment: .left,
-                        messageType: .music(
-                            .init(
-                                title: viewModel.currentsubmit?.music?.title ?? "",
-                                artist: viewModel.currentsubmit?.music?.artist ?? ""
-                            )
-                        )
-                    )
+                    SpeechBubbleCell(alignment: .left,
+                                     messageType: .music(viewModel.currentsubmit?.music ??
+                                        .musicStub1),
+                                     imagePublisher: viewModel.getAvatarData(url: nil),
+                                     name: viewModel.currentsubmit?.player?.nickname ?? "")
                 }
                 else {
-                    SpeechBubbleCell(
-                        alignment: .right,
-                        messageType: .music(
-                            .init(
-                                title: viewModel.currentsubmit?.music?.title ?? "",
-                                artist: viewModel.currentsubmit?.music?.artist ?? ""
-                            )
-                        )
-                    )
+                    SpeechBubbleCell(alignment: .right,
+                                     messageType: .music(viewModel.currentsubmit?.music ??
+                                        .musicStub1),
+                                     imagePublisher: viewModel.getAvatarData(url: nil),
+                                     name: viewModel.currentsubmit?.player?.nickname ?? "")
                 }
             }
         }

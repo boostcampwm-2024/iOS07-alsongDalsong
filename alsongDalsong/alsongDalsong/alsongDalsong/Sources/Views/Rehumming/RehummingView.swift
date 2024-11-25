@@ -51,7 +51,9 @@ final class RehummingViewController: UIViewController {
                 //test
 //                let hummingResultRepository = DIContainer.shared.resolve(HummingResultRepositoryProtocol.self)
                 let hummingResultRepository = LocalHummingResultRepository()
-                let resultViewModel = HummingResultViewModel(hummingResultRepository: hummingResultRepository)
+                let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
+                let resultViewModel = HummingResultViewModel(hummingResultRepository: hummingResultRepository,
+                                                             avatarRepository: avatarRepository)
                 let vc = HummingResultViewController(viewModel: resultViewModel)
                 self?.navigationController?.pushViewController(vc, animated: true)
         }, for: .touchUpInside)

@@ -7,6 +7,7 @@ import ASEntity
 final class HummingResultViewModel {
     private let player = ASAudioPlayer()
     private var hummingResultRepository: HummingResultRepositoryProtocol
+    private var avatarRepository: AvatarRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
     @Published var currentResult: Answer?
@@ -19,8 +20,10 @@ final class HummingResultViewModel {
     
     var hummingResult: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)] = []
     
-    init(hummingResultRepository: HummingResultRepositoryProtocol) {
+    init(hummingResultRepository: HummingResultRepositoryProtocol,
+         avatarRepository: AvatarRepositoryProtocol) {
         self.hummingResultRepository = hummingResultRepository
+        self.avatarRepository = avatarRepository
         fetchResult()
     }
     
@@ -75,5 +78,16 @@ final class HummingResultViewModel {
         self.submitsResult = current.submit
         self.currentRecords.removeAll()
         self.currentsubmit = nil
+    }
+    
+    func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
+        if let url {
+            return avatarRepository.getAvatarData(url: url)
+                .eraseToAnyPublisher()
+        }else {
+            return Just(nil)
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        }
     }
 }

@@ -1,10 +1,11 @@
 import SwiftUI
 import ASEntity
+import Combine
 
 enum MessageType {
     //TODO: music(ASMusic) 과 같이 해당 타입의 데이터가 담길 수 있게
     case music(Music)
-    case record(Record)
+    case record(ASEntity.Record)
 }
 
 enum MessageAlignment {
@@ -15,21 +16,27 @@ enum MessageAlignment {
 struct SpeechBubbleCell: View {
     let alignment: MessageAlignment
     let messageType: MessageType
-    @State var avatarURL: URL? = nil
-    //@Binding var amplitude: Float
+    let imagePublisher: AnyPublisher<Data?, Error>
+    let name: String
     
     var body: some View {
         HStack {
             if alignment == .left {
-                //ASAvatarCircleViewWrapper(imageURL: $avatarURL)
-                Circle()
-                    .frame(width: 80, height: 80)
+                ProfileView(imagePublisher: imagePublisher,
+                            name: name,
+                            isHost: false)
+                .frame(width: 75, height: 75)
+                
+                Spacer()
             }
             speechBubble
             if alignment == .right {
-                //ASAvatarCircleViewWrapper(imageURL: $avatarURL)
-                Circle()
-                    .frame(width: 80, height: 80)
+                Spacer()
+                
+                ProfileView(imagePublisher: imagePublisher,
+                            name: name,
+                            isHost: false)
+                .frame(width: 75, height: 75)
             }
         }
     }
@@ -126,9 +133,4 @@ struct BubbleShape: Shape {
         path.closeSubpath()
         return path
     }
-}
-
-#Preview {
-    SpeechBubbleCell(alignment: .right,
-                     messageType: .music(Music(title: "Hello", artist: "허각")))
 }
