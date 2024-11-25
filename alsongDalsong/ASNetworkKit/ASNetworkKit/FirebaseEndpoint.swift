@@ -10,7 +10,7 @@ public struct FirebaseEndpoint: Endpoint, Equatable {
     public var headers: [String: String]
     public var body: Data?
     public var queryItems: [URLQueryItem]?
-    
+
     public init(path: Path, method: HTTPMethod) {
         self.path = path
         self.method = method
@@ -24,6 +24,7 @@ public struct FirebaseEndpoint: Endpoint, Equatable {
         case joinRoom
         case gameStart
         case changeMode
+        case submitMusic
         public var description: String {
             switch self {
                 case .auth:
@@ -36,6 +37,8 @@ public struct FirebaseEndpoint: Endpoint, Equatable {
                     "/startGame"
                 case .changeMode:
                     "/changeMode"
+                case .submitMusic:
+                    "/submitMusic"
             }
         }
     }
