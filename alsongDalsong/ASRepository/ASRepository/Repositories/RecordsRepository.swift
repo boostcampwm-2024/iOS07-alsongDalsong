@@ -25,7 +25,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
             .compactMap { $0 }
             .map { records in
                 let index = (myIndex - 1 + playersCount) % playersCount
-                let hummings = records.filter { $0.round ?? -1 == (round - 1) }
+                let hummings = records.filter { $0.recordOrder ?? 0 == (round - 1) }
                 return (index < hummings.count) ? hummings[index].file : Data()
             }
             .eraseToAnyPublisher()

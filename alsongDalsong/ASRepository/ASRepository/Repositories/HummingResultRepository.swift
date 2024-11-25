@@ -28,9 +28,10 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
         var filteredRecords: [ASEntity.Record] = []
 
         for i in 0 ..< count {
+            let tempCheck: Int = (((answer.player?.order ?? 0) + i) % count)
             if let filteredRecord = records?.first(where: { record in
-                ((((answer.player?.order ?? 0) + i) % count) == record.player?.order) &&
-                (record.round == i)
+                (tempCheck == record.player?.order) &&
+                (record.recordOrder ?? 0 == (i + 1))
             }) {
                 filteredRecords.append(filteredRecord)
             }
@@ -79,9 +80,10 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
         var filteredRecords: [ASEntity.Record] = []
 
         for i in 0 ..< count {
+            let tempCheck: Int = (((answer.player?.order ?? 0) + i) % count)
             if let filteredRecord = records?.first(where: { record in
-                ((((answer.player?.order ?? 0) + i) % count) == record.player?.order) &&
-                (record.round == i)
+                (tempCheck == record.player?.order) &&
+                (record.recordOrder ?? 0 == (i + 1))
             }) {
                 filteredRecords.append(filteredRecord)
             }
