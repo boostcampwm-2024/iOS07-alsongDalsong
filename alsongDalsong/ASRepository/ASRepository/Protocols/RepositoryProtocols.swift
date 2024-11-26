@@ -29,6 +29,7 @@ public protocol RecordsRepositoryProtocol {
 public protocol RoomInfoRepositoryProtocol {
     func getRoomNumber() -> AnyPublisher<String, Never>
     func getMode() -> AnyPublisher<Mode, Never>
+    func getRecordOrder() -> AnyPublisher<UInt8, Never>
 }
 
 public protocol SelectedRecordsRepositoryProtocol {
@@ -51,6 +52,7 @@ public protocol RoomActionRepositoryProtocol {
     func leaveRoom() async throws -> Bool
     func startGame(roomNumber: String) async throws -> Bool
     func changeMode(roomNumber: String, mode: Mode) async throws -> Bool
+    func changeRecordOrder(roomNumber: String) async throws -> Bool
 }
 
 public protocol MusicRepositoryProtocol {
@@ -59,4 +61,5 @@ public protocol MusicRepositoryProtocol {
 
 public protocol HummingResultRepositoryProtocol {
     func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer)], Never>
+    func getRecordData(url: URL) -> Future<Data?, Error>
 }
