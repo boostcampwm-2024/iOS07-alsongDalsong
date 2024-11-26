@@ -39,11 +39,22 @@ module.exports.submitMusic = onRequest({ region: 'asia-southeast1' }, async (req
         const currentTime = new Date();
         const dueTime = new Date(currentTime.getTime() + 1 * 60 * 1000);
 
+        if (!req.body) {
+          const answer = {
+            player: playerData,
+          };
+          await roomRef.update({
+            round: 1,
+            answers: FieldValue.arrayUnion(answer),
+            dueTime: dueTime,
+          });
+          break;
+        }
+
         const answer = {
           player: playerData,
           music: req.body,
         };
-
         // 모든 사람이 제출했을 때
         if (currentAnswer + 1 === playersCount) {
           await roomRef.update({
@@ -54,7 +65,6 @@ module.exports.submitMusic = onRequest({ region: 'asia-southeast1' }, async (req
         } else {
           await roomRef.update({
             answers: FieldValue.arrayUnion(answer),
-            dueTime: dueTime,
           });
         }
         break;

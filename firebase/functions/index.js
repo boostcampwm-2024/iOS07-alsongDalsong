@@ -8,7 +8,8 @@ const { uploadRecord } = require('./api/UploadRecord.js');
 const { exitRoom } = require('./api/ExitRoom.js');
 const { onRemovePlayer, onRemoveRoom } = require('./trigger/onRemovePlayer.js');
 const { changeMode } = require('./api/ChangeMode.js');
-const { submitMusic } = require('./api/SubmitMusic')
+const { submitMusic } = require('./api/SubmitMusic');
+const { submitAnswer } = require('./api/SubmitAnswer');
 const { changeRecordOrder } = require('./api/ChangeRecordOrder.js')
 
 // 방 관련 API
@@ -19,6 +20,7 @@ exports.exitRoom = exitRoom;
 exports.changeMode = changeMode;
 exports.onRemoveRoom = onRemoveRoom;
 exports.submitMusic = submitMusic;
+exports.submitAnswer = submitAnswer;
 exports.changeRecordOrder = changeRecordOrder;
 
 // GameStart API
