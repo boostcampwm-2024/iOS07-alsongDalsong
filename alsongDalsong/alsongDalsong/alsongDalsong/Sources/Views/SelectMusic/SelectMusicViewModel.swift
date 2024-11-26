@@ -6,38 +6,61 @@ import Foundation
 import MusicKit
 
 final class SelectMusicViewModel: ObservableObject {
-    @Published var musicData: Data? {
-        didSet {
-            isPlaying = true
-        }
-    }
-
-    var cancellable = Set<AnyCancellable>()
-    let musicRepository: MusicRepositoryProtocol
-    let answerRepository: AnswersRepositoryProtocol
-    let musicAPI = ASMusicAPI()
-    
-    init(musicRepository: MusicRepositoryProtocol, answerRepository: AnswersRepositoryProtocol) {
-        self.musicRepository = musicRepository
-        self.answerRepository = answerRepository
-    }
-    
-    @Published var searchList: [ASSong] = []
-    @Published var selectedSong: ASSong = .init(
+    @Published public private(set) var answers: [Answer] = []
+    @Published public private(set) var searchList: [ASSong] = []
+    @Published public private(set) var dueTime: Date?
+    @Published public private(set) var selectedSong: ASSong = .init(
         id: "12345",
         title: "선택된 곡 없음",
         artistName: "아티스트",
         artwork: nil,
         previewURL: URL(string: "")
     )
-    @Published var isPlaying: Bool = false {
+    @Published public private(set) var musicData: Data? {
         didSet {
-            if isPlaying {
-                playingMusic()
-            } else {
-                stopMusic()
-            }
+            isPlaying = true
         }
+    }
+    @Published public var isPlaying: Bool = false {
+        didSet {
+            isPlaying ? playingMusic() : stopMusic()
+        }
+    }
+
+    private let musicRepository: MusicRepositoryProtocol
+    private let answerRepository: AnswersRepositoryProtocol
+    private let gameStatusRepository: GameStatusRepositoryProtocol
+    private let musicAPI = ASMusicAPI()
+    private var cancellable = Set<AnyCancellable>()
+    
+    init(
+        musicRepository: MusicRepositoryProtocol,
+        answerRepository: AnswersRepositoryProtocol,
+        gameStatusRepository: GameStatusRepositoryProtocol
+    ) {
+        self.musicRepository = musicRepository
+        self.answerRepository = answerRepository
+        self.gameStatusRepository = gameStatusRepository
+        bindGameStatus()
+        bindAnswer()
+    }
+    
+    private func bindAnswer() {
+        answerRepository.getAnswers()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newAnswers in
+                self?.answers = newAnswers
+            }
+            .store(in: &cancellable)
+    }
+    
+    private func bindGameStatus() {
+        gameStatusRepository.getDueTime()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newDueTime in
+                self?.dueTime = newDueTime
+            }
+            .store(in: &cancellable)
     }
     
     func downloadMusic(url: URL?) {
@@ -82,7 +105,16 @@ final class SelectMusicViewModel: ObservableObject {
     @MainActor
     func submitMusic() {
         guard let artworkBackgroundColor = selectedSong.artwork?.backgroundColor?.toHex() else { return }
-        let answer = ASEntity.Music(title: selectedSong.title, artist: selectedSong.artistName, artworkUrl: selectedSong.artwork?.url(width: 300, height: 300), previewUrl: selectedSong.previewURL, artworkBackgroundColor: artworkBackgroundColor)
+        let answer = ASEntity.Music(
+            title: selectedSong.title,
+            artist: selectedSong.artistName,
+            artworkUrl: selectedSong.artwork?.url(
+                width: 300,
+                height: 300
+            ),
+            previewUrl: selectedSong.previewURL,
+            artworkBackgroundColor: artworkBackgroundColor
+        )
         Task {
             do {
                 let response = try await answerRepository.submitMusic(answer: answer)
