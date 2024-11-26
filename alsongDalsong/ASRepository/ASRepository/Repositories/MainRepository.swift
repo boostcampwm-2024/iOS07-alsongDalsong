@@ -46,7 +46,7 @@ public final class MainRepository: MainRepositoryProtocol {
                 self.update(\.status, with: room.status)
                 self.update(\.recordOrder, with: room.recordOrder)
                 self.update(\.answers, with: room.answers)
-                self.update(\.dueTime, with: room.dueTime)
+                self.update(\.dueTime, with: convertToLocalTime(utcDate: room.dueTime))
                 self.update(\.submits, with: room.submits)
                 self.update(\.records, with: room.records)
                 self.update(\.selectedRecords, with: room.selectedRecords)
@@ -78,5 +78,11 @@ public final class MainRepository: MainRepositoryProtocol {
         if subject.value != newValue {
             subject.send(newValue)
         }
+    }
+    
+    private func convertToLocalTime(utcDate: Date?) -> Date? {
+        guard let utcDate else { return nil }
+        let timeZoneOffset = TimeInterval(TimeZone.current.secondsFromGMT(for: utcDate))
+        return utcDate.addingTimeInterval(timeZoneOffset)
     }
 }

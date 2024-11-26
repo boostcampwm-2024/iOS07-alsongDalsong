@@ -10,34 +10,62 @@ const admin = require('../FirebaseAdmin.js');
  * @returns roomNumber - 생성된 방 번호
  */
 module.exports.submitMusic = onRequest({ region: 'asia-southeast1' }, async (req, res) => {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Only POST requests are accepted' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Only POST requests are accepted' });
+  }
+  const { userId, roomNumber } = req.query;
+  if (!userId) {
+    console.log('유저 아이디 없음');
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+  if (!roomNumber) {
+    console.log('방 번호 없음');
+    return res.status(400).json({ error: 'Room Number is required' });
+  }
+  try {
+    const playerData = await getUserData(userId);
+    const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
+    const roomSnapshot = await roomRef.get();
+    const roomData = roomSnapshot.data();
+
+    const currentAnswer = roomData.answers.length;
+    const playersCount = roomData.players.length;
+    if (!playerData) {
+      return res.status(404).json({ error: 'plyer Data not found' });
     }
-    const { userId, roomNumber } = req.query;
-    if (!userId) {
-        console.log('유저 아이디 없음');
-        return res.status(400).json({ error: 'User ID is required' });
-    }
-    if (!roomNumber) {
-        console.log('방 번호 없음');
-        return res.status(400).json({ error: 'Room Number is required' });
-    }
-    try {
-        const playerData = await getUserData(userId);
-        const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
-        if (!playerData) {
-            return res.status(404).json({ error: 'plyer Data not found' });
-        }
+    const currentMode = roomData.mode;
+    switch (currentMode) {
+      case 'humming':
+        const currentTime = new Date();
+        const dueTime = new Date(currentTime.getTime() + 1 * 60 * 1000);
+
         const answer = {
-            player: playerData,
-            music: req.body,
+          player: playerData,
+          music: req.body,
         };
-        await roomRef.update({
+
+        // 모든 사람이 제출했을 때
+        if (currentAnswer + 1 === playersCount) {
+          await roomRef.update({
+            round: 1,
             answers: FieldValue.arrayUnion(answer),
-        });
-        res.status(200).json({ status: 'success' });
-    } catch (error) {
-        console.log('에러러', error);
-        res.status(500).json({ error: 'Failed to create room' });
+            dueTime: dueTime,
+          });
+        } else {
+          await roomRef.update({
+            answers: FieldValue.arrayUnion(answer),
+            dueTime: dueTime,
+          });
+        }
+        break;
+      default:
+        console.log('잘못된 모드');
+        break;
     }
+
+    res.status(200).json({ status: 'success' });
+  } catch (error) {
+    console.log('에러러', error);
+    res.status(500).json({ error: 'Failed to create room' });
+  }
 });
