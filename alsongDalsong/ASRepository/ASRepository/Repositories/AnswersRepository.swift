@@ -21,12 +21,15 @@ public final class AnswersRepository: AnswersRepositoryProtocol {
     }
     
     public func getMyAnswer() -> AnyPublisher<Answer?, Never> {
-        mainRepository.answers
+        guard let myId = mainRepository.myId else {
+            return Just(nil).eraseToAnyPublisher()
+        }
+        
+        return mainRepository.answers
             .receive(on: DispatchQueue.main)
             .compactMap(\.self)
             .flatMap { answers in
-                // TODO: - myId를 (저장해 두었다가 또는 가져와서) 필터링 필요
-                Just(answers.first /* { $0.player?.id == "myId"}*/ )
+                Just(answers.first { $0.player?.id == myId} )
                     .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()

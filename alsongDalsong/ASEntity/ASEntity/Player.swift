@@ -21,3 +21,10 @@ public struct Player: Codable, Equatable, Identifiable {
         self.order = order
     }
 }
+
+extension Player {
+    public static let playerStub1: Player = Player(id: "0", avatarUrl: nil, nickname: "Tltlbo", score: nil, order: 0)
+    public static let playerStub2: Player = Player(id: "1", avatarUrl: nil, nickname: "Sonny", score: nil, order: 1)
+    public static let playerStub3: Player = Player(id: "2", avatarUrl: nil, nickname: "Moral-life", score: nil, order: 2)
+    public static let playerStub4: Player = Player(id: "3", avatarUrl: nil, nickname: "Sang₩", score: nil, order: 3)
+}

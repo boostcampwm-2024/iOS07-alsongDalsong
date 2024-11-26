@@ -96,7 +96,12 @@ public struct RepsotioryAssembly: Assembly {
         
         container.register(GameStateRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
-            return GameStateRepository(
+            return GameStateRepository(mainRepository: mainRepository)
+        }
+                
+        container.register(HummingResultRepositoryProtocol.self) { r in
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            return HummingResultRepository(
                 mainRepository: mainRepository
             )
         }

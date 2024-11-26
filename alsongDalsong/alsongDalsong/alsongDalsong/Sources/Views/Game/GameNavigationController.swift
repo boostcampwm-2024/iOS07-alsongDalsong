@@ -121,7 +121,13 @@ final class GameNavigationController {
     }
     
     private func navigateToResult() {
-        let vc = HummingResultViewController()
+        let hummingResultRepository = DIContainer.shared.resolve(HummingResultRepositoryProtocol.self)
+        let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
+        let vm = HummingResultViewModel(
+            hummingResultRepository: hummingResultRepository,
+            avatarRepository: avatarRepository
+        )
+        let vc = HummingResultViewController(viewModel: vm)
         navigationController.pushViewController(vc, animated: true)
     }
     

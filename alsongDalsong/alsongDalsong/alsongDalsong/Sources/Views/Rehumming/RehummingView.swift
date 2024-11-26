@@ -79,6 +79,11 @@ final class RehummingViewController: UIViewController {
         view.addSubview(hummingPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
+        submitButton.addAction(
+            UIAction { [weak self] _ in
+                
+        }, for: .touchUpInside)
+        submitButton.isEnabled = false
     }
 
     private func setupLayout() {
