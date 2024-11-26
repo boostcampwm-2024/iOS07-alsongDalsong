@@ -60,6 +60,7 @@ class HummingResultViewController: UIViewController {
                 if viewModel.hummingResult.count == 1 {
                     button.setConfiguration(title: "완료", backgroundColor: .asYellow)
                 }
+                //TODO: 여기다가는 이제 firebase에 recordOrder 바꾸는 함수 호출
                 viewModel.nextResultFetch()
                 setMusicResultView(musicName: viewModel.currentResult?.music?.title ?? "",
                                    singerName: viewModel.currentResult?.music?.artist ?? "")
@@ -124,6 +125,20 @@ class HummingResultViewController: UIViewController {
                 if (submit != nil) {
                     self?.resultTableView.reloadData()
                     self?.button.isHidden = false
+                }
+            }
+            .store(in: &cancellables)
+        viewModel?.$isNext
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isNext in
+                guard let self else { return }
+                if isNext {
+                    self.viewModel?.nextResultFetch()
+                    self.setMusicResultView(musicName: self.viewModel?.currentResult?.music?.title ?? "",
+                                             singerName: self.viewModel?.currentResult?.music?.artist ?? "")
+                    self.resultTableView.reloadData()
+                    self.button.isHidden = true
+                    self.viewModel?.isNext = false
                 }
             }
             .store(in: &cancellables)

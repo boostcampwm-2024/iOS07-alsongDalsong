@@ -7,13 +7,14 @@ import ASEntity
 final class HummingResultViewModel {
     private var hummingResultRepository: HummingResultRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
-    private var roomInfoRepository: RoomInfoRepositoryProtocol
+    private var gameStatusRepository: GameStatusRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
+    @Published var isNext: Bool = false
     @Published var currentResult: Answer?
     @Published var currentRecords: [ASEntity.Record] = []
     @Published var currentsubmit: Answer?
-    @Published var recordOrder: UInt8?
+    @Published var recordOrder: UInt8? = 0
     
     // 미리 받아놓을 정보 배열
     private var recordsResult: [ASEntity.Record] = []
@@ -23,13 +24,14 @@ final class HummingResultViewModel {
     
     init(hummingResultRepository: HummingResultRepositoryProtocol,
          avatarRepository: AvatarRepositoryProtocol,
-         roomInfoRepository: RoomInfoRepositoryProtocol) {
+         gameStatusRepository: GameStatusRepositoryProtocol) {
         self.hummingResultRepository = hummingResultRepository
         self.avatarRepository = avatarRepository
-        self.roomInfoRepository = roomInfoRepository
+        self.gameStatusRepository = gameStatusRepository
         fetchResult()
     }
     
+    // TODO: 함수 명이 바뀔 필요가 있는 듯함.
     private func fetchResult() {
         hummingResultRepository.getResult()
             .receive(on: DispatchQueue.main)
@@ -46,10 +48,13 @@ final class HummingResultViewModel {
                 self?.submitsResult = current.submit
             }
             .store(in: &cancellables)
-        roomInfoRepository.getRecordOrder()
+        
+        Publishers.CombineLatest(gameStatusRepository.getStatus(), gameStatusRepository.getRecordOrder())
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] order in
-                self?.recordOrder = order
+            .sink { status, order in
+                if (status == .result) && (self.recordOrder ?? 0 + 1 == order) {
+                    self.isNext = true
+                }
             }
             .store(in: &cancellables)
     }
@@ -60,8 +65,14 @@ final class HummingResultViewModel {
         Task {
             while !recordsResult.isEmpty {
                 currentRecords.append(recordsResult.removeFirst())
-//                await AudioHelper.shared.startPlaying(file: currentRecords.last?.file)
-                await waitForPlaybackToFinish()
+                guard let fileUrl = currentRecords.last?.fileUrl else { continue }
+                do {
+                    let data = try await fetchRecordData(url: fileUrl)
+                    await AudioHelper.shared.startPlaying(file: data)
+                    await waitForPlaybackToFinish()
+                } catch {
+                    print("녹음 파일 다운로드에 실패하였습니다.")
+                }
             }
             currentsubmit = submitsResult
         }
@@ -89,12 +100,38 @@ final class HummingResultViewModel {
         self.currentsubmit = nil
     }
     
-    func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
+    private func getRecordData(url: URL?) -> AnyPublisher<Data?, Error> {
         if let url {
-            return avatarRepository.getAvatarData(url: url)
+            return hummingResultRepository.getRecordData(url: url)
                 .eraseToAnyPublisher()
         }else {
             return Just(nil)
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        }
+    }
+    
+    private func fetchRecordData(url: URL) async throws -> Data {
+        try await withCheckedThrowingContinuation { continuation in
+            getRecordData(url: url)
+                .compactMap { $0 }
+                .sink(receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        continuation.resume(throwing: error)
+                    }
+                }, receiveValue: { data in
+                    continuation.resume(returning: data)
+                })
+                .store(in: &cancellables)
+        }
+    }
+    
+    func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
+        if let url {
+            avatarRepository.getAvatarData(url: url)
+                .eraseToAnyPublisher()
+        } else {
+            Just(nil)
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()
         }

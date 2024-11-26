@@ -59,4 +59,5 @@ public protocol MusicRepositoryProtocol {
 
 public protocol HummingResultRepositoryProtocol {
     func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer)], Never>
+    func getRecordData(url: URL) -> Future<Data?, Error>
 }
