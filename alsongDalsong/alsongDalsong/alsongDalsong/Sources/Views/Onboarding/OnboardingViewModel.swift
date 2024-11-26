@@ -15,8 +15,7 @@ final class OnboardingViewModel: @unchecked Sendable {
     @Published var buttonEnabled: Bool = true
 
     init(avatarRepository: AvatarRepositoryProtocol,
-         roomActionRepository: RoomActionRepositoryProtocol)
-    {
+         roomActionRepository: RoomActionRepositoryProtocol) {
         self.avatarRepository = avatarRepository
         self.roomActionRepository = roomActionRepository
         refreshAvatars()

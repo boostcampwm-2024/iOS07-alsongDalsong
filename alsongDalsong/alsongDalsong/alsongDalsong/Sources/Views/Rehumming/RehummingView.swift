@@ -5,11 +5,12 @@ import UIKit
 final class RehummingViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var guideLabel = GuideLabel()
-    private var hummingPanel = AudioVisualizerView()
-    private var rehummingPanel = AudioVisualizerView()
-    private var recordButton = RecordButton()
+    private var musicPanel = MusicPanel()
+    private var hummingPanel = RecordingPanel(.asMint)
+    private var recordButton = ASButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
+    private var buttonStack = UIStackView()
     private let vm: RehummingViewModel
 
     init(vm: RehummingViewModel) {
@@ -25,47 +26,73 @@ final class RehummingViewController: UIViewController {
     override func viewDidLoad() {
         setupUI()
         setupLayout()
-        setupPlaceholder()
         bindToComponents()
     }
 
     private func bindToComponents() {
         submissionStatus.bind(to: vm.$submissionStatus)
         progressBar.bind(to: vm.$dueTime)
-        submitButton.bind(to: vm.$humming)
+        musicPanel.bind(to: vm.$music)
+        hummingPanel.bind(to: vm.$isRecording)
+        hummingPanel.onRecordingFinished = { [weak self] recordedData in
+            self?.recordButton.updateButton(.reRecord)
+            self?.vm.updateRecordedData(with: recordedData)
+        }
+        submitButton.bind(to: vm.$recordedData)
     }
 
     private func setupUI() {
-        guideLabel.setText("노래를 따라해 보세요!")
-        hummingPanel.changeBackgroundColor(color: .asYellow)
+        guideLabel.setText("허밍을 듣고 따라하세요!")
+        recordButton.setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
+        recordButton.addAction(UIAction { [weak self] _ in
+            self?.recordButton.updateButton(.recording)
+            self?.vm.startRecording()
+        },
+        for: .touchUpInside)
+        submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
+        submitButton.addAction(
+            UIAction { [weak self] _ in
+                self?.vm.submitHumming()
+                let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
+                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
+                let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
+                let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
+                let vm = RehummingViewModel(
+                    gameStatusRepository: gameStatusRepository,
+                    playersRepository: playersRepository,
+                    recordsRepository: recordsRepository,
+                    submitsRepository: submitsRepository
+                )
+                let vc = RehummingViewController(vm: vm)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }, for: .touchUpInside
+        )
+        submitButton.updateButton(.disabled)
+        buttonStack.axis = .horizontal
+        buttonStack.spacing = 16
+        buttonStack.addArrangedSubview(recordButton)
+        buttonStack.addArrangedSubview(submitButton)
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)
         view.addSubview(guideLabel)
+        view.addSubview(musicPanel)
         view.addSubview(hummingPanel)
-        view.addSubview(rehummingPanel)
-        view.addSubview(recordButton)
-        view.addSubview(submitButton)
+        view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
         submitButton.addAction(
             UIAction { [weak self] _ in
-                let vc = HummingResultViewController()
-                self?.navigationController?.pushViewController(vc, animated: true)
+                
         }, for: .touchUpInside)
         submitButton.isEnabled = false
-    }
-
-    private func setupPlaceholder() {
-        submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asGreen)
     }
 
     private func setupLayout() {
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         guideLabel.translatesAutoresizingMaskIntoConstraints = false
+        musicPanel.translatesAutoresizingMaskIntoConstraints = false
         hummingPanel.translatesAutoresizingMaskIntoConstraints = false
-        rehummingPanel.translatesAutoresizingMaskIntoConstraints = false
-        recordButton.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             progressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -73,29 +100,25 @@ final class RehummingViewController: UIViewController {
             progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             progressBar.heightAnchor.constraint(equalToConstant: 16),
 
-            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 56),
+            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 20),
             guideLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-            hummingPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 68),
-            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            hummingPanel.heightAnchor.constraint(equalToConstant: 64),
+            musicPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 20),
+            musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 48),
+            musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -48),
 
-            rehummingPanel.topAnchor.constraint(equalTo: hummingPanel.bottomAnchor, constant: 16),
-            rehummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            rehummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            rehummingPanel.heightAnchor.constraint(equalToConstant: 64),
+            hummingPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 36),
+            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            hummingPanel.heightAnchor.constraint(equalToConstant: 84),
 
-            recordButton.topAnchor.constraint(equalTo: rehummingPanel.bottomAnchor, constant: 68),
-            recordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
+            submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
 
-            submitButton.bottomAnchor.constraint(equalTo: submissionStatus.topAnchor, constant: -24),
-            submitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            submitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            submitButton.heightAnchor.constraint(equalToConstant: 64),
-
-            submissionStatus.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
-            submissionStatus.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
+            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
 }

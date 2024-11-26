@@ -14,8 +14,10 @@ public struct RepsotioryAssembly: Assembly {
         
         container.register(AnswersRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return AnswersRepository(
-                mainRepository: mainRepository
+                mainRepository: mainRepository,
+                networkManager: networkManager
             )
         }
         
@@ -88,6 +90,13 @@ public struct RepsotioryAssembly: Assembly {
         container.register(SubmitsRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return SubmitsRepository(
+                mainRepository: mainRepository
+            )
+        }
+        
+        container.register(HummingResultRepositoryProtocol.self) { r in
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            return HummingResultRepository(
                 mainRepository: mainRepository
             )
         }

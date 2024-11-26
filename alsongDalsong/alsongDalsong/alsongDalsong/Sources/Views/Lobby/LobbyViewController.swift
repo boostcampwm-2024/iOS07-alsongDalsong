@@ -115,7 +115,9 @@ final class LobbyViewController: UIViewController {
         
         startButton.addAction(UIAction { [weak self] _ in
             let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
-            let selectMusicViewModel = SelectMusicViewModel(musicRepository: musicRepository)
+            let answerRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
+            
+            let selectMusicViewModel = SelectMusicViewModel(musicRepository: musicRepository, answerRepository: answerRepository)
             let selectMusicViewController = SelectMusicViewController(selectMusicViewModel: selectMusicViewModel)
             self?.navigationController?.pushViewController(selectMusicViewController, animated: true)
         }, for: .touchUpInside)
@@ -123,7 +125,7 @@ final class LobbyViewController: UIViewController {
     
     private func setupLayout() {
         let lobbyView = UIHostingController(rootView: LobbyView(viewModel: viewmodel))
-       hostingController = lobbyView
+        hostingController = lobbyView
         lobbyView.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(lobbyView.view)
         view.addSubview(startButton)

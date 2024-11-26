@@ -3,13 +3,14 @@ import ASRepository
 import Combine
 import Foundation
 
-final class RehummingViewModel {
+final class RehummingViewModel: @unchecked Sendable {
     @Published public private(set) var dueTime: Date?
-    @Published public private(set) var round: UInt8?
+    @Published public private(set) var recordOrder: UInt8?
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
-    @Published public private(set) var humming: Data?
-    @Published public private(set) var rehumming: Data?
+    @Published public private(set) var music: Music?
+    @Published public private(set) var recordedData: Data?
+    @Published public private(set) var isRecording: Bool = false
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
@@ -29,18 +30,48 @@ final class RehummingViewModel {
         self.submitsRepository = submitsRepository
         bindGameStatus()
         bindSubmitStatus()
-        bindHumming()
     }
 
-    func bindGameStatus() {
+    func submitHumming() {
+        
+    }
+
+    func startRecording() {
+        isRecording = true
+    }
+
+    func togglePlayPause() {
+        Task {
+            await AudioHelper.shared.startPlaying(file: recordedData)
+        }
+    }
+
+    func updateRecordedData(with data: Data) {
+        // TODO: - data가 empty일 때(녹음이 제대로 되지 않았을 때 사용자 오류처리 필요
+        guard !data.isEmpty else { return }
+        recordedData = data
+        isRecording = false
+    }
+    
+    private func bindRecord(on recordOrder: UInt8) {
+        recordsRepository.getHumming(on: recordOrder)
+            .sink { [weak self] record in
+                guard let record else { return }
+                self?.music = Music(record)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func bindGameStatus() {
         gameStatusRepository.getDueTime()
             .sink { [weak self] newDueTime in
                 self?.dueTime = newDueTime
             }
             .store(in: &cancellables)
-        gameStatusRepository.getRound()
-            .sink { [weak self] newRound in
-                self?.round = newRound
+        gameStatusRepository.getRecordOrder()
+            .sink { [weak self] newRecordOrder in
+                self?.recordOrder = newRecordOrder
+                self?.bindRecord(on: newRecordOrder)
             }
             .store(in: &cancellables)
         gameStatusRepository.getStatus()
@@ -50,45 +81,15 @@ final class RehummingViewModel {
             .store(in: &cancellables)
     }
 
-    func bindSubmitStatus() {
+    private func bindSubmitStatus() {
         let playerPublisher = playersRepository.getPlayers()
         let submitsPublisher = submitsRepository.getSubmits()
 
         playerPublisher.zip(submitsPublisher)
             .sink { [weak self] players, submits in
-                let submitStatus = (submits: String(submits.count),
-                                    total: String(players.count))
+                let submitStatus = (submits: String(submits.count), total: String(players.count))
                 self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)
-    }
-
-    func bindHumming() {
-        recordsRepository.getHumming(on: round ?? 0)
-            .sink { [weak self] newHumming in
-                self?.humming = newHumming
-            }
-            .store(in: &cancellables)
-    }
-
-    @MainActor
-    func startRecording() {
-        Task {
-            let data = await AudioHelper.shared.startRecording()
-            rehumming = data
-        }
-    }
-
-    @MainActor
-    func startPlaying(_ type: HummingType) {
-        Task {
-            await AudioHelper.shared.startPlaying(
-                file: type == .humming ? humming : rehumming
-            )
-        }
-    }
-
-    enum HummingType {
-        case humming, rehumming
     }
 }
