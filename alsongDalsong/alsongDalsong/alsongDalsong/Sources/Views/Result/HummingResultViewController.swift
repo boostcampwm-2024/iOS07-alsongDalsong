@@ -122,9 +122,13 @@ class HummingResultViewController: UIViewController {
         viewModel?.$currentsubmit
             .receive(on: DispatchQueue.main)
             .sink { [weak self] submit in
+                guard let self,
+                      let viewModel = self.viewModel else { return }
                 if (submit != nil) {
-                    self?.resultTableView.reloadData()
-                    self?.button.isHidden = false
+                    self.resultTableView.reloadData()
+                    if viewModel.isHost {
+                        self.button.isHidden = false
+                    }
                 }
             }
             .store(in: &cancellables)

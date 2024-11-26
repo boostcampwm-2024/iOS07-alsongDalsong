@@ -8,6 +8,7 @@ final class HummingResultViewModel {
     private var hummingResultRepository: HummingResultRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
     private var gameStatusRepository: GameStatusRepositoryProtocol
+    private var playerRepository: PlayersRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
     @Published var isNext: Bool = false
@@ -15,6 +16,7 @@ final class HummingResultViewModel {
     @Published var currentRecords: [ASEntity.Record] = []
     @Published var currentsubmit: Answer?
     @Published var recordOrder: UInt8? = 0
+    @Published var isHost: Bool = false
     
     // 미리 받아놓을 정보 배열
     private var recordsResult: [ASEntity.Record] = []
@@ -24,10 +26,12 @@ final class HummingResultViewModel {
     
     init(hummingResultRepository: HummingResultRepositoryProtocol,
          avatarRepository: AvatarRepositoryProtocol,
-         gameStatusRepository: GameStatusRepositoryProtocol) {
+         gameStatusRepository: GameStatusRepositoryProtocol,
+         playerRepository: PlayersRepositoryProtocol) {
         self.hummingResultRepository = hummingResultRepository
         self.avatarRepository = avatarRepository
         self.gameStatusRepository = gameStatusRepository
+        self.playerRepository = playerRepository
         fetchResult()
     }
     
@@ -49,6 +53,13 @@ final class HummingResultViewModel {
             }
             .store(in: &cancellables)
         
+        playerRepository.isHost()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHost in
+                self?.isHost = isHost
+            }
+            .store(in: &cancellables)
+        
         Publishers.CombineLatest(gameStatusRepository.getStatus(), gameStatusRepository.getRecordOrder())
             .receive(on: DispatchQueue.main)
             .sink { status, order in
@@ -61,7 +72,6 @@ final class HummingResultViewModel {
     
     @MainActor
     func startPlaying() {
-        //TODO: 현재 file은 Data타입이나 URL타입으로 바뀔 예정, 추후 로직 수정 필요
         Task {
             while !recordsResult.isEmpty {
                 currentRecords.append(recordsResult.removeFirst())
