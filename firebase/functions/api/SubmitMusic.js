@@ -75,7 +75,6 @@ module.exports.submitMusic = onRequest({ region: 'asia-southeast1' }, async (req
 
     res.status(200).json({ status: 'success' });
   } catch (error) {
-    console.log('에러러', error);
     res.status(500).json({ error: 'Failed to create room' });
   }
 });

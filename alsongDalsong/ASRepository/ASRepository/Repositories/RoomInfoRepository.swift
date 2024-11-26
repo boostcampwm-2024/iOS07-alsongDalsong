@@ -22,4 +22,11 @@ public final class RoomInfoRepository: RoomInfoRepositoryProtocol {
             .compactMap { $0 }
             .eraseToAnyPublisher()
     }
+    
+    public func getRecordOrder() -> AnyPublisher<UInt8, Never> {
+        mainRepository.recordOrder
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
 }

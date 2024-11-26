@@ -36,7 +36,8 @@ final class ASAvatarCircleView: UIView {
         ])
     }
     
-    func setImage(imageData: Data) {
+    func setImage(imageData: Data?) {
+        guard let imageData else { return }
         imageView.image = UIImage(data: imageData)
     }
 }
