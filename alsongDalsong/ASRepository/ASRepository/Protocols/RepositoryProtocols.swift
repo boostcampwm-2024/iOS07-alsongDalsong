@@ -19,10 +19,12 @@ public protocol PlayersRepositoryProtocol {
     func getPlayers() -> AnyPublisher<[Player], Never>
     func getHost() -> AnyPublisher<Player, Never>
     func isHost() -> AnyPublisher<Bool, Never>
+    func getPlayersCount() -> AnyPublisher<Int, Never>
 }
 
 public protocol RecordsRepositoryProtocol {
     func getRecords() -> AnyPublisher<[ASEntity.Record], Never>
+    func getRecordsCount(on recordOrder: Int) -> AnyPublisher<Int, Never>
     func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never>
 }
 

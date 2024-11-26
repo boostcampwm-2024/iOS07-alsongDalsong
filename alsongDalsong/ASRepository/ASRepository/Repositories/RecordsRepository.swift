@@ -1,4 +1,7 @@
+import ASDecoder
+import ASEncoder
 import ASEntity
+import ASNetworkKit
 import Combine
 import Foundation
 
@@ -34,5 +37,9 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
                 return hummings.first(where: { $0.player?.id == targetId })
             }
             .eraseToAnyPublisher()
+    }
+
+    public func uploadRecording(_ record: Data) async throws -> Bool {
+        return try await mainRepository.postRecording(record)
     }
 }

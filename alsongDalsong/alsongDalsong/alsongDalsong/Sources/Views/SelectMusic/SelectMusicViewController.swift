@@ -67,13 +67,13 @@ class SelectMusicViewController: UIViewController {
             let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
             let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
             let answersRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
-            let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
+            let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
             
             let hummingViewModel = HummingViewModel(
                 gameStatusRepository: gameStatusRepository,
                 playersRepository: playersRepository,
                 answersRepository: answersRepository,
-                submitsRepository: submitsRepository
+                recordsRepository: recordsRepository
             )
             
             self?.navigationController?.pushViewController(HummingViewController(vm: hummingViewModel), animated: true)

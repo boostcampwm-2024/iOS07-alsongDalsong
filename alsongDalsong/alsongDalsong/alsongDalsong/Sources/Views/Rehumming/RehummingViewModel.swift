@@ -15,19 +15,16 @@ final class RehummingViewModel: @unchecked Sendable {
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
     private let recordsRepository: RecordsRepositoryProtocol
-    private let submitsRepository: SubmitsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
 
     public init(
         gameStatusRepository: GameStatusRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
-        recordsRepository: RecordsRepositoryProtocol,
-        submitsRepository: SubmitsRepositoryProtocol
+        recordsRepository: RecordsRepositoryProtocol
     ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
         self.recordsRepository = recordsRepository
-        self.submitsRepository = submitsRepository
         bindGameStatus()
         bindSubmitStatus()
     }
@@ -82,12 +79,12 @@ final class RehummingViewModel: @unchecked Sendable {
     }
 
     private func bindSubmitStatus() {
-        let playerPublisher = playersRepository.getPlayers()
-        let submitsPublisher = submitsRepository.getSubmits()
+        let playerPublisher = playersRepository.getPlayersCount()
+        let recordsPublisher = recordsRepository.getRecordsCount(on: Int(recordOrder ?? 0))
 
-        playerPublisher.zip(submitsPublisher)
-            .sink { [weak self] players, submits in
-                let submitStatus = (submits: String(submits.count), total: String(players.count))
+        playerPublisher.combineLatest(recordsPublisher)
+            .sink { [weak self] playersCount, recordsCount in
+                let submitStatus = (submits: String(recordsCount), total: String(playersCount))
                 self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)
