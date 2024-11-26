@@ -104,7 +104,6 @@ final class SelectMusicViewModel: ObservableObject {
     
     @MainActor
     func submitMusic() {
-        guard let artworkBackgroundColor = selectedSong.artwork?.backgroundColor?.toHex() else { return }
         let answer = ASEntity.Music(
             title: selectedSong.title,
             artist: selectedSong.artistName,
@@ -113,7 +112,7 @@ final class SelectMusicViewModel: ObservableObject {
                 height: 300
             ),
             previewUrl: selectedSong.previewURL,
-            artworkBackgroundColor: artworkBackgroundColor
+            artworkBackgroundColor: selectedSong.artwork?.backgroundColor?.toHex()
         )
         Task {
             do {

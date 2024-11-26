@@ -42,7 +42,7 @@ class SelectMusicViewController: UIViewController {
     func setupLayout() {
         let musicView = SelectMusicView(viewModel: selectMusicViewModel)
         selectMusicView = UIHostingController(rootView: musicView)
-        guard let selectMusicView = selectMusicView else { return }
+        guard let selectMusicView else { return }
         
         view.addSubview(progressBar)
         view.addSubview(selectMusicView.view)
@@ -94,8 +94,7 @@ class SelectMusicViewController: UIViewController {
         }, for: .touchUpInside)
         
         progressBar.setCompletionHandler { [weak self] in
-           
+            self?.selectMusicViewModel.submitMusic()
         }
-        
     }
 }

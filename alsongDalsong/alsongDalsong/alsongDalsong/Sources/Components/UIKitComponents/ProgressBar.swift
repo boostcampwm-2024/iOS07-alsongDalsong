@@ -6,7 +6,7 @@ final class ProgressBar: UIView {
     private var cancellables = Set<AnyCancellable>()
     private var targetDate: Date?
     private var progressBarWidthConstraint: NSLayoutConstraint?
-    
+
     typealias CompletionHandler = () -> Void
     private var completionHandler: CompletionHandler?
     private var isCancelled = false
@@ -62,6 +62,8 @@ final class ProgressBar: UIView {
     private func startProgressAnimation() {
         guard let targetDate else { return }
         let timeInterval = targetDate.timeIntervalSince(Date.now)
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
 
         UIView.animate(
             withDuration: timeInterval,

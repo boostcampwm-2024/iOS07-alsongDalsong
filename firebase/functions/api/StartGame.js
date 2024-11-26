@@ -64,6 +64,20 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
       res.status(400).json({ error: 'Invalid mode' });
     }
   } catch (error) {
+    console.log('stratGame', error);
     res.status(500).json({ error: 'Failed to start game' });
   }
 });
+
+/**
+ * 배열을 랜덤으로 섞는 유틸리티 함수
+ * @param {Array} array - 섞을 배열
+ * @returns {Array} - 랜덤으로 섞인 배열
+ */
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
