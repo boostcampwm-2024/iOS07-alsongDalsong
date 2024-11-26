@@ -4,11 +4,13 @@ import ASRepository
 import ASAudioKit
 import ASEntity
 
-final class HummingResultViewModel {
+final class HummingResultViewModel: @unchecked Sendable {
     private var hummingResultRepository: HummingResultRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
     private var gameStatusRepository: GameStatusRepositoryProtocol
     private var playerRepository: PlayersRepositoryProtocol
+    private var roomActionRepository: RoomActionRepositoryProtocol
+    private var roomInfoRepository: RoomInfoRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
     @Published var isNext: Bool = false
@@ -21,17 +23,22 @@ final class HummingResultViewModel {
     // 미리 받아놓을 정보 배열
     private var recordsResult: [ASEntity.Record] = []
     private var submitsResult: Answer?
+    private var roomNumber: String = ""
     
     var hummingResult: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)] = []
     
     init(hummingResultRepository: HummingResultRepositoryProtocol,
          avatarRepository: AvatarRepositoryProtocol,
          gameStatusRepository: GameStatusRepositoryProtocol,
-         playerRepository: PlayersRepositoryProtocol) {
+         playerRepository: PlayersRepositoryProtocol,
+         roomActionRepository: RoomActionRepositoryProtocol,
+         roomInfoRepository: RoomInfoRepositoryProtocol) {
         self.hummingResultRepository = hummingResultRepository
         self.avatarRepository = avatarRepository
         self.gameStatusRepository = gameStatusRepository
         self.playerRepository = playerRepository
+        self.roomActionRepository = roomActionRepository
+        self.roomInfoRepository = roomInfoRepository
         fetchResult()
     }
     
@@ -57,6 +64,13 @@ final class HummingResultViewModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isHost in
                 self?.isHost = isHost
+            }
+            .store(in: &cancellables)
+        
+        roomInfoRepository.getRoomNumber()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] roomNumber in
+                self?.roomNumber = roomNumber
             }
             .store(in: &cancellables)
         
@@ -144,6 +158,16 @@ final class HummingResultViewModel {
             Just(nil)
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()
+        }
+    }
+    
+    func changeRecordOrder() {
+        Task {
+            do {
+                try await self.roomActionRepository.changeRecordOrder(roomNumber: roomNumber)
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }

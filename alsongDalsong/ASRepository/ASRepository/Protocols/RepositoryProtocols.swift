@@ -51,6 +51,7 @@ public protocol RoomActionRepositoryProtocol {
     func leaveRoom() async throws -> Bool
     func startGame(roomNumber: String) async throws -> Bool
     func changeMode(roomNumber: String, mode: Mode) async throws -> Bool
+    func changeRecordOrder(roomNumber: String) async throws -> Bool
 }
 
 public protocol MusicRepositoryProtocol {

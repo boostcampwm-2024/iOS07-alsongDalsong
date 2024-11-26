@@ -70,6 +70,17 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         return isSuccess
     }
     
+    public func changeRecordOrder(roomNumber: String) async throws -> Bool {
+        let response: [String: Bool] = try await self.sendRequest(
+            endpointPath: .changeMode,
+            requestBody: ["roomNumber": roomNumber, "userId": ASFirebaseAuth.myID]
+        )
+        guard let isSuccess = response["success"] as? Bool else {
+            throw ASNetworkErrors.responseError
+        }
+        return isSuccess
+    }
+    
     private func sendRequest<T: Decodable>(endpointPath: FirebaseEndpoint.Path, requestBody: [String: Any]) async throws -> T {
         let endpoint = FirebaseEndpoint(path: endpointPath, method: .post)
             .update(\.headers, with: ["Content-Type": "application/json"])

@@ -60,12 +60,7 @@ class HummingResultViewController: UIViewController {
                 if viewModel.hummingResult.count == 1 {
                     button.setConfiguration(title: "완료", backgroundColor: .asYellow)
                 }
-                //TODO: 여기다가는 이제 firebase에 recordOrder 바꾸는 함수 호출
-                viewModel.nextResultFetch()
-                setMusicResultView(musicName: viewModel.currentResult?.music?.title ?? "",
-                                   singerName: viewModel.currentResult?.music?.artist ?? "")
-                resultTableView.reloadData()
-                button.isHidden = true
+                viewModel.changeRecordOrder()
             }
             else {
                 let vc = self.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
