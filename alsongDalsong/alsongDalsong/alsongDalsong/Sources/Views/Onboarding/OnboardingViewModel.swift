@@ -84,7 +84,7 @@ final class OnboardingViewModel {
     }
     
     @MainActor
-    func createRoom() {
+    func createRoom() async {
         guard let selectedAvatar else { return }
         buttonEnabled = false
         Task {

@@ -116,10 +116,19 @@ final class OnboardingViewController: UIViewController {
     private func setAction() {
         createRoomButton.addAction(
             UIAction { [weak self] _ in
-                if let nickname = self?.nickNamePanel.text, !nickname.isEmpty {
-                    self?.viewmodel?.setNickname(with: nickname)
-                }
-                self?.viewmodel?.createRoom()
+                self?.presentLoadingView(
+                    .init(
+                        progressText: .joinRoom,
+                        load: {
+                            if let nickname = self?.nickNamePanel.text,
+                               !nickname.isEmpty
+                            {
+                                self?.viewmodel?.setNickname(with: nickname)
+                            }
+                            await self?.viewmodel?.createRoom()
+                        }
+                    )
+                )
             },
             for: .touchUpInside
         )
@@ -127,24 +136,27 @@ final class OnboardingViewController: UIViewController {
         if inviteCode.isEmpty {
             joinRoomButton.addAction(
                 UIAction { [weak self] _ in
-//                    let joinAlert = ASAlertController(.load)
-                    let joinAlert = ASAlertController(
-                        titleText: .joinRoom,
-                        textFieldPlaceholder: .roomNumber,
-                        isUppercased: true
-                    ) { [weak self] roomNumber in
-                        if let nickname = self?.nickNamePanel.text, !nickname.isEmpty {
-                            self?.viewmodel?.setNickname(with: nickname)
-                        }
-                        self?.viewmodel?.joinRoom(roomNumber: roomNumber)
-                    }
-                    self?.present(joinAlert, animated: true, completion: nil)
+                    self?.presentAlert(
+                        .init(
+                            titleText: .joinRoom,
+                            textFieldPlaceholder: .roomNumber,
+                            isUppercased: true,
+                            doneButtonCompletion: { [weak self] roomNumber in
+                                if let nickname = self?.nickNamePanel.text,
+                                   !nickname.isEmpty
+                                {
+                                    self?.viewmodel?.setNickname(with: nickname)
+                                }
+                                self?.viewmodel?.joinRoom(roomNumber: roomNumber)
+                            }
+                        )
+                    )
                 },
                 for: .touchUpInside
             )
         } else {
             joinRoomButton.addAction(UIAction { [weak self] _ in
-                if let nickname = self?.nickNamePanel.text, nickname.count > 0 {
+                if let nickname = self?.nickNamePanel.text, !nickname.isEmpty {
                     self?.viewmodel?.setNickname(with: nickname)
                 }
                 guard let roomNumber = self?.inviteCode else { return }
@@ -236,5 +248,15 @@ extension OnboardingViewController {
         static let craeteButtonTitle = "방 생성하기!"
         static let joinButtonTitle = "방 참가하기!"
         static let logoImageName = "logo"
+    }
+}
+
+extension UIViewController {
+    func presentAlert(_ viewcontrollerToPresent: ASAlertController) {
+        present(viewcontrollerToPresent, animated: true, completion: nil)
+    }
+
+    func presentLoadingView(_ viewcontrollerToPresent: ASAlertController) {
+        present(viewcontrollerToPresent, animated: true, completion: nil)
     }
 }

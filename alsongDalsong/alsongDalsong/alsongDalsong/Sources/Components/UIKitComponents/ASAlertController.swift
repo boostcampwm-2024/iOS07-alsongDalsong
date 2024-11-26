@@ -12,6 +12,7 @@ class ASAlertController: UIViewController {
     private var style: ASAlertStyle = .default
     var doneButtonCompletion: ((String) -> Void)?
     var cancelButtonCompletion: (() -> Void)?
+    var load: (() async -> Void)?
     var text: String {
         textField.text ?? ""
     }
@@ -152,8 +153,14 @@ class ASAlertController: UIViewController {
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.startAnimating()
         progressView.style = .large
-        progressView.hidesWhenStopped = true
         progressView.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 12).isActive = true
+        progressView.hidesWhenStopped = true
+        Task {
+            if let load = load {
+                await load()
+                self.dismiss(animated: true)
+            }
+        }
     }
 
     private func setProgressText() {
@@ -253,10 +260,15 @@ extension ASAlertController {
         modalPresentationStyle = .overFullScreen
     }
 
-    convenience init(_ type: ASAlertStyle = .load, progressText: ASAlertText.ProgressText) {
+    convenience init(
+        _ type: ASAlertStyle = .load,
+        progressText: ASAlertText.ProgressText,
+        load: (() async -> Void)? = nil
+    ) {
         self.init()
         style = type
         self.progressText = progressText
+        self.load = load
         
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
