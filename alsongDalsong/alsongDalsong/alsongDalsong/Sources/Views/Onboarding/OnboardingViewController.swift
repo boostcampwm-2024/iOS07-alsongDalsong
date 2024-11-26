@@ -12,7 +12,7 @@ final class OnboardingViewController: UIViewController {
     private var avatarRefreshButton = ASRefreshButton(size: 28)
     private var viewmodel: OnboardingViewModel?
     private var inviteCode: String
-    private var cancleables = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
 
     init(viewmodel: OnboardingViewModel, inviteCode: String) {
         self.viewmodel = viewmodel
@@ -31,7 +31,7 @@ final class OnboardingViewController: UIViewController {
         setupUI()
         setupLayout()
         setAction()
-        setConfiguration()
+        setButton()
         hideKeyboard()
         bind()
     }
@@ -126,7 +126,7 @@ final class OnboardingViewController: UIViewController {
         viewmodel?.joinRoom(roomNumber: inviteCode)
     }
 
-    func setConfiguration() {
+    func setButton() {
         createRoomButton.setConfiguration(
             systemImageName: "",
             title: Constants.craeteButtonTitle,
@@ -145,14 +145,14 @@ final class OnboardingViewController: UIViewController {
             .sink { [weak self] nickname in
                 self?.nickNamePanel.updateTextField(placeholder: nickname)
             }
-            .store(in: &cancleables)
+            .store(in: &cancellables)
         viewmodel?.$avatarData
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
             .sink { [weak self] data in
                 self?.avatarView.setImage(imageData: data)
             }
-            .store(in: &cancleables)
+            .store(in: &cancellables)
         viewmodel?.$roomNumber
             .filter { !$0.isEmpty }
             .receive(on: DispatchQueue.main)
@@ -173,14 +173,14 @@ final class OnboardingViewController: UIViewController {
                 let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
                 self?.navigationController?.pushViewController(lobbyViewController, animated: false)
             }
-            .store(in: &cancleables)
+            .store(in: &cancellables)
         viewmodel?.$buttonEnabled
             .receive(on: DispatchQueue.main)
             .sink { [weak self] enabled in
                 self?.createRoomButton.isEnabled = enabled
                 self?.joinRoomButton.isEnabled = enabled
             }
-            .store(in: &cancleables)
+            .store(in: &cancellables)
 
         viewmodel?.$joinResponse
             .receive(on: DispatchQueue.main)
@@ -193,7 +193,7 @@ final class OnboardingViewController: UIViewController {
                     self?.present(joinFailedAlert, animated: true, completion: nil)
                 }
             }
-            .store(in: &cancleables)
+            .store(in: &cancellables)
     }
 }
 
@@ -239,8 +239,8 @@ extension OnboardingViewController {
 
 // MARK: - KeyboardObserve
 
-extension OnboardingViewController {
-    fileprivate func observeKeyboard() {
+private extension OnboardingViewController {
+    func observeKeyboard() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(_:)),
