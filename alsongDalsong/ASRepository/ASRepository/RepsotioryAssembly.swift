@@ -89,8 +89,10 @@ public struct RepsotioryAssembly: Assembly {
         
         container.register(SubmitsRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return SubmitsRepository(
-                mainRepository: mainRepository
+                mainRepository: mainRepository,
+                networkManager: networkManager
             )
         }
         
