@@ -38,6 +38,7 @@ public protocol SelectedRecordsRepositoryProtocol {
 
 public protocol SubmitsRepositoryProtocol {
     func getSubmits() -> AnyPublisher<[Answer], Never>
+    func submitAnswer(answer: Music) async throws -> Bool
 }
 
 public protocol AvatarRepositoryProtocol {
