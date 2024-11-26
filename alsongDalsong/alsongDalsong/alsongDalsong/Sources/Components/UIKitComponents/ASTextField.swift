@@ -6,13 +6,13 @@ class ASTextField: UITextField {
     }
 
     func setConfiguration(
-        placeholder: String = "텍스트를 입력하세요",
+        placeholder: String?,
         backgroundColor: UIColor = .asSystem,
         textSize: CGFloat = 32
     ) {
         layer.cornerRadius = 12
 
-        attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [.foregroundColor: UIColor.lightGray])
+        attributedPlaceholder = NSAttributedString(string: placeholder ?? "", attributes: [.foregroundColor: UIColor.lightGray])
         self.backgroundColor = backgroundColor
         font = UIFont.font(.dohyeon, ofSize: textSize)
         textColor = .asBlack
