@@ -12,7 +12,7 @@ final class GameNavigationController {
     
     private var gameInfo: GameState? {
         didSet {
-            guard let gameInfo = gameInfo else { return }
+            guard let gameInfo else { return }
             updateViewControllers(state: gameInfo)
         }
     }
@@ -32,6 +32,7 @@ final class GameNavigationController {
     public func setConfiguration() {
         gameStateRepository.getGameState()
             .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
             .sink { [weak self] gameState in
                 self?.gameInfo = gameState
             }
@@ -57,23 +58,28 @@ final class GameNavigationController {
     }
     
     private func navigateToLobby() {
+        if navigationController.topViewController is LobbyViewController {
+            return
+        }
+        
         if let vc = navigationController.viewControllers.first(where: { $0 is LobbyViewController }) {
             navigationController.popToViewController(vc, animated: true)
-        } else {
-            let roomInfoRepository: RoomInfoRepositoryProtocol = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
-            let playersRepository: PlayersRepositoryProtocol = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-            let roomActionRepository: RoomActionRepositoryProtocol = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
-            let avatarRepository: AvatarRepositoryProtocol = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
-        
-            let vm = LobbyViewModel(
-                playersRepository: playersRepository,
-                roomInfoRepository: roomInfoRepository,
-                roomActionRepository: roomActionRepository,
-                avatarRepository: avatarRepository
-            )
-            let vc = LobbyViewController(lobbyViewModel: vm)
-            navigationController.pushViewController(vc, animated: true)
+            return
         }
+        
+        let roomInfoRepository: RoomInfoRepositoryProtocol = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
+        let playersRepository: PlayersRepositoryProtocol = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
+        let roomActionRepository: RoomActionRepositoryProtocol = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
+        let avatarRepository: AvatarRepositoryProtocol = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
+        
+        let vm = LobbyViewModel(
+            playersRepository: playersRepository,
+            roomInfoRepository: roomInfoRepository,
+            roomActionRepository: roomActionRepository,
+            avatarRepository: avatarRepository
+        )
+        let vc = LobbyViewController(lobbyViewModel: vm)
+        navigationController.pushViewController(vc, animated: true)
     }
     
     private func navigateToSelectMusic() {

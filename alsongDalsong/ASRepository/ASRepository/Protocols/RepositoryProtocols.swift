@@ -60,7 +60,7 @@ public protocol MusicRepositoryProtocol {
 }
 
 public protocol GameStateRepositoryProtocol {
-    func getGameState() -> AnyPublisher<GameState, Never>
+    func getGameState() -> AnyPublisher<GameState?, Never>
 }
 
 public protocol HummingResultRepositoryProtocol {

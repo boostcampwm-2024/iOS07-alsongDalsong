@@ -1,8 +1,8 @@
 public struct GameState {
-    let mode: Mode?
-    let recordOrder: UInt8?
-    let status: Status?
-    let round: UInt8?
+    public let mode: Mode?
+    public let recordOrder: UInt8?
+    public let status: Status?
+    public let round: UInt8?
 
     public init(
         mode: Mode?,
