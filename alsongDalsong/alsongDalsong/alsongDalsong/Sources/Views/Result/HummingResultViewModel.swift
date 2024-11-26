@@ -50,7 +50,7 @@ final class HummingResultViewModel {
         Task {
             while !recordsResult.isEmpty {
                 currentRecords.append(recordsResult.removeFirst())
-                await AudioHelper.shared.startPlaying(file: currentRecords.last?.file)
+//                await AudioHelper.shared.startPlaying(file: currentRecords.last?.file)
                 await waitForPlaybackToFinish()
             }
             currentsubmit = submitsResult
