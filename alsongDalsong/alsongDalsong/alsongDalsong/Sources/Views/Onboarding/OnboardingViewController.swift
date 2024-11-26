@@ -14,7 +14,7 @@ final class OnboardingViewController: UIViewController {
     private var inviteCode: String
     private var gameNavigationController: GameNavigationController?
     private var cancellables = Set<AnyCancellable>()
-  
+
     init(viewmodel: OnboardingViewModel, inviteCode: String) {
         viewModel = viewmodel
         self.inviteCode = inviteCode
@@ -63,17 +63,17 @@ final class OnboardingViewController: UIViewController {
         let safeArea = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
-            logoImageView.widthAnchor.constraint(equalToConstant: 355),
-            logoImageView.heightAnchor.constraint(equalToConstant: 161),
+            logoImageView.widthAnchor.constraint(equalToConstant: 356),
+            logoImageView.heightAnchor.constraint(equalToConstant: 160),
             logoImageView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            logoImageView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 50),
+            logoImageView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 48),
 
             avatarView.widthAnchor.constraint(equalToConstant: 200),
             avatarView.heightAnchor.constraint(equalToConstant: 200),
             avatarView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
 
-            avatarRefreshButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 231),
-            avatarRefreshButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 352),
+            avatarRefreshButton.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: -56),
+            avatarRefreshButton.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: -56),
             avatarRefreshButton.widthAnchor.constraint(equalToConstant: 60),
             avatarRefreshButton.heightAnchor.constraint(equalToConstant: 60),
 
@@ -111,7 +111,7 @@ final class OnboardingViewController: UIViewController {
             },
             for: .touchUpInside
         )
-      
+
         avatarRefreshButton.addAction(
             UIAction { [weak self] _ in
                 self?.viewModel?.refreshAvatars()
@@ -148,21 +148,18 @@ final class OnboardingViewController: UIViewController {
     }
 
     private func navigateToLobby(with roomNumber: String) {
-        let mainRepository = DIContainer.shared.resolve(MainRepositoryProtocol.self)
-        let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-        let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
-        let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
-        let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
-
+        let mainRepository: MainRepositoryProtocol = DIContainer.shared.resolve(MainRepositoryProtocol.self)
         mainRepository.connectRoom(roomNumber: roomNumber)
-        let lobbyViewModel = LobbyViewModel(
-            playersRepository: playersRepository,
-            roomInfoRepository: roomInfoRepository,
-            roomActionRepository: roomActionRepository,
-            avatarRepository: avatarRepository
+        let gameStateRepository = DIContainer.shared.resolve(GameStateRepositoryProtocol.self)
+
+        guard let navigationController else { return }
+
+        gameNavigationController = GameNavigationController(
+            navigationController: navigationController,
+            gameStateRepository: gameStateRepository
         )
-        let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
-        navigationController?.pushViewController(lobbyViewController, animated: false)
+
+        gameNavigationController?.setConfiguration()
     }
 
     private func bind<T>(
@@ -190,21 +187,6 @@ final class OnboardingViewController: UIViewController {
             navigateToLobby(with: number)
         }
     }
-  
-    private func setGameNavigationController(roomNumber: String) {
-        let mainRepository: MainRepositoryProtocol = DIContainer.shared.resolve(MainRepositoryProtocol.self)
-        
-        mainRepository.connectRoom(roomNumber: roomNumber)
-        let gameStateRepository = DIContainer.shared.resolve(GameStateRepositoryProtocol.self)
-        
-        guard let navigationController else { return }
-        
-        gameNavigationController = GameNavigationController(
-            navigationController: navigationController,
-            gameStateRepository: gameStateRepository)
-        
-        gameNavigationController?.setConfiguration()
-    }
 
     private func autoJoinRoom() {
         if let nickname = nickNamePanel.text, !nickname.isEmpty {
@@ -212,7 +194,7 @@ final class OnboardingViewController: UIViewController {
         }
         joinRoom(with: inviteCode)
     }
-    
+
     private func setNicknameAndJoinRoom(with roomNumber: String) {
         if let nickname = nickNamePanel.text, !nickname.isEmpty {
             viewModel?.setNickname(with: nickname)
@@ -262,7 +244,7 @@ extension OnboardingViewController {
         let alert = ASAlertController(titleText: .createFailed)
         presentAlert(alert)
     }
-    
+
     func showCreateRoomLoading() {
         let alert = ASAlertController(progressText: .joinRoom) { [weak self] in
             await self?.setNicknameAndCreateRoom()
