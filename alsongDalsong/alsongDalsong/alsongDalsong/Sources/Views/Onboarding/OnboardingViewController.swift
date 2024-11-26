@@ -1,7 +1,6 @@
 import ASContainer
 import ASRepository
 import Combine
-import SwiftUI
 import UIKit
 
 final class OnboardingViewController: UIViewController {
@@ -39,24 +38,7 @@ final class OnboardingViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow(_:)),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide(_:)),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(appDidEnterBackground(_:)),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
+        observeKeyboard()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -112,64 +94,36 @@ final class OnboardingViewController: UIViewController {
         ])
     }
 
-    /// 화면상의 컴포넌트들에게 Action을 추가함
     private func setAction() {
         createRoomButton.addAction(
             UIAction { [weak self] _ in
-                self?.presentLoadingView(
-                    .init(
-                        progressText: .joinRoom,
-                        load: {
-                            if let nickname = self?.nickNamePanel.text,
-                               !nickname.isEmpty
-                            {
-                                self?.viewmodel?.setNickname(with: nickname)
-                            }
-                            await self?.viewmodel?.createRoom()
-                        }
-                    )
-                )
+                self?.showCreateRoomAlert()
             },
             for: .touchUpInside
         )
 
-        if inviteCode.isEmpty {
-            joinRoomButton.addAction(
-                UIAction { [weak self] _ in
-                    self?.presentAlert(
-                        .init(
-                            titleText: .joinRoom,
-                            textFieldPlaceholder: .roomNumber,
-                            isUppercased: true,
-                            doneButtonCompletion: { [weak self] roomNumber in
-                                if let nickname = self?.nickNamePanel.text,
-                                   !nickname.isEmpty
-                                {
-                                    self?.viewmodel?.setNickname(with: nickname)
-                                }
-                                self?.viewmodel?.joinRoom(roomNumber: roomNumber)
-                            }
-                        )
-                    )
-                },
-                for: .touchUpInside
-            )
-        } else {
-            joinRoomButton.addAction(UIAction { [weak self] _ in
-                if let nickname = self?.nickNamePanel.text, !nickname.isEmpty {
-                    self?.viewmodel?.setNickname(with: nickname)
-                }
-                guard let roomNumber = self?.inviteCode else { return }
-                self?.viewmodel?.joinRoom(roomNumber: roomNumber)
-
-            }, for: .touchUpInside)
-        }
+        joinRoomButton.addAction(
+            UIAction { [weak self] _ in
+                guard let inviteCode = self?.inviteCode else { return }
+                inviteCode.isEmpty ?
+                    self?.showRoomNumerInputAlert() :
+                    self?.automaticJoinRoom()
+            },
+            for: .touchUpInside
+        )
 
         avatarRefreshButton.addAction(
             UIAction { [weak self] _ in
                 self?.viewmodel?.refreshAvatars()
             }, for: .touchUpInside
         )
+    }
+
+    private func automaticJoinRoom() {
+        if let nickname = nickNamePanel.text, !nickname.isEmpty {
+            viewmodel?.setNickname(with: nickname)
+        }
+        viewmodel?.joinRoom(roomNumber: inviteCode)
     }
 
     func setConfiguration() {
@@ -251,3 +205,59 @@ extension OnboardingViewController {
     }
 }
 
+// MARK: - Alert
+
+extension OnboardingViewController {
+    func showRoomNumerInputAlert() {
+        presentAlert(
+            .init(
+                titleText: .joinRoom,
+                textFieldPlaceholder: .roomNumber,
+                isUppercased: true,
+                doneButtonCompletion: { [weak self] roomNumber in
+                    if let nickname = self?.nickNamePanel.text,
+                       !nickname.isEmpty
+                    {
+                        self?.viewmodel?.setNickname(with: nickname)
+                    }
+                    self?.viewmodel?.joinRoom(roomNumber: roomNumber)
+                }
+            )
+        )
+    }
+
+    func showCreateRoomAlert() {
+        let alert = ASAlertController(progressText: .joinRoom) {
+            if let nickname = self.nickNamePanel.text, !nickname.isEmpty {
+                self.viewmodel?.setNickname(with: nickname)
+            }
+            await self.viewmodel?.createRoom()
+        }
+        presentLoadingView(alert)
+    }
+}
+
+// MARK: - KeyboardObserve
+
+extension OnboardingViewController {
+    fileprivate func observeKeyboard() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidEnterBackground(_:)),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+    }
+}
