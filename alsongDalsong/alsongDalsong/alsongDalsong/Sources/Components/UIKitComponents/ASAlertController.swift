@@ -6,6 +6,7 @@ class ASAlertController: UIViewController {
     private var textFieldPlaceholder: ASAlertText.Placeholder?
     private var doneButtonTitle: ASAlertText.ButtonText?
     private var cancelButtonTitle: ASAlertText.ButtonText?
+    private var progressText: ASAlertText.ProgressText?
     private var isUppercased: Bool = false
     private var textMaxCount: Int = 6
     private var style: ASAlertStyle = .default
@@ -47,7 +48,8 @@ class ASAlertController: UIViewController {
     private func setAlertView() {
         alertView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         alertView.backgroundColor = .asLightGray
-        alertView.layer.borderWidth = 0
+        alertView.layer.borderWidth = 2.5
+        alertView.layer.borderColor = UIColor.asBlack.cgColor
         view.addSubview(alertView)
     }
 
@@ -66,7 +68,7 @@ class ASAlertController: UIViewController {
         NSLayoutConstraint.activate([
             alertView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             alertView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            alertView.widthAnchor.constraint(equalToConstant: 345),
+            alertView.widthAnchor.constraint(equalToConstant: style == .load ? 232 : 345),
 
             stackView.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 16),
             stackView.bottomAnchor.constraint(equalTo: alertView.bottomAnchor, constant: -16),
@@ -151,6 +153,17 @@ class ASAlertController: UIViewController {
         progressView.startAnimating()
         progressView.style = .large
         progressView.hidesWhenStopped = true
+        progressView.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 12).isActive = true
+    }
+
+    private func setProgressText() {
+        let progressLabel = UILabel()
+        progressLabel.text = progressText?.description
+        progressLabel.font = .font(forTextStyle: .title2)
+        progressLabel.textColor = .label
+        stackView.addArrangedSubview(progressLabel)
+        progressLabel.translatesAutoresizingMaskIntoConstraints = false
+        progressLabel.bottomAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 12).isActive = true
     }
 
     private func setupStyle() {
@@ -172,6 +185,7 @@ class ASAlertController: UIViewController {
                 setDoneButton()
             case .load:
                 setProgressView()
+                setProgressText()
         }
     }
 }
@@ -239,10 +253,11 @@ extension ASAlertController {
         modalPresentationStyle = .overFullScreen
     }
 
-    convenience init(_ type: ASAlertStyle) {
+    convenience init(_ type: ASAlertStyle = .load, progressText: ASAlertText.ProgressText) {
         self.init()
         style = type
-
+        self.progressText = progressText
+        
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
     }
@@ -314,6 +329,16 @@ enum ASAlertText {
         var description: String {
             switch self {
                 case .roomNumber: "000000"
+            }
+        }
+    }
+
+    enum ProgressText: CustomStringConvertible {
+        case joinRoom
+
+        var description: String {
+            switch self {
+                case .joinRoom: "방 정보를 가져오는 중..."
             }
         }
     }
