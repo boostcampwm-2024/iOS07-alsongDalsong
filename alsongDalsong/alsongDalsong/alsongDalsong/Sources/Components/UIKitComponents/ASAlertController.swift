@@ -269,7 +269,7 @@ extension ASAlertController {
         style = type
         self.progressText = progressText
         self.load = load
-        
+
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
     }
@@ -309,12 +309,14 @@ enum ASAlertText {
         case leaveRoom
         case joinRoom
         case joinFailed
+        case createFailed
 
         var description: String {
             switch self {
                 case .leaveRoom: "방을 나가시겠습니까?"
                 case .joinRoom: "게임 입장 코드를 입력하세요"
                 case .joinFailed: "참가에 실패하였습니다."
+                case .createFailed: "생성에 실패하였습니다."
             }
         }
     }
