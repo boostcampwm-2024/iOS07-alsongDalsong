@@ -127,6 +127,7 @@ final class SelectMusicViewModel: ObservableObject {
     @MainActor
     func searchMusic(text: String) {
         Task {
+            if text.isEmpty { return }
             searchList = await musicAPI.search(for: text)
         }
     }
