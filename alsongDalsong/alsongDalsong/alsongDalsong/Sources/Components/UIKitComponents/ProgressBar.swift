@@ -3,10 +3,13 @@ import UIKit
 
 final class ProgressBar: UIView {
     private let progressBar = UIView()
-    private var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
     private var targetDate: Date?
     private var progressBarWidthConstraint: NSLayoutConstraint?
+    
+    typealias CompletionHandler = () -> Void
+    private var completionHandler: CompletionHandler?
+    private var isCancelled = false
 
     init() {
         super.init(frame: .zero)
@@ -34,6 +37,14 @@ final class ProgressBar: UIView {
         setupProgressBar()
     }
 
+    public func setCompletionHandler(_ handler: @escaping CompletionHandler) {
+        completionHandler = handler
+    }
+
+    public func cancelCompletion() {
+        isCancelled = true
+    }
+
     private func setupProgressBar() {
         progressBar.backgroundColor = .asYellow
         addSubview(progressBar)
@@ -49,7 +60,7 @@ final class ProgressBar: UIView {
     }
 
     private func startProgressAnimation() {
-        guard let targetDate = targetDate else { return }
+        guard let targetDate else { return }
         let timeInterval = targetDate.timeIntervalSince(Date.now)
 
         UIView.animate(
@@ -60,8 +71,11 @@ final class ProgressBar: UIView {
                 self.progressBarWidthConstraint?.constant = 0
                 self.layoutIfNeeded()
             },
-            completion: { [weak self] _ in
-                self?.timer?.invalidate()
+            completion: { _ in
+                if !self.isCancelled {
+                    self.completionHandler?()
+                    return
+                }
             }
         )
     }

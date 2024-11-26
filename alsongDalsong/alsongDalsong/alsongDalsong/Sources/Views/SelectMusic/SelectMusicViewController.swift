@@ -36,6 +36,7 @@ class SelectMusicViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = .asLightGray
         selectCompleteButton.setConfiguration(title: "선택 완료", backgroundColor: .asGreen)
+        selectCompleteButton.isEnabled = false
     }
     
     func setupLayout() {
@@ -75,6 +76,7 @@ class SelectMusicViewController: UIViewController {
         selectCompleteButton.addAction(UIAction { [weak self] _ in
             self?.selectMusicViewModel.submitMusic()
             self?.selectMusicViewModel.stopMusic()
+            self?.progressBar.cancelCompletion()
             let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
             let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
             let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
@@ -90,6 +92,10 @@ class SelectMusicViewController: UIViewController {
             
             self?.navigationController?.pushViewController(HummingViewController(vm: hummingViewModel), animated: true)
         }, for: .touchUpInside)
-        selectCompleteButton.isEnabled = false
+        
+        progressBar.setCompletionHandler { [weak self] in
+           
+        }
+        
     }
 }
