@@ -40,12 +40,17 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
         order: shuffledOrders[index], // 랜덤으로 부여된 order 값
       }));
 
-      // Firestore에 업데이트
+      // 현재 시간에서 1분 뒤로 설정
+      const currentTime = new Date();
+      const dueTime = new Date(currentTime.getTime() + 1 * 60 * 1000); // 단위가 ms임
+      // TODO Player Order 설정
+      // TODO 게임 모드에 따른 라운드 설정 및 status 변경, records 초기화
       await roomRef.update({
         players: updatedPlayers,
         status: 'humming',
         round: 0,
         recordOrder: 0,
+        dueTime: dueTime,
       });
 
       res.status(200).json({ success: true });
@@ -53,7 +58,6 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
       res.status(400).json({ error: 'Invalid mode' });
     }
   } catch (error) {
-    console.error('Error starting game:', error);
     res.status(500).json({ error: 'Failed to start game' });
   }
 });

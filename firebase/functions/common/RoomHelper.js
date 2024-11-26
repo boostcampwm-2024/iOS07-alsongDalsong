@@ -24,7 +24,7 @@ function createRoomData(roomNumber, hostData) {
     status: null,
     records: [],
     answers: [],
-    duetime: null,
+    dueTime: null,
     selectedRecords: [],
     submits: [],
     recordOrder: null,

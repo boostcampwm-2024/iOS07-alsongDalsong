@@ -36,7 +36,6 @@ final class HummingViewModel: @unchecked Sendable {
     // TODO: - FB에 humming 보내기
     func submitHumming() {
         var myHumming = ASEntity.Record()
-//        myHumming.file = recordedData
     }
 
     func startRecording() {

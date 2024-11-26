@@ -38,6 +38,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navigationController.interactivePopGestureRecognizer?.isEnabled = false
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
+//        
+//        let firebaseManager = DIContainer.shared.resolve(ASFirebaseStorageProtocol.self)
+//        let networkManager = DIContainer.shared.resolve(ASNetworkManagerProtocol.self)
+//        let resultVM = HummingResultViewModel(hummingResultRepository: LocalHummingResultRepository(storageManager: firebaseManager,
+//                                                                                                    networkManager: networkManager),
+//                                              avatarRepository: DIContainer.shared.resolve(AvatarRepositoryProtocol.self),
+//                                              gameStatusRepository: DIContainer.shared.resolve(GameStatusRepositoryProtocol.self))
+//        let resultVC = HummingResultViewController(viewModel: resultVM)
+//        let navigationController = UINavigationController(rootViewController: resultVC)
+//        navigationController.navigationBar.isHidden = true
+//        window?.rootViewController = navigationController
+//        window?.makeKeyAndVisible()
     }
     
     func sceneDidDisconnect(_: UIScene) {
