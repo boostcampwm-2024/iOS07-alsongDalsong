@@ -16,7 +16,7 @@ extension Record {
     private static let stubm4aData: URL? = {
         return URL(string: "https://firebasestorage.googleapis.com/v0/b/alsongdalsong-boostcamp.firebasestorage.app/o/audios%2Ffeef1adc-d0aa-4af7-b2c6-16f2dda339e9_mzaf_16018936309126267135.plus.aac.p.m4a?alt=media&token=60d59d23-a9f8-4ac6-ae85-5f6824f6e39a")
     }()
-    // 1이 허밍 시작임.
+  
     public static let recordStub1_1 = Record(player: Player.playerStub1, recordOrder: 0, fileUrl: stubm4aData)
     public static let recordStub1_2 = Record(player: Player.playerStub1, recordOrder: 1, fileUrl: stubm4aData)
     public static let recordStub1_3 = Record(player: Player.playerStub1, recordOrder: 2, fileUrl: stubm4aData)

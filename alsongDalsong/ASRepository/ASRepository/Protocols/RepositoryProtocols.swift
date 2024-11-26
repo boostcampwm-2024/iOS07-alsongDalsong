@@ -9,7 +9,7 @@ public protocol AnswersRepositoryProtocol {
 }
 
 public protocol GameStatusRepositoryProtocol {
-    func getStatus() -> AnyPublisher<Status, Never>
+    func getStatus() -> AnyPublisher<Status?, Never>
     func getRound() -> AnyPublisher<UInt8, Never>
     func getRecordOrder() -> AnyPublisher<UInt8, Never>
     func getDueTime() -> AnyPublisher<Date, Never>
@@ -57,6 +57,10 @@ public protocol RoomActionRepositoryProtocol {
 
 public protocol MusicRepositoryProtocol {
     func getMusicData(url: URL) -> Future<Data?, Error>
+}
+
+public protocol GameStateRepositoryProtocol {
+    func getGameState() -> AnyPublisher<GameState, Never>
 }
 
 public protocol HummingResultRepositoryProtocol {

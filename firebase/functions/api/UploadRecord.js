@@ -87,7 +87,6 @@ app.post('/uploadrecording', async (req, res) => {
         if (!userData) {
           return res.status(404).json({ error: 'User not found' });
         }
-
         const playersCount = roomData.players.length;
         const currentRound = roomData.round || 0;
         const currentOrderRecord = roomData.recordOrder || 0;

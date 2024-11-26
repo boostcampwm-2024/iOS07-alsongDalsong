@@ -12,8 +12,9 @@ final class OnboardingViewController: UIViewController {
     private var avatarRefreshButton = ASRefreshButton(size: 28)
     private var viewModel: OnboardingViewModel?
     private var inviteCode: String
+    private var gameNavigationController: GameNavigationController?
     private var cancellables = Set<AnyCancellable>()
-
+  
     init(viewmodel: OnboardingViewModel, inviteCode: String) {
         viewModel = viewmodel
         self.inviteCode = inviteCode
@@ -110,7 +111,7 @@ final class OnboardingViewController: UIViewController {
             },
             for: .touchUpInside
         )
-
+      
         avatarRefreshButton.addAction(
             UIAction { [weak self] _ in
                 self?.viewModel?.refreshAvatars()
@@ -188,6 +189,21 @@ final class OnboardingViewController: UIViewController {
             inviteCode = ""
             navigateToLobby(with: number)
         }
+    }
+  
+    private func setGameNavigationController(roomNumber: String) {
+        let mainRepository: MainRepositoryProtocol = DIContainer.shared.resolve(MainRepositoryProtocol.self)
+        
+        mainRepository.connectRoom(roomNumber: roomNumber)
+        let gameStateRepository = DIContainer.shared.resolve(GameStateRepositoryProtocol.self)
+        
+        guard let navigationController else { return }
+        
+        gameNavigationController = GameNavigationController(
+            navigationController: navigationController,
+            gameStateRepository: gameStateRepository)
+        
+        gameNavigationController?.setConfiguration()
     }
 
     private func autoJoinRoom() {

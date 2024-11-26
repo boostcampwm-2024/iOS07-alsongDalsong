@@ -77,20 +77,6 @@ class SelectMusicViewController: UIViewController {
             self?.selectMusicViewModel.submitMusic()
             self?.selectMusicViewModel.stopMusic()
             self?.progressBar.cancelCompletion()
-            let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
-            let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-            let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
-            let answersRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
-            let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
-            
-            let hummingViewModel = HummingViewModel(
-                gameStatusRepository: gameStatusRepository,
-                playersRepository: playersRepository,
-                answersRepository: answersRepository,
-                submitsRepository: submitsRepository
-            )
-            
-            self?.navigationController?.pushViewController(HummingViewController(vm: hummingViewModel), animated: true)
         }, for: .touchUpInside)
         
         progressBar.setCompletionHandler { [weak self] in

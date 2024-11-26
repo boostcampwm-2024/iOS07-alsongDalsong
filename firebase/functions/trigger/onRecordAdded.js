@@ -18,7 +18,6 @@
 //       console.log('필수 필드 누락');
 //       return;
 //     }
-
 //     if (!roomData.status) {
 //       console.log('라운드 시작 전');
 //       return;

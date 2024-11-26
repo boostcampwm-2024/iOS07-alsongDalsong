@@ -51,7 +51,6 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
 
     private func getRelatedSubmit(for answer: Answer, from submits: [Answer]?) -> Answer {
         let temp = (answer.player?.order ?? 0) - 1 + (submits?.count ?? 0)
-        
         let targetOrder = temp % (submits?.count == 0 ? 1 : submits?.count ?? 1)
         
         let submit = submits?.first(where: { submit in

@@ -113,21 +113,9 @@ final class LobbyViewController: UIViewController {
             }
         }, for: .touchUpInside)
         
-        startButton.addAction(
-            UIAction { [weak self] _ in
-                self?.viewmodel.gameStart()
-                let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
-                let answerRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
-                let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
-                let selectMusicViewModel = SelectMusicViewModel(
-                    musicRepository: musicRepository,
-                    answerRepository: answerRepository,
-                    gameStatusRepository: gameStatusRepository
-                )
-                let selectMusicViewController = SelectMusicViewController(selectMusicViewModel: selectMusicViewModel)
-                self?.navigationController?.pushViewController(selectMusicViewController, animated: true)
-            },
-            for: .touchUpInside)
+        startButton.addAction(UIAction { [weak self] _ in
+            self?.viewmodel.gameStart()
+        }, for: .touchUpInside)
     }
     
     private func setupLayout() {
