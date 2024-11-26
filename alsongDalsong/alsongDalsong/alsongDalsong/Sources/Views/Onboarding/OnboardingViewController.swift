@@ -10,19 +10,19 @@ final class OnboardingViewController: UIViewController {
     private var avatarView = ASAvatarCircleView()
     private var nickNamePanel = NicknamePanel()
     private var avatarRefreshButton = ASRefreshButton(size: 28)
-    private var viewmodel: OnboardingViewModel?
+    private var viewModel: OnboardingViewModel?
     private var inviteCode: String
     private var cancellables = Set<AnyCancellable>()
 
     init(viewmodel: OnboardingViewModel, inviteCode: String) {
-        self.viewmodel = viewmodel
+        viewModel = viewmodel
         self.inviteCode = inviteCode
         super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
         inviteCode = ""
-        viewmodel = nil
+        viewModel = nil
         super.init(coder: coder)
     }
 
@@ -31,9 +31,9 @@ final class OnboardingViewController: UIViewController {
         setupUI()
         setupLayout()
         setAction()
-        setButton()
+        setupButton()
         hideKeyboard()
-        bind()
+        bindViewModel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -106,27 +106,26 @@ final class OnboardingViewController: UIViewController {
             UIAction { [weak self] _ in
                 guard let inviteCode = self?.inviteCode else { return }
                 inviteCode.isEmpty ?
-                    self?.showRoomNumerInputAlert() :
-                    self?.automaticJoinRoom()
+                    self?.showRoomNumerInputAlert() : self?.autoJoinRoom()
             },
             for: .touchUpInside
         )
 
         avatarRefreshButton.addAction(
             UIAction { [weak self] _ in
-                self?.viewmodel?.refreshAvatars()
+                self?.viewModel?.refreshAvatars()
             }, for: .touchUpInside
         )
     }
 
-    private func automaticJoinRoom() {
+    private func autoJoinRoom() {
         if let nickname = nickNamePanel.text, !nickname.isEmpty {
-            viewmodel?.setNickname(with: nickname)
+            viewModel?.setNickname(with: nickname)
         }
-        viewmodel?.joinRoom(roomNumber: inviteCode)
+        viewModel?.joinRoom(roomNumber: inviteCode)
     }
 
-    func setButton() {
+    private func setupButton() {
         createRoomButton.setConfiguration(
             systemImageName: "",
             title: Constants.craeteButtonTitle,
@@ -139,60 +138,61 @@ final class OnboardingViewController: UIViewController {
         )
     }
 
-    private func bind() {
-        viewmodel?.$nickname
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] nickname in
-                self?.nickNamePanel.updateTextField(placeholder: nickname)
-            }
-            .store(in: &cancellables)
-        viewmodel?.$avatarData
-            .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
-            .sink { [weak self] data in
-                self?.avatarView.setImage(imageData: data)
-            }
-            .store(in: &cancellables)
-        viewmodel?.$roomNumber
-            .filter { !$0.isEmpty }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] roomNumber in
-                let mainRepository = DIContainer.shared.resolve(MainRepositoryProtocol.self)
-                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
-                let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
-                let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
+    private func bindViewModel() {
+        bind(viewModel?.$nickname) { [weak self] nickname in
+            self?.nickNamePanel.updateTextField(placeholder: nickname)
+        }
 
-                mainRepository.connectRoom(roomNumber: roomNumber)
-                let lobbyViewModel = LobbyViewModel(
-                    playersRepository: playersRepository,
-                    roomInfoRepository: roomInfoRepository,
-                    roomActionRepository: roomActionRepository,
-                    avatarRepository: avatarRepository
+        bind(viewModel?.$avatarData) { [weak self] data in
+            self?.avatarView.setImage(imageData: data)
+        }
+
+        bind(viewModel?.$roomNumber) { [weak self] roomNumber in
+            guard !roomNumber.isEmpty else { return }
+            self?.nativateToLobby(with: roomNumber)
+        }
+
+        bind(viewModel?.$buttonEnabled) { [weak self] enabled in
+            self?.createRoomButton.isEnabled = enabled
+            self?.joinRoomButton.isEnabled = enabled
+        }
+
+        bind(viewModel?.$joinResponse) { [weak self] success in
+            if !success {
+                self?.createRoomButton.isHidden = false
+                let joinFailedAlert = ASAlertController(
+                    titleText: .joinFailed
                 )
-                let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
-                self?.navigationController?.pushViewController(lobbyViewController, animated: false)
+                self?.present(joinFailedAlert, animated: true, completion: nil)
             }
-            .store(in: &cancellables)
-        viewmodel?.$buttonEnabled
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] enabled in
-                self?.createRoomButton.isEnabled = enabled
-                self?.joinRoomButton.isEnabled = enabled
-            }
-            .store(in: &cancellables)
+        }
+    }
 
-        viewmodel?.$joinResponse
+    private func nativateToLobby(with roomNumber: String) {
+        let mainRepository = DIContainer.shared.resolve(MainRepositoryProtocol.self)
+        let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
+        let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
+        let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
+        let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
+
+        mainRepository.connectRoom(roomNumber: roomNumber)
+        let lobbyViewModel = LobbyViewModel(
+            playersRepository: playersRepository,
+            roomInfoRepository: roomInfoRepository,
+            roomActionRepository: roomActionRepository,
+            avatarRepository: avatarRepository
+        )
+        let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
+        navigationController?.pushViewController(lobbyViewController, animated: false)
+    }
+
+    private func bind<T>(
+        _ publisher: Published<T>.Publisher?,
+        handler: @escaping (T) -> Void
+    ) {
+        publisher?
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] success in
-                if !success {
-                    self?.createRoomButton.isHidden = false
-                    let joinFailedAlert = ASAlertController(
-                        titleText: .joinFailed
-                    )
-                    self?.present(joinFailedAlert, animated: true, completion: nil)
-                }
-            }
+            .sink(receiveValue: handler)
             .store(in: &cancellables)
     }
 }
@@ -209,29 +209,27 @@ extension OnboardingViewController {
 
 extension OnboardingViewController {
     func showRoomNumerInputAlert() {
-        presentAlert(
-            .init(
-                titleText: .joinRoom,
-                textFieldPlaceholder: .roomNumber,
-                isUppercased: true,
-                doneButtonCompletion: { [weak self] roomNumber in
-                    if let nickname = self?.nickNamePanel.text,
-                       !nickname.isEmpty
-                    {
-                        self?.viewmodel?.setNickname(with: nickname)
-                    }
-                    self?.viewmodel?.joinRoom(roomNumber: roomNumber)
-                }
-            )
-        )
+        let alert = ASAlertController(
+            titleText: .joinRoom,
+            textFieldPlaceholder: .roomNumber,
+            isUppercased: true
+        ) { [weak self] roomNumber in
+            if let nickname = self?.nickNamePanel.text,
+               !nickname.isEmpty
+            {
+                self?.viewModel?.setNickname(with: nickname)
+            }
+            self?.viewModel?.joinRoom(roomNumber: roomNumber)
+        }
+        presentAlert(alert)
     }
 
     func showCreateRoomAlert() {
         let alert = ASAlertController(progressText: .joinRoom) {
             if let nickname = self.nickNamePanel.text, !nickname.isEmpty {
-                self.viewmodel?.setNickname(with: nickname)
+                self.viewModel?.setNickname(with: nickname)
             }
-            await self.viewmodel?.createRoom()
+            await self.viewModel?.createRoom()
         }
         presentLoadingView(alert)
     }
