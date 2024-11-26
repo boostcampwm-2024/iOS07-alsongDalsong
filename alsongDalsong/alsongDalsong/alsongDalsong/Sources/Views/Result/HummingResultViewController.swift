@@ -66,6 +66,8 @@ class HummingResultViewController: UIViewController {
                 let vc = self.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
                 guard let vc else { return }
                 self.navigationController?.popToViewController(vc, animated: true)
+                //TODO: 방 status로 로비로 변환 방장만
+                // + status 구독해서 로비면 로비로 이동
             }
         }, for: .touchUpInside)
         button.isHidden = true

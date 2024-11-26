@@ -72,7 +72,7 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
     
     public func changeRecordOrder(roomNumber: String) async throws -> Bool {
         let response: [String: Bool] = try await self.sendRequest(
-            endpointPath: .changeMode,
+            endpointPath: .changeRecordOrder,
             requestBody: ["roomNumber": roomNumber, "userId": ASFirebaseAuth.myID]
         )
         guard let isSuccess = response["success"] as? Bool else {
