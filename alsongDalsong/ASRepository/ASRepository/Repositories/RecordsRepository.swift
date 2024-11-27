@@ -19,6 +19,16 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
+    public func getRecordsCount(on recordOrder: Int) -> AnyPublisher<Int, Never> {
+        mainRepository.records
+            .compactMap { $0 }
+            .map { records in
+                records.filter { Int($0.recordOrder ?? 0) == recordOrder }
+            }
+            .map { $0.count }
+            .eraseToAnyPublisher()
+    }
+
     public func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never> {
         let recordsPublisher = mainRepository.records
         let playersPublisher = mainRepository.players
@@ -33,7 +43,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
                 guard playersCount > targetIndex else { return nil }
                 let targetId = players[targetIndex].id
                 let hummings = records.filter { $0.recordOrder == (recordOrder - 1) }
-                
+
                 return hummings.first(where: { $0.player?.id == targetId })
             }
             .eraseToAnyPublisher()
