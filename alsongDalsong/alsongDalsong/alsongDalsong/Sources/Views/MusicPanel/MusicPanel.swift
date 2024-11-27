@@ -133,8 +133,11 @@ private final class ASMusicPlayer: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let gradientLayer = makeGradientLayer()
-        backgroundImageView.layer.addSublayer(gradientLayer)
+        backgroundImageView.layer.sublayers?.forEach { layer in
+            if let gradientLayer = layer as? CAGradientLayer {
+                gradientLayer.frame = backgroundImageView.bounds
+            }
+        }
     }
 
     @available(*, unavailable)
@@ -165,6 +168,8 @@ private final class ASMusicPlayer: UIView {
         addSubview(backgroundImageView)
         addSubview(blurView)
         addSubview(playButton)
+        let gradientLayer = makeGradientLayer()
+        backgroundImageView.layer.addSublayer(gradientLayer)
     }
 
     private func setupLayout() {
@@ -230,7 +235,7 @@ private final class ASMusicPlayer: UIView {
         buttonConfiguration.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
             color.withAlphaComponent(0.0)
         }
-        
+
         playButton.configurationUpdateHandler = { button in
             UIView.animate(
                 withDuration: 0.15,
@@ -247,7 +252,7 @@ private final class ASMusicPlayer: UIView {
                 }
             )
         }
-        
+
         playButton.configuration = buttonConfiguration
         playButton.addAction(UIAction { [weak self] _ in
             self?.didButtonTapped()
