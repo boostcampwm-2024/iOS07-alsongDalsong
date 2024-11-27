@@ -114,7 +114,7 @@ final class LobbyViewController: UIViewController {
         }, for: .touchUpInside)
         
         startButton.addAction(UIAction { [weak self] _ in
-            self?.viewmodel.gameStart()
+            self?.showStartGameLoading()
         }, for: .touchUpInside)
     }
     
@@ -161,5 +161,29 @@ final class LobbyViewController: UIViewController {
             startButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
             startButton.heightAnchor.constraint(equalToConstant: 64)
         ])
+    }
+    
+    private func gameStart() async {
+        do {
+            try await self.viewmodel.gameStart()
+        } catch {
+            showStartGameFailed()
+        }
+    }
+}
+
+// MARK: - Alert
+
+extension LobbyViewController {
+    func showStartGameLoading() {
+        let alert = ASAlertController(progressText: .startGame) { [weak self] in
+            await self?.gameStart()
+        }
+        presentLoadingView(alert)
+    }
+    
+    func showStartGameFailed() {
+        let alert = ASAlertController(titleText: .stratGameFailed)
+        presentAlert(alert)
     }
 }

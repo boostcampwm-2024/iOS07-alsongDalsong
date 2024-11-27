@@ -310,6 +310,7 @@ enum ASAlertText {
         case joinRoom
         case joinFailed
         case createFailed
+        case stratGameFailed
         case submitFailld
 
         var description: String {
@@ -318,6 +319,7 @@ enum ASAlertText {
                 case .joinRoom: "게임 입장 코드를 입력하세요"
                 case .joinFailed: "참가에 실패하였습니다."
                 case .createFailed: "생성에 실패하였습니다."
+                case .stratGameFailed: "게임 시작에 실패하였습니다."
                 case .submitFailld: "제출에 실패하였습니다."
             }
         }
@@ -351,13 +353,13 @@ enum ASAlertText {
 
     enum ProgressText: CustomStringConvertible {
         case joinRoom
+        case startGame
         case submitMusic
-
         var description: String {
             switch self {
                 case .joinRoom: "방 정보를 가져오는 중..."
+                case .startGame: "게임을 시작하는 중..."
                 case .submitMusic: "노래를 전송하는 중..."
-                
             }
         }
     }
