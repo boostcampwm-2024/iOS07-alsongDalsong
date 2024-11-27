@@ -14,11 +14,11 @@ final class SubmitAnswerViewController: UIViewController {
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
     private var buttonStack = UIStackView()
-    private let vm: SubmitAnswerViewModel
+    private let viewModel: SubmitAnswerViewModel
     private var cancellables: Set<AnyCancellable> = []
 
-    init(vm: SubmitAnswerViewModel) {
-        self.vm = vm
+    init(viewModel: SubmitAnswerViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -34,10 +34,10 @@ final class SubmitAnswerViewController: UIViewController {
     }
 
     private func bindToComponents() {
-        submissionStatus.bind(to: vm.$submissionStatus)
-        progressBar.bind(to: vm.$dueTime)
-        musicPanel.bind(to: vm.$music)
-        submitButton.bind(to: vm.$musicData)
+        submissionStatus.bind(to: viewModel.$submissionStatus)
+        progressBar.bind(to: viewModel.$dueTime)
+        musicPanel.bind(to: viewModel.$music)
+        submitButton.bind(to: viewModel.$musicData)
     }
 
     private func setupUI() {
@@ -45,14 +45,14 @@ final class SubmitAnswerViewController: UIViewController {
         selectAnswerButton.setConfiguration(title: "정답 선택", backgroundColor: .asLightSky)
         selectAnswerButton.addAction(UIAction { [weak self] _ in
             guard let self else { return }
-            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: self.vm))
+            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: self.viewModel))
             present(selecAnswerView, animated: true)
         },
         for: .touchUpInside)
         submitButton.setConfiguration(title: "정답 제출", backgroundColor: .asLightGray)
         submitButton.addAction(
             UIAction { [weak self] _ in
-                self?.vm.submitAnswer()
+                self?.showSubmitLoading()
                 let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
                 let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
                 let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
@@ -61,11 +61,13 @@ final class SubmitAnswerViewController: UIViewController {
                     playersRepository: playersRepository,
                     recordsRepository: recordsRepository
                 )
-                let vc = RehummingViewController(vm: vm)
+                let vc = RehummingViewController(viewModel: vm)
                 self?.navigationController?.pushViewController(vc, animated: true)
             }, for: .touchUpInside
         )
-
+        progressBar.setCompletionHandler { [weak self] in
+            self?.showSubmitLoading()
+        }
         submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
@@ -77,8 +79,6 @@ final class SubmitAnswerViewController: UIViewController {
         view.addSubview(musicPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
-
-        submitButton.isEnabled = false
     }
 
     private func setupLayout() {
@@ -109,5 +109,12 @@ final class SubmitAnswerViewController: UIViewController {
             buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
+    }
+
+    func showSubmitLoading() {
+        let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
+            await self?.viewModel.submitAnswer()
+        }
+        presentLoadingView(alert)
     }
 }
