@@ -23,18 +23,17 @@ module.exports.submitAnswer = onRequest({ region: 'asia-southeast1' }, async (re
     return res.status(400).json({ error: 'Room Number is required' });
   }
   try {
-    const playerData = await getUserData(userId);
     const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
-    const userData = await getUserData(userId);
+    const userData = roomData.players.find((player) => player.id === userId);
     const roomSnapshot = await roomRef.get();
     const roomData = roomSnapshot.data();
     const playersCount = roomData.players.length;
     const submitCount = roomData.submits.length;
-    if (!playerData) {
+    if (!userData) {
       return res.status(404).json({ error: 'plyer Data not found' });
     }
     const answer = {
-      player: playerData,
+      player: userData,
       music: req.body,
     };
     if (submitCount + 1 === playersCount) {
