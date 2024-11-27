@@ -1,12 +1,13 @@
-import Foundation
 import ASEntity
-import Combine
 import ASRepository
+import Combine
+import Foundation
 
 final class MusicPanelViewModel {
     @Published var music: Music?
     @Published var artwork: Data?
     @Published var preview: Data?
+    @Published public private(set) var buttonState: AudioButtonState = .idle
     private let musicRepository: MusicRepositoryProtocol?
     private var cancellables = Set<AnyCancellable>()
 
@@ -52,11 +53,19 @@ final class MusicPanelViewModel {
     }
 
     @MainActor
-    func togglePlayPause(isPlaying: Bool = true) {
-        Task {
-            isPlaying ?
-                await AudioHelper.shared.stopPlaying() :
-                await AudioHelper.shared.startPlaying(file: preview)
+    func togglePlayPause() {
+        if preview != nil {
+            Task { [weak self] in
+                if await AudioHelper.shared.isPlaying() {
+                    self?.buttonState = .idle
+                    await AudioHelper.shared.stopPlaying()
+                } else {
+                    self?.buttonState = .playing
+                    await AudioHelper.shared.startPlaying(file: self?.preview) {
+                        self?.buttonState = .idle
+                    }
+                }
+            }
         }
     }
 }

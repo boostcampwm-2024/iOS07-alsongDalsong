@@ -45,8 +45,8 @@ final class MusicPanel: UIView {
     }
 
     private func bindWithPlayer() {
-        player.onPlayButtonTapped = { [weak self] isPlaying in
-            self?.viewModel?.togglePlayPause(isPlaying: isPlaying)
+        player.onPlayButtonTapped = { [weak self] in
+            self?.viewModel?.togglePlayPause()
         }
     }
 
@@ -57,6 +57,8 @@ final class MusicPanel: UIView {
                 self?.player.updateMusicPanel(image: artwork)
             }
             .store(in: &cancellables)
+        guard let viewModel else { return }
+        player.bind(to: viewModel.$buttonState)
     }
 
     private func setupUI() {
@@ -108,12 +110,24 @@ private final class ASMusicPlayer: UIView {
     private var backgroundImageView = UIImageView()
     private var blurView = UIVisualEffectView()
     private var playButton = UIButton()
-    var onPlayButtonTapped: ((_ isPlaying: Bool) -> Void)?
+    var onPlayButtonTapped: (() -> Void)?
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
         super.init(frame: .zero)
         setupUI()
         setupLayout()
+    }
+
+    func bind(
+        to dataSource: Published<AudioButtonState>.Publisher
+    ) {
+        dataSource
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.updateButtonImage(with: state)
+            }
+            .store(in: &cancellables)
     }
 
     override func layoutSubviews() {
@@ -170,15 +184,18 @@ private final class ASMusicPlayer: UIView {
             blurView.leadingAnchor.constraint(equalTo: leadingAnchor),
             blurView.trailingAnchor.constraint(equalTo: trailingAnchor),
 
-            playButton.leadingAnchor.constraint(equalTo: backgroundImageView.leadingAnchor, constant: 92),
-            playButton.trailingAnchor.constraint(equalTo: backgroundImageView.trailingAnchor, constant: -92),
             playButton.centerYAnchor.constraint(equalTo: backgroundImageView.centerYAnchor),
+            playButton.centerXAnchor.constraint(equalTo: backgroundImageView.centerXAnchor),
         ])
     }
 
+    private func updateButtonImage(with state: AudioButtonState) {
+        playButton.configuration?.baseForegroundColor = state.color
+        playButton.configuration?.image = state.symbol
+    }
+
     private func didButtonTapped() {
-        playButton.isSelected.toggle()
-        onPlayButtonTapped?(!playButton.isSelected)
+        onPlayButtonTapped?()
     }
 
     private func makeGradientLayer() -> CAGradientLayer {
@@ -196,34 +213,28 @@ private final class ASMusicPlayer: UIView {
     }
 
     private func setupButton() {
-        let configuration = UIImage.SymbolConfiguration(pointSize: 60)
-        let playImage = UIImage(systemName: "play.fill", withConfiguration: configuration)
-        let stopImage = UIImage(systemName: "stop.fill", withConfiguration: configuration)
-        playButton.setImage(playImage, for: .normal)
-        playButton.setImage(stopImage, for: .selected)
-        playButton.tintColor = .white
-        playButton.adjustsImageWhenHighlighted = false
+        var buttonConfiguration = UIButton.Configuration.borderless()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 60)
+        buttonConfiguration.preferredSymbolConfigurationForImage = imageConfig
+        buttonConfiguration.baseForegroundColor = .white
+        buttonConfiguration.contentInsets = .zero
+        buttonConfiguration.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
+            color.withAlphaComponent(0.0)
+        }
+
+        playButton.configurationUpdateHandler = { [weak self] _ in
+            guard let self else { return }
+            if playButton.isHighlighted {
+                playButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            } else {
+                playButton.transform = .identity
+            }
+        }
+        
+        playButton.configuration = buttonConfiguration
         playButton.addAction(UIAction { [weak self] _ in
             self?.didButtonTapped()
         }, for: .touchUpInside)
-        playButton.addAction(UIAction { [weak self] _ in
-            self?.buttonTouchDown()
-        }, for: .touchDown)
-        playButton.addAction(UIAction { [weak self] _ in
-            self?.buttonTouchUp()
-        }, for: [.touchUpInside, .touchCancel, .touchUpOutside])
-    }
-
-    private func buttonTouchDown() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut) {
-            self.playButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-        }
-    }
-
-    private func buttonTouchUp() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseInOut) {
-            self.playButton.transform = .identity
-        }
     }
 
     private func setupBlurView() {
