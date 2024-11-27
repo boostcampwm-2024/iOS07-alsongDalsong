@@ -1,7 +1,6 @@
 import ASEntity
 import ASMusicKit
 import ASRepository
-import ASNetworkKit
 import Combine
 import Foundation
 
@@ -108,7 +107,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             previewUrl: selectedSong.previewURL,
             artworkBackgroundColor: selectedSong.artwork?.backgroundColor?.toHex()
         )
-        throw ASNetworkErrors.responseError
+        let response = try await answerRepository.submitMusic(answer: answer)
     }
  
     @MainActor
