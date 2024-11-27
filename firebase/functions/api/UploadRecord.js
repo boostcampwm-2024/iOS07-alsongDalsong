@@ -116,13 +116,19 @@ app.post('/uploadrecording', async (req, res) => {
               recordOrder: roomData.recordOrder,
               fileUrl: publicUrl,
             };
-
-            await roomRef.update({
-              recordOrder: currentOrderRecord + 1,
-              status: 'rehumming',
-              dueTime: dueTime,
-              records: FieldValue.arrayUnion(record),
-            });
+            if (currentRoundRecords.length + 1 === playersCount) {
+              await roomRef.update({
+                recordOrder: currentOrderRecord + 1,
+                status: 'rehumming',
+                dueTime: dueTime,
+                records: FieldValue.arrayUnion(record),
+              });
+            } else {
+              await roomRef.update({
+                status: 'rehumming',
+                records: FieldValue.arrayUnion(record),
+              });
+            }
             break;
           default:
             console.log('Invalid mode');

@@ -37,7 +37,7 @@ module.exports.submitAnswer = onRequest({ region: 'asia-southeast1' }, async (re
       player: playerData,
       music: req.body,
     };
-    if (submitCount - 1 === playersCount) {
+    if (submitCount + 1 === playersCount) {
       await roomRef.update({
         submits: FieldValue.arrayUnion(answer),
         status: 'result',
