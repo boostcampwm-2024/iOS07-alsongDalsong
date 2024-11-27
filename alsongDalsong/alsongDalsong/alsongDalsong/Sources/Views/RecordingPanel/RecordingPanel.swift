@@ -53,7 +53,7 @@ final class RecordingPanel: UIView {
                 self?.updateWaveForm(amplitude: CGFloat(amplitude))
             }
             .store(in: &cancellables)
-        viewModel.$panelState
+        viewModel.$buttonState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.updateButtonImage(with: state)
@@ -61,7 +61,7 @@ final class RecordingPanel: UIView {
             .store(in: &cancellables)
     }
 
-    private func updateButtonImage(with state: RecordingPanelViewModel.PanelState) {
+    private func updateButtonImage(with state: AudioButtonState) {
         playButton.configuration?.baseForegroundColor = state.color
         playButton.configuration?.image = state.symbol
     }
@@ -69,7 +69,7 @@ final class RecordingPanel: UIView {
     private func setupButton() {
         var buttonConfiguration = UIButton.Configuration.borderless()
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular)
-        buttonConfiguration.image = viewModel.panelState.symbol
+        buttonConfiguration.image = viewModel.buttonState.symbol
         buttonConfiguration.preferredSymbolConfigurationForImage = imageConfig
         buttonConfiguration.baseForegroundColor = .white
         buttonConfiguration.contentInsets = .zero

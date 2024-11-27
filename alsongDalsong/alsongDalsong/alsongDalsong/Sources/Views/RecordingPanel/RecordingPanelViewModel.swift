@@ -4,7 +4,7 @@ import Foundation
 final class RecordingPanelViewModel: @unchecked Sendable {
     @Published var recordedData: Data?
     @Published public private(set) var recorderAmplitude: Float = 0.0
-    @Published public private(set) var panelState: PanelState = .idle
+    @Published public private(set) var buttonState: AudioButtonState = .idle
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -27,27 +27,27 @@ final class RecordingPanelViewModel: @unchecked Sendable {
     @MainActor
     func startRecording() {
         Task {
-            if panelState == .recording { return }
-            if panelState == .playing { stopPlaying() }
-            panelState = .recording
+            if buttonState == .recording { return }
+            if buttonState == .playing { stopPlaying() }
+            buttonState = .recording
             let data = await AudioHelper.shared.startRecording()
             recordedData = data
-            panelState = .idle
+            buttonState = .idle
         }
     }
 
     @MainActor
     func togglePlayPause() {
-        if panelState == .recording { return }
+        if buttonState == .recording { return }
         if recordedData != nil {
             Task { [weak self] in
                 if await AudioHelper.shared.isPlaying() {
-                    self?.panelState = .idle
+                    self?.buttonState = .idle
                     await AudioHelper.shared.stopPlaying()
                 } else {
-                    self?.panelState = .playing
+                    self?.buttonState = .playing
                     await AudioHelper.shared.startPlaying(file: self?.recordedData) {
-                        self?.panelState = .idle
+                        self?.buttonState = .idle
                     }
                 }
             }
