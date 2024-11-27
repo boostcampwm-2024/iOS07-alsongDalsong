@@ -13,7 +13,7 @@ actor AudioHelper {
     var amplitudePublisher: AnyPublisher<Float, Never> {
         return amplitudeSubject.eraseToAnyPublisher()
     }
-    
+
     private init() {}
 
     func isRecording() async -> Bool {
@@ -26,7 +26,9 @@ actor AudioHelper {
         return await player.isPlaying()
     }
 
-    func startRecording() async -> Data? {
+    func startRecording(allowsConcurrent: Bool = false) async -> Data? {
+        if await isPlaying(), !allowsConcurrent { return nil }
+        else { await player?.stopPlaying() }
         makeRecorder()
         let tempURL = makeURL()
         await recorder?.startRecording(url: tempURL)
@@ -74,8 +76,11 @@ actor AudioHelper {
     func startPlaying(
         file: Data?,
         playType: PlayType = .full,
+        allowsConcurrent: Bool = false,
         didPlayingFinshied: (@MainActor () -> Void)? = nil
     ) async {
+        if await isRecording(), !allowsConcurrent { return }
+        else { await recorder?.stopRecording() }
         guard let file else { return }
         if let player = player, await player.isPlaying() { await stopPlaying() }
         makePlayer()
