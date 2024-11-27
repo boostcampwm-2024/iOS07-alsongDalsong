@@ -36,6 +36,7 @@ final class MusicPanel: UIView {
                     music: music,
                     musicRepository: self?.musicRepository
                 )
+                self?.player.updateMusicPanel(color: music?.artworkBackgroundColor?.hexToCGColor())
                 self?.bindViewModel()
                 self?.titleLabel.text = music?.title ?? "???"
                 self?.artistLabel.text = music?.artist ?? "????"
@@ -53,7 +54,7 @@ final class MusicPanel: UIView {
         vm?.$artwork
             .receive(on: DispatchQueue.main)
             .sink { [weak self] artwork in
-                self?.player.updateImage(with: artwork)
+                self?.player.updateMusicPanel(image: artwork)
             }
             .store(in: &cancellables)
     }
@@ -64,11 +65,16 @@ final class MusicPanel: UIView {
         addSubview(titleLabel)
         addSubview(artistLabel)
 
-        panel.updateBackgroundColor(.asSystem)
-        titleLabel.font = .font(forTextStyle: .title3)
-        artistLabel.font = .font(forTextStyle: .title3)
         titleLabel.textColor = .label
         artistLabel.textColor = .secondaryLabel
+
+        [titleLabel, artistLabel].forEach { label in
+            label.font = .font(forTextStyle: .title3)
+            label.textAlignment = .center
+            label.numberOfLines = 1
+            label.lineBreakMode = .byTruncatingTail
+            label.adjustsFontSizeToFitWidth = false
+        }
     }
 
     private func setupLayout() {
@@ -89,7 +95,9 @@ final class MusicPanel: UIView {
             player.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -12),
 
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            titleLabel.widthAnchor.constraint(equalTo: player.widthAnchor, constant: -16),
             artistLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            artistLabel.widthAnchor.constraint(equalTo: player.widthAnchor, constant: -16),
             artistLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             artistLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24),
         ])
@@ -108,18 +116,29 @@ private final class ASMusicPlayer: UIView {
         setupLayout()
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        let gradientLayer = makeGradientLayer()
+        backgroundImageView.layer.addSublayer(gradientLayer)
+    }
+
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func updateImage(with image: Data?) {
+    func updateMusicPanel(image: Data? = nil, color: CGColor? = nil) {
         if let image, !image.isEmpty {
             backgroundImageView.layer.sublayers?.removeAll()
             backgroundImageView.image = UIImage(data: image)
-        } else {
-            let gradientLayer = makeGradientLayer()
-            backgroundImageView.layer.addSublayer(gradientLayer)
+            return
+        }
+
+        if let color {
+            backgroundImageView.layer.sublayers?.removeAll()
+            backgroundImageView.backgroundColor = UIColor(cgColor: color)
+            return
         }
     }
 
