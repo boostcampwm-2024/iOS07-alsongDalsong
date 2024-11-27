@@ -1,11 +1,20 @@
 import Foundation
 import Combine
 import ASEntity
+import ASNetworkKit
 
 public final class HummingResultRepository: HummingResultRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
+    private let storageManager: ASFirebaseStorageProtocol
+    private let networkManager: ASNetworkManagerProtocol
     
-    public init(mainRepository: MainRepositoryProtocol) {
+    public init (
+        storageManager: ASFirebaseStorageProtocol,
+        networkManager: ASNetworkManagerProtocol,
+        mainRepository: MainRepositoryProtocol
+    ) {
+        self.storageManager = storageManager
+        self.networkManager = networkManager
         self.mainRepository = mainRepository
     }
     
@@ -42,7 +51,7 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
 
     private func getRelatedSubmit(for answer: Answer, from submits: [Answer]?) -> Answer {
         let temp = (answer.player?.order ?? 0) - 1 + (submits?.count ?? 0)
-        let targetOrder = temp % (submits?.count ?? 0)
+        let targetOrder = temp % (submits?.count == 0 ? 1 : submits?.count ?? 1)
         
         let submit = submits?.first(where: { submit in
             targetOrder == submit.player?.order
@@ -51,10 +60,33 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
         //TODO: nil 값에 대한 처리 필요
         return submit ?? Answer.answerStub1
     }
+    
+    public func getRecordData(url: URL) -> Future<Data?, Error> {
+        Future { promise in
+            Task {
+                do {
+                    guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
+                    let data = try await self.networkManager.sendRequest(to: endpoint, body: nil, option: .both)
+                    promise(.success(data))
+                } catch {
+                    promise(.failure(error))
+                }
+            }
+        }
+    }
 }
 
 public final class LocalHummingResultRepository: HummingResultRepositoryProtocol {
-    public init() {}
+    private let storageManager: ASFirebaseStorageProtocol
+    private let networkManager: ASNetworkManagerProtocol
+    
+    public init (
+        storageManager: ASFirebaseStorageProtocol,
+        networkManager: ASNetworkManagerProtocol
+    ) {
+        self.storageManager = storageManager
+        self.networkManager = networkManager
+    }
     
     public func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer)], Never> {
         let tempAnswers = [Answer.answerStub1, Answer.answerStub2, Answer.answerStub3, Answer.answerStub4]
@@ -100,5 +132,19 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
         })
 
         return submit ?? Answer.answerStub1
+    }
+    
+    public func getRecordData(url: URL) -> Future<Data?, Error> {
+        Future { promise in
+            Task {
+                do {
+                    guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
+                    let data = try await self.networkManager.sendRequest(to: endpoint, body: nil, option: .both)
+                    promise(.success(data))
+                } catch {
+                    promise(.failure(error))
+                }
+            }
+        }
     }
 }

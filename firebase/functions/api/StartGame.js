@@ -1,8 +1,3 @@
-// TODO: 게임 시작 요청하는 API입니다.
-// mode에 따라 rooms/{roomNumber}의 status를 변경합니다.
-// 모드에 따라 출제자를 선택하고, duetime을 설정합니다.
-// 방의 호스트가 호출했는지 검사하는 로직이 필요합니다.
-
 const { onRequest } = require('firebase-functions/v2/https');
 const admin = require('../FirebaseAdmin.js');
 
@@ -34,11 +29,28 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
     }
 
     if (roomData.mode === 'humming') {
+      // players 배열에서 order 랜덤으로 부여
+      const players = roomData.players;
+      const orderPool = [...Array(players.length).keys()]; // [0, 1, 2, ..., players.length - 1]
+
+      const shuffledOrders = shuffle(orderPool);
+
+      const updatedPlayers = players.map((player, index) => ({
+        ...player,
+        order: shuffledOrders[index], // 랜덤으로 부여된 order 값
+      }));
+
+      // 현재 시간에서 1분 뒤로 설정
+      const currentTime = new Date();
+      const dueTime = new Date(currentTime.getTime() + 1 * 60 * 1000); // 단위가 ms임
       // TODO Player Order 설정
       // TODO 게임 모드에 따른 라운드 설정 및 status 변경, records 초기화
       await roomRef.update({
+        players: updatedPlayers,
         status: 'humming',
-        round: 1,
+        round: 0,
+        recordOrder: 0,
+        dueTime: dueTime,
       });
 
       res.status(200).json({ success: true });
@@ -49,3 +61,16 @@ module.exports.startGame = onRequest({ region: 'asia-southeast1' }, async (req, 
     res.status(500).json({ error: 'Failed to start game' });
   }
 });
+
+/**
+ * 배열을 랜덤으로 섞는 유틸리티 함수
+ * @param {Array} array - 섞을 배열
+ * @returns {Array} - 랜덤으로 섞인 배열
+ */
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}

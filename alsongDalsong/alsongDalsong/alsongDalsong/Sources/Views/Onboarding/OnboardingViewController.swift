@@ -1,7 +1,6 @@
 import ASContainer
 import ASRepository
 import Combine
-import SwiftUI
 import UIKit
 
 final class OnboardingViewController: UIViewController {
@@ -9,233 +8,208 @@ final class OnboardingViewController: UIViewController {
     private var createRoomButton = ASButton()
     private var joinRoomButton = ASButton()
     private var avatarView = ASAvatarCircleView()
-    private var nickNameTextField = ASTextField()
-    private var nickNamePanel = ASPanel()
+    private var nickNamePanel = NicknamePanel()
     private var avatarRefreshButton = ASRefreshButton(size: 28)
-    private var viewmodel: OnboardingViewModel?
+    private var viewModel: OnboardingViewModel?
     private var inviteCode: String
-    private var nickNameTextFieldMaxCount = 12
-    private var cancleables = Set<AnyCancellable>()
-    
+    private var gameNavigationController: GameNavigationController?
+    private var cancellables = Set<AnyCancellable>()
+
     init(viewmodel: OnboardingViewModel, inviteCode: String) {
-        self.viewmodel = viewmodel
+        viewModel = viewmodel
         self.inviteCode = inviteCode
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
-        self.inviteCode = ""
-        self.viewmodel = nil
+        inviteCode = ""
+        viewModel = nil
         super.init(coder: coder)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupLayout()
         setAction()
-        setConfiguration()
+        setupButton()
         hideKeyboard()
-        bind()
+        bindViewModel()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        observeKeyboard()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     private func setupUI() {
         view.backgroundColor = .asLightGray
-        for item in [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, nickNameTextField, avatarRefreshButton] {
+        for item in [createRoomButton, joinRoomButton, logoImageView, avatarView, nickNamePanel, avatarRefreshButton] {
             view.addSubview(item)
             item.translatesAutoresizingMaskIntoConstraints = false
         }
-        
+
         if !inviteCode.isEmpty {
             createRoomButton.isHidden = true
         }
-        
-        nickNameTextField.delegate = self
     }
-    
+
     private func setupLayout() {
         let safeArea = view.safeAreaLayoutGuide
-        
+
         NSLayoutConstraint.activate([
-            joinRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            joinRoomButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
-            joinRoomButton.heightAnchor.constraint(equalToConstant: 64),
-            joinRoomButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -25),
-            
-            createRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            createRoomButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
-            createRoomButton.heightAnchor.constraint(equalToConstant: 64),
-            createRoomButton.bottomAnchor.constraint(equalTo: joinRoomButton.topAnchor, constant: -25),
-            
-            logoImageView.widthAnchor.constraint(equalToConstant: 355),
-            logoImageView.heightAnchor.constraint(equalToConstant: 161),
+            logoImageView.widthAnchor.constraint(equalToConstant: 356),
+            logoImageView.heightAnchor.constraint(equalToConstant: 160),
             logoImageView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            logoImageView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 50),
-            
+            logoImageView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 48),
+
             avatarView.widthAnchor.constraint(equalToConstant: 200),
             avatarView.heightAnchor.constraint(equalToConstant: 200),
             avatarView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            avatarView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 0),
-            
+
+            avatarRefreshButton.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: -56),
+            avatarRefreshButton.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: -56),
+            avatarRefreshButton.widthAnchor.constraint(equalToConstant: 60),
+            avatarRefreshButton.heightAnchor.constraint(equalToConstant: 60),
+
+            nickNamePanel.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: 36),
             nickNamePanel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
             nickNamePanel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
             nickNamePanel.heightAnchor.constraint(equalToConstant: 100),
-            nickNamePanel.bottomAnchor.constraint(equalTo: createRoomButton.topAnchor, constant: -25),
-            
-            nickNameTextField.leadingAnchor.constraint(equalTo: nickNamePanel.leadingAnchor, constant: 16),
-            nickNameTextField.trailingAnchor.constraint(equalTo: nickNamePanel.trailingAnchor, constant: -16),
-            nickNameTextField.bottomAnchor.constraint(equalTo: nickNamePanel.bottomAnchor, constant: -16),
-            
-            avatarRefreshButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 231),
-            avatarRefreshButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 352),
-            avatarRefreshButton.widthAnchor.constraint(equalToConstant: 60),
-            avatarRefreshButton.heightAnchor.constraint(equalToConstant: 60)
+
+            createRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
+            createRoomButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            createRoomButton.topAnchor.constraint(equalTo: nickNamePanel.bottomAnchor, constant: 24),
+            createRoomButton.bottomAnchor.constraint(equalTo: joinRoomButton.topAnchor, constant: -24),
+            createRoomButton.heightAnchor.constraint(equalToConstant: 64),
+
+            joinRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
+            joinRoomButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            joinRoomButton.heightAnchor.constraint(equalToConstant: 64),
+            joinRoomButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -24),
         ])
     }
-    
-    /// 화면상의 컴포넌트들에게 Action을 추가함
+
     private func setAction() {
         createRoomButton.addAction(
             UIAction { [weak self] _ in
-                if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                    self?.viewmodel?.setNickname(with: nickname)
-                }
-                self?.viewmodel?.createRoom()
+                self?.showCreateRoomLoading()
             },
-            for: .touchUpInside)
-        
-        if inviteCode.isEmpty {
-            joinRoomButton.addAction(
-                UIAction { [weak self] _ in
-                    let joinAlert = ASAlertController(
-                        titleText: Constants.joinAlertTitle,
-                        doneButtonTitle: Constants.doneAlertButtonTitle,
-                        cancelButtonTitle: Constants.cancelAlertButtonTitle,
-                        textFieldPlaceholder: Constants.roomNumberPlaceholder,
-                        isUppercased: true) { [weak self] roomNumber in
-                            if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                                self?.viewmodel?.setNickname(with: nickname)
-                            }
-                            self?.viewmodel?.joinRoom(roomNumber: roomNumber)
-                        }
-                    self?.present(joinAlert, animated: true, completion: nil)
-                },
-                for: .touchUpInside)
-        } else {
-            joinRoomButton.addAction(UIAction { [weak self] _ in
-                if let nickname = self?.nickNameTextField.text, nickname.count > 0 {
-                    self?.viewmodel?.setNickname(with: nickname)
-                }
-                guard let roomNumber = self?.inviteCode else { return }
-                self?.viewmodel?.joinRoom(roomNumber: roomNumber)
-                
-            }, for: .touchUpInside)
-        }
-        
+            for: .touchUpInside
+        )
+
+        joinRoomButton.addAction(
+            UIAction { [weak self] _ in
+                guard let inviteCode = self?.inviteCode else { return }
+                inviteCode.isEmpty ?
+                    self?.showRoomNumerInputAlert() : self?.autoJoinRoom()
+            },
+            for: .touchUpInside
+        )
+
         avatarRefreshButton.addAction(
             UIAction { [weak self] _ in
-                self?.viewmodel?.refreshAvatars()
-            }, for: .touchUpInside)
+                self?.viewModel?.refreshAvatars()
+            }, for: .touchUpInside
+        )
     }
-    
-    func setConfiguration() {
+
+    private func setupButton() {
         createRoomButton.setConfiguration(
             systemImageName: "",
             title: Constants.craeteButtonTitle,
-            backgroundColor: .asYellow)
+            backgroundColor: .asYellow
+        )
         joinRoomButton.setConfiguration(
             systemImageName: "",
             title: Constants.joinButtonTitle,
-            backgroundColor: .asMint)
-        nickNamePanel.setTitle(
-            title: Constants.nickNameTitle,
-            titleAlign: .left,
-            titleSize: 24)
+            backgroundColor: .asMint
+        )
     }
-    
-    private func bind() {
-        viewmodel?.$nickname
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] nickname in
-                self?.nickNameTextField.setConfiguration(placeholder: nickname)
-            }
-            .store(in: &cancleables)
-        viewmodel?.$avatarData
-            .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
-            .sink { [weak self] data in
-                self?.avatarView.setImage(imageData: data)
-            }
-            .store(in: &cancleables)
-        viewmodel?.$roomNumber
-            .filter { !$0.isEmpty }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] roomNumber in
-                let mainRepository = DIContainer.shared.resolve(MainRepositoryProtocol.self)
-                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
-                let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
-                let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
-                
-                mainRepository.connectRoom(roomNumber: roomNumber)
-                let lobbyViewModel = LobbyViewModel(
-                    playersRepository: playersRepository,
-                    roomInfoRepository: roomInfoRepository,
-                    roomActionRepository: roomActionRepository,
-                    avatarRepository: avatarRepository)
-                let lobbyViewController = LobbyViewController(lobbyViewModel: lobbyViewModel)
-                self?.navigationController?.pushViewController(lobbyViewController, animated: false)
-            }
-            .store(in: &cancleables)
-        viewmodel?.$buttonEnabled
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] enabled in
-                self?.createRoomButton.isEnabled = enabled
-                self?.joinRoomButton.isEnabled = enabled
-            }
-            .store(in: &cancleables)
-        
-        viewmodel?.$joinResponse
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] success in
-                if !success {
-                    self?.createRoomButton.isHidden = false
-                    let joinFailedAlert = ASAlertController(
-                        titleText: "참가에 실패하였습니다.",
-                        doneButtonTitle: "확인")
-                    self?.present(joinFailedAlert, animated: true, completion: nil)
-                }
-            }
-            .store(in: &cancleables)
-    }
-}
 
-extension OnboardingViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let currentText = textField.text,
-              let stringRange = Range(range, in: currentText)
-        else {
-            return false
+    private func bindViewModel() {
+        bind(viewModel?.$nickname) { [weak self] nickname in
+            self?.nickNamePanel.updateTextField(placeholder: nickname)
         }
-        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-        guard updatedText.count <= nickNameTextFieldMaxCount else {
-            return false
+
+        bind(viewModel?.$avatarData) { [weak self] data in
+            self?.avatarView.setImage(imageData: data)
         }
-        let allowedCharacters = CharacterSet.alphanumerics.union(.whitespaces)
-        let characterSet = CharacterSet(charactersIn: string)
-        return allowedCharacters.isSuperset(of: characterSet)
+
+        bind(viewModel?.$buttonEnabled) { [weak self] enabled in
+            self?.createRoomButton.isEnabled = enabled
+            self?.joinRoomButton.isEnabled = enabled
+        }
+    }
+
+    private func navigateToLobby(with roomNumber: String) {
+        let mainRepository: MainRepositoryProtocol = DIContainer.shared.resolve(MainRepositoryProtocol.self)
+        mainRepository.connectRoom(roomNumber: roomNumber)
+        let gameStateRepository = DIContainer.shared.resolve(GameStateRepositoryProtocol.self)
+
+        guard let navigationController else { return }
+
+        gameNavigationController = GameNavigationController(
+            navigationController: navigationController,
+            gameStateRepository: gameStateRepository
+        )
+
+        gameNavigationController?.setConfiguration()
+    }
+
+    private func bind<T>(
+        _ publisher: Published<T>.Publisher?,
+        handler: @escaping (T) -> Void
+    ) {
+        publisher?
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: handler)
+            .store(in: &cancellables)
+    }
+
+    private func joinRoom(with roomNumber: String) {
+        Task {
+            guard let number = await viewModel?.joinRoom(roomNumber: roomNumber),
+                  !number.isEmpty
+            else {
+                if createRoomButton.isHidden {
+                    createRoomButton.isHidden = true
+                }
+                showJoinRoomFailedAlert()
+                return
+            }
+            inviteCode = ""
+            navigateToLobby(with: number)
+        }
+    }
+
+    private func autoJoinRoom() {
+        if let nickname = nickNamePanel.text, !nickname.isEmpty {
+            viewModel?.setNickname(with: nickname)
+        }
+        joinRoom(with: inviteCode)
+    }
+
+    private func setNicknameAndJoinRoom(with roomNumber: String) {
+        if let nickname = nickNamePanel.text, !nickname.isEmpty {
+            viewModel?.setNickname(with: nickname)
+        }
+        joinRoom(with: roomNumber)
+    }
+
+    private func setNicknameAndCreateRoom() async {
+        if let nickname = nickNamePanel.text, !nickname.isEmpty {
+            viewModel?.setNickname(with: nickname)
+        }
+
+        guard let number = await viewModel?.createRoom() else { return }
+        if number.isEmpty { showCreateRoomFailedAlert() }
+        else { navigateToLobby(with: number) }
     }
 }
 
@@ -243,11 +217,63 @@ extension OnboardingViewController {
     enum Constants {
         static let craeteButtonTitle = "방 생성하기!"
         static let joinButtonTitle = "방 참가하기!"
-        static let joinAlertTitle = "게임 입장 코드를 입력하세요"
-        static let nickNameTitle = "닉네임"
-        static let doneAlertButtonTitle = "완료"
-        static let cancelAlertButtonTitle = "취소"
-        static let roomNumberPlaceholder = "000000"
         static let logoImageName = "logo"
+    }
+}
+
+// MARK: - Alert
+
+extension OnboardingViewController {
+    func showRoomNumerInputAlert() {
+        let alert = ASAlertController(
+            titleText: .joinRoom,
+            textFieldPlaceholder: .roomNumber,
+            isUppercased: true
+        ) { [weak self] roomNumber in
+            self?.setNicknameAndJoinRoom(with: roomNumber)
+        }
+        presentAlert(alert)
+    }
+
+    func showJoinRoomFailedAlert() {
+        let alert = ASAlertController(titleText: .joinFailed)
+        presentAlert(alert)
+    }
+
+    func showCreateRoomFailedAlert() {
+        let alert = ASAlertController(titleText: .createFailed)
+        presentAlert(alert)
+    }
+
+    func showCreateRoomLoading() {
+        let alert = ASAlertController(progressText: .joinRoom) { [weak self] in
+            await self?.setNicknameAndCreateRoom()
+        }
+        presentLoadingView(alert)
+    }
+}
+
+// MARK: - KeyboardObserve
+
+private extension OnboardingViewController {
+    func observeKeyboard() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidEnterBackground(_:)),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
     }
 }

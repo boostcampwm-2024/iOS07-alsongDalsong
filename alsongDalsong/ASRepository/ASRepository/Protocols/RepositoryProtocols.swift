@@ -9,7 +9,7 @@ public protocol AnswersRepositoryProtocol {
 }
 
 public protocol GameStatusRepositoryProtocol {
-    func getStatus() -> AnyPublisher<Status, Never>
+    func getStatus() -> AnyPublisher<Status?, Never>
     func getRound() -> AnyPublisher<UInt8, Never>
     func getRecordOrder() -> AnyPublisher<UInt8, Never>
     func getDueTime() -> AnyPublisher<Date, Never>
@@ -32,6 +32,7 @@ public protocol RecordsRepositoryProtocol {
 public protocol RoomInfoRepositoryProtocol {
     func getRoomNumber() -> AnyPublisher<String, Never>
     func getMode() -> AnyPublisher<Mode, Never>
+    func getRecordOrder() -> AnyPublisher<UInt8, Never>
 }
 
 public protocol SelectedRecordsRepositoryProtocol {
@@ -40,6 +41,7 @@ public protocol SelectedRecordsRepositoryProtocol {
 
 public protocol SubmitsRepositoryProtocol {
     func getSubmits() -> AnyPublisher<[Answer], Never>
+    func submitAnswer(answer: Music) async throws -> Bool
 }
 
 public protocol AvatarRepositoryProtocol {
@@ -53,12 +55,18 @@ public protocol RoomActionRepositoryProtocol {
     func leaveRoom() async throws -> Bool
     func startGame(roomNumber: String) async throws -> Bool
     func changeMode(roomNumber: String, mode: Mode) async throws -> Bool
+    func changeRecordOrder(roomNumber: String) async throws -> Bool
 }
 
 public protocol MusicRepositoryProtocol {
     func getMusicData(url: URL) -> Future<Data?, Error>
 }
 
+public protocol GameStateRepositoryProtocol {
+    func getGameState() -> AnyPublisher<GameState?, Never>
+}
+
 public protocol HummingResultRepositoryProtocol {
     func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer)], Never>
+    func getRecordData(url: URL) -> Future<Data?, Error>
 }

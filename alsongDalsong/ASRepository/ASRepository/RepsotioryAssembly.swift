@@ -91,14 +91,25 @@ public struct RepsotioryAssembly: Assembly {
         
         container.register(SubmitsRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return SubmitsRepository(
-                mainRepository: mainRepository
+                mainRepository: mainRepository,
+                networkManager: networkManager
             )
         }
         
+        container.register(GameStateRepositoryProtocol.self) { r in
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            return GameStateRepository(mainRepository: mainRepository)
+        }
+                
         container.register(HummingResultRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            let storageManager = r.resolve(ASFirebaseStorageProtocol.self)
+            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return HummingResultRepository(
+                storageManager: storageManager,
+                networkManager: networkManager,
                 mainRepository: mainRepository
             )
         }

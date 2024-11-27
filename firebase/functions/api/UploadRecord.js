@@ -75,12 +75,8 @@ app.post('/uploadrecording', async (req, res) => {
 
         const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
         const roomSnapshot = await roomRef.get();
-
-        if (!roomSnapshot.exists) {
-          return res.status(404).json({ error: 'Room not found' });
-        }
-
         const roomData = roomSnapshot.data();
+
         const playerExists = roomData.players.some((player) => player.id === userId);
 
         if (!playerExists) {
@@ -91,18 +87,47 @@ app.post('/uploadrecording', async (req, res) => {
         if (!userData) {
           return res.status(404).json({ error: 'User not found' });
         }
+        const playersCount = roomData.players.length;
+        const currentRound = roomData.round || 0;
+        const currentOrderRecord = roomData.recordOrder || 0;
+        const currentRoundRecords = roomData.records.filter((record) => record.recordOrder === currentOrderRecord);
+        const currentMode = roomData.mode;
+        const currentAnswer = roomData.answers;
+        const currentAnswersCount = currentAnswer.length;
 
-        // Firestore에 저장
-        const record = {
-          player: userData,
-          round: roomData.round,
-          file: publicUrl,
-        };
+        console.log('-------------------------------------');
+        console.log(`현재 라운드: ${currentRound}`);
+        console.log(`현재 라운드 녹음 수: ${currentRoundRecords.length}`);
+        console.log(`플레이어 수: ${playersCount}`);
+        console.log(`현재 모드: ${currentMode}`);
+        console.log(`현재 OrderRecord: ${currentOrderRecord}`);
+        console.log(`현재 라운드(OrderRecord) 녹음: ${currentRoundRecords}`);
+        console.log(`현재 Answer 수: ${currentAnswersCount}`);
+        console.log(`현재 Answer: ${currentAnswer}`);
+        console.log('-------------------------------------');
 
-        await roomRef.update({
-          records: FieldValue.arrayUnion(record),
-        });
+        switch (currentMode) {
+          case 'humming':
+            const currentTime = new Date();
+            const dueTime = new Date(currentTime.getTime() + 1 * 60 * 1000);
 
+            const record = {
+              player: userData,
+              recordOrder: roomData.recordOrder,
+              fileUrl: publicUrl,
+            };
+
+            await roomRef.update({
+              recordOrder: currentOrderRecord + 1,
+              status: 'rehumming',
+              dueTime: dueTime,
+              records: FieldValue.arrayUnion(record),
+            });
+            break;
+          default:
+            console.log('Invalid mode');
+            break;
+        }
         res.status(200).send({ success: true, url: publicUrl });
       } catch (error) {
         console.error('Error after file upload:', error);

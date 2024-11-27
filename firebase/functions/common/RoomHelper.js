@@ -9,7 +9,7 @@ const firestore = admin.firestore();
 function createRoomData(roomNumber, hostData) {
   const host = {
     id: hostData.id,
-    avatar: hostData.avatarUrl || '',
+    avatarUrl: hostData.avatarUrl || '',
     nickname: hostData.nickname || '',
     score: hostData.score || 0,
     order: 0,
@@ -21,12 +21,13 @@ function createRoomData(roomNumber, hostData) {
     players: [],
     mode: 'humming',
     round: 0,
-    status: '',
+    status: null,
     records: [],
     answers: [],
-    duetime: null,
+    dueTime: null,
     selectedRecords: [],
     submits: [],
+    recordOrder: null,
   };
 }
 
