@@ -37,12 +37,11 @@ public final class AnswersRepository: AnswersRepositoryProtocol {
                           URLQueryItem(name: "roomNumber", value: mainRepository.number.value)]
         let endPoint = FirebaseEndpoint(path: .submitMusic, method: .post)
             .update(\.queryItems, with: queryItems)
-            .update(\.headers, with: ["Content-Type": "application/json"])
         
         let body = try ASEncoder.encode(answer)
         try print(JSONSerialization.jsonObject(with: body, options: []))
         
-        let response = try await networkManager.sendRequest(to: endPoint, body: body, option: .none)
+        let response = try await networkManager.sendRequest(to: endPoint, type: .json, body: body, option: .none)
         
         let responseDict = try ASDecoder.decode([String: String].self, from: response)
         return !responseDict.isEmpty
