@@ -11,12 +11,19 @@ public struct ASNetworkManager: ASNetworkManagerProtocol {
     }
 
     @discardableResult
-    public func sendRequest(to endpoint: any Endpoint, body: Data? = nil, option: CacheOption = .both) async throws -> Data {
+    public func sendRequest(
+        to endpoint: any Endpoint,
+        type: HTTPContentType,
+        body: Data? = nil,
+        option: CacheOption = .both
+    ) async throws -> Data {
         guard let url = endpoint.url else { throw ASNetworkErrors.urlError }
-        // cache 먼저 체크 후 urlRequest 생성
         if let cache = try await loadCache(from: url, option: option) { return cache }
-        let request = try urlRequest(for: endpoint, body: body)
+        
+        let updatedEndpoint = updateEndpoint(type: type, endpoint: endpoint, body: body)
+        let request = try urlRequest(for: updatedEndpoint)
         let (data, response) = try await urlSession.data(for: request)
+        
         try validate(response: response)
         saveCache(from: url, with: data, option: option)
         return data
@@ -30,13 +37,19 @@ public struct ASNetworkManager: ASNetworkManagerProtocol {
         cacheManager.saveCache(withKey: url, data: data, cacheOption: option)
     }
 
-    private func urlRequest(for endpoint: any Endpoint, body: Data? = nil) throws -> URLRequest {
+    private func updateEndpoint(type: HTTPContentType, endpoint: some Endpoint, body: Data? = nil) -> any Endpoint {
+        let id = UUID().uuidString
+        return endpoint
+            .update(\.headers, with: type.header(id))
+            .update(\.body, with: type.body(id, with: body))
+    }
+
+    private func urlRequest(for endpoint: any Endpoint) throws -> URLRequest {
         guard let url = endpoint.url else { throw ASNetworkErrors.urlError }
-        let header = endpoint.headers
         return RequestBuilder(using: url)
-            .setHeader(header)
+            .setHeader(endpoint.headers)
             .setHttpMethod(endpoint.method)
-            .setBody(body)
+            .setBody(endpoint.body)
             .build()
     }
 

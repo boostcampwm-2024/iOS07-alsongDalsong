@@ -64,7 +64,6 @@ final class LobbyViewModel {
         Task {
             do {
                 let endpoint = FirebaseEndpoint(path: .gameStart, method: .post)
-                    .update(\.headers, with: ["Content-Type": "application/json"])
                 let bodyData = ["roomNumber": roomNumber,
                                 "userId": firebaseManager.getCurrentUserID()]
                 let body = try JSONSerialization.data(withJSONObject: bodyData, options: [])

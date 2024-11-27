@@ -66,7 +66,7 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
             Task {
                 do {
                     guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint, body: nil, option: .both)
+                    let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
                     promise(.success(data))
                 } catch {
                     promise(.failure(error))
@@ -139,7 +139,7 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
             Task {
                 do {
                     guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint, body: nil, option: .both)
+                    let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
                     promise(.success(data))
                 } catch {
                     promise(.failure(error))

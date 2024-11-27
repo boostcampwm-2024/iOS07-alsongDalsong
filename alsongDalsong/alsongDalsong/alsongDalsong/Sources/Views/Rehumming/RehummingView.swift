@@ -55,13 +55,11 @@ final class RehummingViewController: UIViewController {
                 self?.vm.submitHumming()
                 let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
                 let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
                 let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
                 let vm = RehummingViewModel(
                     gameStatusRepository: gameStatusRepository,
                     playersRepository: playersRepository,
-                    recordsRepository: recordsRepository,
-                    submitsRepository: submitsRepository
+                    recordsRepository: recordsRepository
                 )
                 let vc = RehummingViewController(vm: vm)
                 self?.navigationController?.pushViewController(vc, animated: true)

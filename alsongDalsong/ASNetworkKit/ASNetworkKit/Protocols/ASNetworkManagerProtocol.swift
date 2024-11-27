@@ -1,6 +1,6 @@
-import Foundation
 import ASCacheKitProtocol
+import Foundation
 
 public protocol ASNetworkManagerProtocol {
-    func sendRequest(to endpoint: any Endpoint, body: Data?, option: CacheOption) async throws -> Data
+    func sendRequest(to endpoint: any Endpoint, type: HTTPContentType, body: Data?, option: CacheOption) async throws -> Data
 }

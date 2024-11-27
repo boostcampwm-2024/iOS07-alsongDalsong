@@ -23,6 +23,7 @@ public final class MusicRepository: MusicRepositoryProtocol {
                     else { return promise(.failure(ASNetworkErrors.urlError)) }
                     let data = try await self.networkManager.sendRequest(
                         to: endpoint,
+                        type: .json,
                         body: nil,
                         option: .both
                     )

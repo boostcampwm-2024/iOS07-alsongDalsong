@@ -5,7 +5,7 @@ import Foundation
 
 final class HummingViewModel: @unchecked Sendable {
     @Published public private(set) var dueTime: Date?
-    @Published public private(set) var round: UInt8?
+    @Published public private(set) var recordOrder: UInt8?
     @Published public private(set) var status: Status?
     @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
     @Published public private(set) var music: Music?
@@ -15,27 +15,38 @@ final class HummingViewModel: @unchecked Sendable {
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
     private let answersRepository: AnswersRepositoryProtocol
-    private let submitsRepository: SubmitsRepositoryProtocol
+    private let recordsRepository: RecordsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
 
     public init(
         gameStatusRepository: GameStatusRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
         answersRepository: AnswersRepositoryProtocol,
-        submitsRepository: SubmitsRepositoryProtocol
+        recordsRepository: RecordsRepositoryProtocol
     ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
         self.answersRepository = answersRepository
-        self.submitsRepository = submitsRepository
+        self.recordsRepository = recordsRepository
         bindGameStatus()
         bindSubmitStatus()
         bindAnswer()
     }
 
-    // TODO: - FB에 humming 보내기
     func submitHumming() {
-        var myHumming = ASEntity.Record()
+        guard let recordedData else { return }
+        Task {
+            do {
+                let result = try await recordsRepository.uploadRecording(recordedData)
+                if result {
+                    // 전송됨
+                } else {
+                    // 전송 안됨, 오류 alert
+                }
+            } catch {
+                // 전송 안됨, 오류 alert
+            }
+        }
     }
 
     func startRecording() {
@@ -54,7 +65,7 @@ final class HummingViewModel: @unchecked Sendable {
         recordedData = data
         isRecording = false
     }
-    
+
     private func bindAnswer() {
         answersRepository.getMyAnswer()
             .eraseToAnyPublisher()
@@ -70,9 +81,9 @@ final class HummingViewModel: @unchecked Sendable {
                 self?.dueTime = newDueTime
             }
             .store(in: &cancellables)
-        gameStatusRepository.getRound()
-            .sink { [weak self] newRound in
-                self?.round = newRound
+        gameStatusRepository.getRecordOrder()
+            .sink { [weak self] newRecordOrder in
+                self?.recordOrder = newRecordOrder
             }
             .store(in: &cancellables)
         gameStatusRepository.getStatus()
@@ -83,12 +94,13 @@ final class HummingViewModel: @unchecked Sendable {
     }
 
     private func bindSubmitStatus() {
-        let playerPublisher = playersRepository.getPlayers()
-        let submitsPublisher = submitsRepository.getSubmits()
+        let playerPublisher = playersRepository.getPlayersCount()
+        let recordsPublisher = recordsRepository.getRecordsCount(on: Int(recordOrder ?? 0))
 
-        playerPublisher.zip(submitsPublisher)
-            .sink { [weak self] players, submits in
-                let submitStatus = (submits: String(submits.count), total: String(players.count))
+        playerPublisher.combineLatest(recordsPublisher)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] playersCount, recordsCount in
+                let submitStatus = (submits: String(recordsCount), total: String(playersCount))
                 self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)
