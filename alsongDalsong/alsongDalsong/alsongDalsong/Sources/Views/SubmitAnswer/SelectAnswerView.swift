@@ -9,11 +9,9 @@ struct SelectAnswerView: View {
     var body: some View {
         VStack {
             HStack {
-                ASMusicItemCell(
-                    artwork: viewModel.selectedSong.artwork,
-                    title: viewModel.selectedSong.title,
-                    artist: viewModel.selectedSong.artistName
-                )
+                ASMusicItemCell(music: viewModel.selectedMusic, fetchArtwork: { url in
+                    await viewModel.downloadArtwork(url: url)
+                })
                 .padding(EdgeInsets(top: 4, leading: 32, bottom: 4, trailing: 12))
                 Spacer()
                 Button {
@@ -33,12 +31,14 @@ struct SelectAnswerView: View {
                 .onChange(of: searchTerm) { newValue in
                     viewModel.searchMusic(text: newValue)
                 }
-            List(viewModel.searchList) { song in
+            List(viewModel.searchList) { music in
                 Button {
-                    viewModel.handleSelectedSong(song: song)
+                    viewModel.handleSelectedMusic(with: music)
                 } label: {
-                    ASMusicItemCell(artwork: song.artwork, title: song.title, artist: song.artistName)
-                        .tint(.black)
+                    ASMusicItemCell(music: music, fetchArtwork: { url in
+                        await viewModel.downloadArtwork(url: url)
+                    })
+                    .tint(.black)
                 }
             }
             .listStyle(.plain)

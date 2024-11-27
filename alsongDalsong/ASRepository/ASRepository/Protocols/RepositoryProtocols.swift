@@ -59,7 +59,7 @@ public protocol RoomActionRepositoryProtocol {
 }
 
 public protocol MusicRepositoryProtocol {
-    func getMusicData(url: URL) -> Future<Data?, Error>
+    func getMusicData(url: URL) async -> Data?
 }
 
 public protocol GameStateRepositoryProtocol {

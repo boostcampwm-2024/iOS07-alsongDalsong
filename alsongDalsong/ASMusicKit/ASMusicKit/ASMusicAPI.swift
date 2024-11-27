@@ -1,3 +1,4 @@
+import ASEntity
 import Foundation
 import MusicKit
 
@@ -9,7 +10,7 @@ public struct ASMusicAPI {
     ///   - maxCount: 검색해서 찾아올 음악의 갯수 기본값 설정은 25
     /// - Returns: ASSong의 배열
     @MainActor
-    public func search(for text: String, _ maxCount: Int = 25, _ offset: Int = 1) async -> [ASSong] {
+    public func search(for text: String, _ maxCount: Int = 25, _ offset: Int = 1) async -> [Music] {
         let status = await MusicAuthorization.request()
         switch status {
             case .authorized:
@@ -17,20 +18,20 @@ public struct ASMusicAPI {
                     var request = MusicCatalogSearchRequest(term: text, types: [Song.self])
                     request.limit = maxCount
                     request.offset = offset
-                    
+
                     let result = try await request.response()
-                    let asSongs = result.songs.map { song in
-                        return ASSong(
-                            id: song.isrc,
+                    let music = result.songs.map { song in
+                        ASEntity.Music(
+                            id: song.id.rawValue,
                             title: song.title,
-                            artistName: song.artistName,
-                            artwork: song.artwork,
-                            previewURL: song.previewAssets?.first?.url
+                            artist: song.artistName,
+                            artworkUrl: song.artwork?.url(width: 300, height: 300),
+                            previewUrl: song.previewAssets?.first?.url,
+                            artworkBackgroundColor: song.artwork?.backgroundColor?.toHex()
                         )
                     }
-                    return asSongs
+                    return music
                 } catch {
-                    print(String(describing: error))
                     return []
                 }
             default:
@@ -38,25 +39,4 @@ public struct ASMusicAPI {
                 return []
         }
     }
-}
-
-public struct ASSong: Equatable, Identifiable {
-    public init(
-        id: String? = nil,
-        title: String = "선택된 곡 없음",
-        artistName: String = "아티스트",
-        artwork: Artwork? = nil,
-        previewURL: URL? = nil
-    ) {
-        self.id = id
-        self.title = title
-        self.artistName = artistName
-        self.artwork = artwork
-        self.previewURL = previewURL
-    }
-    public var id: String?
-    public let title: String
-    public let artistName: String
-    public let artwork: Artwork?
-    public let previewURL: URL?
 }
