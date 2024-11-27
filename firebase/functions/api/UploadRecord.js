@@ -128,7 +128,7 @@ app.post('/uploadrecording', async (req, res) => {
             console.log('Invalid mode');
             break;
         }
-        res.status(200).send({ success: true, url: publicUrl });
+        res.status(200).send({ success: true });
       } catch (error) {
         console.error('Error after file upload:', error);
         return res.status(500).json({ error: 'Failed to process file' });
