@@ -32,11 +32,9 @@ class HummingResultViewController: UIViewController {
         bind()
     }
     
-    //TODO: 앨범 커버URL 던지기
     private func setMusicResultView(musicName: String, singerName: String) {
-        musicResultView.setConfig(albumImagePublisher: Just(Data())
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher(),
+        guard let viewModel else { return }
+        musicResultView.setConfig(albumImagePublisher: viewModel.getArtworkData(url: viewModel.currentResult?.music?.artworkUrl),
                                   musicName: musicName,
                                   singerName: singerName)
     }
@@ -293,9 +291,15 @@ final class MusicResultView: UIView {
     private func fetchAlbumImage(from publisher: AnyPublisher<Data?, Error>) {
         publisher
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] data in
-                guard let self = self, let data = data, let image = UIImage(data: data) else { return }
-                self.albumImageView.image = image
+            .sink(receiveCompletion: { completion in
+                //
+            }, receiveValue: { [weak self] data in
+                guard let data else {
+                    print("data가 제대로 안옴")
+                    return
+                }
+                let image = UIImage(data: data)
+                self?.albumImageView.image = image
             })
             .store(in: &cancellables)
     }

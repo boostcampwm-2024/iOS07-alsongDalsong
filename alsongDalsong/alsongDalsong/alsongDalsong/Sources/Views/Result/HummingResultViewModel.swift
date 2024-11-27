@@ -11,6 +11,7 @@ final class HummingResultViewModel: @unchecked Sendable {
     private var playerRepository: PlayersRepositoryProtocol
     private var roomActionRepository: RoomActionRepositoryProtocol
     private var roomInfoRepository: RoomInfoRepositoryProtocol
+    private var musicRepository: MusicRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
     @Published var isNext: Bool = false
@@ -32,13 +33,15 @@ final class HummingResultViewModel: @unchecked Sendable {
          gameStatusRepository: GameStatusRepositoryProtocol,
          playerRepository: PlayersRepositoryProtocol,
          roomActionRepository: RoomActionRepositoryProtocol,
-         roomInfoRepository: RoomInfoRepositoryProtocol) {
+         roomInfoRepository: RoomInfoRepositoryProtocol,
+         musicRepository: MusicRepositoryProtocol) {
         self.hummingResultRepository = hummingResultRepository
         self.avatarRepository = avatarRepository
         self.gameStatusRepository = gameStatusRepository
         self.playerRepository = playerRepository
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
+        self.musicRepository = musicRepository
         fetchResult()
     }
     
@@ -168,6 +171,18 @@ final class HummingResultViewModel: @unchecked Sendable {
             } catch {
                 print(error.localizedDescription)
             }
+        }
+    }
+    
+    func getArtworkData(url: URL?) -> AnyPublisher<Data?, Error> {
+        if let url {
+            return musicRepository.getMusicData(url: url)
+                .eraseToAnyPublisher()
+        }
+        else {
+            return Just(nil)
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
         }
     }
 }
