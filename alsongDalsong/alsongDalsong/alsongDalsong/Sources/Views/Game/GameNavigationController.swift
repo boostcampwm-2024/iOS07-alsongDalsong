@@ -108,7 +108,7 @@ final class GameNavigationController {
             answersRepository: answersRepository,
             recordsRepository: recordsRepository
         )
-        let vc = HummingViewController(vm: vm)
+        let vc = HummingViewController(viewModel: vm)
         navigationController.pushViewController(vc, animated: true)
     }
     
@@ -122,7 +122,7 @@ final class GameNavigationController {
             playersRepository: playersRepository,
             recordsRepository: recordsRepository
         )
-        let vc = RehummingViewController(vm: vm)
+        let vc = RehummingViewController(viewModel: vm)
         navigationController.pushViewController(vc, animated: true)
     }
     

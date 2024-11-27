@@ -5,7 +5,7 @@ import Combine
 import Foundation
 import MusicKit
 
-final class SubmitAnswerViewModel: ObservableObject {
+final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     private var cancellable = Set<AnyCancellable>()
     private let musicRepository: MusicRepositoryProtocol
     private let gameStatusRepository: GameStatusRepositoryProtocol
@@ -103,16 +103,19 @@ final class SubmitAnswerViewModel: ObservableObject {
         downloadMusic(url: selectedSong.previewURL)
     }
 
-    @MainActor
-    func submitAnswer() {
+    func submitAnswer() async {
         guard let artworkBackgroundColor = selectedSong.artwork?.backgroundColor?.toHex() else { return }
-        let answer = ASEntity.Music(title: selectedSong.title, artist: selectedSong.artistName, artworkUrl: selectedSong.artwork?.url(width: 300, height: 300), previewUrl: selectedSong.previewURL, artworkBackgroundColor: artworkBackgroundColor)
-        Task {
-            do {
-                let response = try await submitsRepository.submitAnswer(answer: answer)
-            } catch {
-                print(error.localizedDescription)
-            }
+        let answer = ASEntity.Music(
+            title: selectedSong.title,
+            artist: selectedSong.artistName,
+            artworkUrl: selectedSong.artwork?.url(width: 300, height: 300),
+            previewUrl: selectedSong.previewURL,
+            artworkBackgroundColor: artworkBackgroundColor
+        )
+        do {
+            let response = try await submitsRepository.submitAnswer(answer: answer)
+        } catch {
+            print(error.localizedDescription)
         }
     }
 

@@ -29,19 +29,17 @@ final class RehummingViewModel: @unchecked Sendable {
         bindSubmitStatus()
     }
 
-    func submitHumming() {
+    func submitHumming() async {
         guard let recordedData else { return }
-        Task {
-            do {
-                let result = try await recordsRepository.uploadRecording(recordedData)
-                if result {
-                    // 전송됨
-                } else {
-                    // 전송 안됨, 오류 alert
-                }
-            } catch {
+        do {
+            let result = try await recordsRepository.uploadRecording(recordedData)
+            if result {
+                // 전송됨
+            } else {
                 // 전송 안됨, 오류 alert
             }
+        } catch {
+            // 전송 안됨, 오류 alert
         }
     }
 
@@ -61,7 +59,7 @@ final class RehummingViewModel: @unchecked Sendable {
         recordedData = data
         isRecording = false
     }
-    
+
     private func bindRecord(on recordOrder: UInt8) {
         recordsRepository.getHumming(on: recordOrder)
             .sink { [weak self] record in

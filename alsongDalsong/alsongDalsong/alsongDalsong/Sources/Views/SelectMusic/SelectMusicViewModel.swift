@@ -5,7 +5,7 @@ import Combine
 import Foundation
 import MusicKit
 
-final class SelectMusicViewModel: ObservableObject {
+final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var answers: [Answer] = []
     @Published public private(set) var searchList: [ASSong] = []
     @Published public private(set) var dueTime: Date?
@@ -21,12 +21,13 @@ final class SelectMusicViewModel: ObservableObject {
             isPlaying = true
         }
     }
+
     @Published public var isPlaying: Bool = false {
         didSet {
             isPlaying ? playingMusic() : stopMusic()
         }
     }
-
+    
     private let musicRepository: MusicRepositoryProtocol
     private let answerRepository: AnswersRepositoryProtocol
     private let gameStatusRepository: GameStatusRepositoryProtocol
@@ -102,8 +103,7 @@ final class SelectMusicViewModel: ObservableObject {
         downloadMusic(url: selectedSong.previewURL)
     }
     
-    @MainActor
-    func submitMusic() {
+    func submitMusic() async {
         let answer = ASEntity.Music(
             title: selectedSong.title,
             artist: selectedSong.artistName,
@@ -114,12 +114,11 @@ final class SelectMusicViewModel: ObservableObject {
             previewUrl: selectedSong.previewURL,
             artworkBackgroundColor: selectedSong.artwork?.backgroundColor?.toHex()
         )
-        Task {
-            do {
-                let response = try await answerRepository.submitMusic(answer: answer)
-            } catch {
-                print(error.localizedDescription)
-            }
+
+        do {
+            let response = try await answerRepository.submitMusic(answer: answer)
+        } catch {
+            print(error.localizedDescription)
         }
     }
  
