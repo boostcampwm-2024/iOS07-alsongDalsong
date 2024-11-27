@@ -11,10 +11,10 @@ final class HummingViewController: UIViewController {
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
     private var buttonStack = UIStackView()
-    private let vm: HummingViewModel
+    private let viewModel: HummingViewModel
 
-    init(vm: HummingViewModel) {
-        self.vm = vm
+    init(viewModel: HummingViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -30,15 +30,15 @@ final class HummingViewController: UIViewController {
     }
 
     private func bindToComponents() {
-        submissionStatus.bind(to: vm.$submissionStatus)
-        progressBar.bind(to: vm.$dueTime)
-        musicPanel.bind(to: vm.$music)
-        hummingPanel.bind(to: vm.$isRecording)
+        submissionStatus.bind(to: viewModel.$submissionStatus)
+        progressBar.bind(to: viewModel.$dueTime)
+        musicPanel.bind(to: viewModel.$music)
+        hummingPanel.bind(to: viewModel.$isRecording)
         hummingPanel.onRecordingFinished = { [weak self] recordedData in
             self?.recordButton.updateButton(.reRecord)
-            self?.vm.updateRecordedData(with: recordedData)
+            self?.viewModel.updateRecordedData(with: recordedData)
         }
-        submitButton.bind(to: vm.$recordedData)
+        submitButton.bind(to: viewModel.$recordedData)
     }
 
     private func setupUI() {
@@ -46,7 +46,7 @@ final class HummingViewController: UIViewController {
         recordButton.setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
         recordButton.addAction(UIAction { [weak self] _ in
             self?.recordButton.updateButton(.recording)
-            self?.vm.startRecording()
+            self?.viewModel.startRecording()
         },
         for: .touchUpInside)
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
@@ -67,6 +67,10 @@ final class HummingViewController: UIViewController {
         view.addSubview(hummingPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
+
+        progressBar.setCompletionHandler { [weak self] in
+            self?.showSubmitHummingLoading()
+        }
     }
 
     private func setupLayout() {
@@ -107,7 +111,7 @@ final class HummingViewController: UIViewController {
 
     private func submitHumming() async throws {
         do {
-            try await vm.submitHumming()
+            try await viewModel.submitHumming()
         } catch {
             throw ASAlertError.submitFailed
         }

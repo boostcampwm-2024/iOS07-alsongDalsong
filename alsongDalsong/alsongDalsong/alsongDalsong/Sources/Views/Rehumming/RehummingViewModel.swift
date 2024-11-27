@@ -59,7 +59,7 @@ final class RehummingViewModel: @unchecked Sendable {
         recordedData = data
         isRecording = false
     }
-    
+
     private func bindRecord(on recordOrder: UInt8) {
         recordsRepository.getHumming(on: recordOrder)
             .sink { [weak self] record in

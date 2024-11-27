@@ -84,12 +84,12 @@ class SelectMusicViewController: UIViewController {
     
     private func submitMusic() async throws {
         do {
-            selectCompleteButton.isEnabled = false
+            self.selectCompleteButton.updateButton(.disabled)
             viewModel.stopMusic()
             progressBar.cancelCompletion()
             try await viewModel.submitMusic()
         } catch {
-            selectCompleteButton.isEnabled = true
+            self.selectCompleteButton.updateButton(.complete)
             throw ASAlertError.submitFailed
         }
     }

@@ -61,7 +61,7 @@ final class ASButton: UIButton {
                 self.transform = .identity
             }
         }
-        self.configuration = config
+        configuration = config
     }
 
     private func disable(_ color: UIColor = .systemGray2) {
@@ -88,11 +88,12 @@ final class ASButton: UIButton {
             case let .idle(string, color): setConfiguration(title: string, backgroundColor: color)
             case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
             case .reRecord: setConfiguration(systemImageName: "arrow.clockwise", title: "재녹음", backgroundColor: .asOrange)
+            case .complete: setConfiguration(title: "완료")
         }
     }
 
     enum ASButtonType {
-        case disabled, idle(String, UIColor?), recording, reRecord
+        case disabled, idle(String, UIColor?), recording, reRecord, complete
     }
 }
 

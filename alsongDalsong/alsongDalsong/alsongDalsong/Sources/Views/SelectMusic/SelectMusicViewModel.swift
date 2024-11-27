@@ -20,7 +20,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             isPlaying ? playingMusic() : stopMusic()
         }
     }
-
+    
     private let musicRepository: MusicRepositoryProtocol
     private let answerRepository: AnswersRepositoryProtocol
     private let gameStatusRepository: GameStatusRepositoryProtocol
