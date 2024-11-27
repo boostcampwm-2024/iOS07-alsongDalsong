@@ -7,8 +7,10 @@ public struct RepsotioryAssembly: Assembly {
     public func assemble(container: Registerable) {
         container.registerSingleton(MainRepositoryProtocol.self) { r in
             let databaseManager = r.resolve(ASFirebaseDatabaseProtocol.self)
+            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return MainRepository(
-                databaseManager: databaseManager
+                databaseManager: databaseManager,
+                networkManager: networkManager
             )
         }
         
