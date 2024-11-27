@@ -399,11 +399,13 @@ enum ASAlertText {
         case joinRoom
         case startGame
         case submitMusic
+        case submitHumming
         var description: String {
             switch self {
                 case .joinRoom: "방 정보를 가져오는 중..."
                 case .startGame: "게임을 시작하는 중..."
                 case .submitMusic: "노래를 전송하는 중..."
+                case .submitHumming: "허밍을 전송하는 중..."
             }
         }
     }

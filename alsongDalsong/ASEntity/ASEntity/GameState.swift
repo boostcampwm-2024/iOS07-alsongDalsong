@@ -16,7 +16,7 @@ public struct GameState {
         self.round = round
     }
 
-    public func resolveViewType() -> GameViewType {
+    public func resolveViewType() -> GameViewType? {
         guard let mode, let status, let recordOrder, let round else {
             return .lobby
         }
@@ -34,7 +34,7 @@ public struct GameState {
         }
     }
 
-    private func resolveHummingViewType(status: Status, recordOrder: UInt8, round: UInt8) -> GameViewType {
+    private func resolveHummingViewType(status: Status, recordOrder: UInt8, round: UInt8) -> GameViewType? {
         switch status {
         case .humming:
             if round == 0, recordOrder == 0 {
@@ -51,7 +51,7 @@ public struct GameState {
         default:
             return .lobby
         }
-        return .lobby
+        return nil
     }
 
     private func resolveHarmonyViewType(status: Status) -> GameViewType {

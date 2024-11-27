@@ -52,17 +52,7 @@ final class HummingViewController: UIViewController {
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
         submitButton.addAction(
             UIAction { [weak self] _ in
-                self?.vm.submitHumming()
-                let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
-                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
-                let vm = RehummingViewModel(
-                    gameStatusRepository: gameStatusRepository,
-                    playersRepository: playersRepository,
-                    recordsRepository: recordsRepository
-                )
-                let vc = RehummingViewController(vm: vm)
-                self?.navigationController?.pushViewController(vc, animated: true)
+                self?.showSubmitHummingLoading()
             }, for: .touchUpInside
         )
         submitButton.updateButton(.disabled)
@@ -107,11 +97,39 @@ final class HummingViewController: UIViewController {
 
             submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
             submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
-            
+
             buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
             buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
+    }
+
+    private func submitHumming() async throws {
+        do {
+            try await vm.submitHumming()
+        } catch {
+            throw ASAlertError.submitFailed
+        }
+    }
+}
+
+// MARK: - Alert
+
+extension HummingViewController {
+    func showSubmitHummingLoading() {
+        let alert = ASAlertController(
+            progressText: .submitHumming)
+        { [weak self] in
+            try await self?.submitHumming()
+        } errorCompletion: { [weak self] in
+            self?.showFailSubmitMusic()
+        }
+        presentLoadingView(alert)
+    }
+
+    func showFailSubmitMusic() {
+        let alert = ASAlertController(errorType: .submitFailed)
+        presentAlert(alert)
     }
 }
