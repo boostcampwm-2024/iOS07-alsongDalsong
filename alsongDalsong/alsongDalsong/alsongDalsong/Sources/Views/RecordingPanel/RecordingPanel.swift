@@ -6,7 +6,7 @@ final class RecordingPanel: UIView {
     private var waveFormView = WaveForm()
     private var customBackgroundColor: UIColor
     private var cancellables = Set<AnyCancellable>()
-    private let vm = RecordingPanelViewModel()
+    private let viewModel = RecordingPanelViewModel()
     var onRecordingFinished: ((Data) -> Void)?
 
     init(_ color: UIColor = .asMint) {
@@ -33,27 +33,27 @@ final class RecordingPanel: UIView {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isRecording in
                 if isRecording {
-                    self?.vm.startRecording()
+                    self?.viewModel.startRecording()
                 }
             }
             .store(in: &cancellables)
     }
 
     private func bindViewModel() {
-        vm.$recordedData
+        viewModel.$recordedData
             .filter { $0 != nil }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] recordedData in
                 self?.onRecordingFinished?(recordedData ?? Data())
             }
             .store(in: &cancellables)
-        vm.$recorderAmplitude
+        viewModel.$recorderAmplitude
             .receive(on: DispatchQueue.main)
             .sink { [weak self] amplitude in
                 self?.updateWaveForm(amplitude: CGFloat(amplitude))
             }
             .store(in: &cancellables)
-        vm.$panelState
+        viewModel.$panelState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.updateButtonImage(with: state)
@@ -69,7 +69,7 @@ final class RecordingPanel: UIView {
     private func setupButton() {
         var buttonConfiguration = UIButton.Configuration.borderless()
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular)
-        buttonConfiguration.image = vm.panelState.symbol
+        buttonConfiguration.image = viewModel.panelState.symbol
         buttonConfiguration.preferredSymbolConfigurationForImage = imageConfig
         buttonConfiguration.baseForegroundColor = .white
         buttonConfiguration.contentInsets = .zero
@@ -93,7 +93,7 @@ final class RecordingPanel: UIView {
     }
 
     private func didButtonTapped() {
-        vm.togglePlayPause()
+        viewModel.togglePlayPause()
     }
 
     private func setupUI() {
