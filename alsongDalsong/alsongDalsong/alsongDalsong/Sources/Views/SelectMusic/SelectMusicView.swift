@@ -24,7 +24,9 @@ struct SelectMusicView: View {
 
             ASSearchBar(text: $searchTerm, placeHolder: "곡 제목을 검색하세요")
                 .onChange(of: searchTerm) { newValue in
-                    viewModel.searchMusic(text: newValue)
+                    Task {
+                        viewModel.searchMusic(text: newValue)
+                    }
                 }
             if searchTerm == "" {
                 VStack(alignment: .center) {

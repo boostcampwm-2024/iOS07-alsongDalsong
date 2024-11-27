@@ -1,26 +1,21 @@
 import ASEntity
 import ASMusicKit
 import ASRepository
+import ASNetworkKit
 import Combine
 import Foundation
-import MusicKit
 
-final class SelectMusicViewModel: ObservableObject {
+final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var answers: [Answer] = []
     @Published public private(set) var searchList: [ASSong] = []
     @Published public private(set) var dueTime: Date?
-    @Published public private(set) var selectedSong: ASSong = .init(
-        id: "12345",
-        title: "선택된 곡 없음",
-        artistName: "아티스트",
-        artwork: nil,
-        previewURL: URL(string: "")
-    )
+    @Published public private(set) var selectedSong: ASSong = .init(id: "12345")
     @Published public private(set) var musicData: Data? {
         didSet {
             isPlaying = true
         }
     }
+
     @Published public var isPlaying: Bool = false {
         didSet {
             isPlaying ? playingMusic() : stopMusic()
@@ -102,8 +97,7 @@ final class SelectMusicViewModel: ObservableObject {
         downloadMusic(url: selectedSong.previewURL)
     }
     
-    @MainActor
-    func submitMusic() {
+    func submitMusic() async throws {
         let answer = ASEntity.Music(
             title: selectedSong.title,
             artist: selectedSong.artistName,
@@ -114,13 +108,7 @@ final class SelectMusicViewModel: ObservableObject {
             previewUrl: selectedSong.previewURL,
             artworkBackgroundColor: selectedSong.artwork?.backgroundColor?.toHex()
         )
-        Task {
-            do {
-                let response = try await answerRepository.submitMusic(answer: answer)
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
+        throw ASNetworkErrors.responseError
     }
  
     @MainActor

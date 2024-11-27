@@ -41,7 +41,13 @@ public struct ASMusicAPI {
 }
 
 public struct ASSong: Equatable, Identifiable {
-    public init(id: String? = nil, title: String, artistName: String, artwork: Artwork?, previewURL: URL?) {
+    public init(
+        id: String? = nil,
+        title: String = "선택된 곡 없음",
+        artistName: String = "아티스트",
+        artwork: Artwork? = nil,
+        previewURL: URL? = nil
+    ) {
         self.id = id
         self.title = title
         self.artistName = artistName
