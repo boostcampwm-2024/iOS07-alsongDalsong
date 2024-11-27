@@ -349,10 +349,12 @@ enum ASAlertText {
 
     enum ProgressText: CustomStringConvertible {
         case joinRoom
+        case submitMusic
 
         var description: String {
             switch self {
                 case .joinRoom: "방 정보를 가져오는 중..."
+                case .submitMusic: "음악 전송 중..."
             }
         }
     }

@@ -28,6 +28,13 @@ class SelectMusicViewController: UIViewController {
         bindToComponents()
     }
     
+    func showSubmitLoading() {
+        let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
+            await self?.viewModel.submitMusic()
+        }
+        presentLoadingView(alert)
+    }
+    
     private func bindToComponents() {
         progressBar.bind(to: viewModel.$dueTime)
         selectCompleteButton.bind(to: viewModel.$musicData)
@@ -76,13 +83,13 @@ class SelectMusicViewController: UIViewController {
         selectCompleteButton.addAction(UIAction { [weak self] _ in
             self?.selectCompleteButton.updateButton(.complete)
             self?.selectCompleteButton.updateButton(.disabled)
-            self?.viewModel.submitMusic()
+            self?.showSubmitLoading()
             self?.viewModel.stopMusic()
             self?.progressBar.cancelCompletion()
         }, for: .touchUpInside)
         
         progressBar.setCompletionHandler { [weak self] in
-            self?.viewModel.submitMusic()
+            self?.showSubmitLoading()
         }
     }
 }
