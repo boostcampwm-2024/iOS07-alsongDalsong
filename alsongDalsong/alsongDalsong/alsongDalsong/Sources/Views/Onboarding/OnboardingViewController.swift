@@ -1,4 +1,5 @@
 import ASContainer
+import ASNetworkKit
 import ASRepository
 import Combine
 import UIKit
@@ -202,14 +203,12 @@ final class OnboardingViewController: UIViewController {
         joinRoom(with: roomNumber)
     }
 
-    private func setNicknameAndCreateRoom() async {
+    private func setNicknameAndCreateRoom() async throws {
         if let nickname = nickNamePanel.text, !nickname.isEmpty {
             viewModel?.setNickname(with: nickname)
         }
-
-        guard let number = await viewModel?.createRoom() else { return }
-        if number.isEmpty { showCreateRoomFailedAlert() }
-        else { navigateToLobby(with: number) }
+        guard let number = try await viewModel?.createRoom() else { throw ASAlertError.createFailed }
+        navigateToLobby(with: number)
     }
 }
 
@@ -236,19 +235,21 @@ extension OnboardingViewController {
     }
 
     func showJoinRoomFailedAlert() {
-        let alert = ASAlertController(titleText: .joinFailed)
+        let alert = ASAlertController(errorType: .joinFailed)
         presentAlert(alert)
     }
 
     func showCreateRoomFailedAlert() {
-        let alert = ASAlertController(titleText: .createFailed)
+        let alert = ASAlertController(errorType: .createFailed)
         presentAlert(alert)
     }
 
     func showCreateRoomLoading() {
-        let alert = ASAlertController(progressText: .joinRoom) { [weak self] in
-            await self?.setNicknameAndCreateRoom()
-        }
+        let alert = ASAlertController(progressText: .joinRoom, load: { [weak self] in
+            try await self?.setNicknameAndCreateRoom()
+        }, errorCompletion: { [weak self] in
+            self?.showCreateRoomFailedAlert()
+        })
         presentLoadingView(alert)
     }
 }

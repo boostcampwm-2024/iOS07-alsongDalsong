@@ -62,6 +62,7 @@ final class ProgressBar: UIView {
     private func startProgressAnimation() {
         guard let targetDate else { return }
         let timeInterval = targetDate.timeIntervalSince(Date.now)
+        if timeInterval < 50 { return }
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
 

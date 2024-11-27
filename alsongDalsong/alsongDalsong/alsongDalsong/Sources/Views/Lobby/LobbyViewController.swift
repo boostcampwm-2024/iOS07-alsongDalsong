@@ -163,11 +163,11 @@ final class LobbyViewController: UIViewController {
         ])
     }
     
-    private func gameStart() async {
+    private func gameStart() async throws{
         do {
             try await self.viewmodel.gameStart()
         } catch {
-            showStartGameFailed()
+            throw ASAlertError.stratGameFailed
         }
     }
 }
@@ -176,14 +176,16 @@ final class LobbyViewController: UIViewController {
 
 extension LobbyViewController {
     func showStartGameLoading() {
-        let alert = ASAlertController(progressText: .startGame) { [weak self] in
-            await self?.gameStart()
-        }
+        let alert = ASAlertController(progressText: .startGame, load: { [weak self] in
+            try await self?.gameStart()
+        }, errorCompletion: { [weak self] in
+            self?.showStartGameFailed()
+        })
         presentLoadingView(alert)
     }
     
     func showStartGameFailed() {
-        let alert = ASAlertController(titleText: .stratGameFailed)
+        let alert = ASAlertController(errorType: .stratGameFailed)
         presentAlert(alert)
     }
 }

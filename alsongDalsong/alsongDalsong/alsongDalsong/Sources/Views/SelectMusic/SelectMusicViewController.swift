@@ -82,15 +82,15 @@ class SelectMusicViewController: UIViewController {
         }
     }
     
-    private func submitMusic() async {
+    private func submitMusic() async throws {
         do {
             selectCompleteButton.isEnabled = false
-            try await viewModel.submitMusic()
             viewModel.stopMusic()
             progressBar.cancelCompletion()
+            try await viewModel.submitMusic()
         } catch {
             selectCompleteButton.isEnabled = true
-            showFailSubmitMusic()
+            throw ASAlertError.submitFailed
         }
     }
 }
@@ -99,15 +99,16 @@ class SelectMusicViewController: UIViewController {
 
 extension SelectMusicViewController {
     func showSubmitMusicLoading() {
-        let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
-            await self?.submitMusic()
-        }
+        let alert = ASAlertController(progressText: .submitMusic, load: { [weak self] in
+            try await self?.submitMusic()
+        }, errorCompletion: { [weak self] in
+            self?.showFailSubmitMusic()
+        })
         presentLoadingView(alert)
     }
     
     func showFailSubmitMusic() {
-        let alert = ASAlertController(style: .confirm, titleText: .submitFailld)
-    
+        let alert = ASAlertController(errorType: .submitFailed)
         presentAlert(alert)
     }
 }

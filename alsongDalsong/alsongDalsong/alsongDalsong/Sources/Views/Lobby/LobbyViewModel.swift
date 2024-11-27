@@ -1,5 +1,6 @@
 import ASEntity
 import ASRepository
+import ASNetworkKit
 import Combine
 import Foundation
 
@@ -91,7 +92,11 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     }
     
     func gameStart() async throws {
-        let isGameStarted = try await roomActionRepository.startGame(roomNumber: roomNumber)
+        do {
+            let _ = try await roomActionRepository.startGame(roomNumber: roomNumber)
+        } catch {
+            throw error
+        }
     }
     
     func leaveRoom() {

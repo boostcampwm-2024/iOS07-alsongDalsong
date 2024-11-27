@@ -107,7 +107,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             previewUrl: selectedSong.previewURL,
             artworkBackgroundColor: selectedSong.artwork?.backgroundColor?.toHex()
         )
-        let response = try await answerRepository.submitMusic(answer: answer)
+        let _ = try await answerRepository.submitMusic(answer: answer)
     }
  
     @MainActor

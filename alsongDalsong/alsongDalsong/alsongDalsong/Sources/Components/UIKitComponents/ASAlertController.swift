@@ -2,7 +2,7 @@ import UIKit
 
 class ASAlertController: UIViewController {
     var textField = ASTextField()
-    private var titleText: ASAlertText.Title?
+    private var titleText: String?
     private var textFieldPlaceholder: ASAlertText.Placeholder?
     private var doneButtonTitle: ASAlertText.ButtonText?
     private var cancelButtonTitle: ASAlertText.ButtonText?
@@ -12,7 +12,8 @@ class ASAlertController: UIViewController {
     private var style: ASAlertStyle = .default
     var doneButtonCompletion: ((String) -> Void)?
     var cancelButtonCompletion: (() -> Void)?
-    var load: (() async -> Void)?
+    var errorCompletion: (() -> Void)?
+    var load: (() async throws -> Void)?
     var text: String {
         textField.text ?? ""
     }
@@ -156,9 +157,17 @@ class ASAlertController: UIViewController {
         progressView.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 12).isActive = true
         progressView.hidesWhenStopped = true
         Task {
-            if let load = load {
-                await load()
-                self.dismiss(animated: true)
+            if let load {
+                do {
+                    try await load()
+                    dismiss(animated: true)
+                } catch {
+                    dismiss(animated: true) {
+                        if let errorCompletion = self.errorCompletion {
+                            errorCompletion()
+                        }
+                    }
+                }
             }
         }
     }
@@ -193,6 +202,10 @@ class ASAlertController: UIViewController {
             case .load:
                 setProgressView()
                 setProgressText()
+            case .error:
+                setTitle()
+                setButtonStackView()
+                setDoneButton()
         }
     }
 }
@@ -212,7 +225,7 @@ extension ASAlertController {
     ) {
         self.init()
         self.style = style
-        self.titleText = titleText
+        self.titleText = titleText.description
         self.textFieldPlaceholder = textFieldPlaceholder
         self.doneButtonTitle = doneButtonTitle
         self.cancelButtonTitle = cancelButtonTitle
@@ -234,7 +247,7 @@ extension ASAlertController {
     ) {
         self.init()
         self.style = style
-        self.titleText = titleText
+        self.titleText = titleText.description
         self.doneButtonTitle = doneButtonTitle
         self.cancelButtonTitle = cancelButtonTitle
         self.doneButtonCompletion = doneButtonCompletion
@@ -252,7 +265,7 @@ extension ASAlertController {
     ) {
         self.init()
         self.style = style
-        self.titleText = titleText
+        self.titleText = titleText.description
         self.doneButtonTitle = doneButtonTitle
         self.doneButtonCompletion = doneButtonCompletion
 
@@ -263,12 +276,30 @@ extension ASAlertController {
     convenience init(
         _ type: ASAlertStyle = .load,
         progressText: ASAlertText.ProgressText,
-        load: (() async -> Void)? = nil
+        load: (() async throws -> Void)? = nil,
+        errorCompletion: (() -> Void)? = nil
     ) {
         self.init()
         style = type
         self.progressText = progressText
         self.load = load
+        self.errorCompletion = errorCompletion
+
+        modalTransitionStyle = .crossDissolve
+        modalPresentationStyle = .overFullScreen
+    }
+
+    convenience init(
+        style: ASAlertStyle = .error,
+        errorType: ASAlertError,
+        doneButtonTitle: ASAlertText.ButtonText = .confirm,
+        doneButtonCompletion: ((String) -> Void)? = nil
+    ) {
+        self.init()
+        self.style = style
+        titleText = errorType.localizedDescription
+        self.doneButtonTitle = doneButtonTitle
+        self.doneButtonCompletion = doneButtonCompletion
 
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
@@ -295,6 +326,24 @@ extension ASAlertController: UITextFieldDelegate {
     }
 }
 
+// MARK: - Error Type
+
+enum ASAlertError: Error, LocalizedError {
+    case createFailed
+    case joinFailed
+    case stratGameFailed
+    case submitFailed
+
+    var errorDescription: String? {
+        switch self {
+            case .createFailed: "방 생성에 실패하였습니다."
+            case .joinFailed: "방 참가에 실패하였습니다."
+            case .stratGameFailed: "게임 시작에 실패하였습니다."
+            case .submitFailed: "제출에 실패하였습니다."
+        }
+    }
+}
+
 // MARK: - Alert Type
 
 enum ASAlertStyle {
@@ -302,6 +351,7 @@ enum ASAlertStyle {
     case `default`
     case confirm
     case load
+    case error
 }
 
 enum ASAlertText {
@@ -309,18 +359,12 @@ enum ASAlertText {
         case leaveRoom
         case joinRoom
         case joinFailed
-        case createFailed
-        case stratGameFailed
-        case submitFailld
 
         var description: String {
             switch self {
                 case .leaveRoom: "방을 나가시겠습니까?"
                 case .joinRoom: "게임 입장 코드를 입력하세요"
                 case .joinFailed: "참가에 실패하였습니다."
-                case .createFailed: "생성에 실패하였습니다."
-                case .stratGameFailed: "게임 시작에 실패하였습니다."
-                case .submitFailld: "제출에 실패하였습니다."
             }
         }
     }
