@@ -100,13 +100,13 @@ final class GameNavigationController {
         let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
         let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
         let answersRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
-        let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
+        let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
         
         let vm = HummingViewModel(
             gameStatusRepository: gameStatusRepository,
             playersRepository: playersRepository,
             answersRepository: answersRepository,
-            submitsRepository: submitsRepository
+            recordsRepository: recordsRepository
         )
         let vc = HummingViewController(vm: vm)
         navigationController.pushViewController(vc, animated: true)
@@ -115,14 +115,12 @@ final class GameNavigationController {
     private func navigateToRehumming() {
         let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
         let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-        let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
         let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
         
         let vm = RehummingViewModel(
             gameStatusRepository: gameStatusRepository,
             playersRepository: playersRepository,
-            recordsRepository: recordsRepository,
-            submitsRepository: submitsRepository
+            recordsRepository: recordsRepository
         )
         let vc = RehummingViewController(vm: vm)
         navigationController.pushViewController(vc, animated: true)
