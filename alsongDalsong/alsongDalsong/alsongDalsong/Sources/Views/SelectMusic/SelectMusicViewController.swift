@@ -74,6 +74,8 @@ class SelectMusicViewController: UIViewController {
     
     func setAction() {
         selectCompleteButton.addAction(UIAction { [weak self] _ in
+            self?.selectCompleteButton.updateButton(.complete)
+            self?.selectCompleteButton.updateButton(.disabled)
             self?.selectMusicViewModel.submitMusic()
             self?.selectMusicViewModel.stopMusic()
             self?.progressBar.cancelCompletion()
