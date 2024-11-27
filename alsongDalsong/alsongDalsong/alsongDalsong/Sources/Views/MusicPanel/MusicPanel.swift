@@ -190,8 +190,17 @@ private final class ASMusicPlayer: UIView {
     }
 
     private func updateButtonImage(with state: AudioButtonState) {
-        playButton.configuration?.baseForegroundColor = state.color
-        playButton.configuration?.image = state.symbol
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            options: [.curveEaseOut],
+            animations: { [weak self] in
+                self?.playButton.transform = .identity
+            }, completion: { [weak self] _ in
+                self?.playButton.configuration?.baseForegroundColor = state.color
+                self?.playButton.configuration?.image = state.symbol
+            }
+        )
     }
 
     private func didButtonTapped() {
@@ -221,14 +230,22 @@ private final class ASMusicPlayer: UIView {
         buttonConfiguration.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
             color.withAlphaComponent(0.0)
         }
-
-        playButton.configurationUpdateHandler = { [weak self] _ in
-            guard let self else { return }
-            if playButton.isHighlighted {
-                playButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-            } else {
-                playButton.transform = .identity
-            }
+        
+        playButton.configurationUpdateHandler = { button in
+            UIView.animate(
+                withDuration: 0.15,
+                delay: 0,
+                usingSpringWithDamping: 0.5,
+                initialSpringVelocity: 0.5,
+                options: [.allowUserInteraction],
+                animations: {
+                    if button.isHighlighted {
+                        button.transform = CGAffineTransform(scaleX: 0.85, y: 0.85)
+                    } else {
+                        button.transform = .identity
+                    }
+                }
+            )
         }
         
         playButton.configuration = buttonConfiguration
