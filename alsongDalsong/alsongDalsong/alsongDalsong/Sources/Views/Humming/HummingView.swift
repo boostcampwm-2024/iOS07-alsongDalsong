@@ -56,12 +56,12 @@ final class HummingViewController: UIViewController {
                 let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
                 let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
                 let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
-                let vm = RehummingViewModel(
+                let viewModel = RehummingViewModel(
                     gameStatusRepository: gameStatusRepository,
                     playersRepository: playersRepository,
                     recordsRepository: recordsRepository
                 )
-                let vc = RehummingViewController(viewModel: vm)
+                let vc = RehummingViewController(viewModel: viewModel)
                 self?.navigationController?.pushViewController(vc, animated: true)
             }, for: .touchUpInside
         )
