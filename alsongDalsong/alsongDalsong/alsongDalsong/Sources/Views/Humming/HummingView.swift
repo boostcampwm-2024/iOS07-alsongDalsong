@@ -43,16 +43,20 @@ final class HummingViewController: UIViewController {
 
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
-        recordButton.setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
+        recordButton.updateButton(.startRecord)
         recordButton.addAction(UIAction { [weak self] _ in
             self?.recordButton.updateButton(.recording)
             self?.viewModel.startRecording()
         },
         for: .touchUpInside)
-        submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
+        submitButton.updateButton(.submit)
+        submitButton.updateButton(.disabled)
         submitButton.addAction(
             UIAction { [weak self] _ in
-                self?.showSubmitLoading()
+                Task {
+                    guard let submitted = await self?.showSubmitLoading() else { return }
+                    submitted ? self?.submitButton.updateButton(.submitted) : self?.submitButton.updateButton(.submit)
+                }
                 let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
                 let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
                 let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
@@ -65,7 +69,6 @@ final class HummingViewController: UIViewController {
                 self?.navigationController?.pushViewController(vc, animated: true)
             }, for: .touchUpInside
         )
-        submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
         buttonStack.addArrangedSubview(recordButton)
@@ -79,7 +82,9 @@ final class HummingViewController: UIViewController {
         view.addSubview(submissionStatus)
 
         progressBar.setCompletionHandler { [weak self] in
-            self?.showSubmitLoading()
+            Task {
+                await self?.showSubmitLoading()
+            }
         }
     }
 
@@ -119,10 +124,19 @@ final class HummingViewController: UIViewController {
         ])
     }
 
-    func showSubmitLoading() {
-        let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
-            await self?.viewModel.submitHumming()
+    func showSubmitLoading() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
+                guard let self else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                Task {
+                    let result = await self.viewModel.submitHumming()
+                    continuation.resume(returning: result)
+                }
+            }
+            presentLoadingView(alert)
         }
-        presentLoadingView(alert)
     }
 }
