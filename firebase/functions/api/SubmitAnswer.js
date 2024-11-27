@@ -25,6 +25,11 @@ module.exports.submitAnswer = onRequest({ region: 'asia-southeast1' }, async (re
   try {
     const playerData = await getUserData(userId);
     const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
+    const userData = await getUserData(userId);
+    const roomSnapshot = await roomRef.get();
+    const roomData = roomSnapshot.data();
+    const playersCount = roomData.players.length;
+    const submitCount = roomData.submits.length;
     if (!playerData) {
       return res.status(404).json({ error: 'plyer Data not found' });
     }
@@ -32,9 +37,17 @@ module.exports.submitAnswer = onRequest({ region: 'asia-southeast1' }, async (re
       player: playerData,
       music: req.body,
     };
-    await roomRef.update({
-      submits: FieldValue.arrayUnion(answer),
-    });
+    if (submitCount - 1 === playersCount) {
+      await roomRef.update({
+        submits: FieldValue.arrayUnion(answer),
+        status: 'result',
+      });
+    } else {
+      await roomRef.update({
+        submits: FieldValue.arrayUnion(answer),
+      });
+    }
+
     res.status(200).json({ status: 'success' });
   } catch (error) {
     console.log('에러러', error);

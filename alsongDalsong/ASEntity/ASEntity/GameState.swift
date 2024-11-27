@@ -3,17 +3,19 @@ public struct GameState {
     public let recordOrder: UInt8?
     public let status: Status?
     public let round: UInt8?
-
+    public let players: [Player]
     public init(
         mode: Mode?,
         recordOrder: UInt8?,
         status: Status?,
-        round: UInt8?
+        round: UInt8?,
+        players: [Player]
     ) {
         self.mode = mode
         self.recordOrder = recordOrder
         self.status = status
         self.round = round
+        self.players = players
     }
 
     public func resolveViewType() -> GameViewType? {
@@ -38,12 +40,19 @@ public struct GameState {
         switch status {
         case .humming:
             if round == 0, recordOrder == 0 {
-                return .selectMusic
+                return .submitMusic
             } else if round == 1, recordOrder == 0 {
                 return .humming
             }
         case .rehumming:
-            if round == 1, recordOrder >= 1 {
+            if players.count <= 2, round == 1, recordOrder == 1 {
+                return .submitAnswer
+            }
+            
+            if round == 1, recordOrder == players.count {
+                return .submitAnswer
+            }
+            else if round == 1, recordOrder >= 1 {
                 return .rehumming
             }
         case .result:
@@ -55,27 +64,28 @@ public struct GameState {
     }
 
     private func resolveHarmonyViewType(status: Status) -> GameViewType {
-        return .selectMusic
+        return .submitMusic
     }
 
     private func resolveSyncViewType(status: Status) -> GameViewType {
-        return .selectMusic
+        return .submitMusic
     }
 
     private func resolveInstantViewType(status: Status) -> GameViewType {
-        return .selectMusic
+        return .submitMusic
     }
 
     private func resolveTTSViewType(status: Status) -> GameViewType {
-        return .selectMusic
+        return .submitMusic
     }
 }
 
 
 public enum GameViewType {
-    case selectMusic
+    case submitMusic
     case humming
     case rehumming
+    case submitAnswer
     case result
     case lobby
 }

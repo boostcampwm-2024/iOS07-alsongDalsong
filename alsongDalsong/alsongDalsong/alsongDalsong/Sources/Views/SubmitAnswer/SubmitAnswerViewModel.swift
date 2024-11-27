@@ -103,7 +103,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         downloadMusic(url: selectedSong.previewURL)
     }
 
-    func submitAnswer() async {
+    func submitAnswer() async throws {
         guard let artworkBackgroundColor = selectedSong.artwork?.backgroundColor?.toHex() else { return }
         let answer = ASEntity.Music(
             title: selectedSong.title,
@@ -115,7 +115,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         do {
             let response = try await submitsRepository.submitAnswer(answer: answer)
         } catch {
-            print(error.localizedDescription)
+            throw error
         }
     }
 

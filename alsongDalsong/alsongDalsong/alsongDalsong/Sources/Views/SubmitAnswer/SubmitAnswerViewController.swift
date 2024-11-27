@@ -45,7 +45,7 @@ final class SubmitAnswerViewController: UIViewController {
         selectAnswerButton.setConfiguration(title: "정답 선택", backgroundColor: .asLightSky)
         selectAnswerButton.addAction(UIAction { [weak self] _ in
             guard let self else { return }
-            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: self.viewModel))
+            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: viewModel))
             present(selecAnswerView, animated: true)
         },
         for: .touchUpInside)
@@ -53,16 +53,6 @@ final class SubmitAnswerViewController: UIViewController {
         submitButton.addAction(
             UIAction { [weak self] _ in
                 self?.showSubmitLoading()
-                let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
-                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
-                let viewModel = RehummingViewModel(
-                    gameStatusRepository: gameStatusRepository,
-                    playersRepository: playersRepository,
-                    recordsRepository: recordsRepository
-                )
-                let vc = RehummingViewController(viewModel: viewModel)
-                self?.navigationController?.pushViewController(vc, animated: true)
             }, for: .touchUpInside
         )
         progressBar.setCompletionHandler { [weak self] in
@@ -111,10 +101,29 @@ final class SubmitAnswerViewController: UIViewController {
         ])
     }
 
-    func showSubmitLoading() {
-        let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
-            await self?.viewModel.submitAnswer()
+    func submitAnswer() async throws {
+        do {
+            selectAnswerButton.updateButton(.disabled)
+            viewModel.stopMusic()
+            progressBar.cancelCompletion()
+            try await viewModel.submitAnswer()
+        } catch {
+            selectAnswerButton.updateButton(.complete)
+            throw ASAlertError.submitFailed
         }
+    }
+
+    func showSubmitLoading() {
+        let alert = ASAlertController(progressText: .submitMusic, load: { [weak self] in
+            try await self?.submitAnswer()
+        }, errorCompletion: { [weak self] in
+            self?.showSubmitFailed()
+        })
         presentLoadingView(alert)
+    }
+
+    func showSubmitFailed() {
+        let alert = ASAlertController(errorType: .submitFailed)
+        presentAlert(alert)
     }
 }

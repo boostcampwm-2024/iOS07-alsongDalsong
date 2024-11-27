@@ -42,12 +42,14 @@ final class GameNavigationController {
     private func updateViewControllers(state: GameState) {
         let viewType = state.resolveViewType()
         switch viewType {
-        case .selectMusic:
+        case .submitMusic:
             navigateToSelectMusic()
         case .humming:
             navigateToHumming()
         case .rehumming:
             navigateToRehumming()
+        case .submitAnswer:
+            navigateToSubmitAnswer()
         case .result:
             navigateToResult()
         case .lobby:
@@ -123,6 +125,24 @@ final class GameNavigationController {
             recordsRepository: recordsRepository
         )
         let vc = RehummingViewController(viewModel: vm)
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
+    private func navigateToSubmitAnswer() {
+        let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
+        let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
+        let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
+        let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
+        let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
+        
+        let vm = SubmitAnswerViewModel(
+            gameStatusRepository: gameStatusRepository,
+            playersRepository: playersRepository,
+            recordsRepository: recordsRepository,
+            submitsRepository: submitsRepository,
+            musicRepository: musicRepository
+        )
+        let vc = SubmitAnswerViewController(viewModel: vm)
         navigationController.pushViewController(vc, animated: true)
     }
     

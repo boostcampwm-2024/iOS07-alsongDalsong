@@ -112,6 +112,7 @@ final class RehummingViewController: UIViewController {
     
     private func submitHumming() async throws {
         do {
+            progressBar.cancelCompletion()
             try await viewModel.submitHumming()
         } catch {
             throw ASAlertError.submitFailed
