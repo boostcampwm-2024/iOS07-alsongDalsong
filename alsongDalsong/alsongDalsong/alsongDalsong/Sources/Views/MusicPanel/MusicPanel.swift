@@ -11,7 +11,7 @@ final class MusicPanel: UIView {
     private let artistLabel = UILabel()
     private var cancellables = Set<AnyCancellable>()
     private let musicRepository: MusicRepositoryProtocol
-    private var vm: MusicPanelViewModel? = nil
+    private var viewModel: MusicPanelViewModel? = nil
 
     init() {
         musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
@@ -32,7 +32,7 @@ final class MusicPanel: UIView {
         dataSource
             .receive(on: DispatchQueue.main)
             .sink { [weak self] music in
-                self?.vm = MusicPanelViewModel(
+                self?.viewModel = MusicPanelViewModel(
                     music: music,
                     musicRepository: self?.musicRepository
                 )
@@ -46,12 +46,12 @@ final class MusicPanel: UIView {
 
     private func bindWithPlayer() {
         player.onPlayButtonTapped = { [weak self] isPlaying in
-            self?.vm?.togglePlayPause(isPlaying: isPlaying)
+            self?.viewModel?.togglePlayPause(isPlaying: isPlaying)
         }
     }
 
     private func bindViewModel() {
-        vm?.$artwork
+        viewModel?.$artwork
             .receive(on: DispatchQueue.main)
             .sink { [weak self] artwork in
                 self?.player.updateMusicPanel(image: artwork)
