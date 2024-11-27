@@ -19,4 +19,6 @@ public protocol MainRepositoryProtocol {
 
     func connectRoom(roomNumber: String)
     func disconnectRoom()
+    
+    func postRecording(_ record: Data) async throws -> Bool
 }

@@ -20,6 +20,14 @@ public final class PlayersRepository: PlayersRepositoryProtocol {
             .eraseToAnyPublisher()
     }
     
+    public func getPlayersCount() -> AnyPublisher<Int, Never> {
+        mainRepository.players
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .map { $0.count }
+            .eraseToAnyPublisher()
+    }
+    
     public func getHost() -> AnyPublisher<Player, Never> {
         mainRepository.host
             .receive(on: DispatchQueue.main)

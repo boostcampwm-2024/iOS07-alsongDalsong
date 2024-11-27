@@ -83,9 +83,8 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
     
     private func sendRequest<T: Decodable>(endpointPath: FirebaseEndpoint.Path, requestBody: [String: Any]) async throws -> T {
         let endpoint = FirebaseEndpoint(path: endpointPath, method: .post)
-            .update(\.headers, with: ["Content-Type": "application/json"])
         let body = try JSONSerialization.data(withJSONObject: requestBody, options: [])
-        let data = try await networkManager.sendRequest(to: endpoint, body: body, option: .none)
+        let data = try await networkManager.sendRequest(to: endpoint, type: .json, body: body, option: .none)
         let response = try JSONDecoder().decode(T.self, from: data)
         return response
     }
