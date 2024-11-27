@@ -8,10 +8,10 @@ class SelectMusicViewController: UIViewController {
     private var selectMusicView: UIHostingController<SelectMusicView>?
     private let selectCompleteButton = ASButton()
     
-    private let selectMusicViewModel: SelectMusicViewModel
+    private let viewModel: SelectMusicViewModel
     
     init(selectMusicViewModel: SelectMusicViewModel) {
-        self.selectMusicViewModel = selectMusicViewModel
+        self.viewModel = selectMusicViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -29,8 +29,8 @@ class SelectMusicViewController: UIViewController {
     }
     
     private func bindToComponents() {
-        progressBar.bind(to: selectMusicViewModel.$dueTime)
-        selectCompleteButton.bind(to: selectMusicViewModel.$musicData)
+        progressBar.bind(to: viewModel.$dueTime)
+        selectCompleteButton.bind(to: viewModel.$musicData)
     }
     
     func setupUI() {
@@ -40,7 +40,7 @@ class SelectMusicViewController: UIViewController {
     }
     
     func setupLayout() {
-        let musicView = SelectMusicView(viewModel: selectMusicViewModel)
+        let musicView = SelectMusicView(viewModel: viewModel)
         selectMusicView = UIHostingController(rootView: musicView)
         guard let selectMusicView else { return }
         
@@ -76,13 +76,13 @@ class SelectMusicViewController: UIViewController {
         selectCompleteButton.addAction(UIAction { [weak self] _ in
             self?.selectCompleteButton.updateButton(.complete)
             self?.selectCompleteButton.updateButton(.disabled)
-            self?.selectMusicViewModel.submitMusic()
-            self?.selectMusicViewModel.stopMusic()
+            self?.viewModel.submitMusic()
+            self?.viewModel.stopMusic()
             self?.progressBar.cancelCompletion()
         }, for: .touchUpInside)
         
         progressBar.setCompletionHandler { [weak self] in
-            self?.selectMusicViewModel.submitMusic()
+            self?.viewModel.submitMusic()
         }
     }
 }
