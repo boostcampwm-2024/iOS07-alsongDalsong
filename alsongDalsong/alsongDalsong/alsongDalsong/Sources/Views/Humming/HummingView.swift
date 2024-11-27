@@ -61,7 +61,7 @@ final class HummingViewController: UIViewController {
                     playersRepository: playersRepository,
                     recordsRepository: recordsRepository
                 )
-                let vc = RehummingViewController(vm: vm)
+                let vc = RehummingViewController(viewModel: vm)
                 self?.navigationController?.pushViewController(vc, animated: true)
             }, for: .touchUpInside
         )
