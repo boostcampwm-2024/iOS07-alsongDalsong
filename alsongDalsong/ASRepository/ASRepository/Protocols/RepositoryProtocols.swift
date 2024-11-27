@@ -26,6 +26,7 @@ public protocol RecordsRepositoryProtocol {
     func getRecords() -> AnyPublisher<[ASEntity.Record], Never>
     func getRecordsCount(on recordOrder: Int) -> AnyPublisher<Int, Never>
     func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never>
+    func uploadRecording(_ record: Data) async throws -> Bool
 }
 
 public protocol RoomInfoRepositoryProtocol {

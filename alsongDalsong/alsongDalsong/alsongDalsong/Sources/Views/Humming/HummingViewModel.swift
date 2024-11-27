@@ -33,8 +33,21 @@ final class HummingViewModel: @unchecked Sendable {
         bindAnswer()
     }
 
-    // TODO: - FB에 humming 보내기
-    func submitHumming() {}
+    func submitHumming() {
+        guard let recordedData else { return }
+        Task {
+            do {
+                let result = try await recordsRepository.uploadRecording(recordedData)
+                if result {
+                    // 전송됨
+                } else {
+                    // 전송 안됨, 오류 alert
+                }
+            } catch {
+                // 전송 안됨, 오류 alert
+            }
+        }
+    }
 
     func startRecording() {
         isRecording = true
