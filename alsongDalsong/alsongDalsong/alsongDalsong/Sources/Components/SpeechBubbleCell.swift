@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import ASEntity
 import Combine
 
@@ -16,14 +17,15 @@ enum MessageAlignment {
 struct SpeechBubbleCell: View {
     let alignment: MessageAlignment
     let messageType: MessageType
-    let imagePublisher: AnyPublisher<Data?, Error>
+    let avatarImagePublisher: AnyPublisher<Data?, Error>
+    let artworkImagePublisher: AnyPublisher<Data?, Error>?
     let name: String
     @State private var isVisible = false
     
     var body: some View {
         HStack {
             if alignment == .left {
-                ProfileView(imagePublisher: imagePublisher,
+                ProfileView(imagePublisher: avatarImagePublisher,
                             name: name,
                             isHost: false)
                 .frame(width: 75, height: 75)
@@ -35,7 +37,7 @@ struct SpeechBubbleCell: View {
                     .animation(.easeInOut(duration: 1.0), value: isVisible)
             }
             if alignment == .right {
-                ProfileView(imagePublisher: imagePublisher,
+                ProfileView(imagePublisher: avatarImagePublisher,
                             name: name,
                             isHost: false)
                 .frame(width: 75, height: 75)
@@ -82,11 +84,17 @@ struct SpeechBubbleCell: View {
                 switch messageType {
                 case .music(let music):
                     HStack {
-                        //TODO: 요부분 ImagePublisher로 처리
-                        Image("mojojojo")
-                            .resizable()
-                            .frame(width: 60, height: 60)
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                        if let artworkImagePublisher {
+                            AsyncImageView(imagePublisher: artworkImagePublisher)
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                        }
+                        else {
+                            Image("mojojojo")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                        }
                         
                         VStack(alignment: .leading) {
                             Text(music.title ?? "")

@@ -173,12 +173,14 @@ extension HummingResultViewController: UITableViewDataSource {
                     if indexPath.row % 2 == 0 {
                         SpeechBubbleCell(alignment: .left,
                                          messageType: .record(viewModel.currentRecords[indexPath.row]),
-                                         imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                         avatarImagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                         artworkImagePublisher: nil,
                                          name: currentPlayer?.nickname ?? "")
                     } else {
                         SpeechBubbleCell(alignment: .right,
                                          messageType: .record(viewModel.currentRecords[indexPath.row]),
-                                         imagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                         avatarImagePublisher: viewModel.getAvatarData(url: currentPlayer?.avatarUrl),
+                                         artworkImagePublisher: nil,
                                          name: currentPlayer?.nickname ?? "")
                     }
                     Spacer()
@@ -192,14 +194,16 @@ extension HummingResultViewController: UITableViewDataSource {
                         SpeechBubbleCell(alignment: .left,
                                          messageType: .music(viewModel.currentsubmit?.music ??
                                             .musicStub1),
-                                         imagePublisher: viewModel.getAvatarData(url: nil),
+                                         avatarImagePublisher: viewModel.getAvatarData(url: viewModel.currentsubmit?.player?.avatarUrl),
+                                         artworkImagePublisher: viewModel.getArtworkData(url: viewModel.currentsubmit?.music?.artworkUrl),
                                          name: viewModel.currentsubmit?.player?.nickname ?? "")
                     }
                     else {
                         SpeechBubbleCell(alignment: .right,
                                          messageType: .music(viewModel.currentsubmit?.music ??
                                             .musicStub1),
-                                         imagePublisher: viewModel.getAvatarData(url: nil),
+                                         avatarImagePublisher: viewModel.getAvatarData(url: viewModel.currentsubmit?.player?.avatarUrl),
+                                         artworkImagePublisher: viewModel.getArtworkData(url: viewModel.currentsubmit?.music?.artworkUrl),
                                          name: viewModel.currentsubmit?.player?.nickname ?? "")
                     }
                     Spacer()
@@ -295,7 +299,6 @@ final class MusicResultView: UIView {
                 //
             }, receiveValue: { [weak self] data in
                 guard let data else {
-                    print("data가 제대로 안옴")
                     return
                 }
                 let image = UIImage(data: data)
