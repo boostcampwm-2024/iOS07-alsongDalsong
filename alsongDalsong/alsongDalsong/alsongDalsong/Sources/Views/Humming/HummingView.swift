@@ -26,6 +26,7 @@ final class HummingViewController: UIViewController {
     override func viewDidLoad() {
         setupUI()
         setupLayout()
+        setAction()
         bindToComponents()
     }
 
@@ -44,18 +45,8 @@ final class HummingViewController: UIViewController {
     private func setupUI() {
         guideLabel.setText("노래를 따라해 보세요!")
         recordButton.updateButton(.startRecord)
-        recordButton.addAction(UIAction { [weak self] _ in
-            self?.recordButton.updateButton(.recording)
-            self?.viewModel.startRecording()
-        },
-        for: .touchUpInside)
         submitButton.updateButton(.submit)
         submitButton.updateButton(.disabled)
-        submitButton.addAction(
-            UIAction { [weak self] _ in
-                self?.showSubmitHummingLoading()
-            }, for: .touchUpInside
-        )
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
         buttonStack.addArrangedSubview(recordButton)

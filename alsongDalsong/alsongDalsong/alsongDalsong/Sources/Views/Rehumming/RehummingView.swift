@@ -26,6 +26,7 @@ final class RehummingViewController: UIViewController {
     override func viewDidLoad() {
         setupUI()
         setupLayout()
+        setAction()
         bindToComponents()
     }
 
@@ -56,7 +57,6 @@ final class RehummingViewController: UIViewController {
         view.addSubview(hummingPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
-        submitButton.isEnabled = false
     }
 
     private func setAction() {
