@@ -126,9 +126,24 @@ final class LobbyViewController: UIViewController {
             }
         }, for: .touchUpInside)
         
-        startButton.addAction(UIAction { [weak self] _ in
-            self?.showStartGameLoading()
-        }, for: .touchUpInside)
+        startButton.addAction(
+            UIAction { [weak self] _ in
+                guard let playerCount = self?.viewmodel.players.count else { return }
+                if playerCount < 3 {
+                    let nojamAlert = ASAlertController(
+                        style: .default,
+                        titleText: .needMorePlayer,
+                        doneButtonTitle: .keep,
+                        cancelButtonTitle: .cancel)
+                    { _ in
+                        self?.showStartGameLoading()
+                    }
+                    self?.present(nojamAlert, animated: true, completion: nil)
+                } else {
+                    self?.showStartGameLoading()
+                }
+            },
+            for: .touchUpInside)
     }
     
     private func setupLayout() {
