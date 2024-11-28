@@ -40,7 +40,7 @@ public struct ASMusicAPI {
                         var request = MusicCatalogSearchRequest(term: text, types: [Song.self])
                         request.offset = offset
                         request.limit = maxCount
-                        
+
                         let result = try await request.response()
                         let music = result.songs.map { song in
                             ASEntity.Music(
@@ -77,9 +77,8 @@ public enum ASMusicError: Error, LocalizedError {
     }
 }
 
-
 /*
- 
+
  <<<<<<< HEAD
 
                      let result = try await request.response()
