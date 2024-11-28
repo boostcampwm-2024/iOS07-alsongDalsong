@@ -14,7 +14,6 @@ final class RecordingPanelViewModel: @unchecked Sendable {
 
     func configureAudioHelper() async {
         await AudioHelper.shared
-//            .sourceType(.recorded)
             .playType(.full)
             .isConcurrent(false)
     }
