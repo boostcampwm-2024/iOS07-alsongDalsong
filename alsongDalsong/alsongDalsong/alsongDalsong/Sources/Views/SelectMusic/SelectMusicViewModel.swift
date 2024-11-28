@@ -72,7 +72,6 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         return await musicRepository.getMusicData(url: url)
     }
     
-    @MainActor
     public func handleSelectedSong(with music: Music) {
         selectedMusic = music
         beginPlaying()
@@ -87,27 +86,37 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         }
     }
  
-    @MainActor
     public func searchMusic(text: String) async throws {
         do {
             if text.isEmpty { return }
-            searchList = try await musicAPI.search(for: text)
+            let searchList = try await musicAPI.search(for: text)
+            await updateSearchList(with: searchList)
         } catch {
             throw error
         }
-            
     }
     
-    @MainActor
-    private func downloadMusic(url: URL) {
+    public func downloadMusic(url: URL) {
         Task {
-            musicData = await musicRepository.getMusicData(url: url)
+            guard let musicData = await musicRepository.getMusicData(url: url) else {
+                return
+            }
+            await updateMusicData(with: musicData)
         }
     }
     
-    @MainActor
     private func beginPlaying() {
         guard let url = selectedMusic?.previewUrl else { return }
         downloadMusic(url: url)
+    }
+    
+    @MainActor
+    private func updateMusicData(with musicData: Data) {
+        self.musicData = musicData
+    }
+    
+    @MainActor
+    private func updateSearchList(with searchList: [Music]) {
+        self.searchList = searchList
     }
 }

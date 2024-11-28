@@ -46,6 +46,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         self.musicRepository = musicRepository
         bindGameStatus()
         bindSubmitStatus()
+        print("did load", pthread_self())
     }
 
     private func bindRecord(on recordOrder: UInt8) {
@@ -87,7 +88,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
             }
             .store(in: &cancellables)
     }
-    
+
     public func playingMusic() {
         guard let data = musicData else { return }
         Task {
@@ -106,30 +107,30 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         return await musicRepository.getMusicData(url: url)
     }
 
-    @MainActor
     public func downloadMusic(url: URL) {
         Task {
-            musicData = await musicRepository.getMusicData(url: url)
+            guard let musicData = await musicRepository.getMusicData(url: url) else {
+                return
+            }
+            await updateMusicData(with: musicData)
         }
     }
 
-    @MainActor
     public func searchMusic(text: String) async throws {
         do {
             if text.isEmpty { return }
-            searchList = try await musicAPI.search(for: text)
+            let searchList = try await musicAPI.search(for: text)
+            await updateSearchList(with: searchList)
         } catch {
             throw error
         }
     }
 
-    @MainActor
     public func handleSelectedMusic(with music: Music) {
         selectedMusic = music
         beginPlaying()
     }
 
-    @MainActor
     private func beginPlaying() {
         guard let previewUrl = selectedMusic?.previewUrl else { return }
         downloadMusic(url: previewUrl)
@@ -161,5 +162,15 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         guard !data.isEmpty else { return }
         recordedData = data
         isRecording = false
+    }
+    
+    @MainActor
+    private func updateMusicData(with musicData: Data) {
+        self.musicData = musicData
+    }
+    
+    @MainActor
+    private func updateSearchList(with searchList: [Music]) {
+        self.searchList = searchList
     }
 }
