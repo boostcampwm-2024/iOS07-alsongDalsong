@@ -33,7 +33,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
         return recordsPublisher
             .combineLatest(playersPublisher)
             .map { [weak self] records, players -> ASEntity.Record? in
-                self?.findRecording(
+                self?.findRecord(
                     records: records,
                     players: players,
                     recordOrder: recordOrder
@@ -46,7 +46,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
         return try await mainRepository.postRecording(record)
     }
     
-    private func findRecording(records: [ASEntity.Record]?,
+    private func findRecord(records: [ASEntity.Record]?,
                              players: [Player]?,
                              recordOrder: UInt8) -> ASEntity.Record?
     {
