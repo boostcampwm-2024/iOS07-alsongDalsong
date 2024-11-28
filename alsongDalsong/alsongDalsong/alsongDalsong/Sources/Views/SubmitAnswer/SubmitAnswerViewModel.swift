@@ -45,7 +45,6 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         self.submitsRepository = submitsRepository
         self.musicRepository = musicRepository
         bindGameStatus()
-        bindSubmitStatus()
     }
     
     private func bindRecord(on recordOrder: UInt8) {
@@ -63,12 +62,15 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
                 self?.dueTime = newDueTime
             }
             .store(in: &cancellables)
+        
         gameStatusRepository.getRecordOrder()
             .sink { [weak self] newRecordOrder in
                 self?.recordOrder = newRecordOrder
                 self?.bindRecord(on: newRecordOrder)
+                self?.bindSubmissionStatus(with: newRecordOrder)
             }
             .store(in: &cancellables)
+        
         gameStatusRepository.getStatus()
             .sink { [weak self] newStatus in
                 self?.status = newStatus
@@ -76,13 +78,13 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
             .store(in: &cancellables)
     }
 
-    private func bindSubmitStatus() {
-        let playerPublisher = playersRepository.getPlayers()
-        let submitsPublisher = submitsRepository.getSubmits()
+    private func bindSubmissionStatus(with recordOrder: UInt8) {
+        let playerPublisher = playersRepository.getPlayersCount()
+        let submitsPublisher = submitsRepository.getSubmitsCount()
 
-        playerPublisher.zip(submitsPublisher)
-            .sink { [weak self] players, submits in
-                let submitStatus = (submits: String(submits.count), total: String(players.count))
+        playerPublisher.combineLatest(submitsPublisher)
+            .sink { [weak self] playersCount, submitsCount in
+                let submitStatus = (submits: String(submitsCount), total: String(playersCount))
                 self?.submissionStatus = submitStatus
             }
             .store(in: &cancellables)

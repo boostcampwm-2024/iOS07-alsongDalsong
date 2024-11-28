@@ -24,7 +24,7 @@ public protocol PlayersRepositoryProtocol {
 
 public protocol RecordsRepositoryProtocol {
     func getRecords() -> AnyPublisher<[ASEntity.Record], Never>
-    func getRecordsCount(on recordOrder: Int) -> AnyPublisher<Int, Never>
+    func getRecordsCount(on recordOrder: UInt8) -> AnyPublisher<Int, Never>
     func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never>
     func uploadRecording(_ record: Data) async throws -> Bool
 }
@@ -41,6 +41,7 @@ public protocol SelectedRecordsRepositoryProtocol {
 
 public protocol SubmitsRepositoryProtocol {
     func getSubmits() -> AnyPublisher<[Answer], Never>
+    func getSubmitsCount() -> AnyPublisher<Int, Never>
     func submitAnswer(answer: Music) async throws -> Bool
 }
 

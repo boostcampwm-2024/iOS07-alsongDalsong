@@ -16,13 +16,15 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    public func getRecordsCount(on recordOrder: Int) -> AnyPublisher<Int, Never> {
-        mainRepository.records
+    public func getRecordsCount(on recordOrder: UInt8) -> AnyPublisher<Int, Never> {
+       return mainRepository.records
             .compactMap { $0 }
             .map { records in
-                records.filter { Int($0.recordOrder ?? 0) == recordOrder }
+                return records.filter { Int($0.recordOrder ?? 0) == recordOrder }
             }
-            .map { $0.count }
+            .map {
+                return $0.count
+            }
             .eraseToAnyPublisher()
     }
 

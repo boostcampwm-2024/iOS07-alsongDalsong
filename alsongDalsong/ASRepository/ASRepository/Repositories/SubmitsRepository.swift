@@ -20,7 +20,15 @@ public final class SubmitsRepository: SubmitsRepositoryProtocol {
             .compactMap { $0 }
             .eraseToAnyPublisher()
     }
-
+    
+    public func getSubmitsCount() -> AnyPublisher<Int, Never> {
+        mainRepository.submits
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .map { $0.count }
+            .eraseToAnyPublisher()
+    }
+    
     public func submitAnswer(answer: Music) async throws -> Bool {
         let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
                           URLQueryItem(name: "roomNumber", value: mainRepository.number.value)]

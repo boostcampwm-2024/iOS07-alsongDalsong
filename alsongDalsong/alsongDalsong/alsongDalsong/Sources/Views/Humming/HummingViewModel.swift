@@ -29,7 +29,6 @@ final class HummingViewModel: @unchecked Sendable {
         self.answersRepository = answersRepository
         self.recordsRepository = recordsRepository
         bindGameStatus()
-        bindSubmitStatus()
         bindAnswer()
     }
 
@@ -76,6 +75,7 @@ final class HummingViewModel: @unchecked Sendable {
         gameStatusRepository.getRecordOrder()
             .sink { [weak self] newRecordOrder in
                 self?.recordOrder = newRecordOrder
+                self?.bindSubmissionStatus(with: newRecordOrder)
             }
             .store(in: &cancellables)
         gameStatusRepository.getStatus()
@@ -85,9 +85,9 @@ final class HummingViewModel: @unchecked Sendable {
             .store(in: &cancellables)
     }
 
-    private func bindSubmitStatus() {
+    private func bindSubmissionStatus(with recordOrder: UInt8) {
         let playerPublisher = playersRepository.getPlayersCount()
-        let recordsPublisher = recordsRepository.getRecordsCount(on: Int(recordOrder ?? 0))
+        let recordsPublisher = recordsRepository.getRecordsCount(on: recordOrder)
 
         playerPublisher.combineLatest(recordsPublisher)
             .receive(on: DispatchQueue.main)
