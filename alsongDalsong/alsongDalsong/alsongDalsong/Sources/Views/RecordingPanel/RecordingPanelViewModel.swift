@@ -57,8 +57,6 @@ final class RecordingPanelViewModel: @unchecked Sendable {
     
     private func bindAudioHelper() {
         Task {
-            let helper = await AudioHelper.shared
-                .playType(.full)
             await AudioHelper.shared.amplitudePublisher
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] newAmplitude in
