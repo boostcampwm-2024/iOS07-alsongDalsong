@@ -16,7 +16,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     }
 
     @Published public var isPlaying: Bool = false {
-        didSet { isPlaying ? playingMusic() : stopMusic() }
+        didSet { isPlaying ? playMusic() : stopMusic() }
     }
     
     private let musicRepository: MusicRepositoryProtocol
@@ -39,6 +39,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         self.gameStatusRepository = gameStatusRepository
         bindGameStatus()
         bindAnswer()
+        bindSubmissionStatus()
     }
     
     private func bindAnswer() {
@@ -59,7 +60,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             .store(in: &cancellables)
     }
     
-    private func bindSubmitStatus() {
+    private func bindSubmissionStatus() {
         let playerPublisher = playersRepository.getPlayersCount()
         let answersPublisher = answersRepository.getAnswersCount()
 
@@ -72,7 +73,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             .store(in: &cancellables)
     }
     
-    public func playingMusic() {
+    public func playMusic() {
         guard let data = musicData else { return }
         Task {
             await AudioHelper.shared.startPlaying(data)

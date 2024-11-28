@@ -5,9 +5,9 @@ import UIKit
 
 class SelectMusicViewController: UIViewController {
     private var progressBar = ProgressBar()
-    private var selectMusicView: UIHostingController<SelectMusicView>?
+    private var selectMusicView = UIViewController()
     private let submitButton = ASButton()
-    
+    private var submissionStatus = SubmissionStatusView()
     private let viewModel: SelectMusicViewModel
     
     init(selectMusicViewModel: SelectMusicViewModel) {
@@ -31,27 +31,27 @@ class SelectMusicViewController: UIViewController {
     private func bindToComponents() {
         progressBar.bind(to: viewModel.$dueTime)
         submitButton.bind(to: viewModel.$musicData)
+        submissionStatus.bind(to: viewModel.$submissionStatus)
     }
     
     private func setupUI() {
         view.backgroundColor = .asLightGray
         submitButton.setConfiguration(title: "선택 완료", backgroundColor: .asGreen)
-        submitButton.isEnabled = false
+        submitButton.updateButton(.disabled)
+        let musicView = SelectMusicView(viewModel: viewModel)
+        selectMusicView = UIHostingController(rootView: musicView)
+        
+        view.addSubview(selectMusicView.view)
+        view.addSubview(progressBar)
+        view.addSubview(submitButton)
+        view.addSubview(submissionStatus)
     }
     
     private func setupLayout() {
-        let musicView = SelectMusicView(viewModel: viewModel)
-        selectMusicView = UIHostingController(rootView: musicView)
-        guard let selectMusicView else { return }
-        
-        view.addSubview(progressBar)
-        view.addSubview(selectMusicView.view)
-        view.addSubview(submitButton)
-        
         progressBar.translatesAutoresizingMaskIntoConstraints = false
-        selectMusicView.view.translatesAutoresizingMaskIntoConstraints = false
+        submissionStatus.translatesAutoresizingMaskIntoConstraints = false
         submitButton.translatesAutoresizingMaskIntoConstraints = false
-        
+        selectMusicView.view.translatesAutoresizingMaskIntoConstraints = false
         let safeArea = view.safeAreaLayoutGuide
     
         NSLayoutConstraint.activate([
@@ -65,10 +65,13 @@ class SelectMusicViewController: UIViewController {
             selectMusicView.view.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             selectMusicView.view.bottomAnchor.constraint(equalTo: submitButton.topAnchor, constant: -20),
             
+            submissionStatus.topAnchor.constraint(equalTo: submitButton.topAnchor, constant: -16),
+            submissionStatus.trailingAnchor.constraint(equalTo: submitButton.trailingAnchor, constant: 16),
+
             submitButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
             submitButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            submitButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -24),
             submitButton.heightAnchor.constraint(equalToConstant: 64),
-            submitButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -25)
         ])
     }
     
