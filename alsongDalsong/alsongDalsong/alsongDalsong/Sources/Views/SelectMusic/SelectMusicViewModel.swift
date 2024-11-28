@@ -6,24 +6,21 @@ import Foundation
 
 final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var answers: [Answer] = []
-    @Published public private(set) var searchList: [ASSong] = []
+    @Published public private(set) var searchList: [Music] = []
     @Published public private(set) var dueTime: Date?
-    @Published public private(set) var selectedSong: ASSong = .init(id: "12345")
+    @Published public private(set) var selectedMusic: Music?
     @Published public private(set) var musicData: Data? {
-        didSet {
-            isPlaying = true
-        }
+        didSet { isPlaying = true }
     }
 
     @Published public var isPlaying: Bool = false {
-        didSet {
-            isPlaying ? playingMusic() : stopMusic()
-        }
+        didSet { isPlaying ? playingMusic() : stopMusic() }
     }
     
     private let musicRepository: MusicRepositoryProtocol
     private let answerRepository: AnswersRepositoryProtocol
     private let gameStatusRepository: GameStatusRepositoryProtocol
+    
     private let musicAPI = ASMusicAPI()
     private var cancellable = Set<AnyCancellable>()
     
@@ -57,68 +54,73 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             .store(in: &cancellable)
     }
     
-    func downloadMusic(url: URL?) {
-        guard let url else { return }
-        musicRepository.getMusicData(url: url)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] data in
-                self?.musicData = data
-            }
-            .store(in: &cancellable)
-    }
-    
-    func playingMusic() {
+    public func playingMusic() {
         guard let data = musicData else { return }
         Task {
             await AudioHelper.shared.startPlaying(file: data)
         }
     }
     
-    func stopMusic() {
+    public func stopMusic() {
         Task {
             await AudioHelper.shared.stopPlaying()
         }
     }
     
-    func handleSelectedSong(song: ASSong) {
-        selectedSong = song
+    public func downloadArtwork(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await musicRepository.getMusicData(url: url)
+    }
+    
+    public func handleSelectedSong(with music: Music) {
+        selectedMusic = music
         beginPlaying()
     }
-    
-    func beginPlaying() {
-        downloadMusic(url: selectedSong.previewURL)
-    }
-    
-    func submitMusic() async throws {
-        let answer = ASEntity.Music(
-            title: selectedSong.title,
-            artist: selectedSong.artistName,
-            artworkUrl: selectedSong.artwork?.url(
-                width: 300,
-                height: 300
-            ),
-            previewUrl: selectedSong.previewURL,
-            artworkBackgroundColor: selectedSong.artwork?.backgroundColor?.toHex()
-        )
-        _ = try await answerRepository.submitMusic(answer: answer)
+    public func submitMusic() async throws {
+        guard let selectedMusic else { return }
+        do {
+            _ = try await answerRepository.submitMusic(answer: selectedMusic)
+        } catch {
+            throw error
+        }
     }
  
-    @MainActor
-    func searchMusic(text: String) {
-        if text.isEmpty { return }
-        Task {
-            searchList = await musicAPI.search(for: text)
+    public func searchMusic(text: String) async throws {
+        do {
+            if text.isEmpty { return }
+            let searchList = try await musicAPI.search(for: text)
+            await updateSearchList(with: searchList)
+        } catch {
+            throw error
         }
     }
     
-    func resetSearchList() {
+    public func downloadMusic(url: URL) {
+        Task {
+            guard let musicData = await musicRepository.getMusicData(url: url) else {
+                return
+            }
+            await updateMusicData(with: musicData)
+        }
+    }
+    
+    private func beginPlaying() {
+        guard let url = selectedMusic?.previewUrl else { return }
+        downloadMusic(url: url)
+    }
+    
+    @MainActor
+    public func resetSearchList() {
         searchList = []
+    }
+    
+    @MainActor
+    private func updateMusicData(with musicData: Data) {
+        self.musicData = musicData
+    }
+    
+    @MainActor
+    private func updateSearchList(with searchList: [Music]) {
+        self.searchList = searchList
     }
 }

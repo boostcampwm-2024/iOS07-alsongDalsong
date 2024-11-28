@@ -15,23 +15,13 @@ public final class MusicRepository: MusicRepositoryProtocol {
         self.networkManager = networkManager
     }
 
-    public func getMusicData(url: URL) -> Future<Data?, Error> {
-        Future { promise in
-            Task {
-                do {
-                    guard let endpoint = ResourceEndpoint(url: url)
-                    else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(
-                        to: endpoint,
-                        type: .json,
-                        body: nil,
-                        option: .both
-                    )
-                    promise(.success(data))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
+    public func getMusicData(url: URL) async -> Data? {
+        do {
+            guard let endpoint = ResourceEndpoint(url: url) else { return nil }
+            let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
+            return data
+        } catch {
+            return nil
         }
     }
 }

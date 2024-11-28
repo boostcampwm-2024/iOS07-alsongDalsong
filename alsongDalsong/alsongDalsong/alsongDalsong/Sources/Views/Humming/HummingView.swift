@@ -115,8 +115,7 @@ final class HummingViewController: UIViewController {
             progressBar.cancelCompletion()
             try await viewModel.submitHumming()
         } catch {
-            submitButton.updateButton(.complete)
-            throw ASAlertError.submitFailed
+            throw error
         }
     }
 }
@@ -124,19 +123,23 @@ final class HummingViewController: UIViewController {
 // MARK: - Alert
 
 extension HummingViewController {
-    func showSubmitHummingLoading() {
+    private func showSubmitHummingLoading() {
         let alert = ASAlertController(
-            progressText: .submitHumming)
-        { [weak self] in
-            try await self?.submitHumming()
-        } errorCompletion: { [weak self] in
-            self?.showFailSubmitMusic()
-        }
+            progressText: .submitHumming,
+            load:
+                { [weak self] in
+                    try await self?.submitHumming()
+                },
+            errorCompletion: { [weak self] error in
+            self?.showFailSubmitMusic(error)
+        })
         presentLoadingView(alert)
     }
 
-    func showFailSubmitMusic() {
-        let alert = ASAlertController(errorType: .submitFailed)
+    private func showFailSubmitMusic(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error)) { [weak self] _ in
+            self?.submitButton.updateButton(.complete)
+        }
         presentAlert(alert)
     }
 }

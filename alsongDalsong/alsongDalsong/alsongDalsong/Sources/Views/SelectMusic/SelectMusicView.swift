@@ -8,8 +8,9 @@ struct SelectMusicView: View {
     var body: some View {
         VStack {
             HStack {
-                ASMusicItemCell(artwork: viewModel.selectedSong.artwork, title: viewModel.selectedSong.title, artist: viewModel.selectedSong.artistName)
-                    .padding(EdgeInsets(top: 4, leading: 32, bottom: 4, trailing: 32))
+                ASMusicItemCell(music: viewModel.selectedMusic, fetchArtwork: { url in
+                    await viewModel.downloadArtwork(url: url)
+                })
                 Spacer()
                 Button {
                     viewModel.isPlaying.toggle()
@@ -27,7 +28,7 @@ struct SelectMusicView: View {
                     debouncer.debounce {
                         Task {
                             if newValue.isEmpty { viewModel.resetSearchList() }
-                            viewModel.searchMusic(text: newValue)
+                            try await viewModel.searchMusic(text: newValue)
                         }
                     }
                 }
@@ -38,14 +39,15 @@ struct SelectMusicView: View {
                         .font(.custom("DoHyeon-Regular", size: 36))
                     Spacer()
                 }
-            }
-            else {
-                List(viewModel.searchList) { song in
+            } else {
+                List(viewModel.searchList) { music in
                     Button {
-                        viewModel.handleSelectedSong(song: song)
+                        viewModel.handleSelectedSong(with: music)
                     } label: {
-                        ASMusicItemCell(artwork: song.artwork, title: song.title, artist: song.artistName)
-                            .tint(.black)
+                        ASMusicItemCell(music: music, fetchArtwork: { url in
+                            await viewModel.downloadArtwork(url: url)
+                        })
+                        .tint(.black)
                     }
                 }
                 .listStyle(.plain)

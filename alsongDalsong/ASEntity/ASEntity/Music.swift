@@ -1,7 +1,7 @@
 import Foundation
 
-public struct Music: Codable, Equatable {
-    public var id: UUID?
+public struct Music: Codable, Equatable, Identifiable, Sendable {
+    public var id: String?
     public var title: String?
     public var artist: String?
     public var artworkUrl: URL?
@@ -16,7 +16,8 @@ public struct Music: Codable, Equatable {
         self.artist = artist
     }
   
-    public init(title: String?, artist: String?, artworkUrl: URL?, previewUrl: URL?, artworkBackgroundColor: String?) {
+    public init(id: String, title: String?, artist: String?, artworkUrl: URL?, previewUrl: URL?, artworkBackgroundColor: String?) {
+        self.id = id
         self.title = title
         self.artist = artist
         self.artworkUrl = artworkUrl

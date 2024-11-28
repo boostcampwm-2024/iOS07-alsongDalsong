@@ -1,14 +1,14 @@
 import Foundation
 
-public enum ASNetworkErrors: Error, CustomStringConvertible {
+public enum ASNetworkErrors: Error, LocalizedError {
     case serverError(message: String)
     case urlError
     case responseError
     case FirebaseSignInError
     case FirebaseSignOutError
     case FirebaseListenerError
-
-    public var description: String {
+    
+    public var errorDescription: String? {
         switch self {
             case let .serverError(message: message):
                 return message

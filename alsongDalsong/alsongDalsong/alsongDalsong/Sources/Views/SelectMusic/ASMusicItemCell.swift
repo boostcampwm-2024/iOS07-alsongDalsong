@@ -1,14 +1,24 @@
+import ASEntity
 import MusicKit
 import SwiftUI
 
 struct ASMusicItemCell: View {
-    let artwork: Artwork?
-    let title: String
-    let artist: String
+    @State private var artworkData: Data?
+    let music: Music?
+    let fetchArtwork: (URL?) async -> Data?
+
     var body: some View {
         HStack {
-            if let artwork {
-                ArtworkImage(artwork, width: 60)
+            if let artworkData, let uiImage = UIImage(data: artworkData) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .frame(width: 60, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .padding(.horizontal, 8)
+            } else if let music, let artworkColor = music.artworkBackgroundColor {
+                Rectangle()
+                    .foregroundColor(Color(hex: artworkColor))
+                    .frame(width: 60, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                     .padding(.horizontal, 8)
             } else {
@@ -16,19 +26,27 @@ struct ASMusicItemCell: View {
                     .frame(width: 60, height: 60)
                     .background(.asSystem)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .padding()
+                    .padding(.horizontal, 8)
             }
             VStack(alignment: .leading) {
-                Text(title)
+                Text(music?.title ?? "선택된 곡 없음")
                     .font(.custom("DoHyeon-Regular", size: 16))
-                Text(artist)
+                    .lineLimit(1)
+                Text(music?.artist ?? "아티스트")
                     .foregroundStyle(.gray)
                     .font(.custom("DoHyeon-Regular", size: 16))
+                    .lineLimit(1)
+            }
+        }
+        .task(id: music) {
+            artworkData = nil
+            if let music {
+                artworkData = await fetchArtwork(music.artworkUrl)
             }
         }
     }
 }
 
 #Preview {
-    ASMusicItemCell(artwork: nil, title: "Dumb Dumb", artist: "레드벨벳")
+    ASMusicItemCell(music: Music()) { _ in nil }
 }
