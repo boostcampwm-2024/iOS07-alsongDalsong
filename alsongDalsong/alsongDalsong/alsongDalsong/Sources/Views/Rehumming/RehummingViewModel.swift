@@ -26,7 +26,6 @@ final class RehummingViewModel: @unchecked Sendable {
         self.playersRepository = playersRepository
         self.recordsRepository = recordsRepository
         bindGameStatus()
-        bindSubmissionStatus()
     }
 
     func submitHumming() async throws {
@@ -73,6 +72,7 @@ final class RehummingViewModel: @unchecked Sendable {
             .sink { [weak self] newRecordOrder in
                 self?.recordOrder = newRecordOrder
                 self?.bindRecord(on: newRecordOrder)
+                self?.bindSubmissionStatus(with: newRecordOrder)
             }
             .store(in: &cancellables)
         gameStatusRepository.getStatus()
@@ -82,9 +82,9 @@ final class RehummingViewModel: @unchecked Sendable {
             .store(in: &cancellables)
     }
 
-    private func bindSubmissionStatus() {
+    private func bindSubmissionStatus(with recordOrder: UInt8) {
         let playerPublisher = playersRepository.getPlayersCount()
-        let recordsPublisher = recordsRepository.getRecordsCount(on: Int(recordOrder ?? 0))
+        let recordsPublisher = recordsRepository.getRecordsCount(on: recordOrder)
 
         playerPublisher.combineLatest(recordsPublisher)
             .sink { [weak self] playersCount, recordsCount in
