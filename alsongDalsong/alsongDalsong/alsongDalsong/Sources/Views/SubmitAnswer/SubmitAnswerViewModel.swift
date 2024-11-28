@@ -119,6 +119,10 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         }
     }
 
+    func resetSearchList() {
+        searchList = []
+    }
+
     @MainActor
     func searchMusic(text: String) {
         Task {

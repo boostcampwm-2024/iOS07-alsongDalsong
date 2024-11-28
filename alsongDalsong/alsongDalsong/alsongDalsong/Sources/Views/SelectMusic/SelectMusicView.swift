@@ -1,9 +1,10 @@
+// import Combine
 import SwiftUI
 
 struct SelectMusicView: View {
     @ObservedObject var viewModel: SelectMusicViewModel
     @State var searchTerm = ""
-
+    private let debouncer = Debouncer(delay: 0.5)
     var body: some View {
         VStack {
             HStack {
@@ -21,12 +22,13 @@ struct SelectMusicView: View {
                 .padding(.trailing, 12)
             }
             .frame(height: 100)
-
             ASSearchBar(text: $searchTerm, placeHolder: "곡 제목을 검색하세요")
                 .onChange(of: searchTerm) { newValue in
-                    Task {
-                        if newValue.isEmpty { viewModel.resetSearchList() }
-                        viewModel.searchMusic(text: newValue)
+                    debouncer.debounce {
+                        Task {
+                            if newValue.isEmpty { viewModel.resetSearchList() }
+                            viewModel.searchMusic(text: newValue)
+                        }
                     }
                 }
             if searchTerm.isEmpty {
