@@ -24,9 +24,9 @@ module.exports.submitAnswer = onRequest({ region: 'asia-southeast1' }, async (re
   }
   try {
     const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
-    const userData = roomData.players.find((player) => player.id === userId);
     const roomSnapshot = await roomRef.get();
     const roomData = roomSnapshot.data();
+    const userData = roomData.players.find((player) => player.id === userId);
     const playersCount = roomData.players.length;
     const submitCount = roomData.submits.length;
     if (!userData) {
