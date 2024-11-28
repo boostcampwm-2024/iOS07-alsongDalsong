@@ -55,17 +55,12 @@ class HummingResultViewController: UIViewController {
             guard let self,
                   let viewModel = self.viewModel else {return}
             if !(viewModel.hummingResult.isEmpty) {
-                if viewModel.hummingResult.count == 1 {
-                    button.setConfiguration(title: "완료", backgroundColor: .asYellow)
-                }
                 viewModel.changeRecordOrder()
             }
             else {
-                let vc = self.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
-                guard let vc else { return }
-                self.navigationController?.popToViewController(vc, animated: true)
-                //TODO: 방 status로 로비로 변환 방장만
-                // + status 구독해서 로비면 로비로 이동
+//                let vc = self.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
+//                guard let vc else { return }
+//                self.navigationController?.popToViewController(vc, animated: true)
             }
         }, for: .touchUpInside)
         button.isHidden = true
@@ -130,14 +125,15 @@ class HummingResultViewController: UIViewController {
         viewModel?.$isNext
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isNext in
-                guard let self else { return }
+                guard let self,
+                      let viewModel = self.viewModel else { return }
                 if isNext {
-                    self.viewModel?.nextResultFetch()
-                    self.setMusicResultView(musicName: self.viewModel?.currentResult?.music?.title ?? "",
-                                             singerName: self.viewModel?.currentResult?.music?.artist ?? "")
-                    self.resultTableView.reloadData()
+                    viewModel.nextResultFetch()
                     self.button.isHidden = true
-                    self.viewModel?.isNext = false
+                    if viewModel.hummingResult.isEmpty {
+                        button.setConfiguration(title: "완료", backgroundColor: .asYellow)
+                    }
+                    viewModel.isNext = false
                 }
             }
             .store(in: &cancellables)

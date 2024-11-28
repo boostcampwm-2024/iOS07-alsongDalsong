@@ -18,15 +18,16 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
         self.mainRepository = mainRepository
     }
     
-    public func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer)], Never> {
-        Publishers.CombineLatest3(mainRepository.answers, mainRepository.records, mainRepository.submits)
-            .compactMap { answers, records, submits in
+    public func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)], Never> {
+        Publishers.Zip4(mainRepository.answers, mainRepository.records, mainRepository.submits, mainRepository.recordOrder)
+            .compactMap { answers, records, submits, recordOrder in
                 answers?.map { answer in
                     let relatedRecords: [ASEntity.Record] = self.getRelatedRecords(for: answer,
                                                                                    from: records,
                                                                                    count: answers?.count ?? 0)
                     let relatedSubmit: Answer = self.getRelatedSubmit(for: answer, from: submits)
-                    return (answer: answer, records: relatedRecords, submit: relatedSubmit)
+                    
+                    return (answer: answer, records: relatedRecords, submit: relatedSubmit, recordOrder: recordOrder ?? 0)
                 }
             }
             .receive(on: DispatchQueue.main)
@@ -88,7 +89,7 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
         self.networkManager = networkManager
     }
     
-    public func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer)], Never> {
+    public func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)], Never> {
         let tempAnswers = [Answer.answerStub1, Answer.answerStub2, Answer.answerStub3, Answer.answerStub4]
         let tempRecords = [
             ASEntity.Record.recordStub1_1, ASEntity.Record.recordStub1_2, ASEntity.Record.recordStub1_3,
@@ -102,7 +103,7 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
             let relatedRecords = getRelatedRecords(for: answer, from: tempRecords, count: tempAnswers.count)
             let relatedSubmit = getRelatedSubmit(for: answer, from: tempSubmits)
             
-            return (answer: answer, records: relatedRecords, submit: relatedSubmit)
+            return (answer: answer, records: relatedRecords, submit: relatedSubmit, recordOrder: 0)
         })
         .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()

@@ -52,14 +52,24 @@ final class HummingResultViewModel: @unchecked Sendable {
             .sink { completion in
                 //TODO: 성공 실패 여부에 따른 처리
                 print(completion)
-            } receiveValue: { [weak self] (result: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)]) in
-                self?.hummingResult = result.sorted {
+            } receiveValue: { [weak self] (result: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer, recordOrder: UInt8)]) in
+                // 분명 받았던 데이터인데 계속 값이 들어옴
+                guard let self else { return }
+                
+                if (result.count - 1) < result.first?.recordOrder ?? 0 { return }
+                print("호출")
+                self.hummingResult = result.map {
+                    return (answer: $0.answer, records: $0.records, submit: $0.submit)
+                }
+                
+                self.hummingResult.sort {
                     $0.answer.player?.order ?? 0 < $1.answer.player?.order ?? 1
                 }
-                guard let current = self?.hummingResult.removeFirst() else { return }
-                self?.currentResult = current.answer
-                self?.recordsResult = current.records
-                self?.submitsResult = current.submit
+
+                let current = self.hummingResult.removeFirst()
+                self.currentResult = current.answer
+                self.recordsResult = current.records
+                self.submitsResult = current.submit
             }
             .store(in: &cancellables)
         
@@ -80,8 +90,13 @@ final class HummingResultViewModel: @unchecked Sendable {
         Publishers.CombineLatest(gameStatusRepository.getStatus(), gameStatusRepository.getRecordOrder())
             .receive(on: DispatchQueue.main)
             .sink { status, order in
-                if (status == .result) && (self.recordOrder ?? 0 + 1 == order) {
+                // order에 초기값이 들어오는 문제
+                if (status == .result && self.recordOrder != 0) {
+                    self.recordOrder! += 1
                     self.isNext = true
+                }
+                else {
+                    self.recordOrder! += 1
                 }
             }
             .store(in: &cancellables)
@@ -118,8 +133,8 @@ final class HummingResultViewModel: @unchecked Sendable {
     }
     
     func nextResultFetch() {
+        if self.hummingResult.isEmpty { return }
         let current = self.hummingResult.removeFirst()
-        
         self.currentResult = current.answer
         self.recordsResult = current.records
         self.submitsResult = current.submit
