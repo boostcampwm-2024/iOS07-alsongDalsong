@@ -4,11 +4,11 @@ import MusicKit
 
 public struct ASMusicAPI {
     public init() {}
-    /// MusicKit을 통해 AppleMusic
+    /// MusicKit을 통해 Apple Music의 노래를 검색합니다.
     /// - Parameters:
     ///   - text: 검색 요청을 보낼 검색어
     ///   - maxCount: 검색해서 찾아올 음악의 갯수 기본값 설정은 25
-    /// - Returns: ASSong의 배열
+    /// - Returns: Music의 배열
     @MainActor
     public func search(for text: String, _ maxCount: Int = 25, _ offset: Int = 1) async throws -> [Music] {
         let status = await MusicAuthorization.request()
