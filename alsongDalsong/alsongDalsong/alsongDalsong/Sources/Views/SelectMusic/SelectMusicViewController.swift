@@ -28,25 +28,18 @@ class SelectMusicViewController: UIViewController {
         bindToComponents()
     }
     
-    func showSubmitLoading() {
-        let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
-            await self?.viewModel.submitMusic()
-        }
-        presentLoadingView(alert)
-    }
-    
     private func bindToComponents() {
         progressBar.bind(to: viewModel.$dueTime)
         selectCompleteButton.bind(to: viewModel.$musicData)
     }
     
-    func setupUI() {
+    private func setupUI() {
         view.backgroundColor = .asLightGray
         selectCompleteButton.setConfiguration(title: "선택 완료", backgroundColor: .asGreen)
         selectCompleteButton.isEnabled = false
     }
     
-    func setupLayout() {
+    private func setupLayout() {
         let musicView = SelectMusicView(viewModel: viewModel)
         selectMusicView = UIHostingController(rootView: musicView)
         guard let selectMusicView else { return }
@@ -79,17 +72,47 @@ class SelectMusicViewController: UIViewController {
         ])
     }
     
-    func setAction() {
+    private func setAction() {
         selectCompleteButton.addAction(UIAction { [weak self] _ in
-            self?.selectCompleteButton.updateButton(.complete)
-            self?.selectCompleteButton.updateButton(.disabled)
-            self?.showSubmitLoading()
-            self?.viewModel.stopMusic()
-            self?.progressBar.cancelCompletion()
+            self?.showSubmitMusicLoading()
         }, for: .touchUpInside)
         
         progressBar.setCompletionHandler { [weak self] in
-            self?.showSubmitLoading()
+            self?.showSubmitMusicLoading()
         }
+    }
+    
+    private func submitMusic() async throws {
+        do {
+            selectCompleteButton.updateButton(.disabled)
+            viewModel.stopMusic()
+            progressBar.cancelCompletion()
+            try await viewModel.submitMusic()
+        } catch {
+            throw error
+        }
+    }
+}
+
+// MARK: - Alert
+
+extension SelectMusicViewController {
+    private func showSubmitMusicLoading() {
+        let alert = ASAlertController(
+            progressText: .submitMusic,
+            load: { [weak self] in
+                try await self?.submitMusic()
+            },
+            errorCompletion: { [weak self] error in
+                self?.showFailSubmitMusic(error)
+            })
+        presentLoadingView(alert)
+    }
+    
+    private func showFailSubmitMusic(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error)) { [weak self] _ in
+            self?.selectCompleteButton.updateButton(.complete)
+        }
+        presentAlert(alert)
     }
 }

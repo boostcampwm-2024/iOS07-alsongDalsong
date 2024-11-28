@@ -33,7 +33,7 @@ final class HummingViewModel: @unchecked Sendable {
         bindAnswer()
     }
 
-    func submitHumming() async {
+    func submitHumming() async throws {
         guard let recordedData else { return }
         do {
             let result = try await recordsRepository.uploadRecording(recordedData)
@@ -43,7 +43,7 @@ final class HummingViewModel: @unchecked Sendable {
                 // 전송 안됨, 오류 alert
             }
         } catch {
-            // 전송 안됨, 오류 alert
+            throw error
         }
     }
 

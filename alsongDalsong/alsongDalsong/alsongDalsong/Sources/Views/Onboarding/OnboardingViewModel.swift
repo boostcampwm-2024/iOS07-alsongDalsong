@@ -1,4 +1,3 @@
-import ASNetworkKit
 import ASRepository
 import Combine
 import Foundation
@@ -66,7 +65,7 @@ final class OnboardingViewModel: @unchecked Sendable {
     }
 
     @MainActor
-    func joinRoom(roomNumber id: String) async -> String? {
+    func joinRoom(roomNumber id: String) async throws -> String? {
         guard let selectedAvatar else { return nil }
         buttonEnabled = false
         do {
@@ -74,20 +73,20 @@ final class OnboardingViewModel: @unchecked Sendable {
             return id
         } catch {
             buttonEnabled = true
-            return nil
+            throw error
         }
     }
 
     @MainActor
-    func createRoom() async -> String? {
+    func createRoom() async throws -> String? {
         guard let selectedAvatar else { return nil }
         buttonEnabled = false
         do {
             let roomNumber = try await roomActionRepository.createRoom(nickname: nickname, avatar: selectedAvatar)
-            return await joinRoom(roomNumber: roomNumber)
+            return try await joinRoom(roomNumber: roomNumber)
         } catch {
             buttonEnabled = true
-            return nil
+            throw error
         }
     }
 }

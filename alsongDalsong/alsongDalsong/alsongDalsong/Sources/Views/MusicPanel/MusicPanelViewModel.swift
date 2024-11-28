@@ -3,7 +3,7 @@ import ASEntity
 import Combine
 import ASRepository
 
-final class MusicPanelViewModel {
+final class MusicPanelViewModel: @unchecked Sendable {
     @Published var music: Music?
     @Published var artwork: Data?
     @Published var preview: Data?
@@ -19,36 +19,16 @@ final class MusicPanelViewModel {
 
     private func getPreviewData() {
         guard let previewUrl = music?.previewUrl else { return }
-        musicRepository?.getMusicData(url: previewUrl)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] preview in
-                self?.preview = preview
-            }
-            .store(in: &cancellables)
+        Task {
+            preview = await musicRepository?.getMusicData(url: previewUrl)
+        }
     }
 
     private func getArtworkData() {
         guard let artworkUrl = music?.artworkUrl else { return }
-        musicRepository?.getMusicData(url: artworkUrl)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] artwork in
-                self?.artwork = artwork
-            }
-            .store(in: &cancellables)
+        Task {
+            artwork = await musicRepository?.getMusicData(url: artworkUrl)
+        }
     }
 
     @MainActor

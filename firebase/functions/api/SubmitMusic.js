@@ -23,14 +23,13 @@ module.exports.submitMusic = onRequest({ region: 'asia-southeast1' }, async (req
     return res.status(400).json({ error: 'Room Number is required' });
   }
   try {
-    const playerData = await getUserData(userId);
     const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
     const roomSnapshot = await roomRef.get();
     const roomData = roomSnapshot.data();
-
+    const userData = roomData.players.find((player) => player.id === userId);
     const currentAnswer = roomData.answers.length;
     const playersCount = roomData.players.length;
-    if (!playerData) {
+    if (!userData) {
       return res.status(404).json({ error: 'plyer Data not found' });
     }
     const currentMode = roomData.mode;
@@ -41,7 +40,7 @@ module.exports.submitMusic = onRequest({ region: 'asia-southeast1' }, async (req
 
         if (!req.body) {
           const answer = {
-            player: playerData,
+            player: userData,
           };
           await roomRef.update({
             round: 1,
@@ -52,7 +51,7 @@ module.exports.submitMusic = onRequest({ region: 'asia-southeast1' }, async (req
         }
 
         const answer = {
-          player: playerData,
+          player: userData,
           music: req.body,
         };
         // 모든 사람이 제출했을 때

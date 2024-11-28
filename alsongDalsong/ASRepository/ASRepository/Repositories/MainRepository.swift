@@ -6,7 +6,7 @@ import Combine
 import Foundation
 
 public final class MainRepository: MainRepositoryProtocol {
-    public var myId = ASFirebaseAuth.myID
+    public var myId: String? { ASFirebaseAuth.myID }
     public var number = CurrentValueSubject<String?, Never>(nil)
     public var host = CurrentValueSubject<Player?, Never>(nil)
     public var players = CurrentValueSubject<[Player]?, Never>(nil)
@@ -41,19 +41,19 @@ public final class MainRepository: MainRepositoryProtocol {
                         return
                 }
             } receiveValue: { [weak self] room in
-                guard let self = self else { return }
-                self.update(\.number, with: room.number)
-                self.update(\.host, with: room.host)
-                self.update(\.players, with: room.players)
-                self.update(\.mode, with: room.mode)
-                self.update(\.round, with: room.round)
-                self.update(\.status, with: room.status)
-                self.update(\.recordOrder, with: room.recordOrder)
-                self.update(\.answers, with: room.answers)
-                self.update(\.dueTime, with: room.dueTime)
-                self.update(\.submits, with: room.submits)
-                self.update(\.records, with: room.records)
-                self.update(\.selectedRecords, with: room.selectedRecords)
+                guard let self else { return }
+                update(\.number, with: room.number)
+                update(\.host, with: room.host)
+                update(\.players, with: room.players)
+                update(\.mode, with: room.mode)
+                update(\.round, with: room.round)
+                update(\.status, with: room.status)
+                update(\.recordOrder, with: room.recordOrder)
+                update(\.answers, with: room.answers)
+                update(\.dueTime, with: room.dueTime)
+                update(\.submits, with: room.submits)
+                update(\.records, with: room.records)
+                update(\.selectedRecords, with: room.selectedRecords)
             }
             .store(in: &cancellables)
     }

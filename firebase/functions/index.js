@@ -10,7 +10,8 @@ const { onRemovePlayer, onRemoveRoom } = require('./trigger/onRemovePlayer.js');
 const { changeMode } = require('./api/ChangeMode.js');
 const { submitMusic } = require('./api/SubmitMusic');
 const { submitAnswer } = require('./api/SubmitAnswer');
-const { changeRecordOrder } = require('./api/ChangeRecordOrder.js')
+const { changeRecordOrder } = require('./api/ChangeRecordOrder.js');
+const { resetGame } = require('./api/ResetGame.js');
 
 // 방 관련 API
 exports.createRoom = createRoom;
@@ -22,6 +23,7 @@ exports.onRemoveRoom = onRemoveRoom;
 exports.submitMusic = submitMusic;
 exports.submitAnswer = submitAnswer;
 exports.changeRecordOrder = changeRecordOrder;
+exports.resetGame = resetGame;
 
 // GameStart API
 exports.startGame = startGame;

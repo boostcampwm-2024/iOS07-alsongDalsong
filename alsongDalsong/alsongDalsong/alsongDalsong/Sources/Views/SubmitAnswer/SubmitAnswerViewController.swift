@@ -30,6 +30,7 @@ final class SubmitAnswerViewController: UIViewController {
     override func viewDidLoad() {
         setupUI()
         setupLayout()
+        setAction()
         bindToComponents()
     }
 
@@ -43,45 +44,22 @@ final class SubmitAnswerViewController: UIViewController {
     private func setupUI() {
         guideLabel.setText("허밍을 듣고 정답을 맞춰보세요!")
         selectAnswerButton.setConfiguration(title: "정답 선택", backgroundColor: .asLightSky)
-        selectAnswerButton.addAction(UIAction { [weak self] _ in
-            guard let self else { return }
-            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: self.viewModel))
-            present(selecAnswerView, animated: true)
-        },
-        for: .touchUpInside)
         submitButton.setConfiguration(title: "정답 제출", backgroundColor: .asLightGray)
-        submitButton.addAction(
-            UIAction { [weak self] _ in
-                self?.showSubmitLoading()
-                let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
-                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
-                let viewModel = RehummingViewModel(
-                    gameStatusRepository: gameStatusRepository,
-                    playersRepository: playersRepository,
-                    recordsRepository: recordsRepository
-                )
-                let vc = RehummingViewController(viewModel: viewModel)
-                self?.navigationController?.pushViewController(vc, animated: true)
-            }, for: .touchUpInside
-        )
-        progressBar.setCompletionHandler { [weak self] in
-            self?.showSubmitLoading()
-        }
         submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
         buttonStack.addArrangedSubview(selectAnswerButton)
         buttonStack.addArrangedSubview(submitButton)
         view.backgroundColor = .asLightGray
+    }
+
+    private func setupLayout() {
         view.addSubview(progressBar)
         view.addSubview(guideLabel)
         view.addSubview(musicPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
-    }
 
-    private func setupLayout() {
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         guideLabel.translatesAutoresizingMaskIntoConstraints = false
         musicPanel.translatesAutoresizingMaskIntoConstraints = false
@@ -111,10 +89,53 @@ final class SubmitAnswerViewController: UIViewController {
         ])
     }
 
-    func showSubmitLoading() {
-        let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
-            await self?.viewModel.submitAnswer()
+    private func submitAnswer() async throws {
+        do {
+            selectAnswerButton.updateButton(.disabled)
+            viewModel.stopMusic()
+            progressBar.cancelCompletion()
+            try await viewModel.submitAnswer()
+        } catch {
+            throw error
+        }
+    }
+
+    private func setAction() {
+        selectAnswerButton.addAction(UIAction { [weak self] _ in
+            guard let self else { return }
+            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: viewModel))
+            present(selecAnswerView, animated: true)
+        },
+        for: .touchUpInside)
+
+        submitButton.addAction(
+            UIAction { [weak self] _ in
+                self?.showSubmitAnswerLoading()
+            }, for: .touchUpInside
+        )
+
+        progressBar.setCompletionHandler { [weak self] in
+            self?.showSubmitAnswerLoading()
+        }
+    }
+}
+
+// MARK: - Alert
+
+extension SubmitAnswerViewController {
+    private func showSubmitAnswerLoading() {
+        let alert = ASAlertController(progressText: .submitMusic, load: { [weak self] in
+            try await self?.submitAnswer()
+        }) { [weak self] error in
+            self?.showFailSubmitMusic(error)
         }
         presentLoadingView(alert)
+    }
+
+    private func showFailSubmitMusic(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error)) { [weak self] _ in
+            self?.selectAnswerButton.updateButton(.complete)
+        }
+        presentAlert(alert)
     }
 }
