@@ -1,7 +1,3 @@
-import ASContainer
-import ASEntity
-import ASRepository
-import Combine
 import SwiftUI
 
 struct LobbyView: View {
@@ -26,21 +22,22 @@ struct LobbyView: View {
                         }
                     }
                 }
-                .padding()
+                .padding(.horizontal, 24)
+                .padding(.top, 20)
+                .padding(.bottom, 12)
             }
             VStack {
                 if viewModel.isHost {
                     GeometryReader { reader in
                         SnapperView(size: reader.size, currentMode: $viewModel.mode)
                     }
-                }else {
+                } else {
                     GeometryReader { geometry in
                         ModeView(modeInfo: viewModel.mode, width: geometry.size.width * 0.85)
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
             }
-           
         }
         .background(Color.asLightGray)
     }
