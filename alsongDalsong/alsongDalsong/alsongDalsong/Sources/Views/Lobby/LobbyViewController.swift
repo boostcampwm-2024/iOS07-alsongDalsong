@@ -86,6 +86,7 @@ final class LobbyViewController: UIViewController {
 
         configuration.image = UIImage(systemName: "rectangle.portrait.and.arrow.forward")?
             .withRenderingMode(.alwaysTemplate)
+            .withTintColor(.label)
             .applyingSymbolConfiguration(.init(pointSize: 24, weight: .medium))?
             .rotate(radians: .pi)
         backButton.configuration = configuration
