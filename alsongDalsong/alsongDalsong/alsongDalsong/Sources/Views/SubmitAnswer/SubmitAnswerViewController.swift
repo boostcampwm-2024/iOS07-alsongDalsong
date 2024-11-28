@@ -94,7 +94,7 @@ final class SubmitAnswerViewController: UIViewController {
             viewModel.stopMusic()
             progressBar.cancelCompletion()
             try await viewModel.submitAnswer()
-            selectAnswerButton.updateButton(.submitted)
+            submitButton.updateButton(.submitted)
         } catch {
             throw error
         }
