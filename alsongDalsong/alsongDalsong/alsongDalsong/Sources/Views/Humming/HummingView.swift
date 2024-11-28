@@ -116,7 +116,7 @@ final class HummingViewController: UIViewController {
         do {
             progressBar.cancelCompletion()
             try await viewModel.submitHumming()
-            submitButton.updateButton(.complete)
+            submitButton.updateButton(.submitted)
         } catch {
             throw error
         }
