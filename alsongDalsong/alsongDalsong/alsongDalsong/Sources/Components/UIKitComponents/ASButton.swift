@@ -85,6 +85,7 @@ final class ASButton: UIButton {
     func updateButton(_ type: ASButton.ASButtonType) {
         switch type {
             case .disabled: disable()
+            case .waitStart: setConfiguration(title: "시작 대기중..", backgroundColor: .asOrange)
             case let .idle(string, color): setConfiguration(title: string, backgroundColor: color)
             case .startRecord: setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
             case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
@@ -100,6 +101,7 @@ final class ASButton: UIButton {
 
     enum ASButtonType {
         case disabled
+        case waitStart
         case idle(String, UIColor?)
         case startRecord
         case recording
