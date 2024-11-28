@@ -187,13 +187,13 @@ class ASAlertController: UIViewController {
                 setTitle()
                 setTextField()
                 setButtonStackView()
-                setDoneButton()
                 setCancelButton()
+                setDoneButton()
             case .default:
                 setTitle()
                 setButtonStackView()
-                setDoneButton()
                 setCancelButton()
+                setDoneButton()
             case .confirm:
                 setTitle()
                 setButtonStackView()
@@ -327,7 +327,7 @@ enum ASAlertText {
                 case .leaveRoom: "방을 나가시겠습니까?"
                 case .joinRoom: "게임 입장 코드를 입력하세요"
                 case .joinFailed: "참가에 실패하였습니다."
-                case .error(let error): "\(error.localizedDescription)\n 잠시후에 다시 시도해주세요"
+                case let .error(error): "\(error.localizedDescription)\n 잠시후에 다시 시도해주세요"
                 case .needMorePlayer: "알쏭달쏭은 여럿이서 할 수록\n재미있는 게임이에요!\n그래도 하시겠어요?"
             }
         }
