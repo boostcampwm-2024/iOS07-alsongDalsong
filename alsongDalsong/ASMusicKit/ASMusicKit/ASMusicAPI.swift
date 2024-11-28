@@ -47,7 +47,7 @@ public enum ASMusicError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
             case .notAuthorized:
-                "에플 뮤직에 접근하는 권한이 없습니다."
+                "애플 뮤직에 접근하는 권한이 없습니다."
             case .searchError:
                 "노래 검색 중 오류가 발생했습니다."
         }
