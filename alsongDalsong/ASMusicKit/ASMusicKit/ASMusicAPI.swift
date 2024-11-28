@@ -10,27 +10,50 @@ public struct ASMusicAPI {
     ///   - maxCount: 검색해서 찾아올 음악의 갯수 기본값 설정은 25
     /// - Returns: Music의 배열
     @MainActor
-    public func search(for text: String, _ maxCount: Int = 25, _ offset: Int = 1) async throws -> [Music] {
+    public func search(for text: String, _ maxCount: Int = 10, _ offset: Int = 1) async throws -> [Music] {
         let status = await MusicAuthorization.request()
         switch status {
             case .authorized:
                 do {
-                    var request = MusicCatalogSearchRequest(term: text, types: [Song.self])
+                    var request = MusicCatalogSearchSuggestionsRequest(term: text, includingTopResultsOfTypes: [Song.self])
+
                     request.limit = maxCount
-                    request.offset = offset
 
                     let result = try await request.response()
-                    let music = result.songs.map { song in
-                        ASEntity.Music(
-                            id: song.id.rawValue,
-                            title: song.title,
-                            artist: song.artistName,
-                            artworkUrl: song.artwork?.url(width: 300, height: 300),
-                            previewUrl: song.previewAssets?.first?.url,
-                            artworkBackgroundColor: song.artwork?.backgroundColor?.toHex()
-                        )
+
+                    if !result.topResults.isEmpty {
+                        let music = result.topResults.compactMap { topResult -> ASEntity.Music? in
+                            if case .song(let song) = topResult {
+                                return ASEntity.Music(
+                                    id: song.id.rawValue,
+                                    title: song.title,
+                                    artist: song.artistName,
+                                    artworkUrl: song.artwork?.url(width: 300, height: 300),
+                                    previewUrl: song.previewAssets?.first?.url,
+                                    artworkBackgroundColor: song.artwork?.backgroundColor?.toHex()
+                                )
+                            }
+                            return nil
+                        }
+                        return music
+                    } else {
+                        var request = MusicCatalogSearchRequest(term: text, types: [Song.self])
+                        request.offset = offset
+                        request.limit = maxCount
+                        
+                        let result = try await request.response()
+                        let music = result.songs.map { song in
+                            ASEntity.Music(
+                                id: song.id.rawValue,
+                                title: song.title,
+                                artist: song.artistName,
+                                artworkUrl: song.artwork?.url(width: 300, height: 300),
+                                previewUrl: song.previewAssets?.first?.url,
+                                artworkBackgroundColor: song.artwork?.backgroundColor?.toHex()
+                            )
+                        }
+                        return music
                     }
-                    return music
                 } catch {
                     throw ASMusicError.searchError
                 }
@@ -53,3 +76,59 @@ public enum ASMusicError: Error, LocalizedError {
         }
     }
 }
+
+
+/*
+ 
+ <<<<<<< HEAD
+
+                     let result = try await request.response()
+
+                     if !result.topResults.isEmpty {
+                         let asSongs = result.topResults.compactMap { topResult -> ASSong? in
+                             if case .song(let song) = topResult {
+                                 return ASSong(
+                                     id: song.isrc,
+                                     title: song.title,
+                                     artistName: song.artistName,
+                                     artwork: song.artwork,
+                                     previewURL: song.previewAssets?.first?.url
+                                 )
+                             }
+                             return nil
+                         }
+                         return asSongs
+                     } else {
+                         var request = MusicCatalogSearchRequest(term: text, types: [Song.self])
+                         request.offset = offset
+                         request.limit = maxCount
+
+                         let result = try await request.response()
+                         let asSongs = result.songs.map { song in
+                             ASSong(
+                                 id: song.isrc,
+                                 title: song.title,
+                                 artistName: song.artistName,
+                                 artwork: song.artwork,
+                                 previewURL: song.previewAssets?.first?.url
+                             )
+                         }
+                         return asSongs
+                     }
+ =======
+                     request.offset = offset
+
+                     let result = try await request.response()
+                     let music = result.songs.map { song in
+                         ASEntity.Music(
+                             id: song.id.rawValue,
+                             title: song.title,
+                             artist: song.artistName,
+                             artworkUrl: song.artwork?.url(width: 300, height: 300),
+                             previewUrl: song.previewAssets?.first?.url,
+                             artworkBackgroundColor: song.artwork?.backgroundColor?.toHex()
+                         )
+                     }
+                     return music
+ >>>>>>> origin/dev
+ */

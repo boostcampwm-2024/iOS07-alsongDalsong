@@ -76,7 +76,6 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         selectedMusic = music
         beginPlaying()
     }
-    
     public func submitMusic() async throws {
         guard let selectedMusic else { return }
         do {
@@ -108,6 +107,11 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     private func beginPlaying() {
         guard let url = selectedMusic?.previewUrl else { return }
         downloadMusic(url: url)
+    }
+    
+    @MainActor
+    public func resetSearchList() {
+        searchList = []
     }
     
     @MainActor

@@ -5,6 +5,7 @@ struct SelectAnswerView: View {
     @ObservedObject var viewModel: SubmitAnswerViewModel
     @State var searchTerm = ""
     @Environment(\.dismiss) private var dismiss
+    private let debouncer = Debouncer(delay: 0.5)
 
     var body: some View {
         VStack {
@@ -29,8 +30,11 @@ struct SelectAnswerView: View {
 
             ASSearchBar(text: $searchTerm, placeHolder: "노래를 선택하세요")
                 .onChange(of: searchTerm) { newValue in
-                    Task {
-                        try await viewModel.searchMusic(text: newValue)
+                    debouncer.debounce {
+                        Task {
+                            if newValue.isEmpty { viewModel.resetSearchList() }
+                            try await viewModel.searchMusic(text: newValue)
+                        }
                     }
                 }
             List(viewModel.searchList) { music in

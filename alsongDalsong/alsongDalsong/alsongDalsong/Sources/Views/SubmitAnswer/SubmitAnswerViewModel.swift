@@ -47,7 +47,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         bindGameStatus()
         bindSubmitStatus()
     }
-
+    
     private func bindRecord(on recordOrder: UInt8) {
         recordsRepository.getHumming(on: recordOrder)
             .sink { [weak self] record in
@@ -161,6 +161,11 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         guard !data.isEmpty else { return }
         recordedData = data
         isRecording = false
+    }
+    
+    @MainActor
+    public func resetSearchList() {
+        searchList = []
     }
     
     @MainActor
