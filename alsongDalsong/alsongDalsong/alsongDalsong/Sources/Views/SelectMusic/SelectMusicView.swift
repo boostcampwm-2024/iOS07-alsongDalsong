@@ -25,10 +25,11 @@ struct SelectMusicView: View {
             ASSearchBar(text: $searchTerm, placeHolder: "곡 제목을 검색하세요")
                 .onChange(of: searchTerm) { newValue in
                     Task {
+                        if newValue.isEmpty { viewModel.resetSearchList() }
                         viewModel.searchMusic(text: newValue)
                     }
                 }
-            if searchTerm == "" {
+            if searchTerm.isEmpty {
                 VStack(alignment: .center) {
                     Spacer()
                     Text("음악을 선택하세요!")
@@ -36,15 +37,17 @@ struct SelectMusicView: View {
                     Spacer()
                 }
             }
-            List(viewModel.searchList) { song in
-                Button {
-                    viewModel.handleSelectedSong(song: song)
-                } label: {
-                    ASMusicItemCell(artwork: song.artwork, title: song.title, artist: song.artistName)
-                        .tint(.black)
+            else {
+                List(viewModel.searchList) { song in
+                    Button {
+                        viewModel.handleSelectedSong(song: song)
+                    } label: {
+                        ASMusicItemCell(artwork: song.artwork, title: song.title, artist: song.artistName)
+                            .tint(.black)
+                    }
                 }
+                .listStyle(.plain)
             }
-            .listStyle(.plain)
         }
         .background(.asLightGray)
     }

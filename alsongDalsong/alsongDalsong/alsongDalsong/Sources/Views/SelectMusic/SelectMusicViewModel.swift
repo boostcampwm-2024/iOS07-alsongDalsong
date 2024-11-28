@@ -107,14 +107,18 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             previewUrl: selectedSong.previewURL,
             artworkBackgroundColor: selectedSong.artwork?.backgroundColor?.toHex()
         )
-        let _ = try await answerRepository.submitMusic(answer: answer)
+        _ = try await answerRepository.submitMusic(answer: answer)
     }
  
     @MainActor
     func searchMusic(text: String) {
+        if text.isEmpty { return }
         Task {
-            if text.isEmpty { return }
             searchList = await musicAPI.search(for: text)
         }
+    }
+    
+    func resetSearchList() {
+        searchList = []
     }
 }
