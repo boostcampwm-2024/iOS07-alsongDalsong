@@ -10,7 +10,7 @@ public struct ASMusicAPI {
     ///   - maxCount: 검색해서 찾아올 음악의 갯수 기본값 설정은 25
     /// - Returns: ASSong의 배열
     @MainActor
-    public func search(for text: String, _ maxCount: Int = 25, _ offset: Int = 1) async -> [Music] {
+    public func search(for text: String, _ maxCount: Int = 25, _ offset: Int = 1) async throws -> [Music] {
         let status = await MusicAuthorization.request()
         switch status {
             case .authorized:
@@ -32,11 +32,24 @@ public struct ASMusicAPI {
                     }
                     return music
                 } catch {
-                    return []
+                    throw ASMusicError.searchError
                 }
             default:
-                print("Not authorized to access Apple Music")
-                return []
+                throw ASMusicError.notAuthorized
+        }
+    }
+}
+
+public enum ASMusicError: Error, LocalizedError {
+    case notAuthorized
+    case searchError
+
+    public var errorDescription: String? {
+        switch self {
+            case .notAuthorized:
+                "에플 뮤직에 접근하는 권한이 없습니다."
+            case .searchError:
+                "노래 검색 중 오류가 발생했습니다."
         }
     }
 }

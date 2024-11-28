@@ -80,15 +80,22 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     
     public func submitMusic() async throws {
         guard let selectedMusic else { return }
-        _ = try await answerRepository.submitMusic(answer: selectedMusic)
+        do {
+            _ = try await answerRepository.submitMusic(answer: selectedMusic)
+        } catch {
+            throw error
+        }
     }
  
     @MainActor
-    public func searchMusic(text: String) {
-        Task {
+    public func searchMusic(text: String) async throws {
+        do {
             if text.isEmpty { return }
-            searchList = await musicAPI.search(for: text)
+            searchList = try await musicAPI.search(for: text)
+        } catch {
+            throw error
         }
+            
     }
     
     @MainActor

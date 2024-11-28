@@ -29,7 +29,9 @@ struct SelectAnswerView: View {
 
             ASSearchBar(text: $searchTerm, placeHolder: "노래를 선택하세요")
                 .onChange(of: searchTerm) { newValue in
-                    viewModel.searchMusic(text: newValue)
+                    Task {
+                        try await viewModel.searchMusic(text: newValue)
+                    }
                 }
             List(viewModel.searchList) { music in
                 Button {

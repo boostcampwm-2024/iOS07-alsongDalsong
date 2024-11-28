@@ -114,10 +114,12 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     }
 
     @MainActor
-    public func searchMusic(text: String) {
-        Task {
+    public func searchMusic(text: String) async throws {
+        do {
             if text.isEmpty { return }
-            searchList = await musicAPI.search(for: text)
+            searchList = try await musicAPI.search(for: text)
+        } catch {
+            throw error
         }
     }
 
