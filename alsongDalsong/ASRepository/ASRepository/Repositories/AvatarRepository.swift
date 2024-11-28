@@ -15,31 +15,23 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
         self.networkManager = networkManager
     }
     
-    public func getAvatarUrls() -> Future<[URL], Error> {
-        Future { promise in
-            Task {
-                do {
-                    let urls = try await self.storageManager.getAvatarUrls()
-                    promise(.success(urls))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
+    public func getAvatarUrls() async throws -> [URL] {
+        do {
+            let urls = try await self.storageManager.getAvatarUrls()
+            return urls
+        } catch {
+            throw error
         }
     }
     
-    public func getAvatarData(url: URL) -> Future<Data?, Error> {
-        Future { promise in
-            Task {
-                do {
-                    guard let endpoint = ResourceEndpoint(url: url)
-                    else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
-                    promise(.success(data))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
+    public func getAvatarData(url: URL) async -> Data? {
+        do {
+            guard let endpoint = ResourceEndpoint(url: url)
+            else { return nil }
+            let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
+            return data
+        } catch {
+            return nil
         }
     }
 }

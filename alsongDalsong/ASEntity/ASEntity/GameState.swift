@@ -56,7 +56,16 @@ public struct GameState {
                 return .rehumming
             }
         case .result:
-            return .result
+            if players.count <= 2, recordOrder == 1 {
+                return .result
+            }
+            
+            else if recordOrder == players.count - 2 {
+                return .result
+            }else {
+                return nil
+            }
+
         default:
             return .lobby
         }

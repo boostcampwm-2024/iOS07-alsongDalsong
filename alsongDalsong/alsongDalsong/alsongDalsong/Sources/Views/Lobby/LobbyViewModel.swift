@@ -39,15 +39,9 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
         fetchData()
     }
     
-    func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
-        if let url {
-            avatarRepository.getAvatarData(url: url)
-                .eraseToAnyPublisher()
-        } else {
-            Just(nil)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        }
+    func getAvatarData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await avatarRepository.getAvatarData(url: url)
     }
     
     func fetchData() {

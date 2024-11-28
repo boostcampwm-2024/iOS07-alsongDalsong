@@ -168,15 +168,9 @@ final class HummingResultViewModel: @unchecked Sendable {
         }
     }
     
-    func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
-        if let url {
-            avatarRepository.getAvatarData(url: url)
-                .eraseToAnyPublisher()
-        } else {
-            Just(nil)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        }
+    func getAvatarData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await avatarRepository.getAvatarData(url: url)
     }
     
     func changeRecordOrder() {
@@ -189,15 +183,8 @@ final class HummingResultViewModel: @unchecked Sendable {
         }
     }
     
-    func getArtworkData(url: URL?) -> AnyPublisher<Data?, Error> {
-        if let url {
-            return musicRepository.getMusicData(url: url)
-                .eraseToAnyPublisher()
-        }
-        else {
-            return Just(nil)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        }
+    func getArtworkData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await musicRepository.getMusicData(url: url)
     }
 }

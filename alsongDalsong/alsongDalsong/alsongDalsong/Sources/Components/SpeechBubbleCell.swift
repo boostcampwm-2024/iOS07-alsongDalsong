@@ -17,8 +17,10 @@ enum MessageAlignment {
 struct SpeechBubbleCell: View {
     let alignment: MessageAlignment
     let messageType: MessageType
-    let avatarImagePublisher: AnyPublisher<Data?, Error>
-    let artworkImagePublisher: AnyPublisher<Data?, Error>?
+    let avatarImagePublisher: (URL?) async -> Data?
+    let avatarURL: URL
+    let artworkImagePublisher: (URL?) async -> Data?
+    let artworkURL: URL?
     let name: String
     @State private var isVisible = false
     
@@ -27,7 +29,7 @@ struct SpeechBubbleCell: View {
             if alignment == .left {
                 ProfileView(imagePublisher: avatarImagePublisher,
                             name: name,
-                            isHost: false)
+                            isHost: false, imageUrl: avatarURL)
                 .frame(width: 75, height: 75)
                 .padding(.trailing, 10)
             }
@@ -39,7 +41,7 @@ struct SpeechBubbleCell: View {
             if alignment == .right {
                 ProfileView(imagePublisher: avatarImagePublisher,
                             name: name,
-                            isHost: false)
+                            isHost: false, imageUrl: avatarURL)
                 .frame(width: 75, height: 75)
                 .padding(.leading, 10)
             }
@@ -84,17 +86,9 @@ struct SpeechBubbleCell: View {
                 switch messageType {
                 case .music(let music):
                     HStack {
-                        if let artworkImagePublisher {
-                            AsyncImageView(imagePublisher: artworkImagePublisher)
-                                .frame(width: 60, height: 60)
-                                .clipShape(RoundedRectangle(cornerRadius: 6))
-                        }
-                        else {
-                            Image("mojojojo")
-                                .resizable()
-                                .frame(width: 60, height: 60)
-                                .clipShape(RoundedRectangle(cornerRadius: 6))
-                        }
+                        AsyncImageView(imagePublisher: artworkImagePublisher, url: artworkURL)
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
                         
                         VStack(alignment: .leading) {
                             Text(music.title ?? "")
