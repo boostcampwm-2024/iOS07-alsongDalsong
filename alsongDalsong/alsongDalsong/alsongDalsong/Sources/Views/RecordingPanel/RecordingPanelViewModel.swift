@@ -9,19 +9,14 @@ final class RecordingPanelViewModel: @unchecked Sendable {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        bindAmplitudeUpdates()
+        bindAudioHelper()
     }
 
-    private func bindAmplitudeUpdates() {
-        Task {
-            await AudioHelper.shared.amplitudePublisher
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] newAmplitude in
-                    guard let self = self else { return }
-                    self.recorderAmplitude = newAmplitude
-                }
-                .store(in: &self.cancellables)
-        }
+    func configureAudioHelper() async {
+        await AudioHelper.shared
+//            .sourceType(.recorded)
+            .playType(.full)
+            .isConcurrent(false)
     }
 
     @MainActor
@@ -29,27 +24,27 @@ final class RecordingPanelViewModel: @unchecked Sendable {
         Task {
             if buttonState == .recording { return }
             if buttonState == .playing { stopPlaying() }
-            buttonState = .recording
-            let data = await AudioHelper.shared.startRecording()
-            recordedData = data
-            buttonState = .idle
+            await AudioHelper.shared.startRecording()
         }
+    }
+
+    private func updateButtonState(_ state: AudioButtonState) {
+        buttonState = state
     }
 
     @MainActor
     func togglePlayPause() {
-        if buttonState == .recording { return }
-        if recordedData != nil {
-            Task { [weak self] in
-                if await AudioHelper.shared.isPlaying() {
-                    self?.buttonState = .idle
-                    await AudioHelper.shared.stopPlaying()
-                } else {
-                    self?.buttonState = .playing
-                    await AudioHelper.shared.startPlaying(file: self?.recordedData) {
-                        self?.buttonState = .idle
-                    }
-                }
+        guard recordedData != nil else { return }
+
+        Task { [weak self] in
+            await self?.configureAudioHelper()
+            if self?.buttonState == .playing {
+                await AudioHelper.shared.stopPlaying()
+                return
+            }
+            if self?.buttonState == .idle {
+                await AudioHelper.shared.startPlaying(self?.recordedData, sourceType: .recorded)
+                return
             }
         }
     }
@@ -58,6 +53,45 @@ final class RecordingPanelViewModel: @unchecked Sendable {
     private func stopPlaying() {
         Task {
             await AudioHelper.shared.stopPlaying()
+        }
+    }
+    
+    private func bindAudioHelper() {
+        Task {
+            let helper = await AudioHelper.shared
+                .playType(.full)
+            await AudioHelper.shared.amplitudePublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] newAmplitude in
+                    guard let self = self else { return }
+                    self.recorderAmplitude = newAmplitude
+                }
+                .store(in: &self.cancellables)
+            await AudioHelper.shared.playerStatePublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] source, isPlaying in
+                    if source == .recorded {
+                        self?.updateButtonState(isPlaying ? .playing : .idle)
+                        return
+                    }
+                    if source == .imported, isPlaying {
+                        self?.updateButtonState(.idle)
+                        return
+                    }
+                }
+                .store(in: &self.cancellables)
+            await AudioHelper.shared.recorderStatePublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isRecording in
+                    self?.updateButtonState(isRecording ? .recording : .idle)
+                }
+                .store(in: &self.cancellables)
+            await AudioHelper.shared.recorderDataPublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] data in
+                    self?.recordedData = data
+                }
+                .store(in: &self.cancellables)
         }
     }
 }
