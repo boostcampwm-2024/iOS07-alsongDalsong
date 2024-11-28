@@ -170,25 +170,25 @@ extension HummingResultViewController: UITableViewDataSource {
                                 name: currentPlayer?.nickname ?? ""
                             )
                         }
-                        else {
-                            if let avatarURL = currentPlayer?.avatarUrl {
-                                SpeechBubbleCell(
-                                    alignment: .right,
-                                    messageType: .record(viewModel.currentRecords[indexPath.row]),
-                                    avatarImagePublisher: { url in
-                                        await viewModel.getAvatarData(url: url)
-                                    },
-                                    avatarURL: avatarURL,
-                                    artworkImagePublisher: { url in
-                                        await viewModel.getArtworkData(url: url)
-                                    },
-                                    artworkURL: nil,
-                                    name: currentPlayer?.nickname ?? ""
-                                )
-                            }
-                        }
-                        Spacer()
                     }
+                    else {
+                        if let avatarURL = currentPlayer?.avatarUrl {
+                            SpeechBubbleCell(
+                                alignment: .right,
+                                messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                avatarImagePublisher: { url in
+                                    await viewModel.getAvatarData(url: url)
+                                },
+                                avatarURL: avatarURL,
+                                artworkImagePublisher: { url in
+                                    await viewModel.getArtworkData(url: url)
+                                },
+                                artworkURL: nil,
+                                name: currentPlayer?.nickname ?? ""
+                            )
+                        }
+                    }
+                    Spacer()
                 }
             }
         }
@@ -275,7 +275,6 @@ final class MusicResultView: UIView {
                     
                     await musicFetcher()
                 }
-                
             }
             .store(in: &cancellables)
     }

@@ -65,6 +65,8 @@ final class HummingResultViewModel: @unchecked Sendable {
                 self.hummingResult.sort {
                     $0.answer.player?.order ?? 0 < $1.answer.player?.order ?? 1
                 }
+                
+                print("hummingResult \(self.hummingResult)")
 
                 let current = self.hummingResult.removeFirst()
                 self.currentResult = current.answer
@@ -103,18 +105,18 @@ final class HummingResultViewModel: @unchecked Sendable {
     }
     
     func startPlaying() async -> Void {
-        while !recordsResult.isEmpty {
-            currentRecords.append(recordsResult.removeFirst())
-            guard let fileUrl = currentRecords.last?.fileUrl else { continue }
-            do {
-                let data = try await fetchRecordData(url: fileUrl)
-                await AudioHelper.shared.startPlaying(data)
-                await waitForPlaybackToFinish()
-            } catch {
-                print("녹음 파일 다운로드에 실패하였습니다.")
+            while !recordsResult.isEmpty {
+                currentRecords.append(recordsResult.removeFirst())
+                guard let fileUrl = currentRecords.last?.fileUrl else { continue }
+                do {
+                    let data = try await fetchRecordData(url: fileUrl)
+                    await AudioHelper.shared.startPlaying(data)
+                    await waitForPlaybackToFinish()
+                } catch {
+                    print("녹음 파일 다운로드에 실패하였습니다.")
+                }
             }
-        }
-        currentsubmit = submitsResult
+            currentsubmit = submitsResult
     }
     
     private func waitForPlaybackToFinish() async {
