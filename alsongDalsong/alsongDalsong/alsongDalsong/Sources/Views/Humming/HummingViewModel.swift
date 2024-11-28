@@ -52,12 +52,6 @@ final class HummingViewModel: @unchecked Sendable {
         isRecording = true
     }
 
-    func togglePlayPause() {
-        Task {
-            await AudioHelper.shared.startPlaying(file: recordedData)
-        }
-    }
-
     func updateRecordedData(with data: Data) {
         // TODO: - data가 empty일 때(녹음이 제대로 되지 않았을 때 사용자 오류처리 필요
         guard !data.isEmpty else { return }
