@@ -34,27 +34,21 @@ final class HummingViewModel: @unchecked Sendable {
     }
 
     func submitHumming() async throws {
-        guard let recordedData else { return }
         do {
-            let result = try await recordsRepository.uploadRecording(recordedData)
+            let result = try await recordsRepository.uploadRecording(recordedData ?? Data())
             if result {
-                // 전송됨
+                return
             } else {
                 // 전송 안됨, 오류 alert
             }
         } catch {
             throw error
         }
+        return 
     }
 
     func startRecording() {
         isRecording = true
-    }
-
-    func togglePlayPause() {
-        Task {
-            await AudioHelper.shared.startPlaying(file: recordedData)
-        }
     }
 
     func updateRecordedData(with data: Data) {

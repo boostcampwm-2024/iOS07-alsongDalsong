@@ -165,7 +165,6 @@ final class LobbyViewController: UIViewController {
     
     private func gameStart() async throws{
         do {
-            startButton.updateButton(.disabled)
             try await self.viewmodel.gameStart()
         } catch {
             throw error
@@ -189,10 +188,7 @@ extension LobbyViewController {
     }
     
     func showStartGameFailed(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error)) { [weak self] _ in
-            print("?")
-            self?.startButton.updateButton(.complete)
-        }
+        let alert = ASAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

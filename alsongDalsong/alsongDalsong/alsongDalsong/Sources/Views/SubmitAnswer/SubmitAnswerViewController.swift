@@ -91,10 +91,10 @@ final class SubmitAnswerViewController: UIViewController {
 
     private func submitAnswer() async throws {
         do {
-            selectAnswerButton.updateButton(.disabled)
             viewModel.stopMusic()
             progressBar.cancelCompletion()
             try await viewModel.submitAnswer()
+            selectAnswerButton.updateButton(.submitted)
         } catch {
             throw error
         }
@@ -133,9 +133,7 @@ extension SubmitAnswerViewController {
     }
 
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error)) { [weak self] _ in
-            self?.selectAnswerButton.updateButton(.complete)
-        }
+        let alert = ASAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

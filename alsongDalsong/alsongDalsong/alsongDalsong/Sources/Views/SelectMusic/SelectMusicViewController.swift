@@ -84,10 +84,10 @@ class SelectMusicViewController: UIViewController {
     
     private func submitMusic() async throws {
         do {
-            selectCompleteButton.updateButton(.disabled)
             viewModel.stopMusic()
             progressBar.cancelCompletion()
             try await viewModel.submitMusic()
+            selectCompleteButton.updateButton(.submitted)
         } catch {
             throw error
         }
@@ -110,9 +110,7 @@ extension SelectMusicViewController {
     }
     
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error)) { [weak self] _ in
-            self?.selectCompleteButton.updateButton(.complete)
-        }
+        let alert = ASAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

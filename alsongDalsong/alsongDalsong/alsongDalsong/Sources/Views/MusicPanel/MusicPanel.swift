@@ -11,7 +11,7 @@ final class MusicPanel: UIView {
     private let artistLabel = UILabel()
     private var cancellables = Set<AnyCancellable>()
     private let musicRepository: MusicRepositoryProtocol
-    private var vm: MusicPanelViewModel? = nil
+    private var viewModel: MusicPanelViewModel? = nil
 
     init() {
         musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
@@ -32,10 +32,11 @@ final class MusicPanel: UIView {
         dataSource
             .receive(on: DispatchQueue.main)
             .sink { [weak self] music in
-                self?.vm = MusicPanelViewModel(
+                self?.viewModel = MusicPanelViewModel(
                     music: music,
                     musicRepository: self?.musicRepository
                 )
+                self?.player.updateMusicPanel(color: music?.artworkBackgroundColor?.hexToCGColor())
                 self?.bindViewModel()
                 self?.titleLabel.text = music?.title ?? "???"
                 self?.artistLabel.text = music?.artist ?? "????"
@@ -44,18 +45,20 @@ final class MusicPanel: UIView {
     }
 
     private func bindWithPlayer() {
-        player.onPlayButtonTapped = { [weak self] isPlaying in
-            self?.vm?.togglePlayPause(isPlaying: isPlaying)
+        player.onPlayButtonTapped = { [weak self] in
+            self?.viewModel?.togglePlayPause()
         }
     }
 
     private func bindViewModel() {
-        vm?.$artwork
+        viewModel?.$artwork
             .receive(on: DispatchQueue.main)
             .sink { [weak self] artwork in
-                self?.player.updateImage(with: artwork)
+                self?.player.updateMusicPanel(image: artwork)
             }
             .store(in: &cancellables)
+        guard let viewModel else { return }
+        player.bind(to: viewModel.$buttonState)
     }
 
     private func setupUI() {
@@ -64,11 +67,16 @@ final class MusicPanel: UIView {
         addSubview(titleLabel)
         addSubview(artistLabel)
 
-        panel.updateBackgroundColor(.asSystem)
-        titleLabel.font = .font(forTextStyle: .title3)
-        artistLabel.font = .font(forTextStyle: .title3)
         titleLabel.textColor = .label
         artistLabel.textColor = .secondaryLabel
+
+        [titleLabel, artistLabel].forEach { label in
+            label.font = .font(forTextStyle: .title3)
+            label.textAlignment = .center
+            label.numberOfLines = 1
+            label.lineBreakMode = .byTruncatingTail
+            label.adjustsFontSizeToFitWidth = false
+        }
     }
 
     private func setupLayout() {
@@ -89,7 +97,9 @@ final class MusicPanel: UIView {
             player.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -12),
 
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            titleLabel.widthAnchor.constraint(equalTo: player.widthAnchor, constant: -16),
             artistLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            artistLabel.widthAnchor.constraint(equalTo: player.widthAnchor, constant: -16),
             artistLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             artistLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24),
         ])
@@ -100,7 +110,8 @@ private final class ASMusicPlayer: UIView {
     private var backgroundImageView = UIImageView()
     private var blurView = UIVisualEffectView()
     private var playButton = UIButton()
-    var onPlayButtonTapped: ((_ isPlaying: Bool) -> Void)?
+    var onPlayButtonTapped: (() -> Void)?
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
         super.init(frame: .zero)
@@ -108,18 +119,43 @@ private final class ASMusicPlayer: UIView {
         setupLayout()
     }
 
+    func bind(
+        to dataSource: Published<AudioButtonState>.Publisher
+    ) {
+        dataSource
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.updateButtonImage(with: state)
+            }
+            .store(in: &cancellables)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        backgroundImageView.layer.sublayers?.forEach { layer in
+            if let gradientLayer = layer as? CAGradientLayer {
+                gradientLayer.frame = backgroundImageView.bounds
+            }
+        }
+    }
+
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func updateImage(with image: Data?) {
+    func updateMusicPanel(image: Data? = nil, color: CGColor? = nil) {
         if let image, !image.isEmpty {
             backgroundImageView.layer.sublayers?.removeAll()
             backgroundImageView.image = UIImage(data: image)
-        } else {
-            let gradientLayer = makeGradientLayer()
-            backgroundImageView.layer.addSublayer(gradientLayer)
+            return
+        }
+
+        if let color {
+            backgroundImageView.layer.sublayers?.removeAll()
+            backgroundImageView.backgroundColor = UIColor(cgColor: color)
+            return
         }
     }
 
@@ -132,6 +168,8 @@ private final class ASMusicPlayer: UIView {
         addSubview(backgroundImageView)
         addSubview(blurView)
         addSubview(playButton)
+        let gradientLayer = makeGradientLayer()
+        backgroundImageView.layer.addSublayer(gradientLayer)
     }
 
     private func setupLayout() {
@@ -151,15 +189,27 @@ private final class ASMusicPlayer: UIView {
             blurView.leadingAnchor.constraint(equalTo: leadingAnchor),
             blurView.trailingAnchor.constraint(equalTo: trailingAnchor),
 
-            playButton.leadingAnchor.constraint(equalTo: backgroundImageView.leadingAnchor, constant: 92),
-            playButton.trailingAnchor.constraint(equalTo: backgroundImageView.trailingAnchor, constant: -92),
             playButton.centerYAnchor.constraint(equalTo: backgroundImageView.centerYAnchor),
+            playButton.centerXAnchor.constraint(equalTo: backgroundImageView.centerXAnchor),
         ])
     }
 
+    private func updateButtonImage(with state: AudioButtonState) {
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            options: [.curveEaseOut],
+            animations: { [weak self] in
+                self?.playButton.transform = .identity
+            }, completion: { [weak self] _ in
+                self?.playButton.configuration?.baseForegroundColor = state.color
+                self?.playButton.configuration?.image = state.symbol
+            }
+        )
+    }
+
     private func didButtonTapped() {
-        playButton.isSelected.toggle()
-        onPlayButtonTapped?(!playButton.isSelected)
+        onPlayButtonTapped?()
     }
 
     private func makeGradientLayer() -> CAGradientLayer {
@@ -177,34 +227,36 @@ private final class ASMusicPlayer: UIView {
     }
 
     private func setupButton() {
-        let configuration = UIImage.SymbolConfiguration(pointSize: 60)
-        let playImage = UIImage(systemName: "play.fill", withConfiguration: configuration)
-        let stopImage = UIImage(systemName: "stop.fill", withConfiguration: configuration)
-        playButton.setImage(playImage, for: .normal)
-        playButton.setImage(stopImage, for: .selected)
-        playButton.tintColor = .white
-        playButton.adjustsImageWhenHighlighted = false
+        var buttonConfiguration = UIButton.Configuration.borderless()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 60)
+        buttonConfiguration.preferredSymbolConfigurationForImage = imageConfig
+        buttonConfiguration.baseForegroundColor = .white
+        buttonConfiguration.contentInsets = .zero
+        buttonConfiguration.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
+            color.withAlphaComponent(0.0)
+        }
+
+        playButton.configurationUpdateHandler = { button in
+            UIView.animate(
+                withDuration: 0.15,
+                delay: 0,
+                usingSpringWithDamping: 0.5,
+                initialSpringVelocity: 0.5,
+                options: [.allowUserInteraction],
+                animations: {
+                    if button.isHighlighted {
+                        button.transform = CGAffineTransform(scaleX: 0.85, y: 0.85)
+                    } else {
+                        button.transform = .identity
+                    }
+                }
+            )
+        }
+
+        playButton.configuration = buttonConfiguration
         playButton.addAction(UIAction { [weak self] _ in
             self?.didButtonTapped()
         }, for: .touchUpInside)
-        playButton.addAction(UIAction { [weak self] _ in
-            self?.buttonTouchDown()
-        }, for: .touchDown)
-        playButton.addAction(UIAction { [weak self] _ in
-            self?.buttonTouchUp()
-        }, for: [.touchUpInside, .touchCancel, .touchUpOutside])
-    }
-
-    private func buttonTouchDown() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut) {
-            self.playButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-        }
-    }
-
-    private func buttonTouchUp() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseInOut) {
-            self.playButton.transform = .identity
-        }
     }
 
     private func setupBlurView() {

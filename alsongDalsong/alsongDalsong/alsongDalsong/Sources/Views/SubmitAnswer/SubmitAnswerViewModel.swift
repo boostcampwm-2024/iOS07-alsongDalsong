@@ -91,7 +91,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     public func playingMusic() {
         guard let data = musicData else { return }
         Task {
-            await AudioHelper.shared.startPlaying(file: data)
+            await AudioHelper.shared.startPlaying(data)
         }
     }
 
@@ -152,7 +152,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
 
     public func togglePlayPause() {
         Task {
-            await AudioHelper.shared.startPlaying(file: recordedData)
+            await AudioHelper.shared.startPlaying(recordedData)
         }
     }
 
