@@ -3,15 +3,32 @@ import Combine
 import Foundation
 
 extension AnyPublisher: @unchecked @retroactive Sendable {}
+extension PassthroughSubject: @unchecked @retroactive Sendable {}
 
 actor AudioHelper {
     static let shared = AudioHelper()
     private var recorder: ASAudioRecorder?
     private var player: ASAudioPlayer?
+    private var source: FileSource = .imported
+    private var playType: PlayType = .full
+    private var isConcurrent: Bool = false
     private var timer: Timer?
     private let amplitudeSubject = PassthroughSubject<Float, Never>()
-    var amplitudePublisher: AnyPublisher<Float, Never> {
-        return amplitudeSubject.eraseToAnyPublisher()
+    private let playerStateSubject = PassthroughSubject<(FileSource, Bool), Never>()
+    private let recorderStateSubject = PassthroughSubject<Bool, Never>()
+    private let recorderDataSubject = PassthroughSubject<Data, Never>()
+    var amplitudePublisher: AnyPublisher<Float, Never> { amplitudeSubject.eraseToAnyPublisher() }
+
+    var playerStatePublisher: AnyPublisher<(FileSource, Bool), Never> {
+        playerStateSubject.eraseToAnyPublisher()
+    }
+
+    var recorderStatePublisher: AnyPublisher<Bool, Never> {
+        recorderStateSubject.eraseToAnyPublisher()
+    }
+
+    var recorderDataPublisher: AnyPublisher<Data, Never> {
+        recorderDataSubject.eraseToAnyPublisher()
     }
 
     private init() {}
@@ -24,24 +41,6 @@ actor AudioHelper {
     func isPlaying() async -> Bool {
         guard let player else { return false }
         return await player.isPlaying()
-    }
-
-    func startRecording(allowsConcurrent: Bool = false) async -> Data? {
-        if await isPlaying(), !allowsConcurrent { return nil }
-        else { await player?.stopPlaying() }
-        makeRecorder()
-        let tempURL = makeURL()
-        await recorder?.startRecording(url: tempURL)
-        visualize()
-        return await withCheckedContinuation { continuation in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [weak self] in
-                Task {
-                    let recordedData = await self?.stopRecording()
-                    await self?.removeTimer()
-                    continuation.resume(returning: recordedData)
-                }
-            }
-        }
     }
 
     private func removeTimer() {
@@ -73,33 +72,65 @@ actor AudioHelper {
         amplitudeSubject.send(clampedAmplitude)
     }
 
-    func startPlaying(
-        file: Data?,
-        playType: PlayType = .full,
-        allowsConcurrent: Bool = false,
-        didPlayingFinshied: (@MainActor () -> Void)? = nil
-    ) async {
-        if await isRecording(), !allowsConcurrent { return }
-        else { await recorder?.stopRecording() }
+    /// 여러 조건을 적용해 오디오를 재생하는 함수
+    /// - Parameters:
+    ///   - file: 재생할 오디오 데이터
+    ///   - source: 녹음 파일/url에서 가져온 파일
+    ///   - playType: 전체 또는 부분 재생
+    ///   - allowsConcurrent: 녹음과 동시에 재생
+    func startPlaying(_ file: Data?, sourceType type: FileSource = .imported) async {
+        guard await checkRecorderState(), await checkPlayerState() else { return }
         guard let file else { return }
-        if let player = player, await player.isPlaying() { await stopPlaying() }
+
+        sourceType(type)
         makePlayer()
         await player?.setOnPlaybackFinished { [weak self] in
             await self?.stopPlaying()
-            await didPlayingFinshied?()
         }
+        sendDataThrough(playerStateSubject, (source, true))
         await player?.startPlaying(data: file, option: playType)
+    }
+
+    func startRecording() async {
+        guard await checkRecorderState(), await checkPlayerState() else { return }
+        
+        makeRecorder()
+        let tempURL = makeURL()
+        recorderStateSubject.send(true)
+        await recorder?.startRecording(url: tempURL)
+        visualize()
+        do {
+            try await Task.sleep(nanoseconds: 6 * 1_000_000_000)
+            let recordedData = await stopRecording()
+            sendDataThrough(recorderDataSubject, recordedData ?? Data())
+            removeTimer()
+        } catch { print(error.localizedDescription) }
     }
 
     func stopPlaying() async {
         await player?.stopPlaying()
         player = nil
+        sendDataThrough(playerStateSubject, (source, false))
     }
 
     private func stopRecording() async -> Data? {
         let recordedData = await recorder?.stopRecording()
+        recorderStateSubject.send(false)
         recorder = nil
         return recordedData
+    }
+
+    private func checkRecorderState() async -> Bool {
+        if await isRecording(), !isConcurrent { return false }
+        return true
+    }
+
+    private func checkPlayerState() async -> Bool {
+        if await isPlaying() {
+            await player?.stopPlaying()
+            sendDataThrough(playerStateSubject, (source, false))
+        }
+        return true
     }
 
     private func makeRecorder() {
@@ -124,5 +155,42 @@ actor AudioHelper {
         if !FileManager.default.fileExists(atPath: directory.path) {
             try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
         }
+    }
+}
+
+extension AudioHelper {
+    enum FileSource {
+        case imported
+        case recorded
+    }
+}
+
+// MARK: - Configure AudioHelper
+
+extension AudioHelper {
+    @discardableResult
+    private func sourceType(_ type: FileSource) -> Self {
+        source = type
+        return self
+    }
+
+    @discardableResult
+    func playType(_ type: PlayType) -> Self {
+        playType = type
+        return self
+    }
+
+    @discardableResult
+    func isConcurrent(_ isTrue: Bool) -> Self {
+        isConcurrent = isTrue
+        return self
+    }
+}
+
+// MARK: - Data binding
+
+extension AudioHelper {
+    private func sendDataThrough<T>(_ subject: PassthroughSubject<T, Never>, _ data: T) {
+        subject.send(data)
     }
 }
