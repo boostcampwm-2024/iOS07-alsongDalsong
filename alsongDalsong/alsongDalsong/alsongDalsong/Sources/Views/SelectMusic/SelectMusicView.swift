@@ -6,23 +6,29 @@ struct SelectMusicView: View {
     @State var searchTerm = ""
     private let debouncer = Debouncer(delay: 0.5)
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack {
                 ASMusicItemCell(music: viewModel.selectedMusic, fetchArtwork: { url in
                     await viewModel.downloadArtwork(url: url)
                 })
+                .scaleEffect(1.1)
                 Spacer()
                 Button {
                     viewModel.isPlaying.toggle()
                 } label: {
-                    viewModel.isPlaying ?
-                        Image(systemName: "pause.fill") : Image(systemName: "play.fill")
+                    if #available(iOS 17.0, *) {
+                        Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                            .font(.largeTitle)
+                            .contentTransition(.symbolEffect(.replace.offUp))
+                    } else {
+                        Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                            .font(.largeTitle)
+                    }
                 }
                 .tint(.primary)
                 .frame(width: 60)
-                .padding(.trailing, 12)
             }
-            .frame(height: 100)
+            .padding(16)
             ASSearchBar(text: $searchTerm, placeHolder: "곡 제목을 검색하세요")
                 .onChange(of: searchTerm) { newValue in
                     debouncer.debounce {
@@ -32,6 +38,7 @@ struct SelectMusicView: View {
                         }
                     }
                 }
+                .padding(.bottom, 8)
             if searchTerm.isEmpty {
                 VStack(alignment: .center) {
                     Spacer()
@@ -40,17 +47,26 @@ struct SelectMusicView: View {
                     Spacer()
                 }
             } else {
-                List(viewModel.searchList) { music in
-                    Button {
-                        viewModel.handleSelectedSong(with: music)
-                    } label: {
-                        ASMusicItemCell(music: music, fetchArtwork: { url in
-                            await viewModel.downloadArtwork(url: url)
-                        })
-                        .tint(.black)
+                if viewModel.searchList.isEmpty {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                            .scaleEffect(2.0)
+                        Spacer()
                     }
+                } else {
+                    List(viewModel.searchList) { music in
+                        Button {
+                            viewModel.handleSelectedSong(with: music)
+                        } label: {
+                            ASMusicItemCell(music: music, fetchArtwork: { url in
+                                await viewModel.downloadArtwork(url: url)
+                            })
+                            .tint(.black)
+                        }
+                    }
+                    .listStyle(.plain)
                 }
-                .listStyle(.plain)
             }
         }
         .background(.asLightGray)

@@ -86,11 +86,13 @@ final class GameNavigationController {
     
     private func navigateToSelectMusic() {
         let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
+        let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
         let answersRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
         let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
         
         let vm = SelectMusicViewModel(
             musicRepository: musicRepository,
+            playersRepository: playersRepository,
             answerRepository: answersRepository,
             gameStatusRepository: gameStatusRepository
         )

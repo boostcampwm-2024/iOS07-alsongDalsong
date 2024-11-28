@@ -43,18 +43,7 @@ final class RehummingViewController: UIViewController {
 
     private func setupUI() {
         guideLabel.setText("허밍을 듣고 따라하세요!")
-        recordButton.setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
-        recordButton.addAction(UIAction { [weak self] _ in
-            self?.recordButton.updateButton(.recording)
-            self?.viewModel.startRecording()
-        },
-        for: .touchUpInside)
-        submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
-        submitButton.addAction(
-            UIAction { [weak self] _ in
-                self?.showSubmitHummingLoading()
-            }, for: .touchUpInside
-        )
+        recordButton.updateButton(.idle("녹음하기", .systemRed))
         submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
@@ -68,6 +57,18 @@ final class RehummingViewController: UIViewController {
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
         submitButton.isEnabled = false
+    }
+
+    private func setAction() {
+        recordButton.addAction(UIAction { [weak self] _ in
+            self?.recordButton.updateButton(.recording)
+            self?.viewModel.startRecording()
+        },
+        for: .touchUpInside)
+
+        submitButton.addAction(UIAction { [weak self] _ in
+            self?.showSubmitHummingLoading()
+        }, for: .touchUpInside)
 
         progressBar.setCompletionHandler { [weak self] in
             self?.showSubmitHummingLoading()
@@ -109,7 +110,7 @@ final class RehummingViewController: UIViewController {
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
-    
+
     private func submitHumming() async throws {
         do {
             progressBar.cancelCompletion()
@@ -127,13 +128,13 @@ extension RehummingViewController {
     private func showSubmitHummingLoading() {
         let alert = ASAlertController(
             progressText: .submitHumming,
-            load:
-                { [weak self] in
-                    try await self?.submitHumming()
-                },
+            load: { [weak self] in
+                try await self?.submitHumming()
+            },
             errorCompletion: { [weak self] error in
-            self?.showFailSubmitMusic(error)
-        })
+                self?.showFailSubmitMusic(error)
+            }
+        )
         presentLoadingView(alert)
     }
 
