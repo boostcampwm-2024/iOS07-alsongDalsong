@@ -6,7 +6,7 @@ import UIKit
 class SelectMusicViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var selectMusicView: UIHostingController<SelectMusicView>?
-    private let selectCompleteButton = ASButton()
+    private let submitButton = ASButton()
     
     private let viewModel: SelectMusicViewModel
     
@@ -30,13 +30,13 @@ class SelectMusicViewController: UIViewController {
     
     private func bindToComponents() {
         progressBar.bind(to: viewModel.$dueTime)
-        selectCompleteButton.bind(to: viewModel.$musicData)
+        submitButton.bind(to: viewModel.$musicData)
     }
     
     private func setupUI() {
         view.backgroundColor = .asLightGray
-        selectCompleteButton.setConfiguration(title: "선택 완료", backgroundColor: .asGreen)
-        selectCompleteButton.isEnabled = false
+        submitButton.setConfiguration(title: "선택 완료", backgroundColor: .asGreen)
+        submitButton.isEnabled = false
     }
     
     private func setupLayout() {
@@ -46,11 +46,11 @@ class SelectMusicViewController: UIViewController {
         
         view.addSubview(progressBar)
         view.addSubview(selectMusicView.view)
-        view.addSubview(selectCompleteButton)
+        view.addSubview(submitButton)
         
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         selectMusicView.view.translatesAutoresizingMaskIntoConstraints = false
-        selectCompleteButton.translatesAutoresizingMaskIntoConstraints = false
+        submitButton.translatesAutoresizingMaskIntoConstraints = false
         
         let safeArea = view.safeAreaLayoutGuide
     
@@ -63,17 +63,17 @@ class SelectMusicViewController: UIViewController {
             selectMusicView.view.topAnchor.constraint(equalTo: progressBar.bottomAnchor),
             selectMusicView.view.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             selectMusicView.view.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            selectMusicView.view.bottomAnchor.constraint(equalTo: selectCompleteButton.topAnchor, constant: -20),
+            selectMusicView.view.bottomAnchor.constraint(equalTo: submitButton.topAnchor, constant: -20),
             
-            selectCompleteButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            selectCompleteButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
-            selectCompleteButton.heightAnchor.constraint(equalToConstant: 64),
-            selectCompleteButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -25)
+            submitButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
+            submitButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            submitButton.heightAnchor.constraint(equalToConstant: 64),
+            submitButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -25)
         ])
     }
     
     private func setAction() {
-        selectCompleteButton.addAction(UIAction { [weak self] _ in
+        submitButton.addAction(UIAction { [weak self] _ in
             self?.showSubmitMusicLoading()
         }, for: .touchUpInside)
         
@@ -87,7 +87,7 @@ class SelectMusicViewController: UIViewController {
             viewModel.stopMusic()
             progressBar.cancelCompletion()
             try await viewModel.submitMusic()
-            selectCompleteButton.updateButton(.submitted)
+            submitButton.updateButton(.submitted)
         } catch {
             throw error
         }
