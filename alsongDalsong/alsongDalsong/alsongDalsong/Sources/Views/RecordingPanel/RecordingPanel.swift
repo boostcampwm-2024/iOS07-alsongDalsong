@@ -6,7 +6,7 @@ final class RecordingPanel: UIView {
     private var waveFormView = WaveForm()
     private var customBackgroundColor: UIColor
     private var cancellables = Set<AnyCancellable>()
-    private let vm = RecordingPanelViewModel()
+    private let viewModel = RecordingPanelViewModel()
     var onRecordingFinished: ((Data) -> Void)?
 
     init(_ color: UIColor = .asMint) {
@@ -33,27 +33,27 @@ final class RecordingPanel: UIView {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isRecording in
                 if isRecording {
-                    self?.vm.startRecording()
+                    self?.viewModel.startRecording()
                 }
             }
             .store(in: &cancellables)
     }
 
     private func bindViewModel() {
-        vm.$recordedData
+        viewModel.$recordedData
             .filter { $0 != nil }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] recordedData in
                 self?.onRecordingFinished?(recordedData ?? Data())
             }
             .store(in: &cancellables)
-        vm.$recorderAmplitude
+        viewModel.$recorderAmplitude
             .receive(on: DispatchQueue.main)
             .sink { [weak self] amplitude in
                 self?.updateWaveForm(amplitude: CGFloat(amplitude))
             }
             .store(in: &cancellables)
-        vm.$panelState
+        viewModel.$buttonState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.updateButtonImage(with: state)
@@ -61,29 +61,46 @@ final class RecordingPanel: UIView {
             .store(in: &cancellables)
     }
 
-    private func updateButtonImage(with state: RecordingPanelViewModel.PanelState) {
-        playButton.configuration?.baseForegroundColor = state.color
-        playButton.configuration?.image = state.symbol
+    private func updateButtonImage(with state: AudioButtonState) {
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            options: [.curveEaseOut],
+            animations: { [weak self] in
+                self?.playButton.transform = .identity
+            }, completion: { [weak self] _ in
+                self?.playButton.configuration?.baseForegroundColor = state.color
+                self?.playButton.configuration?.image = state.symbol
+            }
+        )
     }
 
     private func setupButton() {
         var buttonConfiguration = UIButton.Configuration.borderless()
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular)
-        buttonConfiguration.image = vm.panelState.symbol
+        buttonConfiguration.image = viewModel.buttonState.symbol
         buttonConfiguration.preferredSymbolConfigurationForImage = imageConfig
         buttonConfiguration.baseForegroundColor = .white
         buttonConfiguration.contentInsets = .zero
         buttonConfiguration.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
             color.withAlphaComponent(0.0)
         }
-
-        playButton.configurationUpdateHandler = { [weak self] _ in
-            guard let self else { return }
-            if playButton.isHighlighted {
-                playButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-            } else {
-                playButton.transform = .identity
-            }
+        
+        playButton.configurationUpdateHandler = { button in
+            UIView.animate(
+                withDuration: 0.15,
+                delay: 0,
+                usingSpringWithDamping: 0.5,
+                initialSpringVelocity: 0.5,
+                options: [.allowUserInteraction],
+                animations: {
+                    if button.isHighlighted {
+                        button.transform = CGAffineTransform(scaleX: 0.85, y: 0.85)
+                    } else {
+                        button.transform = .identity
+                    }
+                }
+            )
         }
 
         playButton.configuration = buttonConfiguration
@@ -93,7 +110,7 @@ final class RecordingPanel: UIView {
     }
 
     private func didButtonTapped() {
-        vm.togglePlayPause()
+        viewModel.togglePlayPause()
     }
 
     private func setupUI() {
@@ -121,7 +138,6 @@ final class RecordingPanel: UIView {
 
     private func updateWaveForm(amplitude: CGFloat) {
         waveFormView.updateVisualizerView(with: amplitude)
-//        waveFormView.reverseUpdateVisualizerView(with: amplitude)
     }
 
     private func reset() {
@@ -186,6 +202,7 @@ private final class WaveForm: UIView {
         }
 
         columns.removeAll()
+        amplitudesHistory.removeAll()
     }
 
     private func computeNewPath(for layer: CAShapeLayer, with amplitude: CGFloat) -> CGPath {

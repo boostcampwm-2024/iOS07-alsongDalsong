@@ -86,14 +86,26 @@ final class ASButton: UIButton {
         switch type {
             case .disabled: disable()
             case let .idle(string, color): setConfiguration(title: string, backgroundColor: color)
+            case .startRecord: setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
             case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
             case .reRecord: setConfiguration(systemImageName: "arrow.clockwise", title: "재녹음", backgroundColor: .asOrange)
+            case .submit: setConfiguration(title: "제출하기", backgroundColor: .asGreen)
             case .complete: setConfiguration(title: "완료")
+            case .submitted:
+                setConfiguration(title: "제출 완료")
+                disable()
         }
     }
 
     enum ASButtonType {
-        case disabled, idle(String, UIColor?), recording, reRecord, complete
+        case disabled
+        case idle(String, UIColor?)
+        case startRecord
+        case recording
+        case reRecord
+        case complete
+        case submit
+        case submitted
     }
 }
 

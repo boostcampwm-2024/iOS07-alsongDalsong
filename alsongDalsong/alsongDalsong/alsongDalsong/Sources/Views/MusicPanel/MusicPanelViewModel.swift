@@ -1,12 +1,13 @@
-import Foundation
 import ASEntity
-import Combine
 import ASRepository
+import Combine
+import Foundation
 
-final class MusicPanelViewModel {
+final class MusicPanelViewModel: @unchecked Sendable {
     @Published var music: Music?
     @Published var artwork: Data?
     @Published var preview: Data?
+    @Published public private(set) var buttonState: AudioButtonState = .idle
     private let musicRepository: MusicRepositoryProtocol?
     private var cancellables = Set<AnyCancellable>()
 
@@ -15,48 +16,72 @@ final class MusicPanelViewModel {
         self.musicRepository = musicRepository
         getPreviewData()
         getArtworkData()
+        bindAudioHelper()
+    }
+
+    private func bindAudioHelper() {
+        Task {
+            await AudioHelper.shared.playerStatePublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] source, isPlaying in
+                    if source == .imported {
+                        self?.updateButtonState(isPlaying ? .playing : .idle)
+                        return
+                    }
+                    if source == .recorded, isPlaying {
+                        self?.updateButtonState(.idle)
+                        return
+                    }
+                }
+                .store(in: &cancellables)
+            await AudioHelper.shared.recorderStatePublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isRecording in
+                    if isRecording {
+                        self?.updateButtonState(.idle)
+                    }
+                }
+                .store(in: &cancellables)
+        }
+    }
+
+    func configureAudioHelper() async {
+        await AudioHelper.shared
+            .playType(.full)
+            .isConcurrent(false)
+    }
+
+    @MainActor
+    func togglePlayPause() {
+        guard preview != nil else { return }
+        Task { [weak self] in
+            await self?.configureAudioHelper()
+            if self?.buttonState == .playing {
+                await AudioHelper.shared.stopPlaying()
+                return
+            }
+            if self?.buttonState == .idle {
+                await AudioHelper.shared.startPlaying(self?.preview, sourceType: .imported)
+                return
+            }
+        }
+    }
+
+    private func updateButtonState(_ state: AudioButtonState) {
+        buttonState = state
     }
 
     private func getPreviewData() {
         guard let previewUrl = music?.previewUrl else { return }
-        musicRepository?.getMusicData(url: previewUrl)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] preview in
-                self?.preview = preview
-            }
-            .store(in: &cancellables)
+        Task { @MainActor in
+            preview = await musicRepository?.getMusicData(url: previewUrl)
+        }
     }
 
     private func getArtworkData() {
         guard let artworkUrl = music?.artworkUrl else { return }
-        musicRepository?.getMusicData(url: artworkUrl)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] artwork in
-                self?.artwork = artwork
-            }
-            .store(in: &cancellables)
-    }
-
-    @MainActor
-    func togglePlayPause(isPlaying: Bool = true) {
-        Task {
-            isPlaying ?
-                await AudioHelper.shared.stopPlaying() :
-                await AudioHelper.shared.startPlaying(file: preview)
+        Task { @MainActor in
+            artwork = await musicRepository?.getMusicData(url: artworkUrl)
         }
     }
 }

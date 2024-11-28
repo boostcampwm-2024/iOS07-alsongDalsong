@@ -33,13 +33,13 @@ class SelectMusicViewController: UIViewController {
         selectCompleteButton.bind(to: viewModel.$musicData)
     }
     
-    func setupUI() {
+    private func setupUI() {
         view.backgroundColor = .asLightGray
         selectCompleteButton.setConfiguration(title: "선택 완료", backgroundColor: .asGreen)
         selectCompleteButton.isEnabled = false
     }
     
-    func setupLayout() {
+    private func setupLayout() {
         let musicView = SelectMusicView(viewModel: viewModel)
         selectMusicView = UIHostingController(rootView: musicView)
         guard let selectMusicView else { return }
@@ -72,7 +72,7 @@ class SelectMusicViewController: UIViewController {
         ])
     }
     
-    func setAction() {
+    private func setAction() {
         selectCompleteButton.addAction(UIAction { [weak self] _ in
             self?.showSubmitMusicLoading()
         }, for: .touchUpInside)
@@ -84,13 +84,12 @@ class SelectMusicViewController: UIViewController {
     
     private func submitMusic() async throws {
         do {
-            self.selectCompleteButton.updateButton(.disabled)
             viewModel.stopMusic()
             progressBar.cancelCompletion()
             try await viewModel.submitMusic()
+            selectCompleteButton.updateButton(.submitted)
         } catch {
-            self.selectCompleteButton.updateButton(.complete)
-            throw ASAlertError.submitFailed
+            throw error
         }
     }
 }
@@ -98,17 +97,20 @@ class SelectMusicViewController: UIViewController {
 // MARK: - Alert
 
 extension SelectMusicViewController {
-    func showSubmitMusicLoading() {
-        let alert = ASAlertController(progressText: .submitMusic, load: { [weak self] in
-            try await self?.submitMusic()
-        }, errorCompletion: { [weak self] in
-            self?.showFailSubmitMusic()
-        })
+    private func showSubmitMusicLoading() {
+        let alert = ASAlertController(
+            progressText: .submitMusic,
+            load: { [weak self] in
+                try await self?.submitMusic()
+            },
+            errorCompletion: { [weak self] error in
+                self?.showFailSubmitMusic(error)
+            })
         presentLoadingView(alert)
     }
     
-    func showFailSubmitMusic() {
-        let alert = ASAlertController(errorType: .submitFailed)
+    private func showFailSubmitMusic(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

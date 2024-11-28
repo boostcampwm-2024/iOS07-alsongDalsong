@@ -1,6 +1,5 @@
 import ASEntity
 import ASRepository
-import ASNetworkKit
 import Combine
 import Foundation
 
@@ -113,7 +112,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
         Task {
             do {
                 if isHost {
-                    try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
+                    _ = try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
                 }
             } catch {
                 print(error.localizedDescription)

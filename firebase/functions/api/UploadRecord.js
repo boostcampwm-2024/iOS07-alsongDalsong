@@ -82,8 +82,8 @@ app.post('/uploadrecording', async (req, res) => {
         if (!playerExists) {
           return res.status(400).json({ error: 'User not in the room' });
         }
+        const userData = roomData.players.find((player) => player.id === userId);
 
-        const userData = await getUserData(userId);
         if (!userData) {
           return res.status(404).json({ error: 'User not found' });
         }

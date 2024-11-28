@@ -112,12 +112,11 @@ final class RehummingViewController: UIViewController {
     
     private func submitHumming() async throws {
         do {
-            submitButton.updateButton(.disabled)
             progressBar.cancelCompletion()
             try await viewModel.submitHumming()
-        } catch {
             submitButton.updateButton(.complete)
-            throw ASAlertError.submitFailed
+        } catch {
+            throw error
         }
     }
 }
@@ -125,19 +124,21 @@ final class RehummingViewController: UIViewController {
 // MARK: - Alert
 
 extension RehummingViewController {
-    func showSubmitHummingLoading() {
+    private func showSubmitHummingLoading() {
         let alert = ASAlertController(
-            progressText: .submitHumming)
-        { [weak self] in
-            try await self?.submitHumming()
-        } errorCompletion: { [weak self] in
-            self?.showFailSubmitMusic()
-        }
+            progressText: .submitHumming,
+            load:
+                { [weak self] in
+                    try await self?.submitHumming()
+                },
+            errorCompletion: { [weak self] error in
+            self?.showFailSubmitMusic(error)
+        })
         presentLoadingView(alert)
     }
 
-    func showFailSubmitMusic() {
-        let alert = ASAlertController(errorType: .submitFailed)
+    private func showFailSubmitMusic(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

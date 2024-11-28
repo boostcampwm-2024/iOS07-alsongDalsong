@@ -1,5 +1,4 @@
 import ASContainer
-import ASNetworkKit
 import ASRepository
 import Combine
 import UIKit
@@ -175,17 +174,13 @@ final class OnboardingViewController: UIViewController {
 
     private func joinRoom(with roomNumber: String) {
         Task {
-            guard let number = await viewModel?.joinRoom(roomNumber: roomNumber),
-                  !number.isEmpty
-            else {
-                if createRoomButton.isHidden {
-                    createRoomButton.isHidden = true
-                }
-                showJoinRoomFailedAlert()
-                return
+            do {
+                let number = try await viewModel?.joinRoom(roomNumber: roomNumber)
+                guard let number, !number.isEmpty else { return }
+                navigateToLobby(with: number)
+            } catch {
+                showRoomFailedAlert(error)
             }
-            inviteCode = ""
-            navigateToLobby(with: number)
         }
     }
 
@@ -207,8 +202,13 @@ final class OnboardingViewController: UIViewController {
         if let nickname = nickNamePanel.text, !nickname.isEmpty {
             viewModel?.setNickname(with: nickname)
         }
-        guard let number = try await viewModel?.createRoom() else { throw ASAlertError.createFailed }
-        navigateToLobby(with: number)
+        do {
+            let number = try await viewModel?.createRoom()
+            guard let number else { return }
+            navigateToLobby(with: number)
+        } catch {
+            throw error
+        }
     }
 }
 
@@ -223,7 +223,7 @@ extension OnboardingViewController {
 // MARK: - Alert
 
 extension OnboardingViewController {
-    func showRoomNumerInputAlert() {
+    private func showRoomNumerInputAlert() {
         let alert = ASAlertController(
             titleText: .joinRoom,
             textFieldPlaceholder: .roomNumber,
@@ -234,22 +234,21 @@ extension OnboardingViewController {
         presentAlert(alert)
     }
 
-    func showJoinRoomFailedAlert() {
-        let alert = ASAlertController(errorType: .joinFailed)
+    private func showRoomFailedAlert(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 
-    func showCreateRoomFailedAlert() {
-        let alert = ASAlertController(errorType: .createFailed)
-        presentAlert(alert)
-    }
-
-    func showCreateRoomLoading() {
-        let alert = ASAlertController(progressText: .joinRoom, load: { [weak self] in
-            try await self?.setNicknameAndCreateRoom()
-        }, errorCompletion: { [weak self] in
-            self?.showCreateRoomFailedAlert()
-        })
+    private func showCreateRoomLoading() {
+        let alert = ASAlertController(
+            progressText: .joinRoom,
+            load: { [weak self] in
+                try await self?.setNicknameAndCreateRoom()
+            },
+            errorCompletion: { [weak self] error in
+                self?.showRoomFailedAlert(error)
+            }
+        )
         presentLoadingView(alert)
     }
 }
@@ -257,7 +256,7 @@ extension OnboardingViewController {
 // MARK: - KeyboardObserve
 
 private extension OnboardingViewController {
-    func observeKeyboard() {
+    private func observeKeyboard() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(_:)),

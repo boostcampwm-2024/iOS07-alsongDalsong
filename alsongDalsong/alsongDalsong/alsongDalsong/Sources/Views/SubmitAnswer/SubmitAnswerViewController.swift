@@ -30,6 +30,7 @@ final class SubmitAnswerViewController: UIViewController {
     override func viewDidLoad() {
         setupUI()
         setupLayout()
+        setAction()
         bindToComponents()
     }
 
@@ -43,35 +44,22 @@ final class SubmitAnswerViewController: UIViewController {
     private func setupUI() {
         guideLabel.setText("허밍을 듣고 정답을 맞춰보세요!")
         selectAnswerButton.setConfiguration(title: "정답 선택", backgroundColor: .asLightSky)
-        selectAnswerButton.addAction(UIAction { [weak self] _ in
-            guard let self else { return }
-            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: viewModel))
-            present(selecAnswerView, animated: true)
-        },
-        for: .touchUpInside)
         submitButton.setConfiguration(title: "정답 제출", backgroundColor: .asLightGray)
-        submitButton.addAction(
-            UIAction { [weak self] _ in
-                self?.showSubmitLoading()
-            }, for: .touchUpInside
-        )
-        progressBar.setCompletionHandler { [weak self] in
-            self?.showSubmitLoading()
-        }
         submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
         buttonStack.addArrangedSubview(selectAnswerButton)
         buttonStack.addArrangedSubview(submitButton)
         view.backgroundColor = .asLightGray
+    }
+
+    private func setupLayout() {
         view.addSubview(progressBar)
         view.addSubview(guideLabel)
         view.addSubview(musicPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
-    }
 
-    private func setupLayout() {
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         guideLabel.translatesAutoresizingMaskIntoConstraints = false
         musicPanel.translatesAutoresizingMaskIntoConstraints = false
@@ -101,29 +89,51 @@ final class SubmitAnswerViewController: UIViewController {
         ])
     }
 
-    func submitAnswer() async throws {
+    private func submitAnswer() async throws {
         do {
-            selectAnswerButton.updateButton(.disabled)
             viewModel.stopMusic()
             progressBar.cancelCompletion()
             try await viewModel.submitAnswer()
+            selectAnswerButton.updateButton(.submitted)
         } catch {
-            selectAnswerButton.updateButton(.complete)
-            throw ASAlertError.submitFailed
+            throw error
         }
     }
 
-    func showSubmitLoading() {
+    private func setAction() {
+        selectAnswerButton.addAction(UIAction { [weak self] _ in
+            guard let self else { return }
+            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: viewModel))
+            present(selecAnswerView, animated: true)
+        },
+        for: .touchUpInside)
+
+        submitButton.addAction(
+            UIAction { [weak self] _ in
+                self?.showSubmitAnswerLoading()
+            }, for: .touchUpInside
+        )
+
+        progressBar.setCompletionHandler { [weak self] in
+            self?.showSubmitAnswerLoading()
+        }
+    }
+}
+
+// MARK: - Alert
+
+extension SubmitAnswerViewController {
+    private func showSubmitAnswerLoading() {
         let alert = ASAlertController(progressText: .submitMusic, load: { [weak self] in
             try await self?.submitAnswer()
-        }, errorCompletion: { [weak self] in
-            self?.showSubmitFailed()
-        })
+        }) { [weak self] error in
+            self?.showFailSubmitMusic(error)
+        }
         presentLoadingView(alert)
     }
 
-    func showSubmitFailed() {
-        let alert = ASAlertController(errorType: .submitFailed)
+    private func showFailSubmitMusic(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }
