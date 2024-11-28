@@ -23,6 +23,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     @Published var host: Player?
     @Published var isGameStrted: Bool = false
     @Published var isHost: Bool = false
+    @Published var canBeginGame: Bool = false
     var isLeaveRoom = false
     
     private var cancellables: Set<AnyCancellable> = []
@@ -88,11 +89,19 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
                 self?.isHost = isHost
             }
             .store(in: &cancellables)
+        
+        playersRepository.isHost().combineLatest(playersRepository.getPlayersCount())
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHost, playerCount in
+                self?.canBeginGame = isHost && playerCount > 1
+                print("현재 canBeginGame: \(self?.canBeginGame)")
+            }
+            .store(in: &cancellables)
     }
     
     func gameStart() async throws {
         do {
-            let _ = try await roomActionRepository.startGame(roomNumber: roomNumber)
+            _ = try await roomActionRepository.startGame(roomNumber: roomNumber)
         } catch {
             throw error
         }
