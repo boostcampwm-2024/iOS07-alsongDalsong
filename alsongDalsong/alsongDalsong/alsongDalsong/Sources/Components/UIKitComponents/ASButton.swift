@@ -94,6 +94,7 @@ final class ASButton: UIButton {
             case .submitted:
                 setConfiguration(title: "제출 완료")
                 disable()
+            case .startGame: setConfiguration(systemImageName: "play.fill", title: "시작하기!", backgroundColor: .asMint)
         }
     }
 
@@ -106,6 +107,7 @@ final class ASButton: UIButton {
         case complete
         case submit
         case submitted
+        case startGame
     }
 }
 
