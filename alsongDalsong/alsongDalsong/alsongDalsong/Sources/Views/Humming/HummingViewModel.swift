@@ -29,7 +29,7 @@ final class HummingViewModel: @unchecked Sendable {
         self.answersRepository = answersRepository
         self.recordsRepository = recordsRepository
         bindGameStatus()
-        bindSubmitStatus()
+        bindSubmissionStatus()
         bindAnswer()
     }
 
@@ -85,7 +85,7 @@ final class HummingViewModel: @unchecked Sendable {
             .store(in: &cancellables)
     }
 
-    private func bindSubmitStatus() {
+    private func bindSubmissionStatus() {
         let playerPublisher = playersRepository.getPlayersCount()
         let recordsPublisher = recordsRepository.getRecordsCount(on: Int(recordOrder ?? 0))
 
