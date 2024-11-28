@@ -45,6 +45,7 @@ final class RehummingViewController: UIViewController {
     private func setupUI() {
         guideLabel.setText("허밍을 듣고 따라하세요!")
         recordButton.updateButton(.idle("녹음하기", .systemRed))
+        submitButton.updateButton(.submit)
         submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
