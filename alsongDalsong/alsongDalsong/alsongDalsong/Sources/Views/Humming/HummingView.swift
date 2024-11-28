@@ -67,6 +67,18 @@ final class HummingViewController: UIViewController {
         view.addSubview(hummingPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
+    }
+
+    private func setAction() {
+        recordButton.addAction(UIAction { [weak self] _ in
+            self?.recordButton.updateButton(.recording)
+            self?.viewModel.startRecording()
+        },
+        for: .touchUpInside)
+
+        submitButton.addAction(UIAction { [weak self] _ in
+            self?.showSubmitHummingLoading()
+        }, for: .touchUpInside)
 
         progressBar.setCompletionHandler { [weak self] in
             self?.showSubmitHummingLoading()
@@ -102,9 +114,9 @@ final class HummingViewController: UIViewController {
             submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
             submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
 
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
             buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
@@ -126,13 +138,13 @@ extension HummingViewController {
     private func showSubmitHummingLoading() {
         let alert = ASAlertController(
             progressText: .submitHumming,
-            load:
-                { [weak self] in
-                    try await self?.submitHumming()
-                },
+            load: { [weak self] in
+                try await self?.submitHumming()
+            },
             errorCompletion: { [weak self] error in
-            self?.showFailSubmitMusic(error)
-        })
+                self?.showFailSubmitMusic(error)
+            }
+        )
         presentLoadingView(alert)
     }
 
