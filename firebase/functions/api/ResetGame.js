@@ -6,12 +6,52 @@ const { onRequest } = require('firebase-functions/v2/https');
 const admin = require('../FirebaseAdmin.js');
 
 /**
- * 게임을 리셋 요청을 하는 HTTPS requests.
- * @param roomNumber - 방 정보
- * @param playerId - 호스트 id
- * @returns Boolean
+ * 게임 리셋 요청을 처리하는 HTTPS 요청.
+ * @param roomNumber - 방 번호
+ * @param userId - 호스트 ID
+ * @returns JSON 응답
  */
-
 module.exports.resetGame = onRequest({ region: 'asia-southeast1' }, async (req, res) => {
-  res.status(200).json({ message: 'Reset Game' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Only POST requests are accepted' });
+  }
+
+  const { roomNumber, userId } = req.body;
+  const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
+
+  try {
+    const roomSnapshot = await roomRef.get();
+    if (!roomSnapshot.exists) {
+      return res.status(404).json({ error: 'Room not found' });
+    }
+
+    const roomData = roomSnapshot.data();
+
+    // 요청한 유저가 방의 호스트인지 확인
+    if (roomData.host.id !== userId) {
+      return res.status(403).json({ error: 'Only the host can reset the game' });
+    }
+
+    // 게임 관련 상태 초기화
+    const updatedRoomData = {
+      ...roomData,
+      mode: 'humming',
+      round: 0,
+      status: null,
+      records: [],
+      answers: [],
+      dueTime: null,
+      selectedRecords: [],
+      submits: [],
+      recordOrder: null,
+    };
+
+    // Firestore에 업데이트
+    await roomRef.set(updatedRoomData, { merge: true });
+
+    return res.status(200).json({ success: true, message: 'Game reset successfully', updatedRoomData });
+  } catch (error) {
+    console.error('Error resetting game:', error);
+    return res.status(500).json({ error: 'Failed to reset the game' });
+  }
 });

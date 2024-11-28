@@ -82,8 +82,8 @@ app.post('/uploadrecording', async (req, res) => {
         if (!playerExists) {
           return res.status(400).json({ error: 'User not in the room' });
         }
+        const userData = roomData.players.find((player) => player.id === userId);
 
-        const userData = await getUserData(userId);
         if (!userData) {
           return res.status(404).json({ error: 'User not found' });
         }
@@ -116,19 +116,25 @@ app.post('/uploadrecording', async (req, res) => {
               recordOrder: roomData.recordOrder,
               fileUrl: publicUrl,
             };
-
-            await roomRef.update({
-              recordOrder: currentOrderRecord + 1,
-              status: 'rehumming',
-              dueTime: dueTime,
-              records: FieldValue.arrayUnion(record),
-            });
+            if (currentRoundRecords.length + 1 === playersCount) {
+              await roomRef.update({
+                recordOrder: currentOrderRecord + 1,
+                status: 'rehumming',
+                dueTime: dueTime,
+                records: FieldValue.arrayUnion(record),
+              });
+            } else {
+              await roomRef.update({
+                status: 'rehumming',
+                records: FieldValue.arrayUnion(record),
+              });
+            }
             break;
           default:
             console.log('Invalid mode');
             break;
         }
-        res.status(200).send({ success: true, url: publicUrl });
+        res.status(200).send({ success: true });
       } catch (error) {
         console.error('Error after file upload:', error);
         return res.status(500).json({ error: 'Failed to process file' });

@@ -29,7 +29,7 @@ final class RehummingViewModel: @unchecked Sendable {
         bindSubmitStatus()
     }
 
-    func submitHumming() async {
+    func submitHumming() async throws {
         guard let recordedData else { return }
         do {
             let result = try await recordsRepository.uploadRecording(recordedData)
@@ -39,7 +39,7 @@ final class RehummingViewModel: @unchecked Sendable {
                 // 전송 안됨, 오류 alert
             }
         } catch {
-            // 전송 안됨, 오류 alert
+            throw error
         }
     }
 

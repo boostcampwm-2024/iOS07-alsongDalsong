@@ -23,18 +23,30 @@ module.exports.submitAnswer = onRequest({ region: 'asia-southeast1' }, async (re
     return res.status(400).json({ error: 'Room Number is required' });
   }
   try {
-    const playerData = await getUserData(userId);
     const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
-    if (!playerData) {
+    const roomSnapshot = await roomRef.get();
+    const roomData = roomSnapshot.data();
+    const userData = roomData.players.find((player) => player.id === userId);
+    const playersCount = roomData.players.length;
+    const submitCount = roomData.submits.length;
+    if (!userData) {
       return res.status(404).json({ error: 'plyer Data not found' });
     }
     const answer = {
-      player: playerData,
+      player: userData,
       music: req.body,
     };
-    await roomRef.update({
-      submits: FieldValue.arrayUnion(answer),
-    });
+    if (submitCount + 1 === playersCount) {
+      await roomRef.update({
+        submits: FieldValue.arrayUnion(answer),
+        status: 'result',
+      });
+    } else {
+      await roomRef.update({
+        submits: FieldValue.arrayUnion(answer),
+      });
+    }
+
     res.status(200).json({ status: 'success' });
   } catch (error) {
     console.log('에러러', error);

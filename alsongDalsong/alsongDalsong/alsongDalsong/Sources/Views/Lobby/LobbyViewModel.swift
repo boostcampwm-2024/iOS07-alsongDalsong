@@ -90,13 +90,11 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             .store(in: &cancellables)
     }
     
-    func gameStart() {
-        Task {
-            do {
-                let isGameStarted = try await roomActionRepository.startGame(roomNumber: roomNumber)
-            } catch {
-                print(error.localizedDescription)
-            }
+    func gameStart() async throws {
+        do {
+            let _ = try await roomActionRepository.startGame(roomNumber: roomNumber)
+        } catch {
+            throw error
         }
     }
     
@@ -114,7 +112,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
         Task {
             do {
                 if isHost {
-                    try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
+                    _ = try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
                 }
             } catch {
                 print(error.localizedDescription)

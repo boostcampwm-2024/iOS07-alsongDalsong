@@ -138,7 +138,6 @@ final class RecordingPanel: UIView {
 
     private func updateWaveForm(amplitude: CGFloat) {
         waveFormView.updateVisualizerView(with: amplitude)
-//        waveFormView.reverseUpdateVisualizerView(with: amplitude)
     }
 
     private func reset() {
@@ -203,6 +202,7 @@ private final class WaveForm: UIView {
         }
 
         columns.removeAll()
+        amplitudesHistory.removeAll()
     }
 
     private func computeNewPath(for layer: CAShapeLayer, with amplitude: CGFloat) -> CGPath {

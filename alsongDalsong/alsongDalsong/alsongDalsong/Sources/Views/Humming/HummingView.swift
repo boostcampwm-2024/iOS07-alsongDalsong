@@ -53,20 +53,7 @@ final class HummingViewController: UIViewController {
         submitButton.updateButton(.disabled)
         submitButton.addAction(
             UIAction { [weak self] _ in
-                Task {
-                    guard let submitted = await self?.showSubmitLoading() else { return }
-                    submitted ? self?.submitButton.updateButton(.submitted) : self?.submitButton.updateButton(.submit)
-                }
-                let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
-                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
-                let viewModel = RehummingViewModel(
-                    gameStatusRepository: gameStatusRepository,
-                    playersRepository: playersRepository,
-                    recordsRepository: recordsRepository
-                )
-                let vc = RehummingViewController(viewModel: viewModel)
-                self?.navigationController?.pushViewController(vc, animated: true)
+                self?.showSubmitHummingLoading()
             }, for: .touchUpInside
         )
         buttonStack.axis = .horizontal
@@ -82,9 +69,7 @@ final class HummingViewController: UIViewController {
         view.addSubview(submissionStatus)
 
         progressBar.setCompletionHandler { [weak self] in
-            Task {
-                await self?.showSubmitLoading()
-            }
+            self?.showSubmitHummingLoading()
         }
     }
 
@@ -124,19 +109,35 @@ final class HummingViewController: UIViewController {
         ])
     }
 
-    func showSubmitLoading() async -> Bool {
-        return await withCheckedContinuation { continuation in
-            let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
-                guard let self else {
-                    continuation.resume(returning: false)
-                    return
-                }
-                Task {
-                    let result = await self.viewModel.submitHumming()
-                    continuation.resume(returning: result)
-                }
-            }
-            presentLoadingView(alert)
+    private func submitHumming() async throws {
+        do {
+            progressBar.cancelCompletion()
+            try await viewModel.submitHumming()
+            submitButton.updateButton(.complete)
+        } catch {
+            throw error
         }
+    }
+}
+
+// MARK: - Alert
+
+extension HummingViewController {
+    private func showSubmitHummingLoading() {
+        let alert = ASAlertController(
+            progressText: .submitHumming,
+            load:
+                { [weak self] in
+                    try await self?.submitHumming()
+                },
+            errorCompletion: { [weak self] error in
+            self?.showFailSubmitMusic(error)
+        })
+        presentLoadingView(alert)
+    }
+
+    private func showFailSubmitMusic(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error))
+        presentAlert(alert)
     }
 }

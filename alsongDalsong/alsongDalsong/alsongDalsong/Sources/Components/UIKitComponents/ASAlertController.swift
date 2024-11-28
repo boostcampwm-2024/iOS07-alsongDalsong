@@ -12,7 +12,8 @@ class ASAlertController: UIViewController {
     private var style: ASAlertStyle = .default
     var doneButtonCompletion: ((String) -> Void)?
     var cancelButtonCompletion: (() -> Void)?
-    var load: (() async -> Void)?
+    var load: (() async throws -> Void)?
+    var errorCompletion: ((Error) -> Void)?
     var text: String {
         textField.text ?? ""
     }
@@ -82,6 +83,7 @@ class ASAlertController: UIViewController {
         titleLabel.text = titleText?.description
         titleLabel.textAlignment = .center
         titleLabel.font = .font(forTextStyle: .title2)
+        titleLabel.numberOfLines = 0
         stackView.addArrangedSubview(titleLabel)
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -156,9 +158,15 @@ class ASAlertController: UIViewController {
         progressView.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 12).isActive = true
         progressView.hidesWhenStopped = true
         Task {
-            if let load = load {
-                await load()
-                self.dismiss(animated: true)
+            if let load {
+                do {
+                    try await load()
+                    dismiss(animated: true)
+                } catch {
+                    dismiss(animated: true) { [weak self] in
+                        self?.errorCompletion?(error)
+                    }
+                }
             }
         }
     }
@@ -263,12 +271,14 @@ extension ASAlertController {
     convenience init(
         _ type: ASAlertStyle = .load,
         progressText: ASAlertText.ProgressText,
-        load: (() async -> Void)? = nil
+        load: (() async throws -> Void)? = nil,
+        errorCompletion: ((Error) -> Void)? = nil
     ) {
         self.init()
         style = type
         self.progressText = progressText
         self.load = load
+        self.errorCompletion = errorCompletion
 
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
@@ -305,18 +315,18 @@ enum ASAlertStyle {
 }
 
 enum ASAlertText {
-    enum Title: String, CustomStringConvertible {
+    enum Title: CustomStringConvertible {
         case leaveRoom
         case joinRoom
         case joinFailed
-        case createFailed
+        case error(Error)
 
         var description: String {
             switch self {
                 case .leaveRoom: "방을 나가시겠습니까?"
                 case .joinRoom: "게임 입장 코드를 입력하세요"
                 case .joinFailed: "참가에 실패하였습니다."
-                case .createFailed: "생성에 실패하였습니다."
+                case .error(let error): "\(error.localizedDescription)\n 잠시후에 다시 시도해주세요"
             }
         }
     }
@@ -349,12 +359,15 @@ enum ASAlertText {
 
     enum ProgressText: CustomStringConvertible {
         case joinRoom
+        case startGame
         case submitMusic
-
+        case submitHumming
         var description: String {
             switch self {
                 case .joinRoom: "방 정보를 가져오는 중..."
-                case .submitMusic: "음악 전송 중..."
+                case .startGame: "게임을 시작하는 중..."
+                case .submitMusic: "노래를 전송하는 중..."
+                case .submitHumming: "허밍을 전송하는 중..."
             }
         }
     }

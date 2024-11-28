@@ -29,24 +29,51 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
     public func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never> {
         let recordsPublisher = mainRepository.records
         let playersPublisher = mainRepository.players
+
         return recordsPublisher
             .combineLatest(playersPublisher)
             .map { [weak self] records, players -> ASEntity.Record? in
-                guard let records, let players else { return nil }
-                let myId = self?.mainRepository.myId
-                guard let myIndex = players.firstIndex(where: { $0.id == myId }) else { return nil }
-                let playersCount = players.count
-                let targetIndex = (myIndex - 1 + playersCount) % playersCount
-                guard playersCount > targetIndex else { return nil }
-                let targetId = players[targetIndex].id
-                let hummings = records.filter { $0.recordOrder == (recordOrder - 1) }
-
-                return hummings.first(where: { $0.player?.id == targetId })
+                self?.findRecord(
+                    records: records,
+                    players: players,
+                    recordOrder: recordOrder
+                )
             }
             .eraseToAnyPublisher()
     }
 
     public func uploadRecording(_ record: Data) async throws -> Bool {
         return try await mainRepository.postRecording(record)
+    }
+    
+    private func findRecord(records: [ASEntity.Record]?,
+                             players: [Player]?,
+                             recordOrder: UInt8) -> ASEntity.Record?
+    {
+        guard let records, let players,
+              !players.isEmpty,
+              recordOrder > 0,
+              let myId = mainRepository.myId,
+              let myIndex = players.firstIndex(where: { $0.id == myId })
+        else { return nil }
+
+        let targetIndex = findTargetIndex(for: myIndex, in: players.count)
+        let targetId = players[targetIndex].id
+        let hummings = findHummings(for: recordOrder, in: records)
+
+        if let targetRecord = hummings.first(where: { $0.player?.id == targetId }) {
+            return targetRecord
+        } else {
+            print("\(targetId)에 대한 Record를 찾을 수 없음")
+            return nil
+        }
+    }
+
+    private func findTargetIndex(for myIndex: Int, in playersCount: Int) -> Int {
+        return (myIndex - 1 + playersCount) % playersCount
+    }
+
+    private func findHummings(for recordOrder: UInt8, in records: [ASEntity.Record]) -> [ASEntity.Record] {
+        return records.filter { $0.recordOrder == (recordOrder - 1) }
     }
 }

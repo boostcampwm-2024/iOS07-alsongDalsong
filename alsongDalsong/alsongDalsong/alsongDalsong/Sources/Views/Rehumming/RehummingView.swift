@@ -52,17 +52,7 @@ final class RehummingViewController: UIViewController {
         submitButton.setConfiguration(title: "녹음 완료", backgroundColor: .asLightGray)
         submitButton.addAction(
             UIAction { [weak self] _ in
-                self?.showSubmitLoading()
-                let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
-                let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
-                let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
-                let viewModel = RehummingViewModel(
-                    gameStatusRepository: gameStatusRepository,
-                    playersRepository: playersRepository,
-                    recordsRepository: recordsRepository
-                )
-                let vc = RehummingViewController(viewModel: viewModel)
-                self?.navigationController?.pushViewController(vc, animated: true)
+                self?.showSubmitHummingLoading()
             }, for: .touchUpInside
         )
         submitButton.updateButton(.disabled)
@@ -80,15 +70,8 @@ final class RehummingViewController: UIViewController {
         submitButton.isEnabled = false
 
         progressBar.setCompletionHandler { [weak self] in
-            self?.showSubmitLoading()
+            self?.showSubmitHummingLoading()
         }
-    }
-
-    func showSubmitLoading() {
-        let alert = ASAlertController(progressText: .submitMusic) { [weak self] in
-            await self?.viewModel.submitHumming()
-        }
-        presentLoadingView(alert)
     }
 
     private func setupLayout() {
@@ -125,5 +108,37 @@ final class RehummingViewController: UIViewController {
             buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
+    }
+    
+    private func submitHumming() async throws {
+        do {
+            progressBar.cancelCompletion()
+            try await viewModel.submitHumming()
+            submitButton.updateButton(.complete)
+        } catch {
+            throw error
+        }
+    }
+}
+
+// MARK: - Alert
+
+extension RehummingViewController {
+    private func showSubmitHummingLoading() {
+        let alert = ASAlertController(
+            progressText: .submitHumming,
+            load:
+                { [weak self] in
+                    try await self?.submitHumming()
+                },
+            errorCompletion: { [weak self] error in
+            self?.showFailSubmitMusic(error)
+        })
+        presentLoadingView(alert)
+    }
+
+    private func showFailSubmitMusic(_ error: Error) {
+        let alert = ASAlertController(titleText: .error(error))
+        presentAlert(alert)
     }
 }

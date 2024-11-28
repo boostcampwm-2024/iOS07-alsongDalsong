@@ -1,56 +1,134 @@
+import ASEntity
 import Foundation
 import MusicKit
 
 public struct ASMusicAPI {
     public init() {}
-    /// MusicKit을 통해 AppleMusic
+    /// MusicKit을 통해 Apple Music의 노래를 검색합니다.
     /// - Parameters:
     ///   - text: 검색 요청을 보낼 검색어
     ///   - maxCount: 검색해서 찾아올 음악의 갯수 기본값 설정은 25
-    /// - Returns: ASSong의 배열
+    /// - Returns: Music의 배열
     @MainActor
-    public func search(for text: String, _ maxCount: Int = 25, _ offset: Int = 1) async -> [ASSong] {
+    public func search(for text: String, _ maxCount: Int = 10, _ offset: Int = 1) async throws -> [Music] {
         let status = await MusicAuthorization.request()
         switch status {
             case .authorized:
                 do {
-                    var request = MusicCatalogSearchRequest(term: text, types: [Song.self])
+                    var request = MusicCatalogSearchSuggestionsRequest(term: text, includingTopResultsOfTypes: [Song.self])
+
                     request.limit = maxCount
-                    request.offset = offset
-                    
+
                     let result = try await request.response()
-                    let asSongs = result.songs.map { song in
-                        return ASSong(
-                            id: song.isrc,
-                            title: song.title,
-                            artistName: song.artistName,
-                            artwork: song.artwork,
-                            previewURL: song.previewAssets?.first?.url
-                        )
+
+                    if !result.topResults.isEmpty {
+                        let music = result.topResults.compactMap { topResult -> ASEntity.Music? in
+                            if case .song(let song) = topResult {
+                                return ASEntity.Music(
+                                    id: song.id.rawValue,
+                                    title: song.title,
+                                    artist: song.artistName,
+                                    artworkUrl: song.artwork?.url(width: 300, height: 300),
+                                    previewUrl: song.previewAssets?.first?.url,
+                                    artworkBackgroundColor: song.artwork?.backgroundColor?.toHex()
+                                )
+                            }
+                            return nil
+                        }
+                        return music
+                    } else {
+                        var request = MusicCatalogSearchRequest(term: text, types: [Song.self])
+                        request.offset = offset
+                        request.limit = maxCount
+                        
+                        let result = try await request.response()
+                        let music = result.songs.map { song in
+                            ASEntity.Music(
+                                id: song.id.rawValue,
+                                title: song.title,
+                                artist: song.artistName,
+                                artworkUrl: song.artwork?.url(width: 300, height: 300),
+                                previewUrl: song.previewAssets?.first?.url,
+                                artworkBackgroundColor: song.artwork?.backgroundColor?.toHex()
+                            )
+                        }
+                        return music
                     }
-                    return asSongs
                 } catch {
-                    print(String(describing: error))
-                    return []
+                    throw ASMusicError.searchError
                 }
             default:
-                print("Not authorized to access Apple Music")
-                return []
+                throw ASMusicError.notAuthorized
         }
     }
 }
 
-public struct ASSong: Equatable, Identifiable {
-    public init(id: String? = nil, title: String, artistName: String, artwork: Artwork?, previewURL: URL?) {
-        self.id = id
-        self.title = title
-        self.artistName = artistName
-        self.artwork = artwork
-        self.previewURL = previewURL
+public enum ASMusicError: Error, LocalizedError {
+    case notAuthorized
+    case searchError
+
+    public var errorDescription: String? {
+        switch self {
+            case .notAuthorized:
+                "애플 뮤직에 접근하는 권한이 없습니다."
+            case .searchError:
+                "노래 검색 중 오류가 발생했습니다."
+        }
     }
-    public var id: String?
-    public let title: String
-    public let artistName: String
-    public let artwork: Artwork?
-    public let previewURL: URL?
 }
+
+
+/*
+ 
+ <<<<<<< HEAD
+
+                     let result = try await request.response()
+
+                     if !result.topResults.isEmpty {
+                         let asSongs = result.topResults.compactMap { topResult -> ASSong? in
+                             if case .song(let song) = topResult {
+                                 return ASSong(
+                                     id: song.isrc,
+                                     title: song.title,
+                                     artistName: song.artistName,
+                                     artwork: song.artwork,
+                                     previewURL: song.previewAssets?.first?.url
+                                 )
+                             }
+                             return nil
+                         }
+                         return asSongs
+                     } else {
+                         var request = MusicCatalogSearchRequest(term: text, types: [Song.self])
+                         request.offset = offset
+                         request.limit = maxCount
+
+                         let result = try await request.response()
+                         let asSongs = result.songs.map { song in
+                             ASSong(
+                                 id: song.isrc,
+                                 title: song.title,
+                                 artistName: song.artistName,
+                                 artwork: song.artwork,
+                                 previewURL: song.previewAssets?.first?.url
+                             )
+                         }
+                         return asSongs
+                     }
+ =======
+                     request.offset = offset
+
+                     let result = try await request.response()
+                     let music = result.songs.map { song in
+                         ASEntity.Music(
+                             id: song.id.rawValue,
+                             title: song.title,
+                             artist: song.artistName,
+                             artworkUrl: song.artwork?.url(width: 300, height: 300),
+                             previewUrl: song.previewAssets?.first?.url,
+                             artworkBackgroundColor: song.artwork?.backgroundColor?.toHex()
+                         )
+                     }
+                     return music
+ >>>>>>> origin/dev
+ */
