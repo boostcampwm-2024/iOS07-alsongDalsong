@@ -11,6 +11,7 @@ final class HummingResultViewModel: @unchecked Sendable {
     private var playerRepository: PlayersRepositoryProtocol
     private var roomActionRepository: RoomActionRepositoryProtocol
     private var roomInfoRepository: RoomInfoRepositoryProtocol
+    private var musicRepository: MusicRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
     @Published var isNext: Bool = false
@@ -32,13 +33,15 @@ final class HummingResultViewModel: @unchecked Sendable {
          gameStatusRepository: GameStatusRepositoryProtocol,
          playerRepository: PlayersRepositoryProtocol,
          roomActionRepository: RoomActionRepositoryProtocol,
-         roomInfoRepository: RoomInfoRepositoryProtocol) {
+         roomInfoRepository: RoomInfoRepositoryProtocol,
+         musicRepository: MusicRepositoryProtocol) {
         self.hummingResultRepository = hummingResultRepository
         self.avatarRepository = avatarRepository
         self.gameStatusRepository = gameStatusRepository
         self.playerRepository = playerRepository
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
+        self.musicRepository = musicRepository
         fetchResult()
     }
     
@@ -49,14 +52,26 @@ final class HummingResultViewModel: @unchecked Sendable {
             .sink { completion in
                 //TODO: 성공 실패 여부에 따른 처리
                 print(completion)
-            } receiveValue: { [weak self] (result: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)]) in
-                self?.hummingResult = result.sorted {
+            } receiveValue: { [weak self] (result: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer, recordOrder: UInt8)]) in
+                // 분명 받았던 데이터인데 계속 값이 들어옴
+                guard let self else { return }
+                
+                if (result.count - 1) < result.first?.recordOrder ?? 0 { return }
+                print("호출")
+                self.hummingResult = result.map {
+                    return (answer: $0.answer, records: $0.records, submit: $0.submit)
+                }
+                
+                self.hummingResult.sort {
                     $0.answer.player?.order ?? 0 < $1.answer.player?.order ?? 1
                 }
-                guard let current = self?.hummingResult.removeFirst() else { return }
-                self?.currentResult = current.answer
-                self?.recordsResult = current.records
-                self?.submitsResult = current.submit
+                
+                print("hummingResult \(self.hummingResult)")
+
+                let current = self.hummingResult.removeFirst()
+                self.currentResult = current.answer
+                self.recordsResult = current.records
+                self.submitsResult = current.submit
             }
             .store(in: &cancellables)
         
@@ -77,16 +92,19 @@ final class HummingResultViewModel: @unchecked Sendable {
         Publishers.CombineLatest(gameStatusRepository.getStatus(), gameStatusRepository.getRecordOrder())
             .receive(on: DispatchQueue.main)
             .sink { status, order in
-                if (status == .result) && (self.recordOrder ?? 0 + 1 == order) {
+                // order에 초기값이 들어오는 문제
+                if (status == .result && self.recordOrder != 0) {
+                    self.recordOrder! += 1
                     self.isNext = true
+                }
+                else {
+                    self.recordOrder! += 1
                 }
             }
             .store(in: &cancellables)
     }
     
-    @MainActor
-    func startPlaying() {
-        Task {
+    func startPlaying() async -> Void {
             while !recordsResult.isEmpty {
                 currentRecords.append(recordsResult.removeFirst())
                 guard let fileUrl = currentRecords.last?.fileUrl else { continue }
@@ -99,7 +117,6 @@ final class HummingResultViewModel: @unchecked Sendable {
                 }
             }
             currentsubmit = submitsResult
-        }
     }
     
     private func waitForPlaybackToFinish() async {
@@ -115,8 +132,8 @@ final class HummingResultViewModel: @unchecked Sendable {
     }
     
     func nextResultFetch() {
+        if self.hummingResult.isEmpty { return }
         let current = self.hummingResult.removeFirst()
-        
         self.currentResult = current.answer
         self.recordsResult = current.records
         self.submitsResult = current.submit
@@ -150,15 +167,9 @@ final class HummingResultViewModel: @unchecked Sendable {
         }
     }
     
-    func getAvatarData(url: URL?) -> AnyPublisher<Data?, Error> {
-        if let url {
-            avatarRepository.getAvatarData(url: url)
-                .eraseToAnyPublisher()
-        } else {
-            Just(nil)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        }
+    func getAvatarData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await avatarRepository.getAvatarData(url: url)
     }
     
     func changeRecordOrder() {
@@ -169,5 +180,10 @@ final class HummingResultViewModel: @unchecked Sendable {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    func getArtworkData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await musicRepository.getMusicData(url: url)
     }
 }

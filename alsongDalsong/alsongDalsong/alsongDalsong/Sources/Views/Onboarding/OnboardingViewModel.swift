@@ -27,43 +27,22 @@ final class OnboardingViewModel: @unchecked Sendable {
     }
 
     private func fetchAvatars() {
-        avatarRepository.getAvatarUrls()
-            .receive(on: DispatchQueue.main)
-            .map { $0.shuffled() }
-            .sink { completion in
-                switch completion {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] urls in
-                self?.avatars = urls
-                self?.refreshAvatars()
-            }
-            .store(in: &cancellables)
+        Task {
+            avatars = try await avatarRepository.getAvatarUrls()
+            avatars.shuffle()
+            self.refreshAvatars()
+        }
     }
 
     func refreshAvatars() {
         if avatars.isEmpty {
             fetchAvatars()
         }
-        guard let randomAvatar = avatars.randomElement() else { return }
-        selectedAvatar = randomAvatar
-
-        avatarRepository.getAvatarData(url: randomAvatar)
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] data in
-                self?.avatarData = data
-            }
-            .store(in: &cancellables)
+        Task {
+            guard let randomAvatar = avatars.randomElement() else { return }
+            selectedAvatar = randomAvatar
+            self.avatarData = await avatarRepository.getAvatarData(url: randomAvatar)
+        }
     }
 
     @MainActor

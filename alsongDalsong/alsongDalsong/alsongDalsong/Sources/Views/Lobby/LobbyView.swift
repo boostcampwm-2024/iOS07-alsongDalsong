@@ -16,15 +16,12 @@ struct LobbyView: View {
                         if index < viewModel.players.count {
                             let player = viewModel.players[index]
                             ProfileView(
-                                imagePublisher: viewModel.getAvatarData(url: player.avatarUrl),
+                                imagePublisher: { url in
+                                    await viewModel.getAvatarData(url: url)
+                                },
                                 name: player.nickname,
-                                isHost: player.id == viewModel.host?.id
-                            )
-                        } else {
-                            ProfileView(
-                                imagePublisher: Just(Data()).setFailureType(to: Error.self).eraseToAnyPublisher(),
-                                name: nil,
-                                isHost: false
+                                isHost: player.id == viewModel.host?.id,
+                                imageUrl: player.avatarUrl
                             )
                         }
                     }

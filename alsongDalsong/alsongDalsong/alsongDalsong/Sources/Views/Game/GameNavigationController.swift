@@ -155,13 +155,15 @@ final class GameNavigationController {
         let playerRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
         let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
         let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
+        let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
         let vm = HummingResultViewModel(
             hummingResultRepository: hummingResultRepository,
             avatarRepository: avatarRepository,
             gameStatusRepository: gameStatusRepository,
             playerRepository: playerRepository,
             roomActionRepository: roomActionRepository,
-            roomInfoRepository: roomInfoRepository
+            roomInfoRepository: roomInfoRepository,
+            musicRepository: musicRepository
         )
         let vc = HummingResultViewController(viewModel: vm)
         navigationController.pushViewController(vc, animated: true)

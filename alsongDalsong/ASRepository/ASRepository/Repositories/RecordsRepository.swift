@@ -56,11 +56,11 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
               !players.isEmpty,
               recordOrder > 0,
               let myId = mainRepository.myId,
-              let myIndex = players.firstIndex(where: { $0.id == myId })
+              let myOrder = players.first(where: { $0.id == myId })?.order
         else { return nil }
 
-        let targetIndex = findTargetIndex(for: myIndex, in: players.count)
-        let targetId = players[targetIndex].id
+        let targetOrder = findTargetOrder(for: myOrder, in: players.count)
+        let targetId = players.first(where: { $0.order == targetOrder })?.id
         let hummings = findHummings(for: recordOrder, in: records)
 
         if let targetRecord = hummings.first(where: { $0.player?.id == targetId }) {
@@ -71,8 +71,8 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
         }
     }
 
-    private func findTargetIndex(for myIndex: Int, in playersCount: Int) -> Int {
-        return (myIndex - 1 + playersCount) % playersCount
+    private func findTargetOrder(for myOrder: Int, in playersCount: Int) -> Int {
+        return (myOrder - 1 + playersCount) % playersCount
     }
 
     private func findHummings(for recordOrder: UInt8, in records: [ASEntity.Record]) -> [ASEntity.Record] {

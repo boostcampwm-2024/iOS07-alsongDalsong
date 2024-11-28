@@ -49,14 +49,23 @@ public struct GameState {
                 return .submitAnswer
             }
             
-            if round == 1, recordOrder == players.count {
+            if round == 1, recordOrder == players.count - 1 {
                 return .submitAnswer
             }
             else if round == 1, recordOrder >= 1 {
                 return .rehumming
             }
         case .result:
-            return .result
+            if players.count <= 2, recordOrder == 1 {
+                return .result
+            }
+            
+            else if recordOrder == players.count - 1 {
+                return .result
+            }else {
+                return nil
+            }
+
         default:
             return .lobby
         }

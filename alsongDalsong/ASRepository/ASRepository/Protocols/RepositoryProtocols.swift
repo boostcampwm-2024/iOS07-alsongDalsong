@@ -47,8 +47,8 @@ public protocol SubmitsRepositoryProtocol {
 }
 
 public protocol AvatarRepositoryProtocol {
-    func getAvatarUrls() -> Future<[URL], Error>
-    func getAvatarData(url: URL) -> Future<Data?, Error>
+    func getAvatarUrls() async throws -> [URL]
+    func getAvatarData(url: URL) async -> Data?
 }
 
 public protocol RoomActionRepositoryProtocol {
@@ -69,6 +69,6 @@ public protocol GameStateRepositoryProtocol {
 }
 
 public protocol HummingResultRepositoryProtocol {
-    func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer)], Never>
+    func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)], Never>
     func getRecordData(url: URL) -> Future<Data?, Error>
 }
