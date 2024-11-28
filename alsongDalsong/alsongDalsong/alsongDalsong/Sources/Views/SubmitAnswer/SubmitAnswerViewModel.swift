@@ -46,7 +46,6 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         self.musicRepository = musicRepository
         bindGameStatus()
         bindSubmitStatus()
-        print("did load", pthread_self())
     }
 
     private func bindRecord(on recordOrder: UInt8) {
