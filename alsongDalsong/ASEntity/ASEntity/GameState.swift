@@ -49,7 +49,7 @@ public struct GameState {
                 return .submitAnswer
             }
             
-            if round == 1, recordOrder == players.count {
+            if round == 1, recordOrder == players.count - 2 {
                 return .submitAnswer
             }
             else if round == 1, recordOrder >= 1 {
@@ -60,7 +60,7 @@ public struct GameState {
                 return .result
             }
             
-            else if recordOrder == players.count - 2 {
+            else if recordOrder == players.count - 1 {
                 return .result
             }else {
                 return nil

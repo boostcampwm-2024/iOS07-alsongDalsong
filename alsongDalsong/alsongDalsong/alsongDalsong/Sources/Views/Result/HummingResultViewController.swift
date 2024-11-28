@@ -88,6 +88,8 @@ class HummingResultViewController: UIViewController {
         guard let viewModel else { return }
         musicResultView.bind(to: viewModel.$currentResult) { [weak self] url in
             await self?.viewModel?.getArtworkData(url: url)
+        } musicFetcher: {
+            await self.viewModel?.startPlaying()
         }
         
         viewModel.$currentRecords
@@ -258,7 +260,8 @@ final class MusicResultView: UIView {
     
     func bind(
         to dataSource: Published<Answer?>.Publisher,
-        fetcher: @escaping (URL?) async -> Data?
+        fetcher: @escaping (URL?) async -> Data?,
+        musicFetcher: @escaping () async -> Void?
     ) {
         dataSource
             .receive(on: DispatchQueue.main)
@@ -269,17 +272,17 @@ final class MusicResultView: UIView {
                 Task {
                     guard let url = answer.music?.artworkUrl else { return }
                     let data = await fetcher(url)
+                    
+                    await musicFetcher()
                 }
+                
             }
             .store(in: &cancellables)
     }
     
-    private func setImage(url: URL?) {
-        guard let url else {
-            albumImageView.image = UIImage(named: "mojojojo")
-            return
-        }
-        
+    private func setImage(data: Data?) {
+        guard let data else { return }
+        albumImageView.image = UIImage(data: data)
     }
 
     private func setupView() {

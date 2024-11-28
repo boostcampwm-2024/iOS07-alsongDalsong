@@ -102,22 +102,19 @@ final class HummingResultViewModel: @unchecked Sendable {
             .store(in: &cancellables)
     }
     
-    @MainActor
-    func startPlaying() {
-        Task {
-            while !recordsResult.isEmpty {
-                currentRecords.append(recordsResult.removeFirst())
-                guard let fileUrl = currentRecords.last?.fileUrl else { continue }
-                do {
-                    let data = try await fetchRecordData(url: fileUrl)
-                    await AudioHelper.shared.startPlaying(data)
-                    await waitForPlaybackToFinish()
-                } catch {
-                    print("녹음 파일 다운로드에 실패하였습니다.")
-                }
+    func startPlaying() async -> Void {
+        while !recordsResult.isEmpty {
+            currentRecords.append(recordsResult.removeFirst())
+            guard let fileUrl = currentRecords.last?.fileUrl else { continue }
+            do {
+                let data = try await fetchRecordData(url: fileUrl)
+                await AudioHelper.shared.startPlaying(data)
+                await waitForPlaybackToFinish()
+            } catch {
+                print("녹음 파일 다운로드에 실패하였습니다.")
             }
-            currentsubmit = submitsResult
         }
+        currentsubmit = submitsResult
     }
     
     private func waitForPlaybackToFinish() async {
