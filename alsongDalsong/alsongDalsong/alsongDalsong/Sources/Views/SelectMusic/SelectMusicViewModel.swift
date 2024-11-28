@@ -9,40 +9,46 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var searchList: [Music] = []
     @Published public private(set) var dueTime: Date?
     @Published public private(set) var selectedMusic: Music?
+    @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
+
     @Published public private(set) var musicData: Data? {
         didSet { isPlaying = true }
     }
 
     @Published public var isPlaying: Bool = false {
-        didSet { isPlaying ? playingMusic() : stopMusic() }
+        didSet { isPlaying ? playMusic() : stopMusic() }
     }
     
     private let musicRepository: MusicRepositoryProtocol
-    private let answerRepository: AnswersRepositoryProtocol
+    private let playersRepository: PlayersRepositoryProtocol
+    private let answersRepository: AnswersRepositoryProtocol
     private let gameStatusRepository: GameStatusRepositoryProtocol
     
     private let musicAPI = ASMusicAPI()
-    private var cancellable = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
     
     init(
         musicRepository: MusicRepositoryProtocol,
+        playersRepository: PlayersRepositoryProtocol,
         answerRepository: AnswersRepositoryProtocol,
         gameStatusRepository: GameStatusRepositoryProtocol
     ) {
         self.musicRepository = musicRepository
-        self.answerRepository = answerRepository
+        self.playersRepository = playersRepository
+        self.answersRepository = answerRepository
         self.gameStatusRepository = gameStatusRepository
         bindGameStatus()
         bindAnswer()
+        bindSubmissionStatus()
     }
     
     private func bindAnswer() {
-        answerRepository.getAnswers()
+        answersRepository.getAnswers()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newAnswers in
                 self?.answers = newAnswers
             }
-            .store(in: &cancellable)
+            .store(in: &cancellables)
     }
     
     private func bindGameStatus() {
@@ -51,10 +57,23 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             .sink { [weak self] newDueTime in
                 self?.dueTime = newDueTime
             }
-            .store(in: &cancellable)
+            .store(in: &cancellables)
     }
     
-    public func playingMusic() {
+    private func bindSubmissionStatus() {
+        let playerPublisher = playersRepository.getPlayersCount()
+        let answersPublisher = answersRepository.getAnswersCount()
+
+        playerPublisher.combineLatest(answersPublisher)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] playersCount, answersCount in
+                let submitStatus = (submits: String(answersCount), total: String(playersCount))
+                self?.submissionStatus = submitStatus
+            }
+            .store(in: &cancellables)
+    }
+    
+    public func playMusic() {
         guard let data = musicData else { return }
         Task {
             await AudioHelper.shared.startPlaying(data)
@@ -79,7 +98,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     public func submitMusic() async throws {
         guard let selectedMusic else { return }
         do {
-            _ = try await answerRepository.submitMusic(answer: selectedMusic)
+            _ = try await answersRepository.submitMusic(answer: selectedMusic)
         } catch {
             throw error
         }

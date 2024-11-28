@@ -1,3 +1,4 @@
+import ASMusicKit
 import ASRepository
 import Combine
 import Foundation
@@ -14,7 +15,8 @@ final class OnboardingViewModel: @unchecked Sendable {
     @Published var buttonEnabled: Bool = true
 
     init(avatarRepository: AvatarRepositoryProtocol,
-         roomActionRepository: RoomActionRepositoryProtocol) {
+         roomActionRepository: RoomActionRepositoryProtocol)
+    {
         self.avatarRepository = avatarRepository
         self.roomActionRepository = roomActionRepository
         refreshAvatars()
@@ -62,6 +64,14 @@ final class OnboardingViewModel: @unchecked Sendable {
                 self?.avatarData = data
             }
             .store(in: &cancellables)
+    }
+
+    @MainActor
+    func authorizeAppleMusic() {
+        let musicAPI = ASMusicAPI()
+        Task {
+            let _ = try await musicAPI.search(for: "뉴진스", 1, 1)
+        }
     }
 
     @MainActor

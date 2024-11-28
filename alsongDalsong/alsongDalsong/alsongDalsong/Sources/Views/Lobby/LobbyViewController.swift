@@ -62,6 +62,18 @@ final class LobbyViewController: UIViewController {
                 self?.startButton.isEnabled = isHost
             }
             .store(in: &cancellables)
+        
+        viewmodel.$canBeginGame
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] canBeginGame in
+                if !canBeginGame {
+                    self?.startButton.updateButton(.disabled)
+                } else {
+                    self?.startButton.updateButton(.startGame)
+                    self?.startButton.isEnabled = true
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func setupUI() {
@@ -96,10 +108,11 @@ final class LobbyViewController: UIViewController {
                 let leaveAlert = ASAlertController(
                     titleText: .leaveRoom,
                     doneButtonTitle: .leave,
-                    cancelButtonTitle: .cancel) { [weak self] _ in
-                        self?.viewmodel.leaveRoom()
-                        self?.navigationController?.popViewController(animated: true)
-                    }
+                    cancelButtonTitle: .cancel)
+                { [weak self] _ in
+                    self?.viewmodel.leaveRoom()
+                    self?.navigationController?.popViewController(animated: true)
+                }
                 self?.present(leaveAlert, animated: true, completion: nil)
             },
             for: .touchUpInside)
@@ -113,9 +126,24 @@ final class LobbyViewController: UIViewController {
             }
         }, for: .touchUpInside)
         
-        startButton.addAction(UIAction { [weak self] _ in
-            self?.showStartGameLoading()
-        }, for: .touchUpInside)
+        startButton.addAction(
+            UIAction { [weak self] _ in
+                guard let playerCount = self?.viewmodel.players.count else { return }
+                if playerCount < 3 {
+                    let nojamAlert = ASAlertController(
+                        style: .default,
+                        titleText: .needMorePlayer,
+                        doneButtonTitle: .keep,
+                        cancelButtonTitle: .cancel)
+                    { _ in
+                        self?.showStartGameLoading()
+                    }
+                    self?.present(nojamAlert, animated: true, completion: nil)
+                } else {
+                    self?.showStartGameLoading()
+                }
+            },
+            for: .touchUpInside)
     }
     
     private func setupLayout() {
@@ -163,9 +191,9 @@ final class LobbyViewController: UIViewController {
         ])
     }
     
-    private func gameStart() async throws{
+    private func gameStart() async throws {
         do {
-            try await self.viewmodel.gameStart()
+            try await viewmodel.gameStart()
         } catch {
             throw error
         }
@@ -182,8 +210,8 @@ extension LobbyViewController {
                 try await self?.gameStart()
             },
             errorCompletion: { [weak self] error in
-            self?.showStartGameFailed(error)
-        })
+                self?.showStartGameFailed(error)
+            })
         presentLoadingView(alert)
     }
     

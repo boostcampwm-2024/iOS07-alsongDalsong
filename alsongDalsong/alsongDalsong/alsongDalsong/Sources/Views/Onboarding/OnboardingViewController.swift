@@ -35,6 +35,7 @@ final class OnboardingViewController: UIViewController {
         setupButton()
         hideKeyboard()
         bindViewModel()
+        viewModel?.authorizeAppleMusic() 
     }
 
     override func viewWillAppear(_ animated: Bool) {
