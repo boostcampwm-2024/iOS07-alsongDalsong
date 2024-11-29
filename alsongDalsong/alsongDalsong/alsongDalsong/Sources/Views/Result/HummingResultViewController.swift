@@ -272,7 +272,7 @@ final class MusicResultView: UIView {
                 Task {
                     guard let url = answer.music?.artworkUrl else { return }
                     let data = await fetcher(url)
-                    
+                    self?.setImage(data: data)
                     await musicFetcher()
                 }
             }
@@ -285,8 +285,11 @@ final class MusicResultView: UIView {
     }
 
     private func setupView() {
+        self.backgroundColor = .asSystem
+        
         titleLabel.text = "정답은..."
         titleLabel.font = .font(ofSize: 24)
+        titleLabel.textColor = .asBlack
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
 
@@ -298,15 +301,15 @@ final class MusicResultView: UIView {
         addSubview(albumImageView)
 
         musicNameLabel.font = .font(ofSize: 24)
+        musicNameLabel.textColor = .asBlack
         musicNameLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(musicNameLabel)
 
         singerNameLabel.font = .font(ofSize: 24)
-        singerNameLabel.textColor = UIColor.asLightGray
+        singerNameLabel.textColor = UIColor.gray
         singerNameLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(singerNameLabel)
         
-        layer.backgroundColor = UIColor.white.cgColor
         layer.cornerRadius = 12
         layer.shadowColor = UIColor.asShadow.cgColor
         layer.shadowOffset = CGSize(width: 4, height: 4)
@@ -334,20 +337,5 @@ final class MusicResultView: UIView {
             singerNameLabel.leadingAnchor.constraint(equalTo: albumImageView.trailingAnchor, constant: 15),
             singerNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         ])
-    }
-
-    private func fetchAlbumImage(from publisher: AnyPublisher<Data?, Error>) {
-        publisher
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in
-                //
-            }, receiveValue: { [weak self] data in
-                guard let data else {
-                    return
-                }
-                let image = UIImage(data: data)
-                self?.albumImageView.image = image
-            })
-            .store(in: &cancellables)
     }
 }

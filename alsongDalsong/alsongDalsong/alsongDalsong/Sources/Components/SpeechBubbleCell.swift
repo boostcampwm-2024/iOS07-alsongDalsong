@@ -30,7 +30,6 @@ struct SpeechBubbleCell: View {
                 ProfileView(imagePublisher: avatarImagePublisher,
                             name: name,
                             isHost: false, imageUrl: avatarURL)
-                .frame(width: 75, height: 75)
                 .padding(.trailing, 10)
             }
             if isVisible {
@@ -42,7 +41,6 @@ struct SpeechBubbleCell: View {
                 ProfileView(imagePublisher: avatarImagePublisher,
                             name: name,
                             isHost: false, imageUrl: avatarURL)
-                .frame(width: 75, height: 75)
                 .padding(.leading, 10)
             }
         }
@@ -81,7 +79,7 @@ struct SpeechBubbleCell: View {
             ZStack(alignment: .leading) {
                 BubbleShape(alignment: alignment)
                     .frame(width: 230, height: height)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.asSystem)
                 
                 switch messageType {
                 case .music(let music):
@@ -92,12 +90,13 @@ struct SpeechBubbleCell: View {
                         
                         VStack(alignment: .leading) {
                             Text(music.title ?? "")
-                                .font(.custom("Dohyeon-Regular", size: 24))
-                                .lineLimit(2)
+                                .font(.custom("Dohyeon-Regular", size: 20))
+                                .foregroundStyle(.asBlack)
+                                .lineLimit(1)
                             
                             Text(music.artist ?? "")
-                                .font(.custom("Dohyeon-Regular", size: 24))
-                                .foregroundStyle(.asLightGray)
+                                .font(.custom("Dohyeon-Regular", size: 20))
+                                .foregroundStyle(.gray)
                                 .lineLimit(1)
                         }
                         Spacer()
