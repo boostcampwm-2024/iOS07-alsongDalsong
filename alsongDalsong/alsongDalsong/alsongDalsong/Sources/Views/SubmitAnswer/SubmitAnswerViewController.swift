@@ -95,6 +95,7 @@ final class SubmitAnswerViewController: UIViewController {
             progressBar.cancelCompletion()
             try await viewModel.submitAnswer()
             submitButton.updateButton(.submitted)
+            selectAnswerButton.updateButton(.disabled)
         } catch {
             throw error
         }

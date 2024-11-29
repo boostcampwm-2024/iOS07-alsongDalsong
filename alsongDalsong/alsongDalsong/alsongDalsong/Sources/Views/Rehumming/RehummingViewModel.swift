@@ -43,7 +43,9 @@ final class RehummingViewModel: @unchecked Sendable {
     }
 
     func startRecording() {
-        isRecording = true
+        if !isRecording {
+            isRecording = true            
+        }
     }
 
     func updateRecordedData(with data: Data) {
