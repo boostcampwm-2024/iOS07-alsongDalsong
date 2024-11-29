@@ -10,7 +10,7 @@ public struct ASMusicAPI {
     ///   - maxCount: 검색해서 찾아올 음악의 갯수 기본값 설정은 25
     /// - Returns: Music의 배열
     @MainActor
-    public func search(for text: String, _ maxCount: Int = 10, _ offset: Int = 1) async throws -> [Music] {
+    public func search(for text: String, _ maxCount: Int = 10, _ offset: Int = 0) async throws -> [Music] {
         let status = await MusicAuthorization.request()
         switch status {
             case .authorized:
