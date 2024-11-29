@@ -306,7 +306,7 @@ final class MusicResultView: UIView {
         addSubview(musicNameLabel)
 
         singerNameLabel.font = .font(ofSize: 24)
-        singerNameLabel.textColor = UIColor.asLightGray
+        singerNameLabel.textColor = UIColor.gray
         singerNameLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(singerNameLabel)
         
