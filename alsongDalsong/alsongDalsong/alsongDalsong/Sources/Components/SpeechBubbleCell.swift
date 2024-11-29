@@ -81,7 +81,7 @@ struct SpeechBubbleCell: View {
             ZStack(alignment: .leading) {
                 BubbleShape(alignment: alignment)
                     .frame(width: 230, height: height)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.asSystem)
                 
                 switch messageType {
                 case .music(let music):
@@ -93,11 +93,12 @@ struct SpeechBubbleCell: View {
                         VStack(alignment: .leading) {
                             Text(music.title ?? "")
                                 .font(.custom("Dohyeon-Regular", size: 24))
+                                .foregroundStyle(.asBlack)
                                 .lineLimit(2)
                             
                             Text(music.artist ?? "")
                                 .font(.custom("Dohyeon-Regular", size: 24))
-                                .foregroundStyle(.asLightGray)
+                                .foregroundStyle(.gray)
                                 .lineLimit(1)
                         }
                         Spacer()
