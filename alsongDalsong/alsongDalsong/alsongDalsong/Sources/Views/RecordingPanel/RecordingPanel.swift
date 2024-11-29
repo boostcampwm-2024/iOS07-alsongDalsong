@@ -33,6 +33,7 @@ final class RecordingPanel: UIView {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isRecording in
                 if isRecording {
+                    self?.reset()
                     self?.viewModel.startRecording()
                 }
             }
@@ -85,7 +86,7 @@ final class RecordingPanel: UIView {
         buttonConfiguration.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
             color.withAlphaComponent(0.0)
         }
-        
+
         playButton.configurationUpdateHandler = { button in
             UIView.animate(
                 withDuration: 0.15,
@@ -141,18 +142,16 @@ final class RecordingPanel: UIView {
     }
 
     private func reset() {
-        waveFormView.removeVisualizerCircles()
-        waveFormView.drawVisualizerCircles()
+        waveFormView.resetView()
     }
 }
 
 private final class WaveForm: UIView {
     private var columnWidth: CGFloat?
     private var columns: [CAShapeLayer] = []
-    private var amplitudesHistory: [CGFloat] = []
     private let numOfColumns: Int
     private var count: Int = 0
-    
+
     override class func awakeFromNib() {
         super.awakeFromNib()
     }
@@ -166,15 +165,19 @@ private final class WaveForm: UIView {
         numOfColumns = 48
         super.init(coder: coder)
     }
-
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        drawVisualizerCircles()
+        if columns.isEmpty {
+            drawVisualizerCircles()
+        }
+    }
+    
+    func resetView() {
+        removeVisualizerCircles()
     }
 
-    /// 파형의 기본 틀을 그립니다.
-    func drawVisualizerCircles() {
-        amplitudesHistory = Array(repeating: 0, count: numOfColumns)
+    private func drawVisualizerCircles() {
         let diameter = bounds.width / CGFloat(2 * numOfColumns + 1)
         columnWidth = diameter
         let startingPointY = bounds.midY - diameter / 2
@@ -195,14 +198,20 @@ private final class WaveForm: UIView {
         }
     }
 
-    /// 그려진 파형을 모두 삭제합니다.
-    fileprivate func removeVisualizerCircles() {
+    private func removeVisualizerCircles() {
         for column in columns {
             column.removeFromSuperlayer()
         }
-
+        count = 0
         columns.removeAll()
-        amplitudesHistory.removeAll()
+    }
+
+    fileprivate func updateVisualizerView(with amplitude: CGFloat, direction: Direction = .LTR) {
+        guard columns.count == numOfColumns, count < numOfColumns else { return }
+        let index = direction == .LTR ? count : numOfColumns - count - 1
+        columns[index].path = computeNewPath(for: columns[index], with: amplitude)
+        columns[index].fillColor = UIColor.white.cgColor
+        count += 1
     }
 
     private func computeNewPath(for layer: CAShapeLayer, with amplitude: CGFloat) -> CGPath {
@@ -216,32 +225,10 @@ private final class WaveForm: UIView {
 
         return UIBezierPath(roundedRect: CGRect(origin: newOrigin, size: newSize), cornerRadius: width / 2).cgPath
     }
+}
 
-    /// 오른쪽에서 파형이 시작
-    fileprivate func updateVisualizerView(with amplitude: CGFloat) {
-        guard columns.count == numOfColumns, count < numOfColumns else { return }
-//        if count >= numOfColumns { count = 0 }
-        amplitudesHistory[count] = amplitude
-        count += 1
-        for i in 0 ..< columns.count {
-            columns[i].path = computeNewPath(for: columns[i], with: amplitudesHistory[i])
-            if amplitudesHistory[i] != 0 {
-                columns[i].fillColor = UIColor.white.cgColor
-            }
-        }
-    }
-
-    /// 왼쪽에서 파형이 시작
-    fileprivate func reverseUpdateVisualizerView(with amplitude: CGFloat) {
-        guard columns.count == numOfColumns else { return }
-        amplitudesHistory.insert(amplitude, at: 0)
-        amplitudesHistory.removeLast()
-
-        for i in 0 ..< columns.count {
-            columns[i].path = computeNewPath(for: columns[i], with: amplitudesHistory[i])
-            if amplitudesHistory[i] != 0 {
-                columns[i].fillColor = UIColor.white.cgColor
-            }
-        }
+extension WaveForm {
+    enum Direction {
+        case RTL, LTR
     }
 }

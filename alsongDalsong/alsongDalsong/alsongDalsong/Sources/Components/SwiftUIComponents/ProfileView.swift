@@ -42,10 +42,11 @@ struct ProfileView: View {
                 .frame(width: 75, height: 75)
                 .clipShape(Circle())
                 .overlay(Circle().stroke(Color.white, lineWidth: 5))
-                .overlay(alignment: .bottomTrailing) {
+                .overlay(alignment: .top) {
                     isHost ? Image(systemName: "crown.fill")
                         .foregroundStyle(.asYellow)
-                        .font(.system(size: 24))
+                        .font(.system(size: 20))
+                        .offset(y: -20)
                         : nil
                 }
             if let name {
