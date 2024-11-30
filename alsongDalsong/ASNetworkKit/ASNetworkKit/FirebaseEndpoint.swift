@@ -42,11 +42,11 @@ public struct FirebaseEndpoint: Endpoint, Equatable {
                 case .changeMode:
                     "/changeMode"
                 case .uploadRecording:
-                    "/v2-uploadRecording"
+                    "/uploadRecording"
                 case .submitMusic:
-                    "/v2-submitMusic"
+                    "/submitMusic"
                 case .submitAnswer:
-                    "/v2-submitAnswer"
+                    "/submitAnswer"
                 case .changeRecordOrder:
                     "/changeRecordOrder"
             }
