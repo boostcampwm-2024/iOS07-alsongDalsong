@@ -73,6 +73,10 @@ actor AudioHelper {
         amplitudeSubject.send(clampedAmplitude)
     }
 
+    func setPlayOption(option: PlayType) {
+        self.playType = option
+    }
+    
     /// 여러 조건을 적용해 오디오를 재생하는 함수
     /// - Parameters:
     ///   - file: 재생할 오디오 데이터

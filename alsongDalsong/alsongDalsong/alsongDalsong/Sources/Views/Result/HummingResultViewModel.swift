@@ -106,7 +106,7 @@ final class HummingResultViewModel: @unchecked Sendable {
     }
     
     func startPlaying() async -> Void {
-        await currentMusicPlaying()
+        await startPlayingCurrentMusic()
         while !recordsResult.isEmpty {
             currentRecords.append(recordsResult.removeFirst())
             guard let fileUrl = currentRecords.last?.fileUrl else { continue }
@@ -121,9 +121,10 @@ final class HummingResultViewModel: @unchecked Sendable {
         currentsubmit = submitsResult
     }
     
-    private func currentMusicPlaying() async -> Void {
+    private func startPlayingCurrentMusic() async -> Void {
         guard let fileUrl = currentResult?.music?.previewUrl else { return }
         let data = await musicRepository.getMusicData(url: fileUrl)
+        await AudioHelper.shared.setPlayOption(option: .partial(time: 10))
         await AudioHelper.shared.startPlaying(data)
         await waitForPlaybackToFinish()
     }
