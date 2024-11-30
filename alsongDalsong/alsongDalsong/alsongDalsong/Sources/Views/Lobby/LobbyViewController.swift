@@ -53,22 +53,22 @@ final class LobbyViewController: UIViewController {
             }
             .store(in: &cancellables)
 
-        viewmodel.$isHost
+        viewmodel.$canBeginGame.combineLatest(viewmodel.$isHost)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isHost in
-                self?.startButton.isEnabled = isHost
-            }
-            .store(in: &cancellables)
-
-        viewmodel.$canBeginGame
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] canBeginGame in
-                if !canBeginGame {
-                    self?.startButton.updateButton(.waitStart)
+            .sink { [weak self] canBeginGame, isHost in
+                if isHost {
+                    if canBeginGame {
+                        self?.startButton.updateButton(.startGame)
+                        self?.startButton.isEnabled = true
+                    }
+                    else {
+                        self?.startButton.updateButton(.needMorePlayers)
+                        self?.startButton.updateButton(.disabled)
+                    }
+                }
+                else {
+                    self?.startButton.updateButton(.hostSelecting)
                     self?.startButton.updateButton(.disabled)
-                } else {
-                    self?.startButton.updateButton(.startGame)
-                    self?.startButton.isEnabled = true
                 }
             }
             .store(in: &cancellables)

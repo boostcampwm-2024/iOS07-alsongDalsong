@@ -85,7 +85,7 @@ final class ASButton: UIButton {
     func updateButton(_ type: ASButton.ASButtonType) {
         switch type {
             case .disabled: disable()
-            case .waitStart: setConfiguration(title: "시작 대기중..", backgroundColor: .asOrange)
+            case .needMorePlayers: setConfiguration(title: "인원 부족", backgroundColor: .asOrange)
             case let .idle(string, color): setConfiguration(title: string, backgroundColor: color)
             case .startRecord: setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
             case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
@@ -96,12 +96,13 @@ final class ASButton: UIButton {
                 setConfiguration(title: "제출 완료")
                 disable()
             case .startGame: setConfiguration(systemImageName: "play.fill", title: "시작하기!", backgroundColor: .asMint)
+            case .hostSelecting: setConfiguration(title: "방장이 모드 선택중...", backgroundColor: .asMint)
         }
     }
 
     enum ASButtonType {
         case disabled
-        case waitStart
+        case needMorePlayers
         case idle(String, UIColor?)
         case startRecord
         case recording
@@ -110,6 +111,7 @@ final class ASButton: UIButton {
         case submit
         case submitted
         case startGame
+        case hostSelecting
     }
 }
 
