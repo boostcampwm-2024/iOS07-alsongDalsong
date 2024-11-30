@@ -19,7 +19,10 @@ struct SelectAnswerView: View {
                     viewModel.stopMusic()
                     dismiss()
                 } label: {
-                    Text("선택완료")
+                    Text("""
+                        선택
+                        완료
+                        """)
                         .font(.custom("DoHyeon-Regular", size: 16))
                 }
                 .buttonStyle(.borderedProminent)
