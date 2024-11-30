@@ -29,6 +29,10 @@ final class SubmitAnswerViewController: UIViewController {
         setAction()
         bindToComponents()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.cancelSubscriptions()
+    }
 
     private func bindToComponents() {
         submissionStatus.bind(to: viewModel.$submissionStatus)

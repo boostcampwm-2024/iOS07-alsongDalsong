@@ -29,6 +29,10 @@ class HummingResultViewController: UIViewController {
         bind()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel?.cancelSubscriptions()
+    }
+    
     private func setResultTableView() {
         resultTableView.dataSource = self
         resultTableView.separatorStyle = .none
