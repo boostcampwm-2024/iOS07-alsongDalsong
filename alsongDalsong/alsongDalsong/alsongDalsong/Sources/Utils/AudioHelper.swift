@@ -1,12 +1,20 @@
 import ASAudioKit
+import ASLogKit
 import Combine
 import Foundation
-import ASLogKit
 
 extension AnyPublisher: @unchecked @retroactive Sendable {}
 extension PassthroughSubject: @unchecked @retroactive Sendable {}
+extension AudioHelper {
+    enum FileSource {
+        case imported
+        case recorded
+    }
+}
 
 actor AudioHelper {
+    // MARK: - Private properties
+
     static let shared = AudioHelper()
     private var recorder: ASAudioRecorder?
     private var player: ASAudioPlayer?
@@ -14,6 +22,9 @@ actor AudioHelper {
     private var playType: PlayType = .full
     private var isConcurrent: Bool = false
     private var timer: Timer?
+
+    // MARK: - Publishers
+
     private let amplitudeSubject = PassthroughSubject<Float, Never>()
     private let playerStateSubject = PassthroughSubject<(FileSource, Bool), Never>()
     private let recorderStateSubject = PassthroughSubject<Bool, Never>()
@@ -48,31 +59,11 @@ actor AudioHelper {
         timer?.invalidate()
         timer = nil
     }
+}
 
-    private func visualize() {
-        Task { [weak self] in
-            guard let self else { return }
-            await self.setTimer()
-        }
-    }
+// MARK: - Play Audio
 
-    private func setTimer() {
-        timer = Timer(timeInterval: 0.125, repeats: true) { [weak self] _ in
-            Task {
-                await self?.calculateRecorderAmplitude()
-            }
-        }
-        RunLoop.main.add(timer!, forMode: .common)
-    }
-
-    private func calculateRecorderAmplitude() async {
-        await recorder?.updateMeters()
-        guard let averagePower = await recorder?.getAveragePower() else { return }
-        let newAmplitude = 1.8 * pow(10.0, averagePower / 20.0)
-        let clampedAmplitude = min(max(newAmplitude, 0), 1)
-        amplitudeSubject.send(clampedAmplitude)
-    }
-
+extension AudioHelper {
     /// 여러 조건을 적용해 오디오를 재생하는 함수
     /// - Parameters:
     ///   - file: 재생할 오디오 데이터
@@ -92,9 +83,31 @@ actor AudioHelper {
         await player?.startPlaying(data: file, option: playType)
     }
 
+    func stopPlaying() async {
+        await player?.stopPlaying()
+        player = nil
+        sendDataThrough(playerStateSubject, (source, false))
+    }
+
+    private func makePlayer() {
+        player = ASAudioPlayer()
+    }
+
+    private func checkPlayerState() async -> Bool {
+        if await isPlaying() {
+            await player?.stopPlaying()
+            sendDataThrough(playerStateSubject, (source, false))
+        }
+        return true
+    }
+}
+
+// MARK: - Record Audio
+
+extension AudioHelper {
     func startRecording() async {
         guard await checkRecorderState(), await checkPlayerState() else { return }
-        
+
         makeRecorder()
         let tempURL = makeURL()
         recorderStateSubject.send(true)
@@ -106,12 +119,6 @@ actor AudioHelper {
             sendDataThrough(recorderDataSubject, recordedData ?? Data())
             removeTimer()
         } catch { Logger.error(error.localizedDescription) }
-    }
-
-    func stopPlaying() async {
-        await player?.stopPlaying()
-        player = nil
-        sendDataThrough(playerStateSubject, (source, false))
     }
 
     private func stopRecording() async -> Data? {
@@ -126,20 +133,8 @@ actor AudioHelper {
         return true
     }
 
-    private func checkPlayerState() async -> Bool {
-        if await isPlaying() {
-            await player?.stopPlaying()
-            sendDataThrough(playerStateSubject, (source, false))
-        }
-        return true
-    }
-
     private func makeRecorder() {
         recorder = ASAudioRecorder()
-    }
-
-    private func makePlayer() {
-        player = ASAudioPlayer()
     }
 
     private func makeURL() -> URL {
@@ -156,13 +151,6 @@ actor AudioHelper {
         if !FileManager.default.fileExists(atPath: directory.path) {
             try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
         }
-    }
-}
-
-extension AudioHelper {
-    enum FileSource {
-        case imported
-        case recorded
     }
 }
 
@@ -193,5 +181,33 @@ extension AudioHelper {
 extension AudioHelper {
     private func sendDataThrough<T>(_ subject: PassthroughSubject<T, Never>, _ data: T) {
         subject.send(data)
+    }
+}
+
+// MARK: - Audio Visualize
+
+extension AudioHelper {
+    private func visualize() {
+        Task { [weak self] in
+            guard let self else { return }
+            await self.setTimer()
+        }
+    }
+
+    private func setTimer() {
+        timer = Timer(timeInterval: 0.125, repeats: true) { [weak self] _ in
+            Task {
+                await self?.calculateRecorderAmplitude()
+            }
+        }
+        RunLoop.main.add(timer!, forMode: .common)
+    }
+
+    private func calculateRecorderAmplitude() async {
+        await recorder?.updateMeters()
+        guard let averagePower = await recorder?.getAveragePower() else { return }
+        let newAmplitude = 1.8 * pow(10.0, averagePower / 20.0)
+        let clampedAmplitude = min(max(newAmplitude, 0), 1)
+        amplitudeSubject.send(clampedAmplitude)
     }
 }
