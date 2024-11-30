@@ -93,18 +93,27 @@ class HummingResultViewController: UIViewController {
         
         viewModel.$currentRecords
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.resultTableView.reloadData()
+            .sink { [weak self] records in
+                guard let self else { return }
+                let rowCount = self.resultTableView.numberOfRows(inSection: 0)
+                if records.count == rowCount + 1 && rowCount > 0 {
+                    let indexPath = IndexPath(row: rowCount - 1, section: 0)
+                    self.resultTableView.reloadRows(at: [indexPath], with: .fade)
+                }
+                else {
+                    self.resultTableView.reloadSections(IndexSet(integer: 0), with: .fade)
+                }
             }
             .store(in: &cancellables)
+        
         viewModel.$currentsubmit
             .receive(on: DispatchQueue.main)
             .sink { [weak self] submit in
                 guard let self else { return }
                 if submit != nil {
-                    resultTableView.reloadData()
                     button.isHidden = false
                 }
+                resultTableView.reloadSections(IndexSet(integer: 1), with: .fade)
             }
             .store(in: &cancellables)
         
@@ -119,6 +128,7 @@ class HummingResultViewController: UIViewController {
                         button.setConfiguration(title: "완료", backgroundColor: .asYellow)
                     }
                     viewModel.isNext = false
+                    resultTableView.reloadData()
                 }
             }
             .store(in: &cancellables)
