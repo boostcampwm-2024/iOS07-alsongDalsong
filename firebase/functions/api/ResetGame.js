@@ -4,6 +4,7 @@
 
 const { onRequest } = require('firebase-functions/v2/https');
 const admin = require('../FirebaseAdmin.js');
+const { FieldValue } = require('firebase-admin/firestore');
 
 /**
  * 게임 리셋 요청을 처리하는 HTTPS 요청.
@@ -16,7 +17,7 @@ module.exports.resetGame = onRequest({ region: 'asia-southeast1' }, async (req, 
     return res.status(405).json({ error: 'Only POST requests are accepted' });
   }
 
-  const { roomNumber, userId } = req.body;
+  const { roomNumber, userId } = req.query;
   const roomRef = admin.firestore().collection('rooms').doc(roomNumber);
 
   try {
@@ -32,24 +33,22 @@ module.exports.resetGame = onRequest({ region: 'asia-southeast1' }, async (req, 
       return res.status(403).json({ error: 'Only the host can reset the game' });
     }
 
-    // 게임 관련 상태 초기화
     const updatedRoomData = {
       ...roomData,
-      mode: 'humming',
       round: 0,
-      status: null,
+      status: FieldValue.delete(),
       records: [],
       answers: [],
-      dueTime: null,
+      dueTime: FieldValue.delete(),
       selectedRecords: [],
       submits: [],
-      recordOrder: null,
+      recordOrder: FieldValue.delete(),
     };
 
     // Firestore에 업데이트
     await roomRef.set(updatedRoomData, { merge: true });
 
-    return res.status(200).json({ success: true, message: 'Game reset successfully', updatedRoomData });
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error resetting game:', error);
     return res.status(500).json({ error: 'Failed to reset the game' });

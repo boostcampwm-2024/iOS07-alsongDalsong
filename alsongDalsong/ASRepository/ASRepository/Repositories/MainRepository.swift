@@ -102,4 +102,22 @@ public final class MainRepository: MainRepositoryProtocol {
         guard let success = responseDict["success"] else { return false }
         return success
     }
+    
+    public func postResetGame() async throws -> Bool {
+        let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
+                          URLQueryItem(name: "roomNumber", value: number.value)]
+        let endPoint = FirebaseEndpoint(path: .resetGame, method: .post)
+            .update(\.queryItems, with: queryItems)
+
+        let response = try await networkManager.sendRequest(
+            to: endPoint,
+            type: .none,
+            body: nil,
+            option: .none
+        )
+        
+        let responseDict = try ASDecoder.decode([String: Bool].self, from: response)
+        guard let success = responseDict["success"] else { return false }
+        return success
+    }
 }
