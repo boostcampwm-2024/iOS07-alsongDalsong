@@ -39,11 +39,11 @@ class HummingResultViewController: UIViewController {
     }
     
     private func setButton() {
+        guard let viewModel else { return }
         button.setConfiguration(systemImageName: "play.fill", title: "다음으로", backgroundColor: .asMint)
         view.addSubview(button)
         button.addAction(UIAction { [weak self] _ in
-            guard let self,
-                  let viewModel else { return }
+            guard let self else { return }
             if !(viewModel.hummingResult.isEmpty) {
                 viewModel.changeRecordOrder()
             }
@@ -103,9 +103,7 @@ class HummingResultViewController: UIViewController {
                 guard let self else { return }
                 if submit != nil {
                     resultTableView.reloadData()
-                    if viewModel.isHost {
-                        button.isHidden = false
-                    }
+                    button.isHidden = false
                 }
             }
             .store(in: &cancellables)
@@ -121,6 +119,19 @@ class HummingResultViewController: UIViewController {
                         button.setConfiguration(title: "완료", backgroundColor: .asYellow)
                     }
                     viewModel.isNext = false
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isHost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHost in
+                guard let self else { return }
+                if isHost {
+                    self.button.isEnabled = true
+                }
+                else {
+                    self.button.isEnabled = false
                 }
             }
             .store(in: &cancellables)
