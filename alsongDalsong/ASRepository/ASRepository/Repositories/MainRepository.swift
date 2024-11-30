@@ -1,9 +1,11 @@
 import ASDecoder
 import ASEncoder
 import ASEntity
+import ASLogKit
 import ASNetworkKit
 import Combine
 import Foundation
+import ASRepositoryProtocol
 
 public final class MainRepository: MainRepositoryProtocol {
     public var myId: String? { ASFirebaseAuth.myID }
@@ -36,7 +38,7 @@ public final class MainRepository: MainRepositoryProtocol {
                 switch completion {
                     case let .failure(error):
                         // TODO: - Error Handling
-                        print(error.localizedDescription)
+                        Logger.error(error.localizedDescription)
                     case .finished:
                         return
                 }

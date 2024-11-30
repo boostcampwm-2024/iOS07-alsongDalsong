@@ -1,7 +1,6 @@
 import ASEntity
 import Combine
 import SwiftUI
-import UIKit
 
 class HummingResultViewController: UIViewController {
     private let musicResultView = MusicResultView(frame: .zero)

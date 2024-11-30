@@ -1,5 +1,4 @@
 import ASEntity
-import MusicKit
 import SwiftUI
 
 struct ASMusicItemCell: View {

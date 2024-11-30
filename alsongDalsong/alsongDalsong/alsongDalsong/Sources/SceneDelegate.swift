@@ -1,9 +1,11 @@
 import ASContainer
-import ASNetworkKit
-import ASRepository
 import ASCacheKit
+import ASRepository
+import ASNetworkKit
+import ASRepositoryProtocol
 import Firebase
 import UIKit
+import ASLogKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -46,7 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             do {
                 try await firebaseManager.signOut()
             } catch {
-                print(error)
+                Logger.error(error.localizedDescription)
             }
         }
     }

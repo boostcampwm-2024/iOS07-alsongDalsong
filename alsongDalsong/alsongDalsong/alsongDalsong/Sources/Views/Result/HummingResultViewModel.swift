@@ -1,8 +1,9 @@
 import Foundation
 import Combine
-import ASRepository
+import ASRepositoryProtocol
 import ASAudioKit
 import ASEntity
+import ASLogKit
 
 final class HummingResultViewModel: @unchecked Sendable {
     private var hummingResultRepository: HummingResultRepositoryProtocol
@@ -51,13 +52,13 @@ final class HummingResultViewModel: @unchecked Sendable {
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 //TODO: 성공 실패 여부에 따른 처리
-                print(completion)
+                Logger.debug(completion)
             } receiveValue: { [weak self] (result: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer, recordOrder: UInt8)]) in
                 // 분명 받았던 데이터인데 계속 값이 들어옴
                 guard let self else { return }
                 
                 if (result.count - 1) < result.first?.recordOrder ?? 0 { return }
-                print("호출")
+                Logger.debug("호출")
                 self.hummingResult = result.map {
                     return (answer: $0.answer, records: $0.records, submit: $0.submit)
                 }
@@ -66,7 +67,7 @@ final class HummingResultViewModel: @unchecked Sendable {
                     $0.answer.player?.order ?? 0 < $1.answer.player?.order ?? 1
                 }
                 
-                print("hummingResult \(self.hummingResult)")
+                Logger.debug("hummingResult \(self.hummingResult)")
 
                 let current = self.hummingResult.removeFirst()
                 self.currentResult = current.answer
@@ -113,7 +114,7 @@ final class HummingResultViewModel: @unchecked Sendable {
                     await AudioHelper.shared.startPlaying(data)
                     await waitForPlaybackToFinish()
                 } catch {
-                    print("녹음 파일 다운로드에 실패하였습니다.")
+                    Logger.error("녹음 파일 다운로드에 실패하였습니다.")
                 }
             }
             currentsubmit = submitsResult
@@ -177,7 +178,7 @@ final class HummingResultViewModel: @unchecked Sendable {
             do {
                 try await self.roomActionRepository.changeRecordOrder(roomNumber: roomNumber)
             } catch {
-                print(error.localizedDescription)
+                Logger.error(error.localizedDescription)
             }
         }
     }

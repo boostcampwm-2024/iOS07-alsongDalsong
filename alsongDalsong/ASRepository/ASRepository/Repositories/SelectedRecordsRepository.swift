@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import ASEntity
+import ASRepositoryProtocol
 
 public final class SelectedRecordsRepository: SelectedRecordsRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol

@@ -1,5 +1,5 @@
 import ASEntity
-import ASRepository
+import ASRepositoryProtocol
 import Combine
 import Foundation
 
@@ -44,7 +44,7 @@ final class RehummingViewModel: @unchecked Sendable {
 
     func startRecording() {
         if !isRecording {
-            isRecording = true            
+            isRecording = true
         }
     }
 

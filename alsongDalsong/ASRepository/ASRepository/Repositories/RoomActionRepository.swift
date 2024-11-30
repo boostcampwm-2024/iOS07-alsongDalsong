@@ -2,6 +2,7 @@ import ASEntity
 import ASNetworkKit
 import Combine
 import Foundation
+import ASRepositoryProtocol
 
 public final class RoomActionRepository: RoomActionRepositoryProtocol {
     private let mainRepository: MainRepositoryProtocol

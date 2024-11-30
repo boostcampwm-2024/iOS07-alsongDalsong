@@ -1,6 +1,7 @@
 import ASEntity
 import Combine
 import Foundation
+import ASRepositoryProtocol
 
 public final class GameStateRepository: GameStateRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol

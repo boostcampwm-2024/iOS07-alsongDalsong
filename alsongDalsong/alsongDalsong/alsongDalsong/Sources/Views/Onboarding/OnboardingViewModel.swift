@@ -1,5 +1,5 @@
 import ASMusicKit
-import ASRepository
+import ASRepositoryProtocol
 import Combine
 import Foundation
 

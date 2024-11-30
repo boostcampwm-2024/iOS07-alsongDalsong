@@ -1,7 +1,8 @@
 import ASEntity
-import ASRepository
+import ASRepositoryProtocol
 import Combine
 import Foundation
+import ASLogKit
 
 final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     private var playersRepository: PlayersRepositoryProtocol
@@ -88,7 +89,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isHost, playerCount in
                 self?.canBeginGame = isHost && playerCount > 1
-                print("현재 canBeginGame: \(self?.canBeginGame)")
+                Logger.debug("현재 canBeginGame: \(self?.canBeginGame)")
             }
             .store(in: &cancellables)
     }
@@ -106,7 +107,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             do {
                 isLeaveRoom = try await roomActionRepository.leaveRoom()
             } catch {
-                print(error.localizedDescription)
+                Logger.error(error.localizedDescription)
             }
         }
     }
@@ -118,7 +119,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
                     _ = try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
                 }
             } catch {
-                print(error.localizedDescription)
+                Logger.error(error.localizedDescription)
             }
         }
     }

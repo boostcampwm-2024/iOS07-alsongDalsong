@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import ASEntity
 import ASNetworkKit
+import ASRepositoryProtocol
 
 public final class HummingResultRepository: HummingResultRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol

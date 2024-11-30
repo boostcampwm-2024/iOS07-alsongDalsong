@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		160109612CEB7AFD00FB3182 /* ASNetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1601095C2CEB7AF700FB3182 /* ASNetworkKit.framework */; };
 		160109622CEB7AFD00FB3182 /* ASNetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1601095C2CEB7AF700FB3182 /* ASNetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1B7EA85E2CFAA0AE00B2BE2A /* ASLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7EA85D2CFAA0AE00B2BE2A /* ASLogKit.framework */; };
+		1B7EA85F2CFAA0AE00B2BE2A /* ASLogKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7EA85D2CFAA0AE00B2BE2A /* ASLogKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1B7EA8712CFAA2D400B2BE2A /* ASRepositoryProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7EA8652CFAA2B600B2BE2A /* ASRepositoryProtocol.framework */; };
+		1B7EA8722CFAA2D400B2BE2A /* ASRepositoryProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7EA8652CFAA2B600B2BE2A /* ASRepositoryProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -19,6 +23,13 @@
 			remoteGlobalIDString = 1B10CADB2CE4C13F002A5B8F;
 			remoteInfo = ASNetworkKit;
 		};
+		1B7EA8732CFAA2D400B2BE2A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 160109352CEB79E500FB3182 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1B7EA8642CFAA2B600B2BE2A;
+			remoteInfo = ASRepositoryProtocol;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +39,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1B7EA85F2CFAA0AE00B2BE2A /* ASLogKit.framework in Embed Frameworks */,
+				1B7EA8722CFAA2D400B2BE2A /* ASRepositoryProtocol.framework in Embed Frameworks */,
 				160109622CEB7AFD00FB3182 /* ASNetworkKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -38,12 +51,52 @@
 /* Begin PBXFileReference section */
 		1601093E2CEB79E500FB3182 /* ASRepository.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASRepository.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		160109552CEB7AF700FB3182 /* ASNetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASNetworkKit.xcodeproj; path = ../ASNetworkKit/ASNetworkKit.xcodeproj; sourceTree = "<group>"; };
+		1B7EA85D2CFAA0AE00B2BE2A /* ASLogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ASLogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B7EA8652CFAA2B600B2BE2A /* ASRepositoryProtocol.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASRepositoryProtocol.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1B7EA8692CFAA2B600B2BE2A /* Exceptions for "ASRepositoryProtocol" folder in "ASRepositoryProtocol" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			publicHeaders = (
+				ASRepositoryProtocol.h,
+			);
+			target = 1B7EA8642CFAA2B600B2BE2A /* ASRepositoryProtocol */;
+		};
+		1B7EA86F2CFAA2CA00B2BE2A /* Exceptions for "ASRepository" folder in "ASRepositoryProtocol" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Protocols/MainRepositoryProtocol.swift,
+				Protocols/RepositoryProtocols.swift,
+			);
+			target = 1B7EA8642CFAA2B600B2BE2A /* ASRepositoryProtocol */;
+		};
+		1B7EA8702CFAA2CE00B2BE2A /* Exceptions for "ASRepository" folder in "ASRepository" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Protocols/MainRepositoryProtocol.swift,
+				Protocols/RepositoryProtocols.swift,
+			);
+			target = 1601093D2CEB79E500FB3182 /* ASRepository */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		160109402CEB79E500FB3182 /* ASRepository */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1B7EA8702CFAA2CE00B2BE2A /* Exceptions for "ASRepository" folder in "ASRepository" target */,
+				1B7EA86F2CFAA2CA00B2BE2A /* Exceptions for "ASRepository" folder in "ASRepositoryProtocol" target */,
+			);
 			path = ASRepository;
+			sourceTree = "<group>";
+		};
+		1B7EA8662CFAA2B600B2BE2A /* ASRepositoryProtocol */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1B7EA8692CFAA2B600B2BE2A /* Exceptions for "ASRepositoryProtocol" folder in "ASRepositoryProtocol" target */,
+			);
+			path = ASRepositoryProtocol;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -53,7 +106,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B7EA85E2CFAA0AE00B2BE2A /* ASLogKit.framework in Frameworks */,
+				1B7EA8712CFAA2D400B2BE2A /* ASRepositoryProtocol.framework in Frameworks */,
 				160109612CEB7AFD00FB3182 /* ASNetworkKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1B7EA8622CFAA2B600B2BE2A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				160109402CEB79E500FB3182 /* ASRepository */,
+				1B7EA8662CFAA2B600B2BE2A /* ASRepositoryProtocol */,
 				160109502CEB7AAE00FB3182 /* Frameworks */,
 				1601093F2CEB79E500FB3182 /* Products */,
 			);
@@ -73,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				1601093E2CEB79E500FB3182 /* ASRepository.framework */,
+				1B7EA8652CFAA2B600B2BE2A /* ASRepositoryProtocol.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,6 +144,7 @@
 		160109502CEB7AAE00FB3182 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1B7EA85D2CFAA0AE00B2BE2A /* ASLogKit.framework */,
 				160109552CEB7AF700FB3182 /* ASNetworkKit.xcodeproj */,
 			);
 			name = Frameworks;
@@ -103,6 +168,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1B7EA8602CFAA2B600B2BE2A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -119,6 +191,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				1B7EA8742CFAA2D400B2BE2A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				160109402CEB79E500FB3182 /* ASRepository */,
@@ -128,6 +201,29 @@
 			);
 			productName = ASRepository;
 			productReference = 1601093E2CEB79E500FB3182 /* ASRepository.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		1B7EA8642CFAA2B600B2BE2A /* ASRepositoryProtocol */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1B7EA86A2CFAA2B600B2BE2A /* Build configuration list for PBXNativeTarget "ASRepositoryProtocol" */;
+			buildPhases = (
+				1B7EA8602CFAA2B600B2BE2A /* Headers */,
+				1B7EA8612CFAA2B600B2BE2A /* Sources */,
+				1B7EA8622CFAA2B600B2BE2A /* Frameworks */,
+				1B7EA8632CFAA2B600B2BE2A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				1B7EA8662CFAA2B600B2BE2A /* ASRepositoryProtocol */,
+			);
+			name = ASRepositoryProtocol;
+			packageProductDependencies = (
+			);
+			productName = ASRepositoryProtocol;
+			productReference = 1B7EA8652CFAA2B600B2BE2A /* ASRepositoryProtocol.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -142,6 +238,9 @@
 					1601093D2CEB79E500FB3182 = {
 						CreatedOnToolsVersion = 16.0;
 						LastSwiftMigration = 1600;
+					};
+					1B7EA8642CFAA2B600B2BE2A = {
+						CreatedOnToolsVersion = 16.1;
 					};
 				};
 			};
@@ -166,6 +265,7 @@
 			projectRoot = "";
 			targets = (
 				1601093D2CEB79E500FB3182 /* ASRepository */,
+				1B7EA8642CFAA2B600B2BE2A /* ASRepositoryProtocol */,
 			);
 		};
 /* End PBXProject section */
@@ -188,6 +288,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1B7EA8632CFAA2B600B2BE2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -198,7 +305,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1B7EA8612CFAA2B600B2BE2A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1B7EA8742CFAA2D400B2BE2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1B7EA8642CFAA2B600B2BE2A /* ASRepositoryProtocol */;
+			targetProxy = 1B7EA8732CFAA2D400B2BE2A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		160109452CEB79E500FB3182 /* Debug */ = {
@@ -395,6 +517,74 @@
 			};
 			name = Release;
 		};
+		1B7EA86B2CFAA2B600B2BE2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASRepositoryProtocol;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1B7EA86C2CFAA2B600B2BE2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = B3PWYBKFUK;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = kr.codesquad.boostcamp9.alsongDalsong.ASRepositoryProtocol;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -412,6 +602,15 @@
 			buildConfigurations = (
 				160109452CEB79E500FB3182 /* Debug */,
 				160109462CEB79E500FB3182 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1B7EA86A2CFAA2B600B2BE2A /* Build configuration list for PBXNativeTarget "ASRepositoryProtocol" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1B7EA86B2CFAA2B600B2BE2A /* Debug */,
+				1B7EA86C2CFAA2B600B2BE2A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

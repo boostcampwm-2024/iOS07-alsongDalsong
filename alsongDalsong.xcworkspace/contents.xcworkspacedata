@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:alsongDalsong/ASLogKit/ASLogKit.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:alsongDalsong/ASContainer/ASContainer.xcodeproj">
    </FileRef>
    <FileRef

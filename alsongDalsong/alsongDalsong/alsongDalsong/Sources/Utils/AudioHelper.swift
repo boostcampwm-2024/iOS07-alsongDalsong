@@ -1,6 +1,7 @@
 import ASAudioKit
 import Combine
 import Foundation
+import ASLogKit
 
 extension AnyPublisher: @unchecked @retroactive Sendable {}
 extension PassthroughSubject: @unchecked @retroactive Sendable {}
@@ -104,7 +105,7 @@ actor AudioHelper {
             let recordedData = await stopRecording()
             sendDataThrough(recorderDataSubject, recordedData ?? Data())
             removeTimer()
-        } catch { print(error.localizedDescription) }
+        } catch { Logger.error(error.localizedDescription) }
     }
 
     func stopPlaying() async {

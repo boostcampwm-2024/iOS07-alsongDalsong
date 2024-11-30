@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import ASEntity
+import ASRepositoryProtocol
 
 public final class RoomInfoRepository: RoomInfoRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol

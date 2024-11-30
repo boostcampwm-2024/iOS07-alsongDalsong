@@ -1,5 +1,6 @@
 import ASContainer
 import ASNetworkKit
+import ASRepositoryProtocol
 
 public struct RepsotioryAssembly: Assembly {
     public init() {}

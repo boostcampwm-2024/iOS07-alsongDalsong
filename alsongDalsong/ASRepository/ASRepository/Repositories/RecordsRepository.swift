@@ -1,6 +1,8 @@
 import ASEntity
 import Combine
 import Foundation
+import ASLogKit
+import ASRepositoryProtocol
 
 public final class RecordsRepository: RecordsRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
@@ -66,7 +68,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
         if let targetRecord = hummings.first(where: { $0.player?.id == targetId }) {
             return targetRecord
         } else {
-            print("\(targetId)에 대한 Record를 찾을 수 없음")
+            Logger.debug("\(targetId)에 대한 Record를 찾을 수 없음")
             return nil
         }
     }

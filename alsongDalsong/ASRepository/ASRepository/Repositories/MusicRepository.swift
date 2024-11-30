@@ -1,6 +1,7 @@
 import ASNetworkKit
 import Combine
 import Foundation
+import ASRepositoryProtocol
 
 public final class MusicRepository: MusicRepositoryProtocol {
     // TODO: - Container로 주입

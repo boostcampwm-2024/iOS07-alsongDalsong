@@ -1,5 +1,5 @@
 import ASContainer
-import ASRepository
+import ASRepositoryProtocol
 import Combine
 import UIKit
 

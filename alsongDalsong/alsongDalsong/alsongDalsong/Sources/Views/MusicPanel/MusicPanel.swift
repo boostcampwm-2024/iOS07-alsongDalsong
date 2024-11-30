@@ -1,6 +1,6 @@
 import ASContainer
 import ASEntity
-import ASRepository
+import ASRepositoryProtocol
 import Combine
 import UIKit
 

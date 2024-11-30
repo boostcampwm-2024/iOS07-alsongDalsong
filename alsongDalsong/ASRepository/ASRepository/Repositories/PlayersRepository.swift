@@ -2,6 +2,7 @@ import Foundation
 import ASNetworkKit
 import Combine
 import ASEntity
+import ASRepositoryProtocol
 
 public final class PlayersRepository: PlayersRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol

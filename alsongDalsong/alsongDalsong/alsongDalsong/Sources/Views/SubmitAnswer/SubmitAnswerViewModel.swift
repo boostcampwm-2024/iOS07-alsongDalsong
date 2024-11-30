@@ -1,9 +1,8 @@
 import ASEntity
 import ASMusicKit
-import ASRepository
+import ASRepositoryProtocol
 import Combine
 import Foundation
-import MusicKit
 
 final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var searchList: [Music] = []

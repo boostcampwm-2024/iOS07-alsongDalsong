@@ -4,6 +4,7 @@ import ASEntity
 import ASNetworkKit
 import Combine
 import Foundation
+import ASRepositoryProtocol
 
 public final class AnswersRepository: AnswersRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
@@ -50,10 +51,7 @@ public final class AnswersRepository: AnswersRepositoryProtocol {
             .update(\.queryItems, with: queryItems)
 
         let body = try ASEncoder.encode(answer)
-        try print(JSONSerialization.jsonObject(with: body, options: []))
-
         let response = try await networkManager.sendRequest(to: endPoint, type: .json, body: body, option: .none)
-
         let responseDict = try ASDecoder.decode([String: String].self, from: response)
         return !responseDict.isEmpty
     }

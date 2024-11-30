@@ -1,5 +1,5 @@
 import ASEntity
-import ASRepository
+import ASRepositoryProtocol
 import Combine
 import Foundation
 
