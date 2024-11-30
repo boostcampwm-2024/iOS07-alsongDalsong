@@ -1,11 +1,11 @@
-import ASContainer
 import ASCacheKit
-import ASRepository
+import ASContainer
+import ASLogKit
 import ASNetworkKit
+import ASRepository
 import ASRepositoryProtocol
 import Firebase
 import UIKit
-import ASLogKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -36,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         let onboardingVC = OnboardingViewController(viewmodel: onboardingVM, inviteCode: inviteCode)
         let navigationController = UINavigationController(rootViewController: onboardingVC)
-        navigationController.navigationBar.isHidden = true
+        navigationController.navigationBar.isHidden = false
         navigationController.interactivePopGestureRecognizer?.isEnabled = false
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
