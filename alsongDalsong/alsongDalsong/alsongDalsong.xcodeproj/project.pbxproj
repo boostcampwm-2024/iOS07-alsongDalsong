@@ -23,6 +23,8 @@
 		8D37A22B2CEF22F20015DC56 /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D37A2252CEF22EE0015DC56 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64F9402CEB1D600069B77F /* ASEntity.framework */; };
 		8D64F9422CEB1D6C0069B77F /* ASEntity.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64F9402CEB1D600069B77F /* ASEntity.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D7F5F012CFAAC63002EAB0F /* ASRepositoryProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D7F5F002CFAA96C002EAB0F /* ASRepositoryProtocol.framework */; };
+		8D7F5F022CFAAC63002EAB0F /* ASRepositoryProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D7F5F002CFAA96C002EAB0F /* ASRepositoryProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D95AF212CEB8BC000C211AD /* ASRepository.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D95AF202CEB8BB900C211AD /* ASRepository.framework */; };
 		8D95AF222CEB8BC000C211AD /* ASRepository.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D95AF202CEB8BB900C211AD /* ASRepository.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -77,6 +79,13 @@
 			remoteGlobalIDString = 1B9D3FF12CE3AD62004C79EE;
 			remoteInfo = ASEntity;
 		};
+		8D7F5EFF2CFAA96C002EAB0F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1B7EA8652CFAA2B600B2BE2A;
+			remoteInfo = ASRepositoryProtocol;
+		};
 		8D95AF1F2CEB8BB900C211AD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8D95AF1B2CEB8BB900C211AD /* ASRepository.xcodeproj */;
@@ -101,6 +110,7 @@
 				169725692CE5F863005B4953 /* ASNetworkKit.framework in Embed Frameworks */,
 				8D95AF222CEB8BC000C211AD /* ASRepository.framework in Embed Frameworks */,
 				8D64F9422CEB1D6C0069B77F /* ASEntity.framework in Embed Frameworks */,
+				8D7F5F022CFAAC63002EAB0F /* ASRepositoryProtocol.framework in Embed Frameworks */,
 				169C069E2CECE8860084B082 /* ASCacheKitProtocol.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -156,6 +166,7 @@
 				169725682CE5F863005B4953 /* ASNetworkKit.framework in Frameworks */,
 				8D95AF212CEB8BC000C211AD /* ASRepository.framework in Frameworks */,
 				8D64F9412CEB1D6C0069B77F /* ASEntity.framework in Frameworks */,
+				8D7F5F012CFAAC63002EAB0F /* ASRepositoryProtocol.framework in Frameworks */,
 				169C069D2CECE8860084B082 /* ASCacheKitProtocol.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -241,6 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				8D95AF202CEB8BB900C211AD /* ASRepository.framework */,
+				8D7F5F002CFAA96C002EAB0F /* ASRepositoryProtocol.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -387,6 +399,13 @@
 			fileType = wrapper.framework;
 			path = ASEntity.framework;
 			remoteRef = 8D64F93F2CEB1D600069B77F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8D7F5F002CFAA96C002EAB0F /* ASRepositoryProtocol.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASRepositoryProtocol.framework;
+			remoteRef = 8D7F5EFF2CFAA96C002EAB0F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		8D95AF202CEB8BB900C211AD /* ASRepository.framework */ = {
