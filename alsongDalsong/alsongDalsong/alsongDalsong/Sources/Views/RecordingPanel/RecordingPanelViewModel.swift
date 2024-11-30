@@ -5,6 +5,7 @@ final class RecordingPanelViewModel: @unchecked Sendable {
     @Published var recordedData: Data?
     @Published public private(set) var recorderAmplitude: Float = 0.0
     @Published public private(set) var buttonState: AudioButtonState = .idle
+    @Published public private(set) var playIndex: Int?
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -42,7 +43,7 @@ final class RecordingPanelViewModel: @unchecked Sendable {
                 return
             }
             if self?.buttonState == .idle {
-                await AudioHelper.shared.startPlaying(self?.recordedData, sourceType: .recorded)
+                await AudioHelper.shared.startPlaying(self?.recordedData, sourceType: .recorded, needsWaveUpdate: true)
                 return
             }
         }
@@ -54,7 +55,7 @@ final class RecordingPanelViewModel: @unchecked Sendable {
             await AudioHelper.shared.stopPlaying()
         }
     }
-    
+
     private func bindAudioHelper() {
         Task {
             await AudioHelper.shared.amplitudePublisher
@@ -64,6 +65,7 @@ final class RecordingPanelViewModel: @unchecked Sendable {
                     self.recorderAmplitude = newAmplitude
                 }
                 .store(in: &self.cancellables)
+
             await AudioHelper.shared.playerStatePublisher
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] source, isPlaying in
@@ -77,12 +79,23 @@ final class RecordingPanelViewModel: @unchecked Sendable {
                     }
                 }
                 .store(in: &self.cancellables)
+
+            await AudioHelper.shared.waveformUpdatePublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] index in
+                    guard let self else { return }
+                    if index > self.sampleCount - 1 || index < 0 { return }
+                    self.playIndex = index
+                }
+                .store(in: &self.cancellables)
+
             await AudioHelper.shared.recorderStatePublisher
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] isRecording in
                     self?.updateButtonState(isRecording ? .recording : .idle)
                 }
                 .store(in: &self.cancellables)
+
             await AudioHelper.shared.recorderDataPublisher
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] data in
