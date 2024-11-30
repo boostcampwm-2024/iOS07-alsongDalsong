@@ -106,18 +106,26 @@ final class HummingResultViewModel: @unchecked Sendable {
     }
     
     func startPlaying() async -> Void {
-            while !recordsResult.isEmpty {
-                currentRecords.append(recordsResult.removeFirst())
-                guard let fileUrl = currentRecords.last?.fileUrl else { continue }
-                do {
-                    let data = try await fetchRecordData(url: fileUrl)
-                    await AudioHelper.shared.startPlaying(data)
-                    await waitForPlaybackToFinish()
-                } catch {
-                    Logger.error("녹음 파일 다운로드에 실패하였습니다.")
-                }
+        await currentMusicPlaying()
+        while !recordsResult.isEmpty {
+            currentRecords.append(recordsResult.removeFirst())
+            guard let fileUrl = currentRecords.last?.fileUrl else { continue }
+            do {
+                let data = try await fetchRecordData(url: fileUrl)
+                await AudioHelper.shared.startPlaying(data)
+                await waitForPlaybackToFinish()
+            } catch {
+                Logger.error("녹음 파일 다운로드에 실패하였습니다.")
             }
-            currentsubmit = submitsResult
+        }
+        currentsubmit = submitsResult
+    }
+    
+    private func currentMusicPlaying() async -> Void {
+        guard let fileUrl = currentResult?.music?.previewUrl else { return }
+        let data = await musicRepository.getMusicData(url: fileUrl)
+        await AudioHelper.shared.startPlaying(data)
+        await waitForPlaybackToFinish()
     }
     
     private func waitForPlaybackToFinish() async {
