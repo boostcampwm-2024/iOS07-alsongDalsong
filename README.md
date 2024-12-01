@@ -11,9 +11,7 @@
 
 여러분을 음악과 다양한 소리가 넘치는 세계로 안내합니다. 
 
-친구들과 함께 노래를 듣고, 부르며 다양한 게임을 즐겨보세요 ! 
-
-허밍모드, 하모니 모드, 이구동성 모드, 1초 듣고 맞추기 모드 등 여러가지 모드가 준비되어있어요 ! 
+친구들과 함께 노래를 듣고, 부르며 재밌는 게임을 즐겨보세요 ! 
 
 순서에 따라 변형되는 허밍을 듣고 녹음하며 원래 노래가 무엇이었는지 맞춰보세요 ! 
 
@@ -23,7 +21,8 @@
 |<img width=300 src="https://github.com/user-attachments/assets/5d6e9355-7738-4361-92cd-824ad6d6b470"> | <img width=300 src="https://github.com/user-attachments/assets/a12d8c07-2e50-460c-b5b1-e686e00a3cf2">| <img width=300 src="https://github.com/user-attachments/assets/41b05c64-06e6-4559-8cf1-4d302f1e4ad5">|
 |:-:|:-:|:-:|
 <div align="center">
-  
+
+
 ## Team 대대대대(DDDD)
 |S024 박상원|S029 박진성|S033 손승재|S050 이민하|
 |:-:|:-:|:-:|:-:|
