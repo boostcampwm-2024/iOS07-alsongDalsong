@@ -123,12 +123,12 @@ final class OnboardingViewController: UIViewController {
     private func setupButton() {
         createRoomButton.setConfiguration(
             systemImageName: "",
-            title: Constants.craeteButtonTitle,
+            text: Constants.craeteButtonTitle,
             backgroundColor: .asYellow
         )
         joinRoomButton.setConfiguration(
             systemImageName: "",
-            title: Constants.joinButtonTitle,
+            text: Constants.joinButtonTitle,
             backgroundColor: .asMint
         )
     }
@@ -225,7 +225,7 @@ extension OnboardingViewController {
 
 extension OnboardingViewController {
     private func showRoomNumerInputAlert() {
-        let alert = ASAlertController(
+        let alert = InputAlertController(
             titleText: .joinRoom,
             textFieldPlaceholder: .roomNumber,
             isUppercased: true
@@ -236,21 +236,21 @@ extension OnboardingViewController {
     }
 
     private func showRoomFailedAlert(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 
     private func showCreateRoomLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .joinRoom,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.setNicknameAndCreateRoom()
             },
             errorCompletion: { [weak self] error in
                 self?.showRoomFailedAlert(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 }
 
