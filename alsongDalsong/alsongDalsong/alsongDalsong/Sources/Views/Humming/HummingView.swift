@@ -126,20 +126,20 @@ final class HummingViewController: UIViewController {
 
 extension HummingViewController {
     private func showSubmitHummingLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .submitHumming,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.submitHumming()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailSubmitMusic(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }
