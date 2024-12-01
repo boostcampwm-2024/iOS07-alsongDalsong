@@ -96,7 +96,12 @@ class HummingResultViewController: UIViewController {
             .sink { [weak self] records in
                 guard let self, !records.isEmpty else { return }
                 let indexPath = IndexPath(row: records.count - 1, section: 0)
-                self.resultTableView.insertRows(at: [indexPath], with: .fade)
+                if records.count > resultTableView.numberOfRows(inSection: 0) {
+                    resultTableView.insertRows(at: [indexPath], with: .fade)
+                }
+                else {
+                    resultTableView.reloadRows(at: [indexPath], with: .fade)
+                }
             }
             .store(in: &cancellables)
         
@@ -107,7 +112,12 @@ class HummingResultViewController: UIViewController {
                 if submit != nil {
                     button.isHidden = false
                     let indexPath = IndexPath(row: 0, section: 1)
-                    resultTableView.insertRows(at: [indexPath], with: .fade)
+                    if resultTableView.numberOfRows(inSection: 1) == 1 {
+                        resultTableView.reloadRows(at: [indexPath], with: .fade)
+                    }
+                    else {
+                        resultTableView.insertRows(at: [indexPath], with: .fade)
+                    }
                 }
             }
             .store(in: &cancellables)
