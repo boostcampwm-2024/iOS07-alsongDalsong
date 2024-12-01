@@ -32,6 +32,7 @@ final class SubmitAnswerViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         viewModel.cancelSubscriptions()
+        cancellables.removeAll()
     }
 
     private func bindToComponents() {

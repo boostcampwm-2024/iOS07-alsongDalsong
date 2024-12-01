@@ -42,3 +42,22 @@ public struct Room: Codable {
         self.submits = submits
     }
 }
+
+extension Room: CustomStringConvertible {
+    public var description: String {
+        return """
+        number: \(number ?? "nil")
+        host: \(host?.description ?? "nil")
+        players: \(players?.description ?? "nil")
+        mode: \(mode?.title ?? "nil")
+        round: \(round ?? 0)
+        status: \(status?.description ?? "nil")
+        recordOrder: \(recordOrder ?? 0)
+        records: \(records?.description ?? "nil")
+        answers: \(answers?.description ?? "nil")
+        dueTime: \(dueTime?.description ?? "nil")
+        selectedRecords: \(selectedRecords?.description ?? "nil")
+        submits: \(submits?.description ?? "nil")
+        """
+    }
+}

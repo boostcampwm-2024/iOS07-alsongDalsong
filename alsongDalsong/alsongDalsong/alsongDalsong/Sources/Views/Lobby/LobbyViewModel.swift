@@ -123,4 +123,8 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             }
         }
     }
+    
+    public func cancelSubscriptions() {
+        cancellables.removeAll()
+    }
 }

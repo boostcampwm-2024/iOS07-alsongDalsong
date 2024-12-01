@@ -30,3 +30,12 @@ extension Record {
     public static let recordStub4_2 = Record(player: Player.playerStub4, recordOrder: 1, fileUrl: stubm4aData)
     public static let recordStub4_3 = Record(player: Player.playerStub4, recordOrder: 2, fileUrl: stubm4aData)
 }
+
+extension Record: CustomStringConvertible {
+    public var description: String {
+        return """
+        player: \(player?.description ?? "nil")
+        recordOrder: \(String(describing: recordOrder))
+        """
+    }
+}

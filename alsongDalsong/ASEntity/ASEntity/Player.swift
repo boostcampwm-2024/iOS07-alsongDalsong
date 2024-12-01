@@ -28,3 +28,9 @@ extension Player {
     public static let playerStub3: Player = Player(id: "2", avatarUrl: nil, nickname: "Moral-life", score: nil, order: 2)
     public static let playerStub4: Player = Player(id: "3", avatarUrl: nil, nickname: "Sang₩", score: nil, order: 3)
 }
+
+extension Player: CustomStringConvertible {
+    public var description: String {
+        return "\(nickname ?? "Unknown")"
+    }
+}

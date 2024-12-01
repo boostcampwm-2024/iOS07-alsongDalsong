@@ -41,7 +41,8 @@ final class LobbyViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         if viewmodel.isLeaveRoom {
-            viewmodel.leaveRoom()
+            viewmodel.cancelSubscriptions()
+            cancellables.removeAll()
         }
     }
 
