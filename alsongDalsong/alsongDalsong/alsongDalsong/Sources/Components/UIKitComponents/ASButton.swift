@@ -21,29 +21,32 @@ final class ASButton: UIButton {
     ///   - backgroundColor: UIColor 형태로 색깔 입력.  (ex) .asYellow)
     func setConfiguration(
         systemImageName: String? = nil,
-        text: String?,
+        text: String? = nil,
         textStyle: UIFont.TextStyle = .largeTitle,
         backgroundColor: UIColor? = nil
     ) {
         var config = UIButton.Configuration.gray()
-        config.baseBackgroundColor = backgroundColor
         config.baseForegroundColor = .asBlack
-
+        config.background.strokeColor = .black
+        config.background.strokeWidth = 3
+        
         if let systemImageName {
             config.imagePlacement = .leading
             config.image = UIImage(systemName: systemImageName)
             config.imagePadding = 10
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .heavy)
+            config.preferredSymbolConfigurationForImage = imageConfig
+        }
+        
+        if let backgroundColor {
+            config.baseBackgroundColor = backgroundColor
         }
 
-        config.background.strokeColor = .black
-        config.background.strokeWidth = 3
-
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .heavy)
-        config.preferredSymbolConfigurationForImage = imageConfig
-
-        var titleAttr = AttributedString(text ?? "")
-        titleAttr.font = UIFont.font(forTextStyle: textStyle)
-        config.attributedTitle = titleAttr
+        if let text {
+            var titleAttr = AttributedString(text)
+            titleAttr.font = UIFont.font(forTextStyle: textStyle)
+            config.attributedTitle = titleAttr
+        }
 
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
         config.cornerStyle = .medium

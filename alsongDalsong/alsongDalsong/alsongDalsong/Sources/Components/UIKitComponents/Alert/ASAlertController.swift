@@ -6,7 +6,8 @@ class ASAlertController: UIViewController {
     var secondaryButtonText: ASAlertText.ButtonText?
     var primaryButtonAction: ((String) -> Void)?
     var secondaryButtonAction: (() -> Void)?
-
+    var reversedColor: Bool = false
+        
     var alertView = ASPanel()
     var stackView = UIStackView()
     lazy var buttonStackView = UIStackView()
@@ -104,7 +105,7 @@ class ASAlertController: UIViewController {
         primaryButton.setConfiguration(
             text: primaryButtonText?.description,
             textStyle: .title2,
-            backgroundColor: .asLightSky
+            backgroundColor: reversedColor ? .asLightRed : .asLightSky
         )
         primaryButton.addAction(UIAction { [weak self] _ in
             self?.dismiss(animated: true)
@@ -118,7 +119,7 @@ class ASAlertController: UIViewController {
         secondaryButton.setConfiguration(
             text: secondaryButtonText?.description,
             textStyle: .title2,
-            backgroundColor: .asLightRed
+            backgroundColor: reversedColor ? .asLightSky : .asLightRed
         )
         secondaryButton.addAction(UIAction { [weak self] _ in
             self?.dismiss(animated: true)

@@ -115,7 +115,8 @@ final class LobbyViewController: UIViewController {
                 let alert = DefaultAlertController(
                     titleText: .leaveRoom,
                     primaryButtonText: .leave,
-                    secondaryButtonText: .cancel
+                    secondaryButtonText: .cancel,
+                    reversedColor: true
                 ) { [weak self] _ in
                     self?.viewmodel.leaveRoom()
                     self?.navigationController?.popViewController(animated: true)

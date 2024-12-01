@@ -31,6 +31,7 @@ final class DefaultAlertController: ASAlertController {
         titleText: ASAlertText.Title,
         primaryButtonText: ASAlertText.ButtonText = .done,
         secondaryButtonText: ASAlertText.ButtonText = .cancel,
+        reversedColor: Bool = false,
         primaryButtonAction: ((String) -> Void)? = nil,
         secondaryButtonAction: (() -> Void)? = nil
     ) {
@@ -38,6 +39,7 @@ final class DefaultAlertController: ASAlertController {
         self.titleText = titleText
         self.primaryButtonText = primaryButtonText
         self.secondaryButtonText = secondaryButtonText
+        self.reversedColor = reversedColor
         self.primaryButtonAction = primaryButtonAction
         self.secondaryButtonAction = secondaryButtonAction
 

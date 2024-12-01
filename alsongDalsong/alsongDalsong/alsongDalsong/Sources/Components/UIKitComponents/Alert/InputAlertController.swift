@@ -56,6 +56,7 @@ final class InputAlertController: ASAlertController {
         secondaryButtonText: ASAlertText.ButtonText = .cancel,
         textFieldPlaceholder: ASAlertText.Placeholder,
         isUppercased: Bool = false,
+        reversedColor: Bool = false,
         primaryButtonAction: ((String) -> Void)? = nil,
         secondaryButtonAction: (() -> Void)? = nil
     ) {
@@ -64,6 +65,7 @@ final class InputAlertController: ASAlertController {
         self.textFieldPlaceholder = textFieldPlaceholder
         self.primaryButtonText = primaryButtonText
         self.secondaryButtonText = secondaryButtonText
+        self.reversedColor = reversedColor
         self.primaryButtonAction = primaryButtonAction
         self.secondaryButtonAction = secondaryButtonAction
         self.isUppercased = isUppercased
