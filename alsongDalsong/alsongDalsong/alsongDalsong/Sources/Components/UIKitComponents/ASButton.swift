@@ -99,7 +99,7 @@ final class ASButton: UIButton {
 
     enum ASButtonType {
         case disabled
-        case waitStart
+        case needMorePlayers
         case idle(String, UIColor?)
         case startRecord
         case recording
@@ -108,11 +108,12 @@ final class ASButton: UIButton {
         case submit
         case submitted
         case startGame
+        case hostSelecting
 
         var text: String? {
             switch self {
                 case .disabled: nil
-                case .waitStart: "시작 대기중.."
+                case .needMorePlayers: "게임 인원 부족"
                 case let .idle(string, _): string
                 case .startRecord: "녹음하기"
                 case .recording: "녹음중.."
@@ -121,7 +122,8 @@ final class ASButton: UIButton {
                 case .submit: "제출하기"
                 case .submitted: "제출 완료"
                 case .startGame: "시작하기!"
-            }
+                case .hostSelecting: "시작 대기 중"
+                }
         }
 
         var systemImage: String? {
@@ -134,7 +136,7 @@ final class ASButton: UIButton {
 
         var backgroundColor: UIColor? {
             switch self {
-                case .waitStart: .asOrange
+                case .needMorePlayers: .asOrange
                 case let .idle(_, color): color
                 case .startRecord: .systemRed
                 case .recording: .asLightRed

@@ -2,9 +2,6 @@ import Combine
 import SwiftUI
 
 final class LobbyViewController: UIViewController {
-    let topNavigationView = UIView()
-    let backButton = UIButton()
-    let codeLabel = UILabel()
     let inviteButton = ASButton()
     let startButton = ASButton()
     private var hostingController: UIHostingController<LobbyView>?
@@ -48,27 +45,27 @@ final class LobbyViewController: UIViewController {
     private func bindToComponents() {
         viewmodel.$roomNumber
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] roomNumber in
-                self?.codeLabel.text = "#\(roomNumber)"
+            .sink { [weak self] _ in
+                guard let self else { return }
             }
             .store(in: &cancellables)
 
-        viewmodel.$isHost
+        viewmodel.$canBeginGame.combineLatest(viewmodel.$isHost)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isHost in
-                self?.startButton.isEnabled = isHost
-            }
-            .store(in: &cancellables)
-
-        viewmodel.$canBeginGame
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] canBeginGame in
-                if !canBeginGame {
-                    self?.startButton.updateButton(.waitStart)
+            .sink { [weak self] canBeginGame, isHost in
+                if isHost {
+                    if canBeginGame {
+                        self?.startButton.updateButton(.startGame)
+                        self?.startButton.isEnabled = true
+                    }
+                    else {
+                        self?.startButton.updateButton(.needMorePlayers)
+                        self?.startButton.updateButton(.disabled)
+                    }
+                }
+                else {
+                    self?.startButton.updateButton(.hostSelecting)
                     self?.startButton.updateButton(.disabled)
-                } else {
-                    self?.startButton.updateButton(.startGame)
-                    self?.startButton.isEnabled = true
                 }
             }
             .store(in: &cancellables)
@@ -76,23 +73,6 @@ final class LobbyViewController: UIViewController {
 
     private func setupUI() {
         view.backgroundColor = .asLightGray
-        topNavigationView.translatesAutoresizingMaskIntoConstraints = false
-
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        var configuration = UIButton.Configuration.plain()
-
-        configuration.image = UIImage(systemName: "rectangle.portrait.and.arrow.forward")?
-            .withRenderingMode(.alwaysTemplate)
-            .withTintColor(.label)
-            .applyingSymbolConfiguration(.init(pointSize: 24, weight: .medium))?
-            .rotate(radians: .pi)
-        backButton.configuration = configuration
-        backButton.tintColor = .asBlack
-
-        codeLabel.translatesAutoresizingMaskIntoConstraints = false
-        codeLabel.font = .font(forTextStyle: .title1)
-        codeLabel.textColor = .label
-        codeLabel.textAlignment = .center
 
         inviteButton.setConfiguration(
             systemImageName: "link",
@@ -110,22 +90,6 @@ final class LobbyViewController: UIViewController {
     }
 
     private func setAction() {
-        backButton.addAction(
-            UIAction { [weak self] _ in
-                let alert = DefaultAlertController(
-                    titleText: .leaveRoom,
-                    primaryButtonText: .leave,
-                    secondaryButtonText: .cancel,
-                    reversedColor: true
-                ) { [weak self] _ in
-                    self?.viewmodel.leaveRoom()
-                    self?.navigationController?.popViewController(animated: true)
-                }
-                self?.presentAlert(alert)
-            },
-            for: .touchUpInside
-        )
-
         inviteButton.addAction(UIAction { [weak self] _ in
             guard let roomNumber = self?.viewmodel.roomNumber else { return }
             if let url = URL(string: "alsongDalsong://invite/?roomnumber=\(roomNumber)") {
@@ -162,27 +126,11 @@ final class LobbyViewController: UIViewController {
         view.addSubview(lobbyView.view)
         view.addSubview(startButton)
         view.addSubview(inviteButton)
-        view.addSubview(topNavigationView)
-        topNavigationView.addSubview(codeLabel)
-        topNavigationView.addSubview(backButton)
 
         let safeArea = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
-            topNavigationView.topAnchor.constraint(equalTo: safeArea.topAnchor),
-            topNavigationView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            topNavigationView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            topNavigationView.heightAnchor.constraint(equalToConstant: 44),
-
-            backButton.leadingAnchor.constraint(equalTo: topNavigationView.leadingAnchor, constant: 16),
-            backButton.centerYAnchor.constraint(equalTo: topNavigationView.centerYAnchor),
-            backButton.heightAnchor.constraint(equalToConstant: 44),
-            backButton.widthAnchor.constraint(equalToConstant: 44),
-
-            codeLabel.centerYAnchor.constraint(equalTo: topNavigationView.centerYAnchor),
-            codeLabel.centerXAnchor.constraint(equalTo: topNavigationView.centerXAnchor),
-
-            lobbyView.view.topAnchor.constraint(equalTo: topNavigationView.bottomAnchor),
+            lobbyView.view.topAnchor.constraint(equalTo: safeArea.topAnchor),
             lobbyView.view.bottomAnchor.constraint(equalTo: inviteButton.topAnchor, constant: -20),
             lobbyView.view.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             lobbyView.view.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),

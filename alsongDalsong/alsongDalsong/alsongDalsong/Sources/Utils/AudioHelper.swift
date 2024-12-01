@@ -5,12 +5,6 @@ import Foundation
 
 extension AnyPublisher: @unchecked @retroactive Sendable {}
 extension PassthroughSubject: @unchecked @retroactive Sendable {}
-extension AudioHelper {
-    enum FileSource {
-        case imported
-        case recorded
-    }
-}
 
 actor AudioHelper {
     // MARK: - Private properties
@@ -18,7 +12,7 @@ actor AudioHelper {
     static let shared = AudioHelper()
     private var recorder: ASAudioRecorder?
     private var player: ASAudioPlayer?
-    private var source: FileSource = .imported
+    private var source: FileSource = .imported(.large)
     private var playType: PlayType = .full
     private var isConcurrent: Bool = false
     private var cancellable: AnyCancellable?
@@ -187,7 +181,12 @@ extension AudioHelper {
     }
 }
 
-// MARK: - Configure AudioHelper
+extension AudioHelper {
+    enum FileSource: Equatable {
+        case imported(MusicPanelType)
+        case recorded
+    }
+}
 
 extension AudioHelper {
     @discardableResult

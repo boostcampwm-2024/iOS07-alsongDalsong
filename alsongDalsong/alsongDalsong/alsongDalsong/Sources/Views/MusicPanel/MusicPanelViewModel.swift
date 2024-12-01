@@ -4,6 +4,7 @@ import Combine
 import Foundation
 
 final class MusicPanelViewModel: @unchecked Sendable {
+    @Published var type: MusicPanelType
     @Published var music: Music?
     @Published var artwork: Data?
     @Published var preview: Data?
@@ -11,8 +12,13 @@ final class MusicPanelViewModel: @unchecked Sendable {
     private let musicRepository: MusicRepositoryProtocol?
     private var cancellables = Set<AnyCancellable>()
 
-    init(music: Music?, musicRepository: MusicRepositoryProtocol?) {
+    init(
+        music: Music?,
+        type: MusicPanelType = .large,
+        musicRepository: MusicRepositoryProtocol?
+    ) {
         self.music = music
+        self.type = type
         self.musicRepository = musicRepository
         getPreviewData()
         getArtworkData()
@@ -24,13 +30,13 @@ final class MusicPanelViewModel: @unchecked Sendable {
             await AudioHelper.shared.playerStatePublisher
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] source, isPlaying in
-                    if source == .imported {
-                        self?.updateButtonState(isPlaying ? .playing : .idle)
-                        return
-                    }
-                    if source == .recorded, isPlaying {
-                        self?.updateButtonState(.idle)
-                        return
+                    switch source {
+                        case let .imported(panelType):
+                            self?.updateButtonState(type: panelType, isPlaying ? .playing : .idle)
+                        default: if isPlaying {
+                                self?.updateButtonState(type: .compact, .idle)
+                                self?.updateButtonState(type: .large, .idle)
+                            }
                     }
                 }
                 .store(in: &cancellables)
@@ -38,7 +44,8 @@ final class MusicPanelViewModel: @unchecked Sendable {
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] isRecording in
                     if isRecording {
-                        self?.updateButtonState(.idle)
+                        self?.updateButtonState(type: .compact, .idle)
+                        self?.updateButtonState(type: .large, .idle)
                     }
                 }
                 .store(in: &cancellables)
@@ -52,23 +59,30 @@ final class MusicPanelViewModel: @unchecked Sendable {
     }
 
     @MainActor
-    func togglePlayPause() {
+    func togglePlayPause(_ type: MusicPanelType) {
         guard preview != nil else { return }
         Task { [weak self] in
-            await self?.configureAudioHelper()
-            if self?.buttonState == .playing {
+            guard let self else { return }
+            await self.configureAudioHelper()
+            if buttonState == .playing {
                 await AudioHelper.shared.stopPlaying()
                 return
             }
-            if self?.buttonState == .idle {
-                await AudioHelper.shared.startPlaying(self?.preview, sourceType: .imported, option: .full)
+            if buttonState == .idle {
+                await AudioHelper.shared.startPlaying(
+                    self.preview,
+                    sourceType: .imported(type)
+                )
                 return
             }
         }
     }
 
-    private func updateButtonState(_ state: AudioButtonState) {
-        buttonState = state
+    private func updateButtonState(type: MusicPanelType, _ state: AudioButtonState) {
+        if self.type == type {
+            buttonState = state
+        }
+
     }
 
     private func getPreviewData() {

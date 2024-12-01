@@ -35,7 +35,7 @@ final class OnboardingViewController: UIViewController {
         setupButton()
         hideKeyboard()
         bindViewModel()
-        viewModel?.authorizeAppleMusic() 
+        viewModel?.authorizeAppleMusic()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -152,12 +152,14 @@ final class OnboardingViewController: UIViewController {
         let mainRepository: MainRepositoryProtocol = DIContainer.shared.resolve(MainRepositoryProtocol.self)
         mainRepository.connectRoom(roomNumber: roomNumber)
         let gameStateRepository = DIContainer.shared.resolve(GameStateRepositoryProtocol.self)
-
+        let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
         guard let navigationController else { return }
 
         gameNavigationController = GameNavigationController(
             navigationController: navigationController,
-            gameStateRepository: gameStateRepository
+            gameStateRepository: gameStateRepository,
+            roomActionRepository: roomActionRepository,
+            roomNumber: roomNumber
         )
 
         gameNavigationController?.setConfiguration()
