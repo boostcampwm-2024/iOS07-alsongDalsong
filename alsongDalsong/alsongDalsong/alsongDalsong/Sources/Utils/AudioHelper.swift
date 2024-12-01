@@ -10,7 +10,7 @@ actor AudioHelper {
     static let shared = AudioHelper()
     private var recorder: ASAudioRecorder?
     private var player: ASAudioPlayer?
-    private var source: FileSource = .imported
+    private var source: FileSource = .imported(.large)
     private var playType: PlayType = .full
     private var isConcurrent: Bool = false
     private var timer: Timer?
@@ -79,7 +79,7 @@ actor AudioHelper {
     ///   - source: 녹음 파일/url에서 가져온 파일
     ///   - playType: 전체 또는 부분 재생
     ///   - allowsConcurrent: 녹음과 동시에 재생
-    func startPlaying(_ file: Data?, sourceType type: FileSource = .imported) async {
+    func startPlaying(_ file: Data?, sourceType type: FileSource = .imported(.large)) async {
         guard await checkRecorderState(), await checkPlayerState() else { return }
         guard let file else { return }
 
@@ -160,8 +160,8 @@ actor AudioHelper {
 }
 
 extension AudioHelper {
-    enum FileSource {
-        case imported
+    enum FileSource: Equatable {
+        case imported(MusicPanelType)
         case recorded
     }
 }

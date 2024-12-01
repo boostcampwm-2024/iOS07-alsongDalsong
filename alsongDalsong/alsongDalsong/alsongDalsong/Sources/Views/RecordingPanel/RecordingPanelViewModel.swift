@@ -71,7 +71,7 @@ final class RecordingPanelViewModel: @unchecked Sendable {
                         self?.updateButtonState(isPlaying ? .playing : .idle)
                         return
                     }
-                    if source == .imported, isPlaying {
+                    if isPlaying {
                         self?.updateButtonState(.idle)
                         return
                     }
