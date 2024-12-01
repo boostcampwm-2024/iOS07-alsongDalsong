@@ -95,15 +95,8 @@ class HummingResultViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] records in
                 guard let self, !records.isEmpty else { return }
-                let rowCount = self.resultTableView.numberOfRows(inSection: 0)
-                if records.count == rowCount + 1 && rowCount > 0 {
-                    let indexPath = IndexPath(row: rowCount - 1, section: 0)
-                    self.resultTableView.insertRows(at: [indexPath], with: .fade)
-                }
-                else {
-                    let indexPath = IndexPath(row: 0, section: 0)
-                    self.resultTableView.insertRows(at: [indexPath], with: .fade)
-                }
+                let indexPath = IndexPath(row: records.count - 1, section: 0)
+                self.resultTableView.insertRows(at: [indexPath], with: .fade)
             }
             .store(in: &cancellables)
         
