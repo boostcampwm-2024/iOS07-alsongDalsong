@@ -105,8 +105,16 @@ final class SubmitAnswerViewController: UIViewController {
     private func setAction() {
         selectAnswerButton.addAction(UIAction { [weak self] _ in
             guard let self else { return }
-            let selecAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: viewModel))
-            present(selecAnswerView, animated: true)
+            let selectAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: viewModel))
+            if let sheet = selectAnswerView.sheetPresentationController {
+                sheet.detents = [
+                    .medium(),
+                    .large()
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+            viewModel.stopMusic()
+            present(selectAnswerView, animated: true)
         },
         for: .touchUpInside)
 

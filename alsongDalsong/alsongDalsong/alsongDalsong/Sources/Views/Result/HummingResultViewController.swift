@@ -94,18 +94,30 @@ class HummingResultViewController: UIViewController {
         
         viewModel.$currentRecords
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.resultTableView.reloadData()
+            .sink { [weak self] records in
+                guard let self, !records.isEmpty else { return }
+                let indexPath = IndexPath(row: records.count - 1, section: 0)
+                if records.count > resultTableView.numberOfRows(inSection: 0) {
+                    resultTableView.insertRows(at: [indexPath], with: .fade)
+                }
+                else {
+                    resultTableView.reloadRows(at: [indexPath], with: .fade)
+                }
             }
             .store(in: &cancellables)
+        
         viewModel.$currentsubmit
             .receive(on: DispatchQueue.main)
             .sink { [weak self] submit in
                 guard let self else { return }
                 if submit != nil {
-                    resultTableView.reloadData()
-                    if viewModel.isHost {
-                        button.isHidden = false
+                    button.isHidden = false
+                    let indexPath = IndexPath(row: 0, section: 1)
+                    if resultTableView.numberOfRows(inSection: 1) == 1 {
+                        resultTableView.reloadRows(at: [indexPath], with: .fade)
+                    }
+                    else {
+                        resultTableView.insertRows(at: [indexPath], with: .fade)
                     }
                 }
             }
@@ -125,6 +137,20 @@ class HummingResultViewController: UIViewController {
                         }, for: .touchUpInside)
                     }
                     viewModel.isNext = false
+                    resultTableView.reloadData()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isHost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHost in
+                guard let self else { return }
+                if isHost {
+                    self.button.isEnabled = true
+                }
+                else {
+                    self.button.isEnabled = false
                 }
             }
             .store(in: &cancellables)

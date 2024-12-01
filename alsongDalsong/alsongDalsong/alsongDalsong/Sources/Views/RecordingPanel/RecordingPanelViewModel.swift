@@ -44,7 +44,7 @@ final class RecordingPanelViewModel: @unchecked Sendable {
                 return
             }
             if self?.buttonState == .idle {
-                await AudioHelper.shared.startPlaying(self?.recordedData, sourceType: .recorded, needsWaveUpdate: true)
+                await AudioHelper.shared.startPlaying(self?.recordedData, sourceType: .recorded, option: .full, needsWaveUpdate: true)
                 return
             }
         }

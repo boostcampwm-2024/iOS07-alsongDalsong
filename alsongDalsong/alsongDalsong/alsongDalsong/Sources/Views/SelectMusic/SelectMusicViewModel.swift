@@ -76,7 +76,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     public func playMusic() {
         guard let data = musicData else { return }
         Task {
-            await AudioHelper.shared.startPlaying(data)
+            await AudioHelper.shared.startPlaying(data, option: .full)
         }
     }
     

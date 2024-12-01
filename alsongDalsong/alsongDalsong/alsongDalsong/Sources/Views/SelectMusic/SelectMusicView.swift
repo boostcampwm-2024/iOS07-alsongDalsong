@@ -4,6 +4,7 @@ struct SelectMusicView: View {
     @ObservedObject var viewModel: SelectMusicViewModel
     @State var searchTerm = ""
     private let debouncer = Debouncer(delay: 0.5)
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -28,6 +29,7 @@ struct SelectMusicView: View {
                 .frame(width: 60)
             }
             .padding(16)
+            
             ASSearchBar(text: $searchTerm, placeHolder: "곡 제목을 검색하세요")
                 .onChange(of: searchTerm) { newValue in
                     debouncer.debounce {
@@ -38,6 +40,7 @@ struct SelectMusicView: View {
                     }
                 }
                 .padding(.bottom, 8)
+            
             if searchTerm.isEmpty {
                 VStack(alignment: .center) {
                     Spacer()
