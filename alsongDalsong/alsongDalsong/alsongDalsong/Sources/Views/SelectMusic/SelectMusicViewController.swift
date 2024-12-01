@@ -37,7 +37,7 @@ class SelectMusicViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .asLightGray
-        submitButton.setConfiguration(title: "선택 완료", backgroundColor: .asGreen)
+        submitButton.setConfiguration(text: "선택 완료", backgroundColor: .asGreen)
         submitButton.updateButton(.disabled)
         let musicView = SelectMusicView(viewModel: viewModel)
         selectMusicView = UIHostingController(rootView: musicView)

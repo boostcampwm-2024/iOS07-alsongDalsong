@@ -15,14 +15,15 @@ final class ASButton: UIButton {
 
     /// 버튼의 UI 관련한 Configuration을 설정하는 메서드
     /// - Parameters:
-    ///   - systemImageName: SF Symbol 이미지를 삽입을 원할 경우 "play.fill" 과 같이 systemName 입력. 입력 안할시 이미지 입력 안됨.
-    ///   - title: 버튼에 쓰일 텍스트
-    ///   - backgroundColor: UIColor 형태로 색깔 입력.  (ex.   .asYellow)
+    ///   - systemImageName: SF Symbol 이미지를 삽입을 원할 경우 "play.fill" 과 같이 systemName 입력.
+    ///   - text: 버튼에 쓰일 텍스트
+    ///   - textStyle: 버튼에 쓰일 텍스트 스타일
+    ///   - backgroundColor: UIColor 형태로 색깔 입력.  (ex) .asYellow)
     func setConfiguration(
         systemImageName: String? = nil,
-        title: String?,
-        backgroundColor: UIColor? = nil,
-        textSize: CGFloat = 32
+        text: String?,
+        textStyle: UIFont.TextStyle = .largeTitle,
+        backgroundColor: UIColor? = nil
     ) {
         var config = UIButton.Configuration.gray()
         config.baseBackgroundColor = backgroundColor
@@ -40,8 +41,8 @@ final class ASButton: UIButton {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .heavy)
         config.preferredSymbolConfigurationForImage = imageConfig
 
-        var titleAttr = AttributedString(title ?? "")
-        titleAttr.font = UIFont.font(.dohyeon, ofSize: textSize)
+        var titleAttr = AttributedString(text ?? "")
+        titleAttr.font = UIFont.font(forTextStyle: textStyle)
         config.attributedTitle = titleAttr
 
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
@@ -85,17 +86,10 @@ final class ASButton: UIButton {
     func updateButton(_ type: ASButton.ASButtonType) {
         switch type {
             case .disabled: disable()
-            case .waitStart: setConfiguration(title: "시작 대기중..", backgroundColor: .asOrange)
-            case let .idle(string, color): setConfiguration(title: string, backgroundColor: color)
-            case .startRecord: setConfiguration(title: "녹음하기", backgroundColor: .systemRed)
-            case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
-            case .reRecord: setConfiguration(systemImageName: "arrow.clockwise", title: "재녹음", backgroundColor: .asOrange)
-            case .submit: setConfiguration(title: "제출하기", backgroundColor: .asGreen)
-            case .complete: setConfiguration(title: "완료", backgroundColor: .asYellow)
             case .submitted:
-                setConfiguration(title: "제출 완료")
+                setConfiguration(text: "제출 완료")
                 disable()
-            case .startGame: setConfiguration(systemImageName: "play.fill", title: "시작하기!", backgroundColor: .asMint)
+            default: setConfiguration(systemImageName: type.systemImage, text: type.text, backgroundColor: type.backgroundColor)
         }
     }
 
@@ -110,6 +104,43 @@ final class ASButton: UIButton {
         case submit
         case submitted
         case startGame
+
+        var text: String? {
+            switch self {
+                case .disabled: nil
+                case .waitStart: "시작 대기중.."
+                case let .idle(string, _): string
+                case .startRecord: "녹음하기"
+                case .recording: "녹음중.."
+                case .reRecord: "재녹음"
+                case .complete: "완료"
+                case .submit: "제출하기"
+                case .submitted: "제출 완료"
+                case .startGame: "시작하기!"
+            }
+        }
+
+        var systemImage: String? {
+            switch self {
+                case .startGame: "play.fill"
+                case .reRecord: "arrow.clockwise"
+                default: nil
+            }
+        }
+
+        var backgroundColor: UIColor? {
+            switch self {
+                case .waitStart: .asOrange
+                case let .idle(_, color): color
+                case .startRecord: .systemRed
+                case .recording: .asLightRed
+                case .reRecord: .asOrange
+                case .complete: .asYellow
+                case .submit: .asGreen
+                case .startGame: .asMint
+                default: nil
+            }
+        }
     }
 }
 
@@ -117,10 +148,15 @@ struct ASButtonWrapper: UIViewRepresentable {
     let systemImageName: String
     let title: String
     let backgroundColor: UIColor
-    let textSize: CGFloat = 32
+    let textStyle: UIFont.TextStyle = .largeTitle
     func makeUIView(context _: Context) -> ASButton {
         let view = ASButton()
-        view.setConfiguration(systemImageName: systemImageName, title: title, backgroundColor: backgroundColor, textSize: textSize)
+        view.setConfiguration(
+            systemImageName: systemImageName,
+            text: title,
+            textStyle: textStyle,
+            backgroundColor: backgroundColor
+        )
         return view
     }
 

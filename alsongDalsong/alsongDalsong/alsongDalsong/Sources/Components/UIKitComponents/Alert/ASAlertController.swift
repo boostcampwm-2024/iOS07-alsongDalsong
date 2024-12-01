@@ -102,9 +102,9 @@ class ASAlertController: UIViewController {
         primaryButton.translatesAutoresizingMaskIntoConstraints = false
         buttonStackView.addArrangedSubview(primaryButton)
         primaryButton.setConfiguration(
-            title: primaryButtonText?.description,
-            backgroundColor: .asLightSky,
-            textSize: 24
+            text: primaryButtonText?.description,
+            textStyle: .title2,
+            backgroundColor: .asLightSky
         )
         primaryButton.addAction(UIAction { [weak self] _ in
             self?.dismiss(animated: true)
@@ -116,12 +116,11 @@ class ASAlertController: UIViewController {
         buttonStackView.addArrangedSubview(secondaryButton)
         secondaryButton.translatesAutoresizingMaskIntoConstraints = false
         secondaryButton.setConfiguration(
-            title: secondaryButtonText?.description,
-            backgroundColor: .asLightRed,
-            textSize: 24
+            text: secondaryButtonText?.description,
+            textStyle: .title2,
+            backgroundColor: .asLightRed
         )
         secondaryButton.addAction(UIAction { [weak self] _ in
-            self?.secondaryButtonAction?()
             self?.dismiss(animated: true)
         }, for: .touchUpInside)
         secondaryButton.heightAnchor.constraint(equalToConstant: 40).isActive = true

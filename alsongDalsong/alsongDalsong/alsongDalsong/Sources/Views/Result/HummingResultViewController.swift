@@ -43,7 +43,11 @@ class HummingResultViewController: UIViewController {
     }
     
     private func setButton() {
-        button.setConfiguration(systemImageName: "play.fill", title: "다음으로", backgroundColor: .asMint)
+        button.setConfiguration(
+            systemImageName: "play.fill",
+            text: "다음으로",
+            backgroundColor: .asMint
+        )
         view.addSubview(button)
         button.addAction(UIAction { [weak self] _ in
             guard let self, let viewModel else { return }

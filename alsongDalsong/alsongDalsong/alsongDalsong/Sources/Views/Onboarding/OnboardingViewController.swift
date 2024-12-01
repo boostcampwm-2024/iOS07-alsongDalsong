@@ -123,12 +123,12 @@ final class OnboardingViewController: UIViewController {
     private func setupButton() {
         createRoomButton.setConfiguration(
             systemImageName: "",
-            title: Constants.craeteButtonTitle,
+            text: Constants.craeteButtonTitle,
             backgroundColor: .asYellow
         )
         joinRoomButton.setConfiguration(
             systemImageName: "",
-            title: Constants.joinButtonTitle,
+            text: Constants.joinButtonTitle,
             backgroundColor: .asMint
         )
     }

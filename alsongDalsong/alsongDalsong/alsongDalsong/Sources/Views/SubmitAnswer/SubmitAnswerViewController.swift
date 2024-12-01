@@ -43,8 +43,8 @@ final class SubmitAnswerViewController: UIViewController {
 
     private func setupUI() {
         guideLabel.setText("허밍을 듣고 정답을 맞춰보세요!")
-        selectAnswerButton.setConfiguration(title: "정답 선택", backgroundColor: .asLightSky)
-        submitButton.setConfiguration(title: "정답 제출", backgroundColor: .asLightGray)
+        selectAnswerButton.setConfiguration(text: "정답 선택", backgroundColor: .asLightSky)
+        submitButton.setConfiguration(text: "정답 제출", backgroundColor: .asLightGray)
         submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16

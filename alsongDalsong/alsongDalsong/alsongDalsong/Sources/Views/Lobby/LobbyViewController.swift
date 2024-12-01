@@ -94,10 +94,18 @@ final class LobbyViewController: UIViewController {
         codeLabel.textColor = .label
         codeLabel.textAlignment = .center
 
-        inviteButton.setConfiguration(systemImageName: "link", title: "초대하기!", backgroundColor: .asYellow)
+        inviteButton.setConfiguration(
+            systemImageName: "link",
+            text: "초대하기!",
+            backgroundColor: .asYellow
+        )
         inviteButton.translatesAutoresizingMaskIntoConstraints = false
 
-        startButton.setConfiguration(systemImageName: "play.fill", title: "시작하기!", backgroundColor: .asMint)
+        startButton.setConfiguration(
+            systemImageName: "play.fill",
+            text: "시작하기!",
+            backgroundColor: .asMint
+        )
         startButton.translatesAutoresizingMaskIntoConstraints = false
     }
 
