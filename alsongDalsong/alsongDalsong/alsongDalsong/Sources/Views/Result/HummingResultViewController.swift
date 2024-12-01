@@ -176,7 +176,6 @@ extension HummingResultViewController: UITableViewDataSource {
                 let currentPlayer = viewModel.currentRecords[indexPath.row].player
                 HStack {
                     Spacer()
-                    Text("oo")
                     if indexPath.row % 2 == 0 {
                         if let avatarURL = currentPlayer?.avatarUrl {
                             SpeechBubbleCell(
@@ -219,7 +218,6 @@ extension HummingResultViewController: UITableViewDataSource {
             cell.contentConfiguration = UIHostingConfiguration {
                 HStack {
                     Spacer()
-                    Text("oo")
                     if viewModel.currentRecords.count % 2 == 0 {
                         if let submit = viewModel.currentsubmit, let avatarURL = submit.player?.avatarUrl, let artworkURL = submit.music?.artworkUrl {
                             SpeechBubbleCell(
