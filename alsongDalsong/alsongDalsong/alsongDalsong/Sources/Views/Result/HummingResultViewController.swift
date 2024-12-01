@@ -132,9 +132,11 @@ class HummingResultViewController: UIViewController {
                     button.isHidden = true
                     if viewModel.hummingResult.isEmpty {
                         button.updateButton(.complete)
+                        button.removeTarget(nil, action: nil, for: .touchUpInside)
                         button.addAction(UIAction { _ in
                             self.showLobbyLoading()
                         }, for: .touchUpInside)
+                        
                     }
                     viewModel.isNext = false
                     resultTableView.reloadData()

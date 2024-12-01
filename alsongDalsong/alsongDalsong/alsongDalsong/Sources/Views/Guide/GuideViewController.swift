@@ -78,8 +78,8 @@ final class GuideViewController: UIViewController {
         if let imageContainerView {
             view.addSubview(imageContainerView)
             NSLayoutConstraint.activate([
-                imageContainerView.widthAnchor.constraint(equalToConstant: 24),
-                imageContainerView.heightAnchor.constraint(equalToConstant: 24),
+                imageContainerView.widthAnchor.constraint(equalToConstant: 32),
+                imageContainerView.heightAnchor.constraint(equalToConstant: 32),
                 imageContainerView.bottomAnchor.constraint(equalTo: titleLabel.topAnchor,constant: -4),
                 imageContainerView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor,constant: 4),
             ])

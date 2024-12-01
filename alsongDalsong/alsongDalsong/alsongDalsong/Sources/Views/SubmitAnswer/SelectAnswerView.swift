@@ -58,6 +58,7 @@ struct SelectAnswerView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("완료") {
+                        viewModel.stopMusic()
                         dismiss()
                     }
                 }

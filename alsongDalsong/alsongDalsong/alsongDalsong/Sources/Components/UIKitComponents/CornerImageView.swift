@@ -8,7 +8,7 @@ final class GuideIconView: UIView {
         super.init(frame: .zero)
         self.backgroundColor = backgroundColor
         setupImageView(image: image)
-        applyCornerRadius(cornerRadius: 12)
+        applyCornerRadius(cornerRadius: 16)
     }
     
     @available(*, unavailable)
@@ -23,8 +23,8 @@ final class GuideIconView: UIView {
         addSubview(imageView)
         
         NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 12),
-            imageView.heightAnchor.constraint(equalToConstant: 12),
+            imageView.widthAnchor.constraint(equalToConstant: 24),
+            imageView.heightAnchor.constraint(equalToConstant: 24),
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
@@ -64,7 +64,7 @@ final class GuideIconView: UIView {
             initialSpringVelocity: 1.0,
             options: .curveEaseInOut,
             animations: {
-                self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+                self.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
             },
             completion: { _ in
                 UIView.animate(withDuration: 0.2) {

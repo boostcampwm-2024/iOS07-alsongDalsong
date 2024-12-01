@@ -206,7 +206,7 @@ private final class WaveForm: UIView {
 
             let circleLayer = CAShapeLayer()
             circleLayer.path = circle.cgPath
-            circleLayer.fillColor = UIColor.asShadow.cgColor
+            circleLayer.fillColor = UIColor.white.cgColor
 
             layer.addSublayer(circleLayer)
             columns.append(circleLayer)
