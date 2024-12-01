@@ -60,9 +60,9 @@ public struct GameState {
                 return .result
             }
             
-            else if recordOrder == players.count - 1 {
+            else if recordOrder >= players.count - 1 {
                 return .result
-            }else {
+            } else {
                 return nil
             }
 

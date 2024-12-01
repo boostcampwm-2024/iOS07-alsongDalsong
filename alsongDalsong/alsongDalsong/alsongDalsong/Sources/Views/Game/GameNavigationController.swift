@@ -6,7 +6,7 @@ import Combine
 import UIKit
 
 @MainActor
-final class GameNavigationController {
+final class GameNavigationController: @unchecked Sendable {
     private let navigationController: UINavigationController
     private let gameStateRepository: GameStateRepositoryProtocol
     private let roomActionRepository: RoomActionRepositoryProtocol
@@ -48,7 +48,6 @@ final class GameNavigationController {
     }
     
     private func setupNavigationBar(for viewController: UIViewController) {
-        Logger.debug("setupNavi 시작")
         navigationController.navigationBar.isHidden = false
         navigationController.navigationBar.tintColor = .asBlack
         navigationController.navigationBar.titleTextAttributes = [.font: UIFont.font(.dohyeon, ofSize: 24)]
@@ -65,8 +64,9 @@ final class GameNavigationController {
                 doneButtonTitle: .leave,
                 cancelButtonTitle: .cancel
             ) { [weak self] _ in
-                //                self?.viewmodel.leaveRoom()
-                self?.navigationController.popViewController(animated: true)  // 아예 온보딩으로 가야함.
+                self?.leaveRoom()
+                self?.navigationController.popToRootViewController(animated: true)
+                self?.navigationController.navigationBar.isHidden = true
             }
             self?.navigationController.presentAlert(alert)
         }
@@ -78,17 +78,24 @@ final class GameNavigationController {
     }
     
     private func setTitle() -> String {
-        switch gameInfo?.resolveViewType() {
+        guard let gameInfo else { return "" }
+        let viewType = gameInfo.resolveViewType()
+        print(viewType)
+        switch viewType {
         case .submitMusic:
             return "노래 선택"
         case .humming:
             return "허밍"
         case .rehumming:
-            return "리허밍"
+            guard let recordOrder = gameInfo.recordOrder else { return "" }
+            let rounds = gameInfo.players.count - 2
+            return "리허밍 \(recordOrder)/\(rounds)"
         case .submitAnswer:
-            return "정답 제출"
+            return "정답 맞추기"
         case .result:
-            return "결과 확인"
+            guard let recordOrder = gameInfo.recordOrder else { return "" }
+            let currentRound = Int(recordOrder) - (gameInfo.players.count - 2)
+            return "결과 확인 \(currentRound)/\(gameInfo.players.count)"
         case .lobby:
             return "#\(roomNumber)"
         default:
@@ -138,8 +145,8 @@ final class GameNavigationController {
             avatarRepository: avatarRepository
         )
         let vc = LobbyViewController(lobbyViewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
         setupNavigationBar(for: vc)
+        navigationController.pushViewController(vc, animated: true)
     }
     
     private func navigateToSelectMusic() {
@@ -211,6 +218,10 @@ final class GameNavigationController {
     }
     
     private func navigateToResult() {
+        if navigationController.topViewController is HummingResultViewController {
+            navigationController.topViewController?.title = setTitle()
+            return
+        }
         let hummingResultRepository = DIContainer.shared.resolve(HummingResultRepositoryProtocol.self)
         let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
         let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
@@ -234,13 +245,13 @@ final class GameNavigationController {
     
     private func navigationToWaiting() {}
     
-//    private func leaveRoom() {
-//        Task {
-//            do {
-//                try await roomActionRepository.leaveRoom()
-//            } catch {
-//                Logger.error(error.localizedDescription)
-//            }
-//        }
-//    }
+    private func leaveRoom() {
+        Task {
+            do {
+                let _ = try await roomActionRepository.leaveRoom()
+            } catch {
+                Logger.error(error.localizedDescription)
+            }
+        }
+    }
 }
