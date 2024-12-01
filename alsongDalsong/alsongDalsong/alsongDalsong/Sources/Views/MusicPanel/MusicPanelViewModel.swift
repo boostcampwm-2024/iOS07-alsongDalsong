@@ -74,14 +74,14 @@ final class MusicPanelViewModel: @unchecked Sendable {
     private func getPreviewData() {
         guard let previewUrl = music?.previewUrl else { return }
         Task { @MainActor in
-            preview = await musicRepository?.getMusicData(url: previewUrl)
+            preview = try await musicRepository?.getMusicData(url: previewUrl)
         }
     }
 
     private func getArtworkData() {
         guard let artworkUrl = music?.artworkUrl else { return }
         Task { @MainActor in
-            artwork = await musicRepository?.getMusicData(url: artworkUrl)
+            artwork = try await musicRepository?.getMusicData(url: artworkUrl)
         }
     }
 }

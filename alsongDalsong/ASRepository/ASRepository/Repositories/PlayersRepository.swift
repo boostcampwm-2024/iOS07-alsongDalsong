@@ -1,17 +1,13 @@
-import Foundation
-import ASNetworkKit
-import Combine
 import ASEntity
 import ASRepositoryProtocol
+import Combine
+import Foundation
 
 public final class PlayersRepository: PlayersRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
-    private var firebaseAuthManager: ASFirebaseAuthProtocol
     
-    public init(mainRepository: MainRepositoryProtocol,
-                firebaseAuthManager: ASFirebaseAuthProtocol) {
+    public init(mainRepository: MainRepositoryProtocol) {
         self.mainRepository = mainRepository
-        self.firebaseAuthManager = firebaseAuthManager
     }
     
     public func getPlayers() -> AnyPublisher<[Player], Never> {
@@ -23,8 +19,8 @@ public final class PlayersRepository: PlayersRepositoryProtocol {
     }
     
     public func getPlayersCount() -> AnyPublisher<Int, Never> {
-        self.getPlayers()
-            .map { $0.count }
+        getPlayers()
+            .map(\.count)
             .eraseToAnyPublisher()
     }
     
@@ -37,9 +33,8 @@ public final class PlayersRepository: PlayersRepositoryProtocol {
     }
     
     public func isHost() -> AnyPublisher<Bool, Never> {
-        self.getHost()
-            .map { $0.id == ASFirebaseAuth.myID }
+        getHost()
+            .map { $0.id == self.mainRepository.myId }
             .eraseToAnyPublisher()
     }
 }
-

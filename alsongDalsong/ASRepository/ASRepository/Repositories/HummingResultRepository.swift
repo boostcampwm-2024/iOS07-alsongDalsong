@@ -1,21 +1,14 @@
 import ASEntity
-import ASNetworkKit
 import ASRepositoryProtocol
 import Combine
 import Foundation
 
 public final class HummingResultRepository: HummingResultRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
-    private let storageManager: ASFirebaseStorageProtocol
-    private let networkManager: ASNetworkManagerProtocol
     
     public init(
-        storageManager: ASFirebaseStorageProtocol,
-        networkManager: ASNetworkManagerProtocol,
         mainRepository: MainRepositoryProtocol
     ) {
-        self.storageManager = storageManager
-        self.networkManager = networkManager
         self.mainRepository = mainRepository
     }
     
@@ -67,18 +60,8 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
         return submit ?? Answer.answerStub1
     }
     
-    public func getRecordData(url: URL) -> Future<Data?, Error> {
-        Future { promise in
-            Task {
-                do {
-                    guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
-                    promise(.success(data))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
-        }
+    public func getRecordData(url: URL) async throws -> Data {
+        try await mainRepository.getResource(url: url)
     }
 }
 
@@ -103,16 +86,7 @@ extension HummingResultRepository {
 }
 
 public final class LocalHummingResultRepository: HummingResultRepositoryProtocol {
-    private let storageManager: ASFirebaseStorageProtocol
-    private let networkManager: ASNetworkManagerProtocol
-    
-    public init(
-        storageManager: ASFirebaseStorageProtocol,
-        networkManager: ASNetworkManagerProtocol
-    ) {
-        self.storageManager = storageManager
-        self.networkManager = networkManager
-    }
+    public init() {}
     
     public func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)], Never> {
         let tempAnswers = [Answer.answerStub1, Answer.answerStub2, Answer.answerStub3, Answer.answerStub4]
@@ -160,17 +134,7 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
         return submit ?? Answer.answerStub1
     }
     
-    public func getRecordData(url: URL) -> Future<Data?, Error> {
-        Future { promise in
-            Task {
-                do {
-                    guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
-                    promise(.success(data))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
-        }
+    public func getRecordData(url: URL) async throws -> Data {
+        Data()
     }
 }

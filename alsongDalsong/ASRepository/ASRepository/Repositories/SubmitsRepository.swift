@@ -1,18 +1,13 @@
-import ASDecoder
-import ASEncoder
 import ASEntity
-import ASNetworkKit
+import ASRepositoryProtocol
 import Combine
 import Foundation
-import ASRepositoryProtocol
 
 public final class SubmitsRepository: SubmitsRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
-    private var networkManager: ASNetworkManagerProtocol
 
-    public init(mainRepository: MainRepositoryProtocol, networkManager: ASNetworkManagerProtocol) {
+    public init(mainRepository: MainRepositoryProtocol) {
         self.mainRepository = mainRepository
-        self.networkManager = networkManager
     }
 
     public func getSubmits() -> AnyPublisher<[Answer], Never> {
@@ -22,23 +17,14 @@ public final class SubmitsRepository: SubmitsRepositoryProtocol {
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
-    
+
     public func getSubmitsCount() -> AnyPublisher<Int, Never> {
-        self.getSubmits()
-            .map { $0.count }
+        getSubmits()
+            .map(\.count)
             .eraseToAnyPublisher()
     }
-    
-    public func submitAnswer(answer: Music) async throws -> Bool {
-        let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
-                          URLQueryItem(name: "roomNumber", value: mainRepository.room.value?.number)]
-        let endPoint = FirebaseEndpoint(path: .submitAnswer, method: .post)
-            .update(\.queryItems, with: queryItems)
-            .update(\.headers, with: ["Content-Type": "application/json"])
 
-        let body = try ASEncoder.encode(answer)
-        let response = try await networkManager.sendRequest(to: endPoint, type: .json, body: body, option: .none)
-        let responseDict = try ASDecoder.decode([String: String].self, from: response)
-        return !responseDict.isEmpty
+    public func submitAnswer(answer: Music) async throws -> Bool {
+        try await mainRepository.submitMusic(answer: answer)
     }
 }

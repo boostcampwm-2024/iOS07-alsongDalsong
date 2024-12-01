@@ -8,28 +8,28 @@ public struct RepsotioryAssembly: Assembly {
     public func assemble(container: Registerable) {
         container.registerSingleton(MainRepositoryProtocol.self) { r in
             let databaseManager = r.resolve(ASFirebaseDatabaseProtocol.self)
+            let authManager = r.resolve(ASFirebaseAuthProtocol.self)
             let networkManager = r.resolve(ASNetworkManagerProtocol.self)
+            let storageManager = r.resolve(ASFirebaseStorageProtocol.self)
             return MainRepository(
                 databaseManager: databaseManager,
+                authManager: authManager,
+                storageManager: storageManager,
                 networkManager: networkManager
             )
         }
         
         container.register(AnswersRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
-            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return AnswersRepository(
-                mainRepository: mainRepository,
-                networkManager: networkManager
+                mainRepository: mainRepository
             )
         }
         
         container.register(AvatarRepositoryProtocol.self) { r in
-            let storageManager = r.resolve(ASFirebaseStorageProtocol.self)
-            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
             return AvatarRepository(
-                storageManager: storageManager,
-                networkManager: networkManager
+                mainRepository: mainRepository
             )
         }
         
@@ -41,20 +41,15 @@ public struct RepsotioryAssembly: Assembly {
         }
         
         container.register(MusicRepositoryProtocol.self) { r in
-            let firebaseManager = r.resolve(ASFirebaseStorageProtocol.self)
-            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
-            return MusicRepository(
-                firebaseManager: firebaseManager,
-                networkManager: networkManager
+            let mainRepository = r.resolve(MainRepositoryProtocol.self)
+            return MusicRepository(mainRepository: mainRepository
             )
         }
         
         container.register(PlayersRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
-            let firebaseAuthManager = r.resolve(ASFirebaseAuthProtocol.self)
             return PlayersRepository(
-                mainRepository: mainRepository,
-                firebaseAuthManager: firebaseAuthManager
+                mainRepository: mainRepository
             )
         }
         
@@ -67,12 +62,8 @@ public struct RepsotioryAssembly: Assembly {
         
         container.register(RoomActionRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
-            let authManager = r.resolve(ASFirebaseAuthProtocol.self)
-            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return RoomActionRepository(
-                mainRepository: mainRepository,
-                authManager: authManager,
-                networkManager: networkManager
+                mainRepository: mainRepository
             )
         }
         
@@ -92,10 +83,8 @@ public struct RepsotioryAssembly: Assembly {
         
         container.register(SubmitsRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
-            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return SubmitsRepository(
-                mainRepository: mainRepository,
-                networkManager: networkManager
+                mainRepository: mainRepository
             )
         }
         
@@ -106,11 +95,7 @@ public struct RepsotioryAssembly: Assembly {
                 
         container.register(HummingResultRepositoryProtocol.self) { r in
             let mainRepository = r.resolve(MainRepositoryProtocol.self)
-            let storageManager = r.resolve(ASFirebaseStorageProtocol.self)
-            let networkManager = r.resolve(ASNetworkManagerProtocol.self)
             return HummingResultRepository(
-                storageManager: storageManager,
-                networkManager: networkManager,
                 mainRepository: mainRepository
             )
         }

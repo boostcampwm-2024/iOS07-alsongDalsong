@@ -14,7 +14,7 @@ public struct FirebaseEndpoint: Endpoint, Equatable {
     public init(path: Path, method: HTTPMethod) {
         self.path = path
         self.method = method
-        headers = [:]
+        self.headers = [:]
     }
 
     // TODO: - firebase api/cloud func에 맞는 path 넣기
@@ -29,7 +29,7 @@ public struct FirebaseEndpoint: Endpoint, Equatable {
         case submitMusic
         case submitAnswer
         case resetGame
-      
+
         public var description: String {
             switch self {
                 case .auth:
@@ -68,5 +68,16 @@ public extension FirebaseEndpoint {
     func fetchAllAvatarURLs() -> any Endpoint {
         Self(path: .auth, method: .get)
             .update(\.queryItems, with: [.init(name: "listAvatarUrls", value: "true")])
+    }
+
+    func withCommonQueryItems(roomNumber: String?, userID: String?) -> Self {
+        var items = [URLQueryItem]()
+        if let userID {
+            items.append(URLQueryItem(name: "userId", value: userID))
+        }
+        if let roomNumber {
+            items.append(URLQueryItem(name: "roomNumber", value: roomNumber))
+        }
+        return self.update(\.queryItems, with: items)
     }
 }

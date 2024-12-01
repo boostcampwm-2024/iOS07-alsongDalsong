@@ -1,28 +1,17 @@
-import ASNetworkKit
+import ASRepositoryProtocol
 import Combine
 import Foundation
-import ASRepositoryProtocol
 
 public final class MusicRepository: MusicRepositoryProtocol {
-    // TODO: - Container로 주입
-    private let firebaseManager: ASFirebaseStorageProtocol
-    private let networkManager: ASNetworkManagerProtocol
+    private let mainRepository: MainRepositoryProtocol
 
     public init(
-        firebaseManager: ASFirebaseStorageProtocol,
-        networkManager: ASNetworkManagerProtocol
+        mainRepository: MainRepositoryProtocol
     ) {
-        self.firebaseManager = firebaseManager
-        self.networkManager = networkManager
+        self.mainRepository = mainRepository
     }
 
-    public func getMusicData(url: URL) async -> Data? {
-        do {
-            guard let endpoint = ResourceEndpoint(url: url) else { return nil }
-            let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
-            return data
-        } catch {
-            return nil
-        }
+    public func getMusicData(url: URL) async throws -> Data? {
+        try await mainRepository.getResource(url: url)
     }
 }

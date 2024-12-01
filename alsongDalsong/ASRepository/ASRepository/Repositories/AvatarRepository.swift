@@ -1,24 +1,19 @@
-import ASNetworkKit
+import ASRepositoryProtocol
 import Combine
 import Foundation
-import ASRepositoryProtocol
 
 public final class AvatarRepository: AvatarRepositoryProtocol {
-    // TODO: - Container로 주입
-    private let storageManager: ASFirebaseStorageProtocol
-    private let networkManager: ASNetworkManagerProtocol
+    private let mainRepository: MainRepositoryProtocol
     
-    public init (
-        storageManager: ASFirebaseStorageProtocol,
-        networkManager: ASNetworkManagerProtocol
+    public init(
+        mainRepository: MainRepositoryProtocol
     ) {
-        self.storageManager = storageManager
-        self.networkManager = networkManager
+        self.mainRepository = mainRepository
     }
     
     public func getAvatarUrls() async throws -> [URL] {
         do {
-            let urls = try await self.storageManager.getAvatarUrls()
+            let urls = try await self.mainRepository.getAvatarUrls()
             return urls
         } catch {
             throw error
@@ -27,9 +22,7 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
     
     public func getAvatarData(url: URL) async -> Data? {
         do {
-            guard let endpoint = ResourceEndpoint(url: url) else { return nil }
-            let data = try await self.networkManager.sendRequest(to: endpoint, type: .none, body: nil, option: .both)
-            return data
+            return try await mainRepository.getResource(url: url)
         } catch {
             return nil
         }

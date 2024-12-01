@@ -104,12 +104,16 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
 
     public func downloadArtwork(url: URL?) async -> Data? {
         guard let url else { return nil }
-        return await musicRepository.getMusicData(url: url)
+        do {
+            return try await musicRepository.getMusicData(url: url)
+        } catch {
+            return nil
+        }
     }
 
     public func downloadMusic(url: URL) {
         Task {
-            guard let musicData = await musicRepository.getMusicData(url: url) else {
+            guard let musicData = try await musicRepository.getMusicData(url: url) else {
                 return
             }
             await updateMusicData(with: musicData)

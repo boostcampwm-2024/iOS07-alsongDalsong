@@ -1,8 +1,8 @@
 import ASEntity
+import ASLogKit
 import ASRepositoryProtocol
 import Combine
 import Foundation
-import ASLogKit
 
 final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     private var playersRepository: PlayersRepositoryProtocol
@@ -96,7 +96,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     
     func gameStart() async throws {
         do {
-            _ = try await roomActionRepository.startGame(roomNumber: roomNumber)
+            _ = try await roomActionRepository.startGame()
         } catch {
             throw error
         }
@@ -116,7 +116,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
         Task {
             do {
                 if isHost {
-                    _ = try await self.roomActionRepository.changeMode(roomNumber: roomNumber, mode: mode)
+                    _ = try await self.roomActionRepository.changeMode(mode: mode)
                 }
             } catch {
                 Logger.error(error.localizedDescription)

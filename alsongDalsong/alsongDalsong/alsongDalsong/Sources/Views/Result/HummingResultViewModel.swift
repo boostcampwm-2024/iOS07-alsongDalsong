@@ -110,7 +110,7 @@ final class HummingResultViewModel: @unchecked Sendable {
             currentRecords.append(recordsResult.removeFirst())
             guard let fileUrl = currentRecords.last?.fileUrl else { continue }
             do {
-                let data = try await fetchRecordData(url: fileUrl)
+                let data = try await getRecordData(url: fileUrl)
                 await AudioHelper.shared.startPlaying(data)
                 await waitForPlaybackToFinish()
             } catch {
@@ -142,29 +142,12 @@ final class HummingResultViewModel: @unchecked Sendable {
         currentsubmit = nil
     }
     
-    private func getRecordData(url: URL?) -> AnyPublisher<Data?, Error> {
-        if let url {
-            hummingResultRepository.getRecordData(url: url)
-                .eraseToAnyPublisher()
-        } else {
-            Just(nil)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        }
-    }
-    
-    private func fetchRecordData(url: URL) async throws -> Data {
-        try await withCheckedThrowingContinuation { continuation in
-            getRecordData(url: url)
-                .compactMap { $0 }
-                .sink(receiveCompletion: { completion in
-                    if case .failure(let error) = completion {
-                        continuation.resume(throwing: error)
-                    }
-                }, receiveValue: { data in
-                    continuation.resume(returning: data)
-                })
-                .store(in: &cancellables)
+    private func getRecordData(url: URL?) async throws -> Data? {
+        guard let url else { return nil }
+        do {
+            return try await hummingResultRepository.getRecordData(url: url)
+        } catch {
+            return nil
         }
     }
     
@@ -175,7 +158,7 @@ final class HummingResultViewModel: @unchecked Sendable {
     
     func changeRecordOrder() async throws {
         do {
-            try await roomActionRepository.changeRecordOrder(roomNumber: roomNumber)
+            try await roomActionRepository.changeRecordOrder()
         } catch {
             Logger.error(error.localizedDescription)
             throw error
@@ -193,7 +176,11 @@ final class HummingResultViewModel: @unchecked Sendable {
     
     func getArtworkData(url: URL?) async -> Data? {
         guard let url else { return nil }
-        return await musicRepository.getMusicData(url: url)
+        do {
+            return try await musicRepository.getMusicData(url: url)
+        } catch {
+            return nil
+        }
     }
     
     public func cancelSubscriptions() {

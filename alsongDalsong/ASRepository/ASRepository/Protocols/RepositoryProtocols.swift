@@ -55,14 +55,14 @@ public protocol RoomActionRepositoryProtocol {
     func createRoom(nickname: String, avatar: URL) async throws -> String
     func joinRoom(nickname: String, avatar: URL, roomNumber: String) async throws -> Bool
     func leaveRoom() async throws -> Bool
-    func startGame(roomNumber: String) async throws -> Bool
-    func changeMode(roomNumber: String, mode: Mode) async throws -> Bool
-    func changeRecordOrder(roomNumber: String) async throws -> Bool
+    func startGame() async throws -> Bool
+    func changeMode(mode: Mode) async throws -> Bool
+    func changeRecordOrder() async throws -> Bool
     func resetGame() async throws -> Bool
 }
 
 public protocol MusicRepositoryProtocol {
-    func getMusicData(url: URL) async -> Data?
+    func getMusicData(url: URL) async throws -> Data?
 }
 
 public protocol GameStateRepositoryProtocol {
@@ -71,5 +71,5 @@ public protocol GameStateRepositoryProtocol {
 
 public protocol HummingResultRepositoryProtocol {
     func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)], Never>
-    func getRecordData(url: URL) -> Future<Data?, Error>
+    func getRecordData(url: URL) async throws -> Data
 }

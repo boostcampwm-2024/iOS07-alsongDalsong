@@ -1,8 +1,8 @@
 import ASEntity
-import Combine
-import Foundation
 import ASLogKit
 import ASRepositoryProtocol
+import Combine
+import Foundation
 
 public final class RecordsRepository: RecordsRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
@@ -20,23 +20,20 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
     }
 
     public func getRecordsCount(on recordOrder: UInt8) -> AnyPublisher<Int, Never> {
-        return self.getRecords()
+        getRecords()
             .compactMap { $0 }
             .map { records in
-                return records.filter { Int($0.recordOrder ?? 0) == recordOrder }
+                records.filter { Int($0.recordOrder ?? 0) == recordOrder }
             }
-            .map {
-                return $0.count
-            }
+            .map(\.count)
             .eraseToAnyPublisher()
     }
 
     public func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never> {
-
-        return mainRepository.room
+        mainRepository.room
             .receive(on: DispatchQueue.main)
             .compactMap { room in
-                guard let room = room else { return nil }
+                guard let room else { return nil }
                 return (room.records, room.players)
             }
             .map { [weak self] records, players -> ASEntity.Record? in
@@ -51,12 +48,12 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
     }
 
     public func uploadRecording(_ record: Data) async throws -> Bool {
-        return try await mainRepository.postRecording(record)
+        try await mainRepository.postRecording(record)
     }
-    
+
     private func findRecord(records: [ASEntity.Record]?,
-                             players: [Player]?,
-                             recordOrder: UInt8) -> ASEntity.Record?
+                            players: [Player]?,
+                            recordOrder: UInt8) -> ASEntity.Record?
     {
         guard let records, let players,
               !players.isEmpty,
@@ -78,10 +75,10 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
     }
 
     private func findTargetOrder(for myOrder: Int, in playersCount: Int) -> Int {
-        return (myOrder - 1 + playersCount) % playersCount
+        (myOrder - 1 + playersCount) % playersCount
     }
 
     private func findHummings(for recordOrder: UInt8, in records: [ASEntity.Record]) -> [ASEntity.Record] {
-        return records.filter { $0.recordOrder == (recordOrder - 1) }
+        records.filter { $0.recordOrder == (recordOrder - 1) }
     }
 }
