@@ -178,4 +178,8 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     private func updateSearchList(with searchList: [Music]) {
         self.searchList = searchList
     }
+    
+    public func cancelSubscriptions() {
+        cancellables.removeAll()
+    }
 }

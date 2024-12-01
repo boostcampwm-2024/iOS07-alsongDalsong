@@ -25,6 +25,10 @@ class SelectMusicViewController: UIViewController {
         bindToComponents()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.cancelSubscriptions()
+    }
+    
     private func bindToComponents() {
         progressBar.bind(to: viewModel.$dueTime)
         submitButton.bind(to: viewModel.$musicData)

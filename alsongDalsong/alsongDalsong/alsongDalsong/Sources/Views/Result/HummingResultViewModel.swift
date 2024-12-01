@@ -187,4 +187,8 @@ final class HummingResultViewModel: @unchecked Sendable {
         guard let url else { return nil }
         return await musicRepository.getMusicData(url: url)
     }
+    
+    public func cancelSubscriptions() {
+        cancellables.removeAll()
+    }
 }
