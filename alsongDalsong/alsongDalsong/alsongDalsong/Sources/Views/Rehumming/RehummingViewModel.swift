@@ -95,4 +95,7 @@ final class RehummingViewModel: @unchecked Sendable {
             }
             .store(in: &cancellables)
     }
-}
+    
+    public func cancelSubscriptions() {
+        cancellables.removeAll()
+    }}

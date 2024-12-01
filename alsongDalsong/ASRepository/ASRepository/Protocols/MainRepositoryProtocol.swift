@@ -21,4 +21,5 @@ public protocol MainRepositoryProtocol {
     func disconnectRoom()
     
     func postRecording(_ record: Data) async throws -> Bool
+    func postResetGame() async throws -> Bool
 }

@@ -19,6 +19,15 @@ struct LobbyView: View {
                                 isHost: player.id == viewModel.host?.id,
                                 imageUrl: player.avatarUrl
                             )
+                        } else {
+                            ProfileView(
+                                imagePublisher: { url in
+                                    await viewModel.getAvatarData(url: url)
+                                },
+                                name: nil,
+                                isHost: false,
+                                imageUrl: nil
+                            )
                         }
                     }
                 }
