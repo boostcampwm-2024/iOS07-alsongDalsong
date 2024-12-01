@@ -25,7 +25,6 @@ final class LobbyViewController: UIViewController {
         setupLayout()
         setAction()
         bindToComponents()
-        setupNavigationBar()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -48,7 +47,7 @@ final class LobbyViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self else { return }
-                navigationController?.navigationBar.topItem?.title = "#\(self.viewmodel.roomNumber)"
+//                navigationController?.navigationBar.topItem?.title = "#\(self.viewmodel.roomNumber)"
             }
             .store(in: &cancellables)
 
@@ -71,33 +70,6 @@ final class LobbyViewController: UIViewController {
                 }
             }
             .store(in: &cancellables)
-    }
-
-    private func setupNavigationBar() {
-        navigationController?.navigationBar.tintColor = .asBlack
-        navigationItem.hidesBackButton = true
-
-        navigationController?.navigationBar.titleTextAttributes = [.font: UIFont.font(.dohyeon, ofSize: 24)]
-
-        let backButtonImage = UIImage(systemName: "rectangle.portrait.and.arrow.forward")?
-            .withRenderingMode(.alwaysTemplate)
-            .applyingSymbolConfiguration(.init(pointSize: 24, weight: .medium))?
-            .rotate(radians: .pi)
-
-        let backButtonAction = UIAction { [weak self] _ in
-            let alert = ASAlertController(
-                style: .default,
-                titleText: .leaveRoom,
-                doneButtonTitle: .leave,
-                cancelButtonTitle: .cancel
-            ) { [weak self] _ in
-                self?.viewmodel.leaveRoom()
-                self?.navigationController?.popViewController(animated: true)
-            }
-            self?.presentAlert(alert)
-        }
-        let barButton = UIBarButtonItem(image: backButtonImage, primaryAction: backButtonAction)
-        navigationItem.leftBarButtonItem = barButton
     }
 
     private func setupUI() {

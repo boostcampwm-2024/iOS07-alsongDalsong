@@ -36,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         let onboardingVC = OnboardingViewController(viewmodel: onboardingVM, inviteCode: inviteCode)
         let navigationController = UINavigationController(rootViewController: onboardingVC)
-        navigationController.navigationBar.isHidden = false
+        navigationController.navigationBar.isHidden = true
         navigationController.interactivePopGestureRecognizer?.isEnabled = false
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
