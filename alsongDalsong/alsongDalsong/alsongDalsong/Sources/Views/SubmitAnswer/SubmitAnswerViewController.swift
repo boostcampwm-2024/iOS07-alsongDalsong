@@ -108,6 +108,7 @@ final class SubmitAnswerViewController: UIViewController {
                 ]
                 sheet.prefersGrabberVisible = true
             }
+            viewModel.stopMusic()
             present(selectAnswerView, animated: true)
         },
         for: .touchUpInside)

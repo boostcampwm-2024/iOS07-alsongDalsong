@@ -61,7 +61,7 @@ final class MusicPanelViewModel: @unchecked Sendable {
                 return
             }
             if self?.buttonState == .idle {
-                await AudioHelper.shared.startPlaying(self?.preview, sourceType: .imported)
+                await AudioHelper.shared.startPlaying(self?.preview, sourceType: .imported, option: .full)
                 return
             }
         }
