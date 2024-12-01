@@ -26,3 +26,12 @@ extension Answer {
                                            music: Music.musicStub4,
                                            playlist: Playlist())
 }
+
+extension Answer: CustomStringConvertible {
+    public var description: String {
+        return """
+        player: \(player?.description ?? "nil")
+        music: \(music?.description ?? "nil")
+        """
+    }
+}

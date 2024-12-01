@@ -38,3 +38,9 @@ extension Music {
     public static let musicStub3 = Music(title: "으아~", artist: "김흥국")
     public static let musicStub4 = Music(title: "이브, 프시케 그리고 푸른 수염의 아내", artist: "르세라핌")
 }
+
+extension Music: CustomStringConvertible {
+    public var description: String {
+        return "\(title ?? "Unknown") - \(artist ?? "Unknown")"
+    }
+}
