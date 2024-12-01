@@ -46,6 +46,7 @@ final class LoadingAlertController: ASAlertController {
         progressLabel.textColor = .label
         stackView.addArrangedSubview(progressLabel)
         progressLabel.translatesAutoresizingMaskIntoConstraints = false
+        progressLabel.adjustsFontSizeToFitWidth = true
         progressLabel.bottomAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 12).isActive = true
     }
 
