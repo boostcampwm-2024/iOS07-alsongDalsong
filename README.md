@@ -1,7 +1,11 @@
 
 <div align="center">
   
-## 알쏭달쏭 🎶 
+## 알쏭달쏭 🎶
+  
+|📚 바로가기|[팀 Notion](https://mature-browser-f84.notion.site/12ee7c2fd62b80c196a2eef239b0b884?pvs=4)|[팀 Wiki](https://github.com/boostcampwm-2024/iOS07-alsongDalsong/wiki)|[팀 Figma](https://www.figma.com/design/Pv9SVfpYLjeRE00yMT4OF1/%EA%B0%88%ED%8B%B1%ED%8F%B0?node-id=0-1&t=eTWR2a895ooGgznA-1)|[팀 그라운드 룰](https://github.com/boostcampwm-2024/iOS07-boostproject/wiki/%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)|[팀 협업 룰](https://mature-browser-f84.notion.site/12de7c2fd62b8077bd98da954a08c472?pvs=4)|
+|:-:|:-:|:-:|:-:|:-:|:-:|
+<img width=300 src="https://github.com/user-attachments/assets/ccbffd92-b2a7-495c-9681-23d5280281f2">
 
 ### **🎧 귀를 쫑긋 세우세요 ! 🎧** 
 
@@ -59,8 +63,6 @@
 <br>
 
 <div align="center">
-  
-|📚 바로가기|[팀 Notion](https://mature-browser-f84.notion.site/12ee7c2fd62b80c196a2eef239b0b884?pvs=4)|[팀 Figma](https://www.figma.com/design/Pv9SVfpYLjeRE00yMT4OF1/%EA%B0%88%ED%8B%B1%ED%8F%B0?node-id=0-1&t=eTWR2a895ooGgznA-1)|[컨벤션](https://github.com/boostcampwm-2024/iOS04-HARU/wiki/컨벤션)|[팀 그라운드 룰](https://github.com/boostcampwm-2024/iOS07-boostproject/wiki/%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)|[팀 협업 룰](https://mature-browser-f84.notion.site/12de7c2fd62b8077bd98da954a08c472?pvs=4)|
-|:-:|:-:|:-:|:-:|:-:|:-:|
+
 
 </div>
