@@ -58,11 +58,10 @@ final class GameNavigationController: @unchecked Sendable {
             .rotate(radians: .pi)
         
         let backButtonAction = UIAction { [weak self] _ in
-            let alert = ASAlertController(
-                style: .default,
+            let alert = DefaultAlertController(
                 titleText: .leaveRoom,
-                doneButtonTitle: .leave,
-                cancelButtonTitle: .cancel
+                primaryButtonText: .leave,
+                secondaryButtonText: .cancel
             ) { [weak self] _ in
                 self?.leaveRoom()
                 self?.navigationController.popToRootViewController(animated: true)
@@ -80,7 +79,6 @@ final class GameNavigationController: @unchecked Sendable {
     private func setTitle() -> String {
         guard let gameInfo else { return "" }
         let viewType = gameInfo.resolveViewType()
-        print(viewType)
         switch viewType {
         case .submitMusic:
             return "노래 선택"
@@ -162,8 +160,13 @@ final class GameNavigationController: @unchecked Sendable {
             gameStatusRepository: gameStatusRepository
         )
         let vc = SelectMusicViewController(selectMusicViewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
-        setupNavigationBar(for: vc)
+        
+        let guideVC = GuideViewController(type: .submitMusic) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToHumming() {
@@ -179,8 +182,13 @@ final class GameNavigationController: @unchecked Sendable {
             recordsRepository: recordsRepository
         )
         let vc = HummingViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
-        setupNavigationBar(for: vc)
+        
+        let guideVC = GuideViewController(type: .humming) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToRehumming() {
@@ -194,8 +202,15 @@ final class GameNavigationController: @unchecked Sendable {
             recordsRepository: recordsRepository
         )
         let vc = RehummingViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
-        setupNavigationBar(for: vc)
+        
+        let guideVC = GuideViewController(type: .rehumming) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
+        
+        
     }
     
     private func navigateToSubmitAnswer() {
@@ -213,8 +228,13 @@ final class GameNavigationController: @unchecked Sendable {
             musicRepository: musicRepository
         )
         let vc = SubmitAnswerViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
-        setupNavigationBar(for: vc)
+        
+        let guideVC = GuideViewController(type: .submitAnswer) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToResult() {
@@ -239,8 +259,13 @@ final class GameNavigationController: @unchecked Sendable {
             musicRepository: musicRepository
         )
         let vc = HummingResultViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
-        setupNavigationBar(for: vc)
+        
+        let guideVC = GuideViewController(type: .result) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigationToWaiting() {}
