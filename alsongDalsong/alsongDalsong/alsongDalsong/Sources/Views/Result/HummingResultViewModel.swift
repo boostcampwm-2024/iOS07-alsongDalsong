@@ -112,7 +112,7 @@ final class HummingResultViewModel: @unchecked Sendable {
             guard let fileUrl = currentRecords.last?.fileUrl else { continue }
             do {
                 let data = try await fetchRecordData(url: fileUrl)
-                await AudioHelper.shared.startPlaying(data)
+                await AudioHelper.shared.startPlaying(data, option: .full)
                 await waitForPlaybackToFinish()
             } catch {
                 Logger.error("녹음 파일 다운로드에 실패하였습니다.")
@@ -124,8 +124,7 @@ final class HummingResultViewModel: @unchecked Sendable {
     private func startPlayingCurrentMusic() async -> Void {
         guard let fileUrl = currentResult?.music?.previewUrl else { return }
         let data = await musicRepository.getMusicData(url: fileUrl)
-        await AudioHelper.shared.setPlayOption(option: .partial(time: 10))
-        await AudioHelper.shared.startPlaying(data)
+        await AudioHelper.shared.startPlaying(data, option: .partial(time: 10))
         await waitForPlaybackToFinish()
     }
     
