@@ -23,7 +23,8 @@ final class ASButton: UIButton {
         systemImageName: String? = nil,
         text: String? = nil,
         textStyle: UIFont.TextStyle = .largeTitle,
-        backgroundColor: UIColor? = nil
+        backgroundColor: UIColor? = nil,
+        cornerStyle: UIButton.Configuration.CornerStyle = .medium
     ) {
         var config = UIButton.Configuration.gray()
         config.baseForegroundColor = .asBlack
@@ -49,7 +50,7 @@ final class ASButton: UIButton {
         }
 
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
-        config.cornerStyle = .medium
+        config.cornerStyle = cornerStyle
 
         setShadow()
         config.background.backgroundColorTransformer = UIConfigurationColorTransformer { color in
@@ -90,7 +91,7 @@ final class ASButton: UIButton {
         switch type {
             case .disabled: disable()
             case .submitted:
-                setConfiguration(text: "제출 완료")
+                setConfiguration(text: type.text)
                 disable()
             default: setConfiguration(systemImageName: type.systemImage, text: type.text, backgroundColor: type.backgroundColor)
         }

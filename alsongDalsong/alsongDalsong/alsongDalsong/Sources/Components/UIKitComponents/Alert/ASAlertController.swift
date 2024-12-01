@@ -46,7 +46,7 @@ class ASAlertController: UIViewController {
 
     private func setStackView() {
         stackView.axis = .vertical
-        stackView.spacing = 16
+        stackView.spacing = 12
         stackView.distribution = .fillProportionally
         stackView.alignment = .center
         alertView.addSubview(stackView)
@@ -88,15 +88,16 @@ class ASAlertController: UIViewController {
 
     func setButtonStackView() {
         buttonStackView.axis = .horizontal
-        buttonStackView.spacing = 20
+        buttonStackView.spacing = 12
         buttonStackView.distribution = .fillEqually
         buttonStackView.alignment = .center
         stackView.addArrangedSubview(buttonStackView)
+        
+        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             buttonStackView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
             buttonStackView.bottomAnchor.constraint(equalTo: stackView.bottomAnchor),
         ])
-        buttonStackView.heightAnchor.constraint(equalToConstant: 56).priority = .defaultHigh
     }
 
     func setPrimaryButton() {
@@ -105,7 +106,8 @@ class ASAlertController: UIViewController {
         primaryButton.setConfiguration(
             text: primaryButtonText?.description,
             textStyle: .title2,
-            backgroundColor: reversedColor ? .asLightRed : .asLightSky
+            backgroundColor: reversedColor ? .asLightRed : .asLightSky,
+            cornerStyle: .large
         )
         primaryButton.addAction(UIAction { [weak self] _ in
             self?.dismiss(animated: true)
@@ -119,7 +121,8 @@ class ASAlertController: UIViewController {
         secondaryButton.setConfiguration(
             text: secondaryButtonText?.description,
             textStyle: .title2,
-            backgroundColor: reversedColor ? .asLightSky : .asLightRed
+            backgroundColor: reversedColor ? .asLightSky : .asLightRed,
+            cornerStyle: .large
         )
         secondaryButton.addAction(UIAction { [weak self] _ in
             self?.dismiss(animated: true)
