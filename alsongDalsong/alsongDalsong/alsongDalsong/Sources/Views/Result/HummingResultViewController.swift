@@ -94,14 +94,15 @@ class HummingResultViewController: UIViewController {
         viewModel.$currentRecords
             .receive(on: DispatchQueue.main)
             .sink { [weak self] records in
-                guard let self else { return }
+                guard let self, !records.isEmpty else { return }
                 let rowCount = self.resultTableView.numberOfRows(inSection: 0)
                 if records.count == rowCount + 1 && rowCount > 0 {
                     let indexPath = IndexPath(row: rowCount - 1, section: 0)
-                    self.resultTableView.reloadRows(at: [indexPath], with: .fade)
+                    self.resultTableView.insertRows(at: [indexPath], with: .fade)
                 }
                 else {
-                    self.resultTableView.reloadSections(IndexSet(integer: 0), with: .fade)
+                    let indexPath = IndexPath(row: 0, section: 0)
+                    self.resultTableView.insertRows(at: [indexPath], with: .fade)
                 }
             }
             .store(in: &cancellables)
@@ -112,8 +113,9 @@ class HummingResultViewController: UIViewController {
                 guard let self else { return }
                 if submit != nil {
                     button.isHidden = false
+                    let indexPath = IndexPath(row: 0, section: 1)
+                    resultTableView.insertRows(at: [indexPath], with: .fade)
                 }
-                resultTableView.reloadSections(IndexSet(integer: 1), with: .fade)
             }
             .store(in: &cancellables)
         
@@ -174,6 +176,7 @@ extension HummingResultViewController: UITableViewDataSource {
                 let currentPlayer = viewModel.currentRecords[indexPath.row].player
                 HStack {
                     Spacer()
+                    Text("oo")
                     if indexPath.row % 2 == 0 {
                         if let avatarURL = currentPlayer?.avatarUrl {
                             SpeechBubbleCell(
@@ -216,6 +219,7 @@ extension HummingResultViewController: UITableViewDataSource {
             cell.contentConfiguration = UIHostingConfiguration {
                 HStack {
                     Spacer()
+                    Text("oo")
                     if viewModel.currentRecords.count % 2 == 0 {
                         if let submit = viewModel.currentsubmit, let avatarURL = submit.player?.avatarUrl, let artworkURL = submit.music?.artworkUrl {
                             SpeechBubbleCell(
