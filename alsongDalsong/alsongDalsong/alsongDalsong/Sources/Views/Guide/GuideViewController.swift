@@ -29,6 +29,7 @@ final class GuideViewController: UIViewController {
     }
     
     private func setupUI() {
+        self.navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .asLightGray
         titleLabel.text = type.title
         descriptionLabel.text = type.description

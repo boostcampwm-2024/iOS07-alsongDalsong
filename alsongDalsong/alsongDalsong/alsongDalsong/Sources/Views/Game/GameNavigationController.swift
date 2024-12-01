@@ -210,7 +210,6 @@ final class GameNavigationController: @unchecked Sendable {
         }
         navigationController.pushViewController(guideVC, animated: true)
         
-        
     }
     
     private func navigateToSubmitAnswer() {

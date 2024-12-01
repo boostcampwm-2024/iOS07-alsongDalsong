@@ -5,12 +5,6 @@ import Foundation
 
 extension AnyPublisher: @unchecked @retroactive Sendable {}
 extension PassthroughSubject: @unchecked @retroactive Sendable {}
-extension AudioHelper {
-    enum FileSource {
-        case imported
-        case recorded
-    }
-}
 
 actor AudioHelper {
     // MARK: - Private properties
