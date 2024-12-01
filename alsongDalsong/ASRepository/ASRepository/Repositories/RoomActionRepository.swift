@@ -82,6 +82,10 @@ public final class RoomActionRepository: RoomActionRepositoryProtocol {
         return isSuccess
     }
     
+    public func resetGame() async throws -> Bool {
+        return try await mainRepository.postResetGame()
+    }
+    
     private func sendRequest<T: Decodable>(endpointPath: FirebaseEndpoint.Path, requestBody: [String: Any]) async throws -> T {
         let endpoint = FirebaseEndpoint(path: endpointPath, method: .post)
         let body = try JSONSerialization.data(withJSONObject: requestBody, options: [])

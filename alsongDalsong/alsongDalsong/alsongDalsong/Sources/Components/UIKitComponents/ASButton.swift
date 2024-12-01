@@ -54,11 +54,11 @@ final class ASButton: UIButton {
 
         configurationUpdateHandler = { [weak self] _ in
             guard let self else { return }
-            if self.isHighlighted {
-                self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+            if isHighlighted {
+                transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
             }
             else {
-                self.transform = .identity
+                transform = .identity
             }
         }
         configuration = config
@@ -91,7 +91,7 @@ final class ASButton: UIButton {
             case .recording: setConfiguration(title: "녹음중..", backgroundColor: .asLightRed)
             case .reRecord: setConfiguration(systemImageName: "arrow.clockwise", title: "재녹음", backgroundColor: .asOrange)
             case .submit: setConfiguration(title: "제출하기", backgroundColor: .asGreen)
-            case .complete: setConfiguration(title: "완료")
+            case .complete: setConfiguration(title: "완료", backgroundColor: .asYellow)
             case .submitted:
                 setConfiguration(title: "제출 완료")
                 disable()
