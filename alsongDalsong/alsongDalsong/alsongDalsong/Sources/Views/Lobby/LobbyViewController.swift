@@ -47,7 +47,6 @@ final class LobbyViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self else { return }
-//                navigationController?.navigationBar.topItem?.title = "#\(self.viewmodel.roomNumber)"
             }
             .store(in: &cancellables)
 
