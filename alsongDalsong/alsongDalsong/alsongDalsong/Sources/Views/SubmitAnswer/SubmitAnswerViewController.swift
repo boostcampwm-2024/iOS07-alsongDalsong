@@ -29,6 +29,10 @@ final class SubmitAnswerViewController: UIViewController {
         setAction()
         bindToComponents()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.cancelSubscriptions()
+    }
 
     private func bindToComponents() {
         submissionStatus.bind(to: viewModel.$submissionStatus)
@@ -39,8 +43,8 @@ final class SubmitAnswerViewController: UIViewController {
 
     private func setupUI() {
         guideLabel.setText("허밍을 듣고 정답을 맞춰보세요!")
-        selectAnswerButton.setConfiguration(title: "정답 선택", backgroundColor: .asLightSky)
-        submitButton.setConfiguration(title: "정답 제출", backgroundColor: .asLightGray)
+        selectAnswerButton.setConfiguration(text: "정답 선택", backgroundColor: .asLightSky)
+        submitButton.setConfiguration(text: "정답 제출", backgroundColor: .asLightGray)
         submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
@@ -121,16 +125,18 @@ final class SubmitAnswerViewController: UIViewController {
 
 extension SubmitAnswerViewController {
     private func showSubmitAnswerLoading() {
-        let alert = ASAlertController(progressText: .submitMusic, load: { [weak self] in
+        let alert = LoadingAlertController(
+            progressText: .submitMusic,
+            loadAction: { [weak self] in
             try await self?.submitAnswer()
         }) { [weak self] error in
             self?.showFailSubmitMusic(error)
         }
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

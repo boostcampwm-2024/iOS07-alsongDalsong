@@ -27,6 +27,10 @@ final class RehummingViewController: UIViewController {
         setAction()
         bindToComponents()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.cancelSubscriptions()
+    }
 
     private func bindToComponents() {
         submissionStatus.bind(to: viewModel.$submissionStatus)
@@ -126,20 +130,20 @@ final class RehummingViewController: UIViewController {
 
 extension RehummingViewController {
     private func showSubmitHummingLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .submitHumming,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.submitHumming()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailSubmitMusic(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

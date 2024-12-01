@@ -19,11 +19,11 @@ public struct ASNetworkManager: ASNetworkManagerProtocol {
     ) async throws -> Data {
         guard let url = endpoint.url else { throw ASNetworkErrors.urlError }
         if let cache = try await loadCache(from: url, option: option) { return cache }
-        
+
         let updatedEndpoint = updateEndpoint(type: type, endpoint: endpoint, body: body)
         let request = try urlRequest(for: updatedEndpoint)
         let (data, response) = try await urlSession.data(for: request)
-        
+
         try validate(response: response)
         saveCache(from: url, with: data, option: option)
         return data
@@ -91,6 +91,7 @@ private extension ASNetworkManager {
         case badGateway = 502
         case serviceUnavailable = 503
         case gatewayTimeout = 504
+        case startedRoom = 452
         case unknown
 
         var description: String {
@@ -137,6 +138,8 @@ private extension ASNetworkManager {
                     return "서비스 이용 불가: 서버가 현재 요청을 처리할 수 없습니다."
                 case .gatewayTimeout:
                     return "게이트웨이 시간 초과: 게이트웨이가 요청에 대한 응답을 받지 못했습니다."
+                case .startedRoom:
+                    return "이미 게임이 시작된 방입니다."
                 case .unknown:
                     return "알 수 없는 오류: 예상하지 못한 오류가 발생했습니다."
             }

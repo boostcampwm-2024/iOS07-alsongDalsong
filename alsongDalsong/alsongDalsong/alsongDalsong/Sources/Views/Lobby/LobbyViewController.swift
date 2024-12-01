@@ -75,10 +75,18 @@ final class LobbyViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .asLightGray
 
-        inviteButton.setConfiguration(systemImageName: "link", title: "초대하기!", backgroundColor: .asYellow)
+        inviteButton.setConfiguration(
+            systemImageName: "link",
+            text: "초대하기!",
+            backgroundColor: .asYellow
+        )
         inviteButton.translatesAutoresizingMaskIntoConstraints = false
 
-        startButton.setConfiguration(systemImageName: "play.fill", title: "시작하기!", backgroundColor: .asMint)
+        startButton.setConfiguration(
+            systemImageName: "play.fill",
+            text: "시작하기!",
+            backgroundColor: .asMint
+        )
         startButton.translatesAutoresizingMaskIntoConstraints = false
     }
 
@@ -96,11 +104,10 @@ final class LobbyViewController: UIViewController {
             UIAction { [weak self] _ in
                 guard let playerCount = self?.viewmodel.players.count else { return }
                 if playerCount < 3 {
-                    let alert = ASAlertController(
-                        style: .default,
+                    let alert = DefaultAlertController(
                         titleText: .needMorePlayer,
-                        doneButtonTitle: .keep,
-                        cancelButtonTitle: .cancel
+                        primaryButtonText: .keep,
+                        secondaryButtonText: .cancel
                     ) { [weak self] _ in
                         self?.showStartGameLoading()
                     }
@@ -154,20 +161,20 @@ final class LobbyViewController: UIViewController {
 
 extension LobbyViewController {
     func showStartGameLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .startGame,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.gameStart()
             },
             errorCompletion: { [weak self] error in
                 self?.showStartGameFailed(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     func showStartGameFailed(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

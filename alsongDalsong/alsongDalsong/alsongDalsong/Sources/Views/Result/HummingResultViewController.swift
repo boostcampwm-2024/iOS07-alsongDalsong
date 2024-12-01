@@ -29,6 +29,10 @@ class HummingResultViewController: UIViewController {
         bind()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel?.cancelSubscriptions()
+    }
+    
     private func setResultTableView() {
         resultTableView.dataSource = self
         resultTableView.separatorStyle = .none
@@ -39,19 +43,15 @@ class HummingResultViewController: UIViewController {
     }
     
     private func setButton() {
-        button.setConfiguration(systemImageName: "play.fill", title: "다음으로", backgroundColor: .asMint)
+        button.setConfiguration(
+            systemImageName: "play.fill",
+            text: "다음으로",
+            backgroundColor: .asMint
+        )
         view.addSubview(button)
         button.addAction(UIAction { [weak self] _ in
-            guard let self,
-                  let viewModel else { return }
-            if !(viewModel.hummingResult.isEmpty) {
-                viewModel.changeRecordOrder()
-            }
-            else {
-//                let vc = self.navigationController?.viewControllers.first(where: { $0 is LobbyViewController })
-//                guard let vc else { return }
-//                self.navigationController?.popToViewController(vc, animated: true)
-            }
+            guard let self, let viewModel else { return }
+            showNextResultLoading()
         }, for: .touchUpInside)
         button.isHidden = true
     }
@@ -118,12 +118,27 @@ class HummingResultViewController: UIViewController {
                     viewModel.nextResultFetch()
                     button.isHidden = true
                     if viewModel.hummingResult.isEmpty {
-                        button.setConfiguration(title: "완료", backgroundColor: .asYellow)
+                        button.updateButton(.complete)
                     }
                     viewModel.isNext = false
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    private func nextResultFetch() async throws {
+        guard let viewModel else { return }
+        do {
+            if viewModel.hummingResult.isEmpty {
+                try await viewModel.navigationToLobby()
+            }
+            else {
+                try await viewModel.changeRecordOrder()
+            }
+        }
+        catch {
+            throw error
+        }
     }
 }
 
@@ -238,6 +253,26 @@ extension HummingResultViewController: UITableViewDataSource {
     }
 }
 
+extension HummingResultViewController {
+    private func showNextResultLoading() {
+        let alert = LoadingAlertController(
+            progressText: .nextResult,
+            loadAction: { [weak self] in
+                try await self?.nextResultFetch()
+            },
+            errorCompletion: { [weak self] error in
+                self?.showFailNextLoading(error)
+            }
+        )
+        presentAlert(alert)
+    }
+    
+    private func showFailNextLoading(_ error: Error) {
+        let alert = SingleButtonAlertController(titleText: .error(error))
+        presentAlert(alert)
+    }
+}
+
 final class MusicResultView: UIView {
     private let albumImageView = UIImageView()
     private let musicNameLabel = UILabel()
@@ -284,7 +319,7 @@ final class MusicResultView: UIView {
     }
 
     private func setupView() {
-        self.backgroundColor = .asSystem
+        backgroundColor = .asSystem
         
         titleLabel.text = "정답은..."
         titleLabel.font = .font(ofSize: 24)

@@ -58,6 +58,7 @@ public protocol RoomActionRepositoryProtocol: Sendable {
     func startGame(roomNumber: String) async throws -> Bool
     func changeMode(roomNumber: String, mode: Mode) async throws -> Bool
     func changeRecordOrder(roomNumber: String) async throws -> Bool
+    func resetGame() async throws -> Bool
 }
 
 public protocol MusicRepositoryProtocol {
