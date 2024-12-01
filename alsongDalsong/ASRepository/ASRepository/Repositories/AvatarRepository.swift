@@ -27,9 +27,8 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
     
     public func getAvatarData(url: URL) async -> Data? {
         do {
-            guard let endpoint = ResourceEndpoint(url: url)
-            else { return nil }
-            let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
+            guard let endpoint = ResourceEndpoint(url: url) else { return nil }
+            let data = try await self.networkManager.sendRequest(to: endpoint, type: .none, body: nil, option: .both)
             return data
         } catch {
             return nil

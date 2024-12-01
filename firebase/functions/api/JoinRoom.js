@@ -31,6 +31,10 @@ module.exports.joinRoom = onRequest({ region: 'asia-southeast1' }, async (req, r
 
     const roomData = roomSnapshot.data();
     const playerExists = roomData.players.some((player) => player.id === userId);
+    const inGame = roomData.status !== null;
+
+    if (inGame) {
+      return res.status(452).json({ error: 'Game has already started in this room' });
 
     if (playerExists) {
       return res.status(400).json({ error: 'User already in the room' });
