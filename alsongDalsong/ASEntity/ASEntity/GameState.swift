@@ -1,4 +1,4 @@
-public struct GameState {
+public struct GameState: Equatable {
     public let mode: Mode?
     public let recordOrder: UInt8?
     public let status: Status?

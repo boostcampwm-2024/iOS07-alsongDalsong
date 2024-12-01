@@ -16,23 +16,22 @@ public final class SubmitsRepository: SubmitsRepositoryProtocol {
     }
 
     public func getSubmits() -> AnyPublisher<[Answer], Never> {
-        mainRepository.answers
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.submits }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
     
     public func getSubmitsCount() -> AnyPublisher<Int, Never> {
-        mainRepository.submits
-            .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+        self.getSubmits()
             .map { $0.count }
             .eraseToAnyPublisher()
     }
     
     public func submitAnswer(answer: Music) async throws -> Bool {
         let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
-                          URLQueryItem(name: "roomNumber", value: mainRepository.number.value)]
+                          URLQueryItem(name: "roomNumber", value: mainRepository.room.value?.number)]
         let endPoint = FirebaseEndpoint(path: .submitAnswer, method: .post)
             .update(\.queryItems, with: queryItems)
             .update(\.headers, with: ["Content-Type": "application/json"])

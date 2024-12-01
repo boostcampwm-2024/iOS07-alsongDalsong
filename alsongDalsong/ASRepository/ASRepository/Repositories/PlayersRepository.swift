@@ -15,30 +15,29 @@ public final class PlayersRepository: PlayersRepositoryProtocol {
     }
     
     public func getPlayers() -> AnyPublisher<[Player], Never> {
-        mainRepository.players
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.players }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
     
     public func getPlayersCount() -> AnyPublisher<Int, Never> {
-        mainRepository.players
-            .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+        self.getPlayers()
             .map { $0.count }
             .eraseToAnyPublisher()
     }
     
     public func getHost() -> AnyPublisher<Player, Never> {
-        mainRepository.host
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.host }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
     
     public func isHost() -> AnyPublisher<Bool, Never> {
         self.getHost()
-            .receive(on: DispatchQueue.main)
             .map { $0.id == ASFirebaseAuth.myID }
             .eraseToAnyPublisher()
     }

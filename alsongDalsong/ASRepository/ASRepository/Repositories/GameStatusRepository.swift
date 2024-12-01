@@ -11,29 +11,34 @@ public final class GameStatusRepository: GameStatusRepositoryProtocol {
     }
     
     public func getStatus() -> AnyPublisher<Status?, Never> {
-        mainRepository.status
+        mainRepository.room
             .receive(on: DispatchQueue.main)
+            .compactMap { $0?.status }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
     
     public func getRound() -> AnyPublisher<UInt8, Never> {
-        mainRepository.round
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.round }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
     
     public func getRecordOrder() -> AnyPublisher<UInt8, Never> {
-        mainRepository.recordOrder
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.recordOrder }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
     
     public func getDueTime() -> AnyPublisher<Date, Never> {
-        mainRepository.dueTime
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.dueTime }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 }

@@ -11,9 +11,10 @@ public final class SelectedRecordsRepository: SelectedRecordsRepositoryProtocol 
     }
     
     public func getSelectedRecords() -> AnyPublisher<[UInt8], Never> {
-        mainRepository.selectedRecords
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.selectedRecords }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 }

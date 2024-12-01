@@ -1,15 +1,15 @@
-import Foundation
-import Combine
 import ASEntity
 import ASNetworkKit
 import ASRepositoryProtocol
+import Combine
+import Foundation
 
 public final class HummingResultRepository: HummingResultRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
     private let storageManager: ASFirebaseStorageProtocol
     private let networkManager: ASNetworkManagerProtocol
     
-    public init (
+    public init(
         storageManager: ASFirebaseStorageProtocol,
         networkManager: ASNetworkManagerProtocol,
         mainRepository: MainRepositoryProtocol
@@ -20,18 +20,22 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
     }
     
     public func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)], Never> {
-        Publishers.Zip4(mainRepository.answers, mainRepository.records, mainRepository.submits, mainRepository.recordOrder)
-            .compactMap { answers, records, submits, recordOrder in
-                answers?.map { answer in
+        mainRepository.room
+            .compactMap { room in
+                guard let room else { return [] }
+                return room.answers?.map { answer in
                     let relatedRecords: [ASEntity.Record] = self.getRelatedRecords(for: answer,
-                                                                                   from: records,
-                                                                                   count: answers?.count ?? 0)
-                    let relatedSubmit: Answer = self.getRelatedSubmit(for: answer, from: submits)
+                                                                                   from: room.records,
+                                                                                   count: room.answers?.count ?? 0)
+                    let relatedSubmit: Answer = self.getRelatedSubmit(for: answer, from: room.submits)
                     
-                    return (answer: answer, records: relatedRecords, submit: relatedSubmit, recordOrder: recordOrder ?? 0)
+                    return (answer: answer, records: relatedRecords, submit: relatedSubmit, recordOrder: room.recordOrder ?? 0)
                 }
             }
             .receive(on: DispatchQueue.main)
+            .removeDuplicates(by: { lhs, rhs in
+                self.areResultsEqual(lhs: lhs, rhs: rhs)
+            })
             .eraseToAnyPublisher()
     }
     
@@ -42,7 +46,7 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
             let tempCheck: Int = (((answer.player?.order ?? 0) + i) % count)
             if let filteredRecord = records?.first(where: { record in
                 (tempCheck == record.player?.order) &&
-                (record.recordOrder ?? 0 == i)
+                    (record.recordOrder ?? 0 == i)
             }) {
                 filteredRecords.append(filteredRecord)
             }
@@ -59,7 +63,7 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
             targetOrder == submit.player?.order
         })
         
-        //TODO: nil 값에 대한 처리 필요
+        // TODO: nil 값에 대한 처리 필요
         return submit ?? Answer.answerStub1
     }
     
@@ -78,11 +82,31 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
     }
 }
 
+extension HummingResultRepository {
+    private func areResultsEqual(
+        lhs: [(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)],
+        rhs: [(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)]
+    ) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+        for (index, lhsItem) in lhs.enumerated() {
+            let rhsItem = rhs[index]
+            if lhsItem.answer != rhsItem.answer ||
+                lhsItem.records != rhsItem.records ||
+                lhsItem.submit != rhsItem.submit ||
+                lhsItem.recordOrder != rhsItem.recordOrder
+            {
+                return false
+            }
+        }
+        return true
+    }
+}
+
 public final class LocalHummingResultRepository: HummingResultRepositoryProtocol {
     private let storageManager: ASFirebaseStorageProtocol
     private let networkManager: ASNetworkManagerProtocol
     
-    public init (
+    public init(
         storageManager: ASFirebaseStorageProtocol,
         networkManager: ASNetworkManagerProtocol
     ) {
@@ -117,7 +141,7 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
             let tempCheck: Int = (((answer.player?.order ?? 0) + i) % count)
             if let filteredRecord = records?.first(where: { record in
                 (tempCheck == record.player?.order) &&
-                (record.recordOrder ?? 0 == i)
+                    (record.recordOrder ?? 0 == i)
             }) {
                 filteredRecords.append(filteredRecord)
             }

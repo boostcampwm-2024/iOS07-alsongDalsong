@@ -12,14 +12,15 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
     }
 
     public func getRecords() -> AnyPublisher<[ASEntity.Record], Never> {
-        mainRepository.records
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.records }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 
     public func getRecordsCount(on recordOrder: UInt8) -> AnyPublisher<Int, Never> {
-       return mainRepository.records
+        return self.getRecords()
             .compactMap { $0 }
             .map { records in
                 return records.filter { Int($0.recordOrder ?? 0) == recordOrder }
@@ -31,11 +32,13 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
     }
 
     public func getHumming(on recordOrder: UInt8) -> AnyPublisher<ASEntity.Record?, Never> {
-        let recordsPublisher = mainRepository.records
-        let playersPublisher = mainRepository.players
 
-        return recordsPublisher
-            .combineLatest(playersPublisher)
+        return mainRepository.room
+            .receive(on: DispatchQueue.main)
+            .compactMap { room in
+                guard let room = room else { return nil }
+                return (room.records, room.players)
+            }
             .map { [weak self] records, players -> ASEntity.Record? in
                 self?.findRecord(
                     records: records,
@@ -43,6 +46,7 @@ public final class RecordsRepository: RecordsRepositoryProtocol {
                     recordOrder: recordOrder
                 )
             }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 

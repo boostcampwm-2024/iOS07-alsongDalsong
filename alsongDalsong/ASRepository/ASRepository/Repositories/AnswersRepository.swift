@@ -9,23 +9,26 @@ import ASRepositoryProtocol
 public final class AnswersRepository: AnswersRepositoryProtocol {
     private var mainRepository: MainRepositoryProtocol
     private var networkManager: ASNetworkManagerProtocol
+    
     public init(mainRepository: MainRepositoryProtocol, networkManager: ASNetworkManagerProtocol) {
         self.mainRepository = mainRepository
         self.networkManager = networkManager
     }
 
     public func getAnswers() -> AnyPublisher<[Answer], Never> {
-        mainRepository.answers
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.answers }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 
     public func getAnswersCount() -> AnyPublisher<Int, Never> {
-        mainRepository.answers
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.answers }
             .map { $0.count }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 
@@ -34,9 +37,10 @@ public final class AnswersRepository: AnswersRepositoryProtocol {
             return Just(nil).eraseToAnyPublisher()
         }
 
-        return mainRepository.answers
+        return mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap(\.self)
+            .compactMap { $0?.answers }
+            .removeDuplicates()
             .flatMap { answers in
                 Just(answers.first { $0.player?.id == myId })
                     .eraseToAnyPublisher()
@@ -46,7 +50,7 @@ public final class AnswersRepository: AnswersRepositoryProtocol {
 
     public func submitMusic(answer: ASEntity.Music) async throws -> Bool {
         let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
-                          URLQueryItem(name: "roomNumber", value: mainRepository.number.value)]
+                          URLQueryItem(name: "roomNumber", value: mainRepository.room.value?.number)]
         let endPoint = FirebaseEndpoint(path: .submitMusic, method: .post)
             .update(\.queryItems, with: queryItems)
 

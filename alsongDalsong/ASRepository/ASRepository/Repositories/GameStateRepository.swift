@@ -11,12 +11,13 @@ public final class GameStateRepository: GameStateRepositoryProtocol {
     }
 
     public func getGameState() -> AnyPublisher<ASEntity.GameState?, Never> {
-        Publishers.CombineLatest4(mainRepository.mode, mainRepository.recordOrder, mainRepository.status, mainRepository.round)
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .map { mode, recordOrder, status, round in
-                guard let mode, let round, let players = self.mainRepository.players.value else { return nil }
-                return ASEntity.GameState(mode: mode, recordOrder: recordOrder, status: status, round: round, players: players)
+            .compactMap { room in
+                guard let mode = room?.mode, let players = room?.players else { return nil }
+                return ASEntity.GameState(mode: mode, recordOrder: room?.recordOrder, status: room?.status, round: room?.round, players: players)
             }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 }

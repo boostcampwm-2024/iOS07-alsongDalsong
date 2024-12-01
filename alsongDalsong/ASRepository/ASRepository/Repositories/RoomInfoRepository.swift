@@ -11,23 +11,26 @@ public final class RoomInfoRepository: RoomInfoRepositoryProtocol {
     }
     
     public func getRoomNumber() -> AnyPublisher<String, Never> {
-        mainRepository.number
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.number }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
     
     public func getMode() -> AnyPublisher<Mode, Never> {
-        mainRepository.mode
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.mode }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
     
     public func getRecordOrder() -> AnyPublisher<UInt8, Never> {
-        mainRepository.recordOrder
+        mainRepository.room
             .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
+            .compactMap { $0?.recordOrder }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 }
