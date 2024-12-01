@@ -120,6 +120,9 @@ class HummingResultViewController: UIViewController {
                     button.isHidden = true
                     if viewModel.hummingResult.isEmpty {
                         button.updateButton(.complete)
+                        button.addAction(UIAction { _ in
+                            self.showLobbyLoading()
+                        }, for: .touchUpInside)
                     }
                     viewModel.isNext = false
                 }
@@ -256,6 +259,19 @@ extension HummingResultViewController: UITableViewDataSource {
 
 extension HummingResultViewController {
     private func showNextResultLoading() {
+        let alert = LoadingAlertController(
+            progressText: .nextResult,
+            loadAction: { [weak self] in
+                try await self?.nextResultFetch()
+            },
+            errorCompletion: { [weak self] error in
+                self?.showFailNextLoading(error)
+            }
+        )
+        presentAlert(alert)
+    }
+    
+    private func showLobbyLoading() {
         let alert = LoadingAlertController(
             progressText: .toLobby,
             loadAction: { [weak self] in
