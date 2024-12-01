@@ -4,7 +4,7 @@ import SwiftUI
 final class SubmitAnswerViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var musicPanel = MusicPanel()
-    private var selectedSongView: UIHostingController<ASMusicItemCell>?
+    private var selectedMusicPanel = MusicPanel(.compact)
     private var selectAnswerButton = ASButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
@@ -37,6 +37,7 @@ final class SubmitAnswerViewController: UIViewController {
         submissionStatus.bind(to: viewModel.$submissionStatus)
         progressBar.bind(to: viewModel.$dueTime)
         musicPanel.bind(to: viewModel.$music)
+        selectedMusicPanel.bind(to: viewModel.$selectedMusic)
         submitButton.bind(to: viewModel.$musicData)
     }
 
@@ -54,11 +55,13 @@ final class SubmitAnswerViewController: UIViewController {
     private func setupLayout() {
         view.addSubview(progressBar)
         view.addSubview(musicPanel)
+        view.addSubview(selectedMusicPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
 
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         musicPanel.translatesAutoresizingMaskIntoConstraints = false
+        selectedMusicPanel.translatesAutoresizingMaskIntoConstraints = false
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
 
@@ -72,6 +75,11 @@ final class SubmitAnswerViewController: UIViewController {
             musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
 
+            selectedMusicPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 32),
+            selectedMusicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            selectedMusicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            selectedMusicPanel.heightAnchor.constraint(equalToConstant: 100),
+            
             submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
             submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
 

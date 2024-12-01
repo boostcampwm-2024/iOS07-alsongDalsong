@@ -58,8 +58,7 @@ public struct GameState {
             if players.count <= 2, recordOrder == 1 {
                 return .result
             }
-
-            else if recordOrder == players.count - 1 {
+            else if recordOrder >= players.count - 1 {
                 return .result
             } else {
                 return nil
