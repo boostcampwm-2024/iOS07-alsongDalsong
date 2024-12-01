@@ -3,9 +3,8 @@ import SwiftUI
 
 final class SubmitAnswerViewController: UIViewController {
     private var progressBar = ProgressBar()
-    private var guideLabel = GuideLabel()
     private var musicPanel = MusicPanel()
-    private var selectedSongView: UIHostingController<ASMusicItemCell>?
+    private var selectedMusicPanel = MusicPanel(.compact)
     private var selectAnswerButton = ASButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
@@ -38,13 +37,13 @@ final class SubmitAnswerViewController: UIViewController {
         submissionStatus.bind(to: viewModel.$submissionStatus)
         progressBar.bind(to: viewModel.$dueTime)
         musicPanel.bind(to: viewModel.$music)
+        selectedMusicPanel.bind(to: viewModel.$selectedMusic)
         submitButton.bind(to: viewModel.$musicData)
     }
 
     private func setupUI() {
-        guideLabel.setText("허밍을 듣고 정답을 맞춰보세요!")
-        selectAnswerButton.setConfiguration(title: "정답 선택", backgroundColor: .asLightSky)
-        submitButton.setConfiguration(title: "정답 제출", backgroundColor: .asLightGray)
+        selectAnswerButton.setConfiguration(text: "정답 선택", backgroundColor: .asLightSky)
+        submitButton.setConfiguration(text: "정답 제출", backgroundColor: .asLightGray)
         submitButton.updateButton(.disabled)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
@@ -55,14 +54,14 @@ final class SubmitAnswerViewController: UIViewController {
 
     private func setupLayout() {
         view.addSubview(progressBar)
-        view.addSubview(guideLabel)
         view.addSubview(musicPanel)
+        view.addSubview(selectedMusicPanel)
         view.addSubview(buttonStack)
         view.addSubview(submissionStatus)
 
         progressBar.translatesAutoresizingMaskIntoConstraints = false
-        guideLabel.translatesAutoresizingMaskIntoConstraints = false
         musicPanel.translatesAutoresizingMaskIntoConstraints = false
+        selectedMusicPanel.translatesAutoresizingMaskIntoConstraints = false
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
 
@@ -71,14 +70,16 @@ final class SubmitAnswerViewController: UIViewController {
             progressBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             progressBar.heightAnchor.constraint(equalToConstant: 16),
+            
+            musicPanel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 32),
+            musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
+            musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
 
-            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 20),
-            guideLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
-            musicPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 20),
-            musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 48),
-            musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -48),
-
+            selectedMusicPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 32),
+            selectedMusicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            selectedMusicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            selectedMusicPanel.heightAnchor.constraint(equalToConstant: 100),
+            
             submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
             submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
 
@@ -125,16 +126,18 @@ final class SubmitAnswerViewController: UIViewController {
 
 extension SubmitAnswerViewController {
     private func showSubmitAnswerLoading() {
-        let alert = ASAlertController(progressText: .submitMusic, load: { [weak self] in
+        let alert = LoadingAlertController(
+            progressText: .submitMusic,
+            loadAction: { [weak self] in
             try await self?.submitAnswer()
         }) { [weak self] error in
             self?.showFailSubmitMusic(error)
         }
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

@@ -27,6 +27,7 @@ class HummingResultViewController: UIViewController {
         setButton()
         setConstraints()
         bind()
+        viewModel?.fetchResult()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -43,7 +44,11 @@ class HummingResultViewController: UIViewController {
     }
     
     private func setButton() {
-        button.setConfiguration(systemImageName: "play.fill", title: "다음으로", backgroundColor: .asMint)
+        button.setConfiguration(
+            systemImageName: "play.fill",
+            text: "다음으로",
+            backgroundColor: .asMint
+        )
         view.addSubview(button)
         button.addAction(UIAction { [weak self] _ in
             guard let self, let viewModel else { return }
@@ -251,20 +256,20 @@ extension HummingResultViewController: UITableViewDataSource {
 
 extension HummingResultViewController {
     private func showNextResultLoading() {
-        let alert = ASAlertController(
-            progressText: .nextResult,
-            load: { [weak self] in
+        let alert = LoadingAlertController(
+            progressText: .toLobby,
+            loadAction: { [weak self] in
                 try await self?.nextResultFetch()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailNextLoading(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
     
     private func showFailNextLoading(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

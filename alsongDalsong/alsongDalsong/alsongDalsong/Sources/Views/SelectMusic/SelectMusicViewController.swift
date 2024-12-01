@@ -37,7 +37,7 @@ class SelectMusicViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .asLightGray
-        submitButton.setConfiguration(title: "선택 완료", backgroundColor: .asGreen)
+        submitButton.setConfiguration(text: "선택 완료", backgroundColor: .asGreen)
         submitButton.updateButton(.disabled)
         let musicView = SelectMusicView(viewModel: viewModel)
         selectMusicView = UIHostingController(rootView: musicView)
@@ -102,19 +102,19 @@ class SelectMusicViewController: UIViewController {
 
 extension SelectMusicViewController {
     private func showSubmitMusicLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .submitMusic,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.submitMusic()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailSubmitMusic(error)
             })
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
     
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

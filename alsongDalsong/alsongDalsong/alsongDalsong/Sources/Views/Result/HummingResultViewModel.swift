@@ -44,11 +44,10 @@ final class HummingResultViewModel: @unchecked Sendable {
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
         self.musicRepository = musicRepository
-        fetchResult()
     }
     
     // TODO: 함수 명이 바뀔 필요가 있는 듯함.
-    private func fetchResult() {
+    public func fetchResult() {
         hummingResultRepository.getResult()
             .receive(on: DispatchQueue.main)
             .sink { completion in
