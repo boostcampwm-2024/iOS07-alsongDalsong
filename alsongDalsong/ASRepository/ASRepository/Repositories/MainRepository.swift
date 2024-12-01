@@ -64,7 +64,6 @@ public final class MainRepository: MainRepositoryProtocol {
     }
     
     public func joinRoom(nickname: String, avatar: URL, roomNumber: String) async throws -> Bool {
-        let player = try await self.authManager.signIn(nickname: nickname, avatarURL: avatar)
         let response: [String: String] = try await self.sendRequest(
             endpointPath: .joinRoom,
             requestBody: ["roomNumber": roomNumber, "userId": myId]

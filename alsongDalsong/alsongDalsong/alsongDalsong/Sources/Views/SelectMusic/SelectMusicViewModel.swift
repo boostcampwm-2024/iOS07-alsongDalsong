@@ -115,8 +115,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         do {
             if text.isEmpty { return }
             await updateIsSearching(with: true)
-            let searchList = try await musicAPI.search(for: text)
-            await updateSearchList(with: searchList)
+            searchList = try await musicAPI.search(for: text)
             await updateIsSearching(with: false)
         } catch {
             throw error
