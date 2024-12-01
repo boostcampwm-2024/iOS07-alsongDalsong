@@ -193,6 +193,7 @@ enum ASAlertText {
         case submitMusic
         case submitHumming
         case nextResult
+        case toLobby
         var description: String {
             switch self {
                 case .joinRoom: "방 정보를 가져오는 중..."
@@ -200,6 +201,7 @@ enum ASAlertText {
                 case .submitMusic: "노래를 전송하는 중..."
                 case .submitHumming: "허밍을 전송하는 중..."
                 case .nextResult: "다음 결과를 가져오는 중..."
+                case . toLobby: "로비로 이동하는 중..."
             }
         }
     }

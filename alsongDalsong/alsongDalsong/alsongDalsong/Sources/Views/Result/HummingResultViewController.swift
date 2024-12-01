@@ -27,6 +27,7 @@ class HummingResultViewController: UIViewController {
         setButton()
         setConstraints()
         bind()
+        viewModel?.fetchResult()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -256,7 +257,7 @@ extension HummingResultViewController: UITableViewDataSource {
 extension HummingResultViewController {
     private func showNextResultLoading() {
         let alert = LoadingAlertController(
-            progressText: .nextResult,
+            progressText: .toLobby,
             loadAction: { [weak self] in
                 try await self?.nextResultFetch()
             },

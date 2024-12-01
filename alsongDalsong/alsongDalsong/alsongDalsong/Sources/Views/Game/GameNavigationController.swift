@@ -97,7 +97,12 @@ final class GameNavigationController {
             gameStatusRepository: gameStatusRepository
         )
         let vc = SelectMusicViewController(selectMusicViewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        
+        let guideVC = GuideViewController(type: .submitMusic) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToHumming() {
@@ -113,7 +118,11 @@ final class GameNavigationController {
             recordsRepository: recordsRepository
         )
         let vc = HummingViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        let guideVC = GuideViewController(type: .humming) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToRehumming() {
@@ -127,7 +136,11 @@ final class GameNavigationController {
             recordsRepository: recordsRepository
         )
         let vc = RehummingViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        let guideVC = GuideViewController(type: .rehumming) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToSubmitAnswer() {
@@ -145,7 +158,11 @@ final class GameNavigationController {
             musicRepository: musicRepository
         )
         let vc = SubmitAnswerViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        let guideVC = GuideViewController(type: .submitAnswer) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToResult() {
@@ -166,7 +183,11 @@ final class GameNavigationController {
             musicRepository: musicRepository
         )
         let vc = HummingResultViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        let guideVC = GuideViewController(type: .result) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigationToWaiting() {}
