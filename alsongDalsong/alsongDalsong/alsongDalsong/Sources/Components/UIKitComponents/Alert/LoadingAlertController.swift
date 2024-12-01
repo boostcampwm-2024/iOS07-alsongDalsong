@@ -51,12 +51,12 @@ final class LoadingAlertController: ASAlertController {
 
     convenience init(
         progressText: ASAlertText.ProgressText,
-        load: (() async throws -> Void)? = nil,
+        loadAction: (() async throws -> Void)? = nil,
         errorCompletion: ((Error) -> Void)? = nil
     ) {
         self.init()
         self.progressText = progressText
-        self.load = load
+        self.load = loadAction
         self.errorCompletion = errorCompletion
 
         modalTransitionStyle = .crossDissolve

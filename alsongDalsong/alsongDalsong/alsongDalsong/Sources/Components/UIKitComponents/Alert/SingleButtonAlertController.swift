@@ -9,18 +9,18 @@ final class SingleButtonAlertController: ASAlertController {
     func setupStyle() {
         setTitle()
         setButtonStackView()
-        setDoneButton()
+        setPrimaryButton()
     }
     
     convenience init(
         titleText: ASAlertText.Title,
-        doneButtonTitle: ASAlertText.ButtonText = .confirm,
-        doneButtonCompletion: ((String) -> Void)? = nil
+        primaryButtonText: ASAlertText.ButtonText = .confirm,
+        primaryButtonAction: ((String) -> Void)? = nil
     ) {
         self.init()
         self.titleText = titleText
-        self.doneButtonTitle = doneButtonTitle
-        self.doneButtonCompletion = doneButtonCompletion
+        self.primaryButtonText = primaryButtonText
+        self.primaryButtonAction = primaryButtonAction
 
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen

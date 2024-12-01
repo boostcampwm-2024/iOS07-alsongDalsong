@@ -2,17 +2,17 @@ import UIKit
 
 class ASAlertController: UIViewController {
     var titleText: ASAlertText.Title?
-    var doneButtonTitle: ASAlertText.ButtonText?
-    var cancelButtonTitle: ASAlertText.ButtonText?
-    var doneButtonCompletion: ((String) -> Void)?
-    var cancelButtonCompletion: (() -> Void)?
+    var primaryButtonText: ASAlertText.ButtonText?
+    var secondaryButtonText: ASAlertText.ButtonText?
+    var primaryButtonAction: ((String) -> Void)?
+    var secondaryButtonAction: (() -> Void)?
 
     var alertView = ASPanel()
     var stackView = UIStackView()
     lazy var buttonStackView = UIStackView()
     lazy var titleLabel = UILabel()
-    lazy var doneButton = ASButton()
-    lazy var cancelButton = ASButton()
+    lazy var primaryButton = ASButton()
+    lazy var secondaryButton = ASButton()
     lazy var progressView = UIActivityIndicatorView()
 
     override func viewDidLoad() {
@@ -98,33 +98,33 @@ class ASAlertController: UIViewController {
         buttonStackView.heightAnchor.constraint(equalToConstant: 56).priority = .defaultHigh
     }
 
-    func setDoneButton() {
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
-        buttonStackView.addArrangedSubview(doneButton)
-        doneButton.setConfiguration(
-            title: doneButtonTitle?.description,
+    func setPrimaryButton() {
+        primaryButton.translatesAutoresizingMaskIntoConstraints = false
+        buttonStackView.addArrangedSubview(primaryButton)
+        primaryButton.setConfiguration(
+            title: primaryButtonText?.description,
             backgroundColor: .asLightSky,
             textSize: 24
         )
-        doneButton.addAction(UIAction { [weak self] _ in
+        primaryButton.addAction(UIAction { [weak self] _ in
             self?.dismiss(animated: true)
         }, for: .touchUpInside)
-        doneButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        primaryButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
 
-    func setCancelButton() {
-        buttonStackView.addArrangedSubview(cancelButton)
-        cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        cancelButton.setConfiguration(
-            title: cancelButtonTitle?.description,
+    func setSecondaryButton() {
+        buttonStackView.addArrangedSubview(secondaryButton)
+        secondaryButton.translatesAutoresizingMaskIntoConstraints = false
+        secondaryButton.setConfiguration(
+            title: secondaryButtonText?.description,
             backgroundColor: .asLightRed,
             textSize: 24
         )
-        cancelButton.addAction(UIAction { [weak self] _ in
-            self?.cancelButtonCompletion?()
+        secondaryButton.addAction(UIAction { [weak self] _ in
+            self?.secondaryButtonAction?()
             self?.dismiss(animated: true)
         }, for: .touchUpInside)
-        cancelButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        secondaryButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
 }
 

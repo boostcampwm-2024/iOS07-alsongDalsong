@@ -106,8 +106,8 @@ final class LobbyViewController: UIViewController {
             UIAction { [weak self] _ in
                 let alert = DefaultAlertController(
                     titleText: .leaveRoom,
-                    doneButtonTitle: .leave,
-                    cancelButtonTitle: .cancel
+                    primaryButtonText: .leave,
+                    secondaryButtonText: .cancel
                 ) { [weak self] _ in
                     self?.viewmodel.leaveRoom()
                     self?.navigationController?.popViewController(animated: true)
@@ -132,8 +132,8 @@ final class LobbyViewController: UIViewController {
                 if playerCount < 3 {
                     let alert = DefaultAlertController(
                         titleText: .needMorePlayer,
-                        doneButtonTitle: .keep,
-                        cancelButtonTitle: .cancel
+                        primaryButtonText: .keep,
+                        secondaryButtonText: .cancel
                     ) { [weak self] _ in
                         self?.showStartGameLoading()
                     }
@@ -205,7 +205,7 @@ extension LobbyViewController {
     func showStartGameLoading() {
         let alert = LoadingAlertController(
             progressText: .startGame,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.gameStart()
             },
             errorCompletion: { [weak self] error in

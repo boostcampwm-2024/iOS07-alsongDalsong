@@ -253,7 +253,7 @@ extension HummingResultViewController {
     private func showNextResultLoading() {
         let alert = LoadingAlertController(
             progressText: .nextResult,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.nextResultFetch()
             },
             errorCompletion: { [weak self] error in

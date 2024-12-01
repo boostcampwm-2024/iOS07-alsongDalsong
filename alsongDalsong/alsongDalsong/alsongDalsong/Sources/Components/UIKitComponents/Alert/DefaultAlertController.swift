@@ -9,23 +9,23 @@ final class DefaultAlertController: ASAlertController {
     func setupStyle() {
         setTitle()
         setButtonStackView()
-        setCancelButton()
-        setDoneButton()
+        setSecondaryButton()
+        setPrimaryButton()
     }
     
     convenience init(
         titleText: ASAlertText.Title,
-        doneButtonTitle: ASAlertText.ButtonText = .done,
-        cancelButtonTitle: ASAlertText.ButtonText = .cancel,
-        doneButtonCompletion: ((String) -> Void)? = nil,
-        cancelButtonTitleCompletion: (() -> Void)? = nil
+        primaryButtonText: ASAlertText.ButtonText = .done,
+        secondaryButtonText: ASAlertText.ButtonText = .cancel,
+        primaryButtonAction: ((String) -> Void)? = nil,
+        secondaryButtonAction: (() -> Void)? = nil
     ) {
         self.init()
         self.titleText = titleText
-        self.doneButtonTitle = doneButtonTitle
-        self.cancelButtonTitle = cancelButtonTitle
-        self.doneButtonCompletion = doneButtonCompletion
-        cancelButtonCompletion = cancelButtonTitleCompletion
+        self.primaryButtonText = primaryButtonText
+        self.secondaryButtonText = secondaryButtonText
+        self.primaryButtonAction = primaryButtonAction
+        self.secondaryButtonAction = secondaryButtonAction
 
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen

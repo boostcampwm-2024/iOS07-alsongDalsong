@@ -243,7 +243,7 @@ extension OnboardingViewController {
     private func showCreateRoomLoading() {
         let alert = LoadingAlertController(
             progressText: .joinRoom,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.setNicknameAndCreateRoom()
             },
             errorCompletion: { [weak self] error in

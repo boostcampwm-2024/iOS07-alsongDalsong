@@ -104,7 +104,7 @@ extension SelectMusicViewController {
     private func showSubmitMusicLoading() {
         let alert = LoadingAlertController(
             progressText: .submitMusic,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.submitMusic()
             },
             errorCompletion: { [weak self] error in

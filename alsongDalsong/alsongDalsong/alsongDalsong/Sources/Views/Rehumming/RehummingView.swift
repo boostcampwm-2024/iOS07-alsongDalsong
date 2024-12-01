@@ -132,7 +132,7 @@ extension RehummingViewController {
     private func showSubmitHummingLoading() {
         let alert = LoadingAlertController(
             progressText: .submitHumming,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.submitHumming()
             },
             errorCompletion: { [weak self] error in

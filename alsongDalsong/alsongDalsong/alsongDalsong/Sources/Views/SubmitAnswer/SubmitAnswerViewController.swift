@@ -127,7 +127,7 @@ extension SubmitAnswerViewController {
     private func showSubmitAnswerLoading() {
         let alert = LoadingAlertController(
             progressText: .submitMusic,
-            load: { [weak self] in
+            loadAction: { [weak self] in
             try await self?.submitAnswer()
         }) { [weak self] error in
             self?.showFailSubmitMusic(error)

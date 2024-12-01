@@ -18,14 +18,14 @@ final class InputAlertController: ASAlertController {
         setTitle()
         setTextField()
         setButtonStackView()
-        setCancelButton()
-        setDoneButton()
+        setSecondaryButton()
+        setPrimaryButton()
     }
 
-    override func setDoneButton() {
-        super.setDoneButton()
-        doneButton.addAction(UIAction { [weak self] _ in
-            self?.doneButtonCompletion?(self?.text ?? "")
+    override func setPrimaryButton() {
+        super.setPrimaryButton()
+        primaryButton.addAction(UIAction { [weak self] _ in
+            self?.primaryButtonAction?(self?.text ?? "")
         }, for: .touchUpInside)
     }
 
@@ -45,20 +45,20 @@ final class InputAlertController: ASAlertController {
 
     convenience init(
         titleText: ASAlertText.Title,
-        doneButtonTitle: ASAlertText.ButtonText = .done,
-        cancelButtonTitle: ASAlertText.ButtonText = .cancel,
+        primaryButtonText: ASAlertText.ButtonText = .done,
+        secondaryButtonText: ASAlertText.ButtonText = .cancel,
         textFieldPlaceholder: ASAlertText.Placeholder,
         isUppercased: Bool = false,
-        doneButtonCompletion: ((String) -> Void)? = nil,
-        cancelButtonTitleCompletion: (() -> Void)? = nil
+        primaryButtonAction: ((String) -> Void)? = nil,
+        secondaryButtonAction: (() -> Void)? = nil
     ) {
         self.init()
         self.titleText = titleText
         self.textFieldPlaceholder = textFieldPlaceholder
-        self.doneButtonTitle = doneButtonTitle
-        self.cancelButtonTitle = cancelButtonTitle
-        self.doneButtonCompletion = doneButtonCompletion
-        cancelButtonCompletion = cancelButtonTitleCompletion
+        self.primaryButtonText = primaryButtonText
+        self.secondaryButtonText = secondaryButtonText
+        self.primaryButtonAction = primaryButtonAction
+        self.secondaryButtonAction = secondaryButtonAction
         self.isUppercased = isUppercased
 
         modalTransitionStyle = .crossDissolve
