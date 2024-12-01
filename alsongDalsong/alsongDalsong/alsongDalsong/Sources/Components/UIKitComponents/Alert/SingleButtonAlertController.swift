@@ -12,6 +12,13 @@ final class SingleButtonAlertController: ASAlertController {
         setPrimaryButton()
     }
     
+    override func setPrimaryButton() {
+        super.setPrimaryButton()
+        primaryButton.addAction(UIAction { [weak self] _ in
+            self?.primaryButtonAction?("")
+        }, for: .touchUpInside)
+    }
+    
     convenience init(
         titleText: ASAlertText.Title,
         primaryButtonText: ASAlertText.ButtonText = .confirm,

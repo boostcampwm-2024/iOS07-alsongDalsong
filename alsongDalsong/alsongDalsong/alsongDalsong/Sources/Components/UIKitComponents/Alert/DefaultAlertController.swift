@@ -13,6 +13,20 @@ final class DefaultAlertController: ASAlertController {
         setPrimaryButton()
     }
     
+    override func setPrimaryButton() {
+        super.setPrimaryButton()
+        primaryButton.addAction(UIAction { [weak self] _ in
+            self?.primaryButtonAction?("")
+        }, for: .touchUpInside)
+    }
+    
+    override func setSecondaryButton() {
+        super.setSecondaryButton()
+        secondaryButton.addAction(UIAction { [weak self] _ in
+            self?.secondaryButtonAction?()
+        }, for: .touchUpInside)
+    }
+    
     convenience init(
         titleText: ASAlertText.Title,
         primaryButtonText: ASAlertText.ButtonText = .done,

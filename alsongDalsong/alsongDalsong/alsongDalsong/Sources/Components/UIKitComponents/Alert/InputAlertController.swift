@@ -29,6 +29,13 @@ final class InputAlertController: ASAlertController {
         }, for: .touchUpInside)
     }
 
+    override func setSecondaryButton() {
+        super.setSecondaryButton()
+        secondaryButton.addAction(UIAction { [weak self] _ in
+            self?.secondaryButtonAction?()
+        }, for: .touchUpInside)
+    }
+
     private func setTextField() {
         textField.setConfiguration(placeholder: textFieldPlaceholder?.description)
         stackView.addArrangedSubview(textField)
