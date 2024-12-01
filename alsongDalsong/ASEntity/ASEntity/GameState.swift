@@ -26,13 +26,13 @@ public struct GameState {
         case .humming:
             return resolveHummingViewType(status: status, recordOrder: recordOrder, round: round)
         case .harmony:
-            return resolveHarmonyViewType(status: status)
+            return nil
         case .sync:
-            return resolveSyncViewType(status: status)
+            return nil
         case .instant:
-            return resolveInstantViewType(status: status)
+            return nil
         case .tts:
-            return resolveTTSViewType(status: status)
+            return nil
         }
     }
 
