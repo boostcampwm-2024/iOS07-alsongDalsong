@@ -75,7 +75,7 @@ extension AudioHelper {
     ///   - source: 녹음 파일/url에서 가져온 파일
     ///   - playType: 전체 또는 부분 재생
     ///   - allowsConcurrent: 녹음과 동시에 재생
-    func startPlaying(_ file: Data?, sourceType type: FileSource = .imported, option: PlayType = .full, needsWaveUpdate: Bool = false) async {
+    func startPlaying(_ file: Data?, sourceType type: FileSource = .imported(.large), option: PlayType = .full, needsWaveUpdate: Bool = false) async {
         guard await checkRecorderState(), await checkPlayerState() else { return }
         guard let file else { return }
 
