@@ -102,7 +102,7 @@ class SelectMusicViewController: UIViewController {
 
 extension SelectMusicViewController {
     private func showSubmitMusicLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .submitMusic,
             load: { [weak self] in
                 try await self?.submitMusic()
@@ -110,11 +110,11 @@ extension SelectMusicViewController {
             errorCompletion: { [weak self] error in
                 self?.showFailSubmitMusic(error)
             })
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
     
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

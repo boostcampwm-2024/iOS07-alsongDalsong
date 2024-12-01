@@ -125,16 +125,18 @@ final class SubmitAnswerViewController: UIViewController {
 
 extension SubmitAnswerViewController {
     private func showSubmitAnswerLoading() {
-        let alert = ASAlertController(progressText: .submitMusic, load: { [weak self] in
+        let alert = LoadingAlertController(
+            progressText: .submitMusic,
+            load: { [weak self] in
             try await self?.submitAnswer()
         }) { [weak self] error in
             self?.showFailSubmitMusic(error)
         }
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

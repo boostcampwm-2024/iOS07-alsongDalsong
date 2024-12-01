@@ -104,8 +104,7 @@ final class LobbyViewController: UIViewController {
     private func setAction() {
         backButton.addAction(
             UIAction { [weak self] _ in
-                let alert = ASAlertController(
-                    style: .default,
+                let alert = DefaultAlertController(
                     titleText: .leaveRoom,
                     doneButtonTitle: .leave,
                     cancelButtonTitle: .cancel
@@ -131,8 +130,7 @@ final class LobbyViewController: UIViewController {
             UIAction { [weak self] _ in
                 guard let playerCount = self?.viewmodel.players.count else { return }
                 if playerCount < 3 {
-                    let alert = ASAlertController(
-                        style: .default,
+                    let alert = DefaultAlertController(
                         titleText: .needMorePlayer,
                         doneButtonTitle: .keep,
                         cancelButtonTitle: .cancel
@@ -205,7 +203,7 @@ final class LobbyViewController: UIViewController {
 
 extension LobbyViewController {
     func showStartGameLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .startGame,
             load: { [weak self] in
                 try await self?.gameStart()
@@ -214,11 +212,11 @@ extension LobbyViewController {
                 self?.showStartGameFailed(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     func showStartGameFailed(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

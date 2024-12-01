@@ -251,7 +251,7 @@ extension HummingResultViewController: UITableViewDataSource {
 
 extension HummingResultViewController {
     private func showNextResultLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .nextResult,
             load: { [weak self] in
                 try await self?.nextResultFetch()
@@ -260,11 +260,11 @@ extension HummingResultViewController {
                 self?.showFailNextLoading(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
     
     private func showFailNextLoading(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

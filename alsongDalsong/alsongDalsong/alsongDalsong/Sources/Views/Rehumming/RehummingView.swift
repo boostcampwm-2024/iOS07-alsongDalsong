@@ -130,7 +130,7 @@ final class RehummingViewController: UIViewController {
 
 extension RehummingViewController {
     private func showSubmitHummingLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .submitHumming,
             load: { [weak self] in
                 try await self?.submitHumming()
@@ -139,11 +139,11 @@ extension RehummingViewController {
                 self?.showFailSubmitMusic(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }
