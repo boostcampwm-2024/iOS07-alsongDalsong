@@ -1,25 +1,28 @@
 
 <div align="center">
   
-## 알쏭달쏭 🎶 
+## 알쏭달쏭 🎶
+  
+|📚 바로가기|[팀 Notion](https://mature-browser-f84.notion.site/12ee7c2fd62b80c196a2eef239b0b884?pvs=4)|[팀 Wiki](https://github.com/boostcampwm-2024/iOS07-alsongDalsong/wiki)|[팀 Figma](https://www.figma.com/design/Pv9SVfpYLjeRE00yMT4OF1/%EA%B0%88%ED%8B%B1%ED%8F%B0?node-id=0-1&t=eTWR2a895ooGgznA-1)|[팀 그라운드 룰](https://github.com/boostcampwm-2024/iOS07-boostproject/wiki/%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)|[팀 협업 룰](https://mature-browser-f84.notion.site/12de7c2fd62b8077bd98da954a08c472?pvs=4)|
+|:-:|:-:|:-:|:-:|:-:|:-:|
+<img width=300 src="https://github.com/user-attachments/assets/ccbffd92-b2a7-495c-9681-23d5280281f2">
 
 ### **🎧 귀를 쫑긋 세우세요 ! 🎧** 
 
 여러분을 음악과 다양한 소리가 넘치는 세계로 안내합니다. 
 
-친구들과 함께 노래를 듣고, 부르며 다양한 게임을 즐겨보세요 ! 
-
-허밍모드, 하모니 모드, 이구동성 모드, 1초 듣고 맞추기 모드 등 여러가지 모드가 준비되어있어요 ! 
+친구들과 함께 노래를 듣고, 부르며 재밌는 게임을 즐겨보세요 ! 
 
 순서에 따라 변형되는 허밍을 듣고 녹음하며 원래 노래가 무엇이었는지 맞춰보세요 ! 
 
 **알쏭달쏭의 세계로 떠나보세요 ! 🎶** 
 </div>
 
-|<img width=300 src="https://github.com/user-attachments/assets/bea197ae-7359-4847-8b96-ae8fd52ac0b4"> | <img width=300 src="https://github.com/user-attachments/assets/1de5d274-b993-4e48-8842-32b8f6d7db99">| <img width=300 src="https://github.com/user-attachments/assets/9684e1d0-57ab-4bdc-a1c5-f1b38d4b42b1">|
+|<img width=300 src="https://github.com/user-attachments/assets/5d6e9355-7738-4361-92cd-824ad6d6b470"> | <img width=300 src="https://github.com/user-attachments/assets/a12d8c07-2e50-460c-b5b1-e686e00a3cf2">| <img width=300 src="https://github.com/user-attachments/assets/41b05c64-06e6-4559-8cf1-4d302f1e4ad5">|
 |:-:|:-:|:-:|
 <div align="center">
-  
+
+
 ## Team 대대대대(DDDD)
 |S024 박상원|S029 박진성|S033 손승재|S050 이민하|
 |:-:|:-:|:-:|:-:|
@@ -29,6 +32,7 @@
 |대구|대구|대구|대전|
 
 </div>
+
 
 
 ## 기술 스택
@@ -58,8 +62,6 @@
 <br>
 
 <div align="center">
-  
-|📚 바로가기|[팀 Notion](https://mature-browser-f84.notion.site/12ee7c2fd62b80c196a2eef239b0b884?pvs=4)|[팀 Figma](https://www.figma.com/design/Pv9SVfpYLjeRE00yMT4OF1/%EA%B0%88%ED%8B%B1%ED%8F%B0?node-id=0-1&t=eTWR2a895ooGgznA-1)|[컨벤션](https://github.com/boostcampwm-2024/iOS04-HARU/wiki/컨벤션)|[팀 그라운드 룰](https://github.com/boostcampwm-2024/iOS07-boostproject/wiki/%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)|[팀 협업 룰](https://mature-browser-f84.notion.site/12de7c2fd62b8077bd98da954a08c472?pvs=4)|
-|:-:|:-:|:-:|:-:|:-:|:-:|
+
 
 </div>

@@ -151,7 +151,7 @@ public final class MainRepository: MainRepositoryProtocol {
     public func getResource(url: URL) async throws -> Data {
         do {
             guard let endpoint = ResourceEndpoint(url: url) else { throw ASNetworkErrors.urlError }
-            let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
+            let data = try await self.networkManager.sendRequest(to: endpoint, type: .none, body: nil, option: .both)
             return data
         } catch {
             throw error
@@ -190,6 +190,7 @@ public final class MainRepository: MainRepositoryProtocol {
     
     private func sendRequest<T: Decodable>(endpointPath: FirebaseEndpoint.Path, requestBody: [String: Any]) async throws -> T {
         let endpoint = FirebaseEndpoint(path: endpointPath, method: .post)
+        Logger.debug("Request to \(endpoint)")
         let body = try JSONSerialization.data(withJSONObject: requestBody, options: [])
         let data = try await networkManager.sendRequest(to: endpoint, type: .json, body: body, option: .none)
         let response = try JSONDecoder().decode(T.self, from: data)

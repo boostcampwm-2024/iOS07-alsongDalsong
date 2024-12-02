@@ -2,7 +2,6 @@ import UIKit
 
 final class RehummingViewController: UIViewController {
     private var progressBar = ProgressBar()
-    private var guideLabel = GuideLabel()
     private var musicPanel = MusicPanel()
     private var hummingPanel = RecordingPanel(.asMint)
     private var recordButton = ASButton()
@@ -45,7 +44,6 @@ final class RehummingViewController: UIViewController {
     }
 
     private func setupUI() {
-        guideLabel.setText("허밍을 듣고 따라하세요!")
         recordButton.updateButton(.idle("녹음하기", .systemRed))
         submitButton.updateButton(.submit)
         submitButton.updateButton(.disabled)
@@ -55,7 +53,6 @@ final class RehummingViewController: UIViewController {
         buttonStack.addArrangedSubview(submitButton)
         view.backgroundColor = .asLightGray
         view.addSubview(progressBar)
-        view.addSubview(guideLabel)
         view.addSubview(musicPanel)
         view.addSubview(hummingPanel)
         view.addSubview(buttonStack)
@@ -80,7 +77,6 @@ final class RehummingViewController: UIViewController {
 
     private func setupLayout() {
         progressBar.translatesAutoresizingMaskIntoConstraints = false
-        guideLabel.translatesAutoresizingMaskIntoConstraints = false
         musicPanel.translatesAutoresizingMaskIntoConstraints = false
         hummingPanel.translatesAutoresizingMaskIntoConstraints = false
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
@@ -92,12 +88,9 @@ final class RehummingViewController: UIViewController {
             progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             progressBar.heightAnchor.constraint(equalToConstant: 16),
 
-            guideLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 20),
-            guideLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
-            musicPanel.topAnchor.constraint(equalTo: guideLabel.bottomAnchor, constant: 20),
-            musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 48),
-            musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -48),
+            musicPanel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 32),
+            musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
+            musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
 
             hummingPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 36),
             hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
@@ -130,20 +123,20 @@ final class RehummingViewController: UIViewController {
 
 extension RehummingViewController {
     private func showSubmitHummingLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .submitHumming,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.submitHumming()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailSubmitMusic(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
     }
 
     private func showFailSubmitMusic(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

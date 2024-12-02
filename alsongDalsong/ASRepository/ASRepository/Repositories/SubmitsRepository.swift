@@ -25,6 +25,6 @@ public final class SubmitsRepository: SubmitsRepositoryProtocol {
     }
 
     public func submitAnswer(answer: Music) async throws -> Bool {
-        try await mainRepository.submitMusic(answer: answer)
+        try await mainRepository.submitAnswer(answer: answer)
     }
 }

@@ -8,48 +8,62 @@ struct SelectAnswerView: View {
     private let debouncer = Debouncer(delay: 0.5)
 
     var body: some View {
-        VStack {
-            HStack {
-                ASMusicItemCell(music: viewModel.selectedMusic, fetchArtwork: { url in
-                    await viewModel.downloadArtwork(url: url)
-                })
-                .padding(EdgeInsets(top: 4, leading: 32, bottom: 4, trailing: 12))
-                Spacer()
-                Button {
-                    viewModel.stopMusic()
-                    dismiss()
-                } label: {
-                    Text("선택완료")
-                        .font(.custom("DoHyeon-Regular", size: 16))
-                }
-                .buttonStyle(.borderedProminent)
-                .frame(width: 60)
-                .padding(.trailing, 12)
-            }
-            .frame(height: 100)
-
-            ASSearchBar(text: $searchTerm, placeHolder: "노래를 선택하세요")
-                .onChange(of: searchTerm) { newValue in
-                    debouncer.debounce {
-                        Task {
-                            if newValue.isEmpty { viewModel.resetSearchList() }
-                            try await viewModel.searchMusic(text: newValue)
-                        }
-                    }
-                }
-            List(viewModel.searchList) { music in
-                Button {
-                    viewModel.handleSelectedMusic(with: music)
-                } label: {
-                    ASMusicItemCell(music: music, fetchArtwork: { url in
+        NavigationStack {
+            VStack {
+                HStack {
+                    ASMusicItemCell(music: viewModel.selectedMusic, fetchArtwork: { url in
                         await viewModel.downloadArtwork(url: url)
                     })
-                    .tint(.black)
+                    .scaleEffect(1.1)
+                    Spacer()
+                    Button {
+                        viewModel.isPlaying.toggle()
+                    } label: {
+                        if #available(iOS 17.0, *) {
+                            Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                                .font(.largeTitle)
+                                .contentTransition(.symbolEffect(.replace.offUp))
+                        } else {
+                            Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                                .font(.largeTitle)
+                        }
+                    }
+                    .tint(.primary)
+                    .frame(width: 60)
+                }
+                .padding(16)
+                
+                ASSearchBar(text: $searchTerm, placeHolder: "노래를 선택하세요")
+                    .onChange(of: searchTerm) { newValue in
+                        debouncer.debounce {
+                            Task {
+                                if newValue.isEmpty { viewModel.resetSearchList() }
+                                try await viewModel.searchMusic(text: newValue)
+                            }
+                        }
+                    }
+                List(viewModel.searchList) { music in
+                    Button {
+                        viewModel.handleSelectedMusic(with: music)
+                    } label: {
+                        ASMusicItemCell(music: music, fetchArtwork: { url in
+                            await viewModel.downloadArtwork(url: url)
+                        })
+                        .tint(.black)
+                    }
+                }
+                .listStyle(.plain)
+            }
+            .background(.asLightGray)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("완료") {
+                        viewModel.stopMusic()
+                        dismiss()
+                    }
                 }
             }
-            .listStyle(.plain)
         }
-        .background(.asLightGray)
     }
 }
 

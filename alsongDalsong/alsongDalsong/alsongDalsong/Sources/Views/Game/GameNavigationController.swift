@@ -1,13 +1,15 @@
 import ASContainer
 import ASEntity
+import ASLogKit
 import ASRepositoryProtocol
 import Combine
 import UIKit
 
 @MainActor
-final class GameNavigationController {
+final class GameNavigationController: @unchecked Sendable {
     private let navigationController: UINavigationController
     private let gameStateRepository: GameStateRepositoryProtocol
+    private let roomActionRepository: RoomActionRepositoryProtocol
     private var subscriptions: Set<AnyCancellable> = []
     
     private var gameInfo: GameState? {
@@ -17,13 +19,19 @@ final class GameNavigationController {
         }
     }
     
+    private let roomNumber: String
+    
     init(navigationController: UINavigationController,
-         gameStateRepository: GameStateRepositoryProtocol)
+         gameStateRepository: GameStateRepositoryProtocol,
+         roomActionRepository: RoomActionRepositoryProtocol,
+         roomNumber: String)
     {
         self.navigationController = navigationController
         self.gameStateRepository = gameStateRepository
+        self.roomActionRepository = roomActionRepository
+        self.roomNumber = roomNumber
     }
-
+    
     @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -38,7 +46,61 @@ final class GameNavigationController {
             }
             .store(in: &subscriptions)
     }
+    
+    private func setupNavigationBar(for viewController: UIViewController) {
+        navigationController.navigationBar.isHidden = false
+        navigationController.navigationBar.tintColor = .asBlack
+        navigationController.navigationBar.titleTextAttributes = [.font: UIFont.font(.dohyeon, ofSize: 24)]
+        
+        let backButtonImage = UIImage(systemName: "rectangle.portrait.and.arrow.forward")?
+            .withRenderingMode(.alwaysTemplate)
+            .applyingSymbolConfiguration(.init(pointSize: 24, weight: .medium))?
+            .rotate(radians: .pi)
+        
+        let backButtonAction = UIAction { [weak self] _ in
+            let alert = DefaultAlertController(
+                titleText: .leaveRoom,
+                primaryButtonText: .leave,
+                secondaryButtonText: .cancel
+            ) { [weak self] _ in
+                self?.leaveRoom()
+                self?.navigationController.popToRootViewController(animated: true)
+                self?.navigationController.navigationBar.isHidden = true
+            }
+            self?.navigationController.presentAlert(alert)
+        }
 
+        let backButton = UIBarButtonItem(image: backButtonImage, primaryAction: backButtonAction)
+        
+        viewController.navigationItem.leftBarButtonItem = backButton
+        viewController.title = setTitle()
+    }
+    
+    private func setTitle() -> String {
+        guard let gameInfo else { return "" }
+        let viewType = gameInfo.resolveViewType()
+        switch viewType {
+        case .submitMusic:
+            return "노래 선택"
+        case .humming:
+            return "허밍"
+        case .rehumming:
+            guard let recordOrder = gameInfo.recordOrder else { return "" }
+            let rounds = gameInfo.players.count - 2
+            return "리허밍 \(recordOrder)/\(rounds)"
+        case .submitAnswer:
+            return "정답 맞추기"
+        case .result:
+            guard let recordOrder = gameInfo.recordOrder else { return "" }
+            let currentRound = Int(recordOrder) - (gameInfo.players.count - 2)
+            return "결과 확인 \(currentRound)/\(gameInfo.players.count)"
+        case .lobby:
+            return "#\(roomNumber)"
+        default:
+            return ""
+        }
+    }
+    
     private func updateViewControllers(state: GameState) {
         let viewType = state.resolveViewType()
         switch viewType {
@@ -81,6 +143,7 @@ final class GameNavigationController {
             avatarRepository: avatarRepository
         )
         let vc = LobbyViewController(lobbyViewModel: vm)
+        setupNavigationBar(for: vc)
         navigationController.pushViewController(vc, animated: true)
     }
     
@@ -97,7 +160,13 @@ final class GameNavigationController {
             gameStatusRepository: gameStatusRepository
         )
         let vc = SelectMusicViewController(selectMusicViewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        
+        let guideVC = GuideViewController(type: .submitMusic) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToHumming() {
@@ -113,7 +182,13 @@ final class GameNavigationController {
             recordsRepository: recordsRepository
         )
         let vc = HummingViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        
+        let guideVC = GuideViewController(type: .humming) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToRehumming() {
@@ -127,7 +202,14 @@ final class GameNavigationController {
             recordsRepository: recordsRepository
         )
         let vc = RehummingViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        
+        let guideVC = GuideViewController(type: .rehumming) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
+        
     }
     
     private func navigateToSubmitAnswer() {
@@ -145,10 +227,20 @@ final class GameNavigationController {
             musicRepository: musicRepository
         )
         let vc = SubmitAnswerViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        
+        let guideVC = GuideViewController(type: .submitAnswer) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigateToResult() {
+        if navigationController.topViewController is HummingResultViewController {
+            navigationController.topViewController?.title = setTitle()
+            return
+        }
         let hummingResultRepository = DIContainer.shared.resolve(HummingResultRepositoryProtocol.self)
         let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
         let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
@@ -166,8 +258,24 @@ final class GameNavigationController {
             musicRepository: musicRepository
         )
         let vc = HummingResultViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        
+        let guideVC = GuideViewController(type: .result) { [weak self] in
+            guard let self else { return }
+            navigationController.pushViewController(vc, animated: true)
+            setupNavigationBar(for: vc)
+        }
+        navigationController.pushViewController(guideVC, animated: true)
     }
     
     private func navigationToWaiting() {}
+    
+    private func leaveRoom() {
+        Task {
+            do {
+                let _ = try await roomActionRepository.leaveRoom()
+            } catch {
+                Logger.error(error.localizedDescription)
+            }
+        }
+    }
 }

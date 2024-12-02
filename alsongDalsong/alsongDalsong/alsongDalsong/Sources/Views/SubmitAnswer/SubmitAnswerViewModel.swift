@@ -18,7 +18,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         didSet { isPlaying = true }
     }
 
-    @Published public private(set) var isPlaying: Bool = false {
+    @Published public var isPlaying: Bool = false {
         didSet { isPlaying ? playingMusic() : stopMusic() }
     }
 
@@ -92,7 +92,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     public func playingMusic() {
         guard let data = musicData else { return }
         Task {
-            await AudioHelper.shared.startPlaying(data)
+            await AudioHelper.shared.startPlaying(data, option: .full)
         }
     }
 
@@ -157,7 +157,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
 
     public func togglePlayPause() {
         Task {
-            await AudioHelper.shared.startPlaying(recordedData)
+            await AudioHelper.shared.startPlaying(recordedData, option: .full)
         }
     }
 
@@ -168,7 +168,6 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         isRecording = false
     }
     
-    @MainActor
     public func resetSearchList() {
         searchList = []
     }

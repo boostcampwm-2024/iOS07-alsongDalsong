@@ -27,6 +27,7 @@ class HummingResultViewController: UIViewController {
         setButton()
         setConstraints()
         bind()
+        viewModel?.fetchResult()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -44,7 +45,11 @@ class HummingResultViewController: UIViewController {
     }
     
     private func setButton() {
-        button.setConfiguration(systemImageName: "play.fill", title: "다음으로", backgroundColor: .asMint)
+        button.setConfiguration(
+            systemImageName: "play.fill",
+            text: "다음으로",
+            backgroundColor: .asMint
+        )
         view.addSubview(button)
         button.addAction(UIAction { [weak self] _ in
             guard let self, let viewModel else { return }
@@ -90,18 +95,30 @@ class HummingResultViewController: UIViewController {
         
         viewModel.$currentRecords
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.resultTableView.reloadData()
+            .sink { [weak self] records in
+                guard let self, !records.isEmpty else { return }
+                let indexPath = IndexPath(row: records.count - 1, section: 0)
+                if records.count > resultTableView.numberOfRows(inSection: 0) {
+                    resultTableView.insertRows(at: [indexPath], with: .fade)
+                }
+                else {
+                    resultTableView.reloadRows(at: [indexPath], with: .fade)
+                }
             }
             .store(in: &cancellables)
+        
         viewModel.$currentsubmit
             .receive(on: DispatchQueue.main)
             .sink { [weak self] submit in
                 guard let self else { return }
                 if submit != nil {
-                    resultTableView.reloadData()
-                    if viewModel.isHost {
-                        button.isHidden = false
+                    button.isHidden = false
+                    let indexPath = IndexPath(row: 0, section: 1)
+                    if resultTableView.numberOfRows(inSection: 1) == 1 {
+                        resultTableView.reloadRows(at: [indexPath], with: .fade)
+                    }
+                    else {
+                        resultTableView.insertRows(at: [indexPath], with: .fade)
                     }
                 }
             }
@@ -116,8 +133,27 @@ class HummingResultViewController: UIViewController {
                     button.isHidden = true
                     if viewModel.hummingResult.isEmpty {
                         button.updateButton(.complete)
+                        button.removeTarget(nil, action: nil, for: .touchUpInside)
+                        button.addAction(UIAction { _ in
+                            self.showLobbyLoading()
+                        }, for: .touchUpInside)
+                        
                     }
                     viewModel.isNext = false
+                    resultTableView.reloadData()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isHost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHost in
+                guard let self else { return }
+                if isHost {
+                    self.button.isEnabled = true
+                }
+                else {
+                    self.button.isEnabled = false
                 }
             }
             .store(in: &cancellables)
@@ -252,20 +288,33 @@ extension HummingResultViewController: UITableViewDataSource {
 
 extension HummingResultViewController {
     private func showNextResultLoading() {
-        let alert = ASAlertController(
+        let alert = LoadingAlertController(
             progressText: .nextResult,
-            load: { [weak self] in
+            loadAction: { [weak self] in
                 try await self?.nextResultFetch()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailNextLoading(error)
             }
         )
-        presentLoadingView(alert)
+        presentAlert(alert)
+    }
+    
+    private func showLobbyLoading() {
+        let alert = LoadingAlertController(
+            progressText: .toLobby,
+            loadAction: { [weak self] in
+                try await self?.nextResultFetch()
+            },
+            errorCompletion: { [weak self] error in
+                self?.showFailNextLoading(error)
+            }
+        )
+        presentAlert(alert)
     }
     
     private func showFailNextLoading(_ error: Error) {
-        let alert = ASAlertController(titleText: .error(error))
+        let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }
 }

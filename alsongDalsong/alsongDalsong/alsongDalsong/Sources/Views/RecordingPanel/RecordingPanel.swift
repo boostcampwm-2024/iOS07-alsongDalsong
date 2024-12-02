@@ -58,6 +58,14 @@ final class RecordingPanel: UIView {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.updateButtonImage(with: state)
+                self?.updateWaveForm(state: state)
+            }
+            .store(in: &cancellables)
+        viewModel.$playIndex
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] index in
+                guard let index else { return }
+                self?.updateWaveForm(index: index)
             }
             .store(in: &cancellables)
     }
@@ -138,7 +146,15 @@ final class RecordingPanel: UIView {
     }
 
     private func updateWaveForm(amplitude: CGFloat) {
-        waveFormView.updateVisualizerView(with: amplitude)
+        waveFormView.updateAmplitude(with: amplitude)
+    }
+
+    private func updateWaveForm(index: Int) {
+        waveFormView.updatePlayingIndex(index)
+    }
+
+    private func updateWaveForm(state: AudioButtonState) {
+        if state == .idle { waveFormView.resetColor() }
     }
 
     private func reset() {
@@ -165,14 +181,14 @@ private final class WaveForm: UIView {
         numOfColumns = 48
         super.init(coder: coder)
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         if columns.isEmpty {
             drawVisualizerCircles()
         }
     }
-    
+
     func resetView() {
         removeVisualizerCircles()
     }
@@ -190,7 +206,7 @@ private final class WaveForm: UIView {
 
             let circleLayer = CAShapeLayer()
             circleLayer.path = circle.cgPath
-            circleLayer.fillColor = UIColor.asShadow.cgColor
+            circleLayer.fillColor = UIColor.white.cgColor
 
             layer.addSublayer(circleLayer)
             columns.append(circleLayer)
@@ -206,7 +222,17 @@ private final class WaveForm: UIView {
         columns.removeAll()
     }
 
-    fileprivate func updateVisualizerView(with amplitude: CGFloat, direction: Direction = .LTR) {
+    fileprivate func resetColor() {
+        for column in columns {
+            column.fillColor = UIColor.white.cgColor
+        }
+    }
+
+    fileprivate func updatePlayingIndex(_ index: Int) {
+        columns[index].fillColor = UIColor.black.cgColor
+    }
+
+    fileprivate func updateAmplitude(with amplitude: CGFloat, direction: Direction = .LTR) {
         guard columns.count == numOfColumns, count < numOfColumns else { return }
         let index = direction == .LTR ? count : numOfColumns - count - 1
         columns[index].path = computeNewPath(for: columns[index], with: amplitude)

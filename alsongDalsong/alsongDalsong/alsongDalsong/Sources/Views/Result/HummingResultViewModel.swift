@@ -44,11 +44,10 @@ final class HummingResultViewModel: @unchecked Sendable {
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
         self.musicRepository = musicRepository
-        fetchResult()
     }
     
     // TODO: 함수 명이 바뀔 필요가 있는 듯함.
-    private func fetchResult() {
+    public func fetchResult() {
         hummingResultRepository.getResult()
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -106,6 +105,8 @@ final class HummingResultViewModel: @unchecked Sendable {
     }
     
     func startPlaying() async {
+        await startPlayingCurrentMusic()
+        
         while !recordsResult.isEmpty {
             currentRecords.append(recordsResult.removeFirst())
             guard let fileUrl = currentRecords.last?.fileUrl else { continue }
@@ -118,6 +119,17 @@ final class HummingResultViewModel: @unchecked Sendable {
             }
         }
         currentsubmit = submitsResult
+    }
+    
+    private func startPlayingCurrentMusic() async -> Void {
+        guard let fileUrl = currentResult?.music?.previewUrl else { return }
+        do {
+            let data = try await musicRepository.getMusicData(url: fileUrl)
+            await AudioHelper.shared.startPlaying(data, option: .partial(time: 10))
+            await waitForPlaybackToFinish()
+        } catch {
+            return
+        }
     }
     
     private func waitForPlaybackToFinish() async {

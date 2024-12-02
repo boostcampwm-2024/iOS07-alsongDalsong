@@ -1,10 +1,12 @@
 import UIKit
 
 final class GuideLabel: UILabel {
-    init() {
+    init(style: UIFont.TextStyle = .largeTitle) {
         super.init(frame: .zero)
-        font = .font(forTextStyle: .largeTitle)
+        font = .font(forTextStyle: style)
         textColor = .label
+        textAlignment = .center
+        numberOfLines = 0
     }
 
     @available(*, unavailable)
@@ -14,5 +16,6 @@ final class GuideLabel: UILabel {
 
     func setText(_ text: String) {
         self.text = text
+        sizeToFit()
     }
 }

@@ -51,7 +51,7 @@ public protocol AvatarRepositoryProtocol {
     func getAvatarData(url: URL) async -> Data?
 }
 
-public protocol RoomActionRepositoryProtocol {
+public protocol RoomActionRepositoryProtocol: Sendable {
     func createRoom(nickname: String, avatar: URL) async throws -> String
     func joinRoom(nickname: String, avatar: URL, roomNumber: String) async throws -> Bool
     func leaveRoom() async throws -> Bool

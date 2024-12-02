@@ -1,27 +1,37 @@
 import ASAudioKit
+import ASLogKit
 import Combine
 import Foundation
-import ASLogKit
 
 extension AnyPublisher: @unchecked @retroactive Sendable {}
 extension PassthroughSubject: @unchecked @retroactive Sendable {}
 
 actor AudioHelper {
+    // MARK: - Private properties
+
     static let shared = AudioHelper()
     private var recorder: ASAudioRecorder?
     private var player: ASAudioPlayer?
-    private var source: FileSource = .imported
+    private var source: FileSource = .imported(.large)
     private var playType: PlayType = .full
     private var isConcurrent: Bool = false
-    private var timer: Timer?
+    private var cancellable: AnyCancellable?
+
+    // MARK: - Publishers
+
     private let amplitudeSubject = PassthroughSubject<Float, Never>()
     private let playerStateSubject = PassthroughSubject<(FileSource, Bool), Never>()
+    private let waveformUpdateSubject = PassthroughSubject<Int, Never>()
     private let recorderStateSubject = PassthroughSubject<Bool, Never>()
     private let recorderDataSubject = PassthroughSubject<Data, Never>()
     var amplitudePublisher: AnyPublisher<Float, Never> { amplitudeSubject.eraseToAnyPublisher() }
 
     var playerStatePublisher: AnyPublisher<(FileSource, Bool), Never> {
         playerStateSubject.eraseToAnyPublisher()
+    }
+
+    var waveformUpdatePublisher: AnyPublisher<Int, Never> {
+        waveformUpdateSubject.eraseToAnyPublisher()
     }
 
     var recorderStatePublisher: AnyPublisher<Bool, Never> {
@@ -44,62 +54,91 @@ actor AudioHelper {
         return await player.isPlaying()
     }
 
+    private func removePlayer() async {
+        player = nil
+    }
+
+    private func removeRecorder() {
+        recorder = nil
+    }
+
     private func removeTimer() {
-        timer?.invalidate()
-        timer = nil
+        cancellable?.cancel()
+        cancellable = nil
     }
+}
 
-    private func visualize() {
-        Task { [weak self] in
-            guard let self else { return }
-            await self.setTimer()
-        }
-    }
-
-    private func setTimer() {
-        timer = Timer(timeInterval: 0.125, repeats: true) { [weak self] _ in
-            Task {
-                await self?.calculateRecorderAmplitude()
-            }
-        }
-        RunLoop.main.add(timer!, forMode: .common)
-    }
-
-    private func calculateRecorderAmplitude() async {
-        await recorder?.updateMeters()
-        guard let averagePower = await recorder?.getAveragePower() else { return }
-        let newAmplitude = 1.8 * pow(10.0, averagePower / 20.0)
-        let clampedAmplitude = min(max(newAmplitude, 0), 1)
-        amplitudeSubject.send(clampedAmplitude)
-    }
-
+extension AudioHelper {
     /// 여러 조건을 적용해 오디오를 재생하는 함수
     /// - Parameters:
     ///   - file: 재생할 오디오 데이터
     ///   - source: 녹음 파일/url에서 가져온 파일
     ///   - playType: 전체 또는 부분 재생
     ///   - allowsConcurrent: 녹음과 동시에 재생
-    func startPlaying(_ file: Data?, sourceType type: FileSource = .imported) async {
+    func startPlaying(_ file: Data?, sourceType type: FileSource = .imported(.large), option: PlayType = .full, needsWaveUpdate: Bool = false) async {
         guard await checkRecorderState(), await checkPlayerState() else { return }
         guard let file else { return }
 
+        setPlayOption(option: option)
         sourceType(type)
         makePlayer()
         await player?.setOnPlaybackFinished { [weak self] in
             await self?.stopPlaying()
         }
         sendDataThrough(playerStateSubject, (source, true))
+        if needsWaveUpdate {
+            updatePlayIndex()
+        }
         await player?.startPlaying(data: file, option: playType)
     }
 
+    func stopPlaying() async {
+        await player?.stopPlaying()
+        await removePlayer()
+        sendDataThrough(playerStateSubject, (source, false))
+        removeTimer()
+    }
+
+    private func updatePlayIndex() {
+        cancellable = Timer.publish(every: 0.125, on: .main, in: .common)
+            .autoconnect()
+            .scan(0) { count, _ in
+                count + 1
+            }
+            .sink { [weak self] value in
+                guard let self else { return }
+                Task {
+                    await self.sendDataThrough(self.waveformUpdateSubject, value - 1)
+                }
+            }
+    }
+
+    private func makePlayer() {
+        player = ASAudioPlayer()
+    }
+
+    private func checkPlayerState() async -> Bool {
+        if await isPlaying() {
+            await player?.stopPlaying()
+            await removePlayer()
+            sendDataThrough(playerStateSubject, (source, false))
+        }
+        return true
+    }
+}
+
+// MARK: - Record Audio
+
+extension AudioHelper {
     func startRecording() async {
         guard await checkRecorderState(), await checkPlayerState() else { return }
-        
+
         makeRecorder()
         let tempURL = makeURL()
         recorderStateSubject.send(true)
         await recorder?.startRecording(url: tempURL)
         visualize()
+        Logger.debug("녹음 시작")
         do {
             try await Task.sleep(nanoseconds: 6 * 1_000_000_000)
             let recordedData = await stopRecording()
@@ -108,16 +147,11 @@ actor AudioHelper {
         } catch { Logger.error(error.localizedDescription) }
     }
 
-    func stopPlaying() async {
-        await player?.stopPlaying()
-        player = nil
-        sendDataThrough(playerStateSubject, (source, false))
-    }
-
     private func stopRecording() async -> Data? {
         let recordedData = await recorder?.stopRecording()
+        Logger.debug("녹음 정지")
         recorderStateSubject.send(false)
-        recorder = nil
+        removeRecorder()
         return recordedData
     }
 
@@ -126,20 +160,8 @@ actor AudioHelper {
         return true
     }
 
-    private func checkPlayerState() async -> Bool {
-        if await isPlaying() {
-            await player?.stopPlaying()
-            sendDataThrough(playerStateSubject, (source, false))
-        }
-        return true
-    }
-
     private func makeRecorder() {
         recorder = ASAudioRecorder()
-    }
-
-    private func makePlayer() {
-        player = ASAudioPlayer()
     }
 
     private func makeURL() -> URL {
@@ -160,13 +182,11 @@ actor AudioHelper {
 }
 
 extension AudioHelper {
-    enum FileSource {
-        case imported
+    enum FileSource: Equatable {
+        case imported(MusicPanelType)
         case recorded
     }
 }
-
-// MARK: - Configure AudioHelper
 
 extension AudioHelper {
     @discardableResult
@@ -186,6 +206,10 @@ extension AudioHelper {
         isConcurrent = isTrue
         return self
     }
+
+    private func setPlayOption(option: PlayType) {
+        playType = option
+    }
 }
 
 // MARK: - Data binding
@@ -193,5 +217,36 @@ extension AudioHelper {
 extension AudioHelper {
     private func sendDataThrough<T>(_ subject: PassthroughSubject<T, Never>, _ data: T) {
         subject.send(data)
+    }
+}
+
+// MARK: - Audio Visualize
+
+extension AudioHelper {
+    private func visualize() {
+        Task { [weak self] in
+            guard let self else { return }
+            await calculateAmplitude()
+        }
+    }
+
+    private func calculateAmplitude() {
+        Logger.debug("진폭계산 시작")
+        cancellable = Timer.publish(every: 0.125, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                Task {
+                    await self.calculateRecorderAmplitude()
+                }
+            }
+    }
+
+    private func calculateRecorderAmplitude() async {
+        await recorder?.updateMeters()
+        guard let averagePower = await recorder?.getAveragePower() else { return }
+        let newAmplitude = 1.8 * pow(10.0, averagePower / 20.0)
+        let clampedAmplitude = min(max(newAmplitude, 0), 1)
+        amplitudeSubject.send(clampedAmplitude)
     }
 }
