@@ -1,6 +1,6 @@
 import UIKit
 
-class ASPanel: UIView {
+final class ASPanel: UIView {
     init() {
         super.init(frame: .zero)
         setupUI()

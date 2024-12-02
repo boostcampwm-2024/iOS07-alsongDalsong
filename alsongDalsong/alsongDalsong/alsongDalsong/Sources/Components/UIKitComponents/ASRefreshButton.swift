@@ -1,6 +1,6 @@
 import UIKit
 
-class ASRefreshButton: UIButton {
+final class ASRefreshButton: UIButton {
     
     init(size: CGFloat) {
         super.init(frame: .zero)
