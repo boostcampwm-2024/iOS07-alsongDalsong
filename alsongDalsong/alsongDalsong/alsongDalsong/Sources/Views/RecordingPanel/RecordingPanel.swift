@@ -42,10 +42,10 @@ final class RecordingPanel: UIView {
 
     private func bindViewModel() {
         viewModel.$recordedData
-            .filter { $0 != nil }
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] recordedData in
-                self?.onRecordingFinished?(recordedData ?? Data())
+                self?.onRecordingFinished?(recordedData)
             }
             .store(in: &cancellables)
         viewModel.$recorderAmplitude
