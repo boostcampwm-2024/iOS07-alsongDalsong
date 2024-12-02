@@ -86,6 +86,14 @@ class SelectMusicViewController: UIViewController {
         }
     }
     
+    private func pickRandomMusic() async throws {
+        do {
+            try await viewModel.randomMusic()
+        } catch {
+            throw error
+        }
+    }
+    
     private func submitMusic() async throws {
         do {
             viewModel.stopMusic()
@@ -105,6 +113,7 @@ extension SelectMusicViewController {
         let alert = LoadingAlertController(
             progressText: .submitMusic,
             loadAction: { [weak self] in
+                try await self?.pickRandomMusic()
                 try await self?.submitMusic()
             },
             errorCompletion: { [weak self] error in
