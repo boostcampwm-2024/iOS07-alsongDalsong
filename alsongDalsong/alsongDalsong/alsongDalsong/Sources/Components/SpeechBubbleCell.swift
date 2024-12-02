@@ -89,12 +89,12 @@ struct SpeechBubbleCell: View {
                         
                         VStack(alignment: .leading) {
                             Text(music.title ?? "")
-                                .font(.custom("Dohyeon-Regular", size: 20))
+                                .font(.doHyeon(size: 20))
                                 .foregroundStyle(.asBlack)
                                 .lineLimit(1)
                             
                             Text(music.artist ?? "")
-                                .font(.custom("Dohyeon-Regular", size: 20))
+                                .font(.doHyeon(size: 20))
                                 .foregroundStyle(.gray)
                                 .lineLimit(1)
                         }

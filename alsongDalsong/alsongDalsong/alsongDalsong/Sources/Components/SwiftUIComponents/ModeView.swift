@@ -13,7 +13,7 @@ struct ModeView: View {
                 .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.black, lineWidth: 3))
             VStack {
                 Text(modeInfo.title)
-                    .font(.custom("DoHyeon-Regular", size: 32))
+                    .font(.doHyeon(size: 32))
                     .padding(.top, 16)
                 Image(modeInfo.imageName)
                     .resizable()
@@ -22,7 +22,7 @@ struct ModeView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .padding()
                 Text(modeInfo.description)
-                    .font(.custom("DoHyeon-Regular", size: 16))
+                    .font(.doHyeon(size: 16))
                     .padding(.horizontal)
                 Spacer()
             }

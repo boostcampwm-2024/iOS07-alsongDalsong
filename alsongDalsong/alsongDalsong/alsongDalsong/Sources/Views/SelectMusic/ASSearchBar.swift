@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct ASSearchBar: View {
-    
     @Binding var text: String
     var placeHolder: String
+    
     var body: some View {
         HStack {
             HStack {

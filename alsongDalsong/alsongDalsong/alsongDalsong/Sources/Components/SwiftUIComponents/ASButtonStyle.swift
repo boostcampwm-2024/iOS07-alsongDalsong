@@ -5,7 +5,7 @@ struct ASButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.label
-                .font(.custom("DoHyeon-Regular", size: 32))
+                .font(.doHyeon(size: 32))
         }
         .tint(.black)
         .frame(maxWidth: 345, maxHeight: 64)
