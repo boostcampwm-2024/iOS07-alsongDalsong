@@ -43,13 +43,6 @@ final class LobbyViewController: UIViewController {
     }
 
     private func bindToComponents() {
-        viewmodel.$roomNumber
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-            }
-            .store(in: &cancellables)
-
         viewmodel.$canBeginGame.combineLatest(viewmodel.$isHost)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] canBeginGame, isHost in
