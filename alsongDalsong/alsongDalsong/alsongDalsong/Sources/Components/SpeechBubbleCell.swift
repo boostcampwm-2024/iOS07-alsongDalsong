@@ -66,7 +66,7 @@ struct SpeechBubbleCell: View {
                 .frame(width: 230, height: messageType.bubbleHeight)
                 .bubbleStyle(
                     alignment: alignment,
-                    fillColor: .white,
+                    fillColor: .asSystem,
                     borderColor: .black,
                     lineWidth: 5
                 )
@@ -157,7 +157,7 @@ struct BubbleBackgroundModifier: ViewModifier {
                         .stroke(borderColor, lineWidth: lineWidth)
                     BubbleShape(alignment: alignment)
                         .fill(fillColor)
-                        .shadow(color: .black, radius: 0, x: 6, y: 6)
+                        .shadow(color: .asShadow, radius: 0, x: 6, y: 6)
                 }
             )
     }
