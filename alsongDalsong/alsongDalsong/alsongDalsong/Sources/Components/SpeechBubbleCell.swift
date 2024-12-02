@@ -96,7 +96,7 @@ struct SpeechBubbleCell: View {
                 }
             case let .record(file):
                 HStack {
-                    WaveFormViewWrapper(data: file)
+                    WaveFormWrapper(data: record.fileUrl!, sampleCount: 24, circleColor: .asBlack, highlightColor: .asGreen)
                         .frame(width: 200)
                     Spacer()
                 }
