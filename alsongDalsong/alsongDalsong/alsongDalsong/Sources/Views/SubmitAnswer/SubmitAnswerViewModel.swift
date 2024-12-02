@@ -120,10 +120,10 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     public func searchMusic(text: String) async throws {
         do {
             if text.isEmpty { return }
-            isSearching = true
+            await updateIsSearching(with: true)
             let searchList = try await musicAPI.search(for: text)
             await updateSearchList(with: searchList)
-            isSearching = false
+            await updateIsSearching(with: false)
         } catch {
             throw error
         }
@@ -180,6 +180,11 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     @MainActor
     private func updateSearchList(with searchList: [Music]) {
         self.searchList = searchList
+    }
+    
+    @MainActor
+    private func updateIsSearching(with isSearching: Bool) {
+        self.isSearching = isSearching
     }
     
     public func cancelSubscriptions() {

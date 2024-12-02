@@ -58,6 +58,7 @@ struct SelectMusicView: View {
                             .scaleEffect(2.0)
                         Spacer()
                     }
+                    .scrollDismissesKeyboard(.immediately)
                 } else {
                     List(viewModel.searchList) { music in
                         Button {
@@ -75,7 +76,6 @@ struct SelectMusicView: View {
             }
         }
         .background(.asLightGray)
-        
     }
 }
 
