@@ -1,11 +1,20 @@
-import SwiftUI
-import UIKit
 import ASEntity
 import Combine
+import SwiftUI
+import UIKit
 
 enum MessageType {
     case music(Music)
-    case record
+    case record(Data)
+
+    var bubbleHeight: CGFloat {
+        switch self {
+            case .music:
+                return 90
+            case .record:
+                return 64
+        }
+    }
 }
 
 enum MessageAlignment {
@@ -22,14 +31,13 @@ struct SpeechBubbleCell: View {
     let artworkURL: URL?
     let name: String
     @State private var isVisible = false
-    
+
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             if alignment == .left {
                 ProfileView(imagePublisher: avatarImagePublisher,
                             name: name,
                             isHost: false, imageUrl: avatarURL)
-                .padding(.trailing, 10)
             }
             if isVisible {
                 speechBubble
@@ -40,7 +48,6 @@ struct SpeechBubbleCell: View {
                 ProfileView(imagePublisher: avatarImagePublisher,
                             name: name,
                             isHost: false, imageUrl: avatarURL)
-                .padding(.leading, 10)
             }
         }
         .onAppear {
@@ -49,97 +56,115 @@ struct SpeechBubbleCell: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private var speechBubble: some View {
-        var height: CGFloat {
-            switch messageType {
-            case .music(_):
-                return 90
-            case .record:
-                return 64
-            }
-        }
-        
         ZStack {
-            BubbleShape(alignment: alignment)
-                .frame(width: 235, height: height + 5)
-                .foregroundStyle(Color.asShadow)
-                .offset(x: 5, y: 5)
-            
-            BubbleShape(alignment: alignment)
-                .frame(width: 230, height: height)
-                .foregroundStyle(.white)
-                .overlay(
-                    BubbleShape(alignment: alignment)
-                        .stroke(.black, lineWidth: 9)
+            contentView
+                .padding(.bottom, 8)
+                .padding(.leading, alignment == .left ? 36 : 0)
+                .frame(width: 230, height: messageType.bubbleHeight)
+                .bubbleStyle(
+                    alignment: alignment,
+                    fillColor: .white,
+                    borderColor: .black,
+                    lineWidth: 5
                 )
-            
-            ZStack(alignment: .leading) {
-                BubbleShape(alignment: alignment)
-                    .frame(width: 230, height: height)
-                    .foregroundStyle(.asSystem)
-                
-                switch messageType {
-                case .music(let music):
-                    HStack {
-                        AsyncImageView(imagePublisher: artworkImagePublisher, url: artworkURL)
-                            .frame(width: 60, height: 60)
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
-                        
-                        VStack(alignment: .leading) {
-                            Text(music.title ?? "")
-                                .font(.doHyeon(size: 20))
-                                .foregroundStyle(.asBlack)
-                                .lineLimit(1)
-                            
-                            Text(music.artist ?? "")
-                                .font(.doHyeon(size: 20))
-                                .foregroundStyle(.gray)
-                                .lineLimit(1)
-                        }
-                        Spacer()
+        }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        switch messageType {
+            case let .music(music):
+                HStack {
+                    AsyncImageView(imagePublisher: artworkImagePublisher, url: artworkURL)
+                        .frame(width: 60, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+
+                    VStack(alignment: .leading) {
+                        Text(music.title ?? "")
+                            .foregroundStyle(.asBlack)
+
+                        Text(music.artist ?? "")
+                            .foregroundStyle(.gray)
                     }
-                    .frame(width: 220)
-                    .offset(x: alignment == .left ? 30 : 5, y: -4)
-                case .record:
-                    HStack {
-                        WaveFormViewWrapper()
-                    }
-                    .frame(width: 215)
-                    .offset(x: alignment == .left ? 22 : -7, y: -4)
+                    .frame(width: 130)
+                    .font(.custom("Dohyeon-Regular", size: 20))
+                    .lineLimit(1)
+                    Spacer()
                 }
-            }
+            case let .record(file):
+                HStack {
+                    WaveFormViewWrapper(data: file)
+                        .frame(width: 200)
+                    Spacer()
+                }
         }
     }
 }
 
 struct BubbleShape: Shape {
     let alignment: MessageAlignment
-    
+
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        
         if alignment == .right {
-            path.move(to: CGPoint(x: rect.maxX - 40, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.maxX - 20, y: rect.minY + 12))
-            path.addLine(to: CGPoint(x: rect.maxX - 40, y: rect.minY))
-            path.addRoundedRect(in: CGRect(x: rect.minX - 10,
-                                           y: rect.minY,
-                                           width: rect.width - 10,
-                                           height: rect.height - 10), cornerSize: CGSize(width: 12, height: 12))
+            addSpeechTailRight(&path, in: rect)
+            addRoundedBody(&path, in: rect, isRight: true)
         } else {
-            path.addRoundedRect(in: CGRect(x: rect.minX + 20,
-                                           y: rect.minY,
-                                           width: rect.width - 10,
-                                           height: rect.height - 10), cornerSize: CGSize(width: 12, height: 12))
-            path.move(to: CGPoint(x: rect.minX, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.minX + 40, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.minX + 20, y: rect.minY + 12))
-            path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
+            addRoundedBody(&path, in: rect, isRight: false)
+            addSpeechTailLeft(&path, in: rect)
         }
         path.closeSubpath()
         return path
+    }
+
+    private func addSpeechTailRight(_ path: inout Path, in rect: CGRect) {
+        path.move(to: CGPoint(x: rect.maxX - 40, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX - 8, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX - 20, y: rect.minY + 16))
+        path.addLine(to: CGPoint(x: rect.maxX - 40, y: rect.minY))
+    }
+
+    private func addSpeechTailLeft(_ path: inout Path, in rect: CGRect) {
+        path.move(to: CGPoint(x: rect.minX + 8, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.minX + 40, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.minX + 20, y: rect.minY + 16))
+        path.addLine(to: CGPoint(x: rect.minX + 8, y: rect.minY))
+    }
+
+    private func addRoundedBody(_ path: inout Path, in rect: CGRect, isRight: Bool) {
+        let xOffset: CGFloat = isRight ? -10 : 20
+        path.addRoundedRect(
+            in: CGRect(x: rect.minX + xOffset, y: rect.minY, width: rect.width - 10, height: rect.height - 10),
+            cornerSize: CGSize(width: 12, height: 12)
+        )
+    }
+}
+
+struct BubbleBackgroundModifier: ViewModifier {
+    let alignment: MessageAlignment
+    let fillColor: Color
+    let borderColor: Color
+    let lineWidth: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                ZStack {
+                    BubbleShape(alignment: alignment)
+                        .stroke(borderColor, lineWidth: lineWidth)
+                    BubbleShape(alignment: alignment)
+                        .fill(fillColor)
+                        .shadow(color: .black, radius: 0, x: 6, y: 6)
+                }
+            )
+    }
+}
+
+extension View {
+    func bubbleStyle(alignment: MessageAlignment, fillColor: Color, borderColor: Color, lineWidth: CGFloat) -> some View {
+        modifier(BubbleBackgroundModifier(alignment: alignment, fillColor: fillColor, borderColor: borderColor, lineWidth: lineWidth))
     }
 }
