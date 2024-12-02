@@ -15,7 +15,6 @@ public final class MainRepository: MainRepositoryProtocol {
     private let authManager: ASFirebaseAuthProtocol
     private let storageManager: ASFirebaseStorageProtocol
     private let networkManager: ASNetworkManagerProtocol
-    private let networkHelper: NetworkHelper
     private var cancellables: Set<AnyCancellable> = []
 
     public init(databaseManager: ASFirebaseDatabaseProtocol,
@@ -26,7 +25,7 @@ public final class MainRepository: MainRepositoryProtocol {
         self.databaseManager = databaseManager
         self.authManager = authManager
         self.storageManager = storageManager
-        self.networkHelper = NetworkHelper(networkManager: networkManager)
+        self.networkManager = networkManager
     }
 
     public func connectRoom(roomNumber: String) {
@@ -195,71 +194,5 @@ public final class MainRepository: MainRepositoryProtocol {
         let data = try await networkManager.sendRequest(to: endpoint, type: .json, body: body, option: .none)
         let response = try JSONDecoder().decode(T.self, from: data)
         return response
-    }
-}
-
-
-
-
-
-struct NetworkHelper {
-    let networkManager: ASNetworkManagerProtocol
-
-    func sendRequest<T: Decodable>(
-        endpoint: FirebaseEndpoint,
-        requestBody: [String: Any]? = nil,
-        queryItems: [URLQueryItem]? = nil,
-        additionalHeaders: [String: String]? = nil,
-        contentType: HTTPContentType = .none
-    ) async throws -> T {
-        var updatedEndpoint = endpoint
-
-        if let requestBody = requestBody {
-            let bodyData = try JSONSerialization.data(withJSONObject: requestBody, options: [])
-            updatedEndpoint = updatedEndpoint.update(\.body, with: bodyData)
-        }
-
-        if let queryItems = queryItems {
-            updatedEndpoint = updatedEndpoint.update(\.queryItems, with: queryItems)
-        }
-
-        let data = try await networkManager.sendRequest(
-            to: updatedEndpoint,
-            type: contentType,
-            body: updatedEndpoint.body,
-            option: .none
-        )
-
-        // 응답 디코딩
-        let response = try JSONDecoder().decode(T.self, from: data)
-        return response
-    }
-}
-
-protocol APIRequest {
-    associatedtype Response: Decodable
-    var endpoint: FirebaseEndpoint { get }
-    var requestBody: [String: Any]? { get }
-}
-
-struct SuccessResponse: Decodable {
-    let success: Bool
-}
-
-struct RoomResponse: Decodable {
-    let number: String
-}
-
-struct CommonRequest<T: Decodable>: APIRequest {
-    
-    typealias Response = T
-    
-    let userId: String
-    let roomNumber: String
-
-    var endpoint: FirebaseEndpoint
-
-    var requestBody: [String: Any]? {
-        ["roomNumber": roomNumber, "userId": userId]
     }
 }
