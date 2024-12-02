@@ -4,9 +4,8 @@ import ASEntity
 import Combine
 
 enum MessageType {
-    //TODO: music(ASMusic) 과 같이 해당 타입의 데이터가 담길 수 있게
     case music(Music)
-    case record(ASEntity.Record)
+    case record
 }
 
 enum MessageAlignment {
@@ -57,7 +56,7 @@ struct SpeechBubbleCell: View {
             switch messageType {
             case .music(_):
                 return 90
-            case .record(_):
+            case .record:
                 return 64
             }
         }
@@ -103,8 +102,7 @@ struct SpeechBubbleCell: View {
                     }
                     .frame(width: 220)
                     .offset(x: alignment == .left ? 30 : 5, y: -4)
-                case .record(let record):
-                    // 여기서 record를 줄 필요가 있을까요? ViewModel에서 해당 파일을 그냥 실행하면 될 거 같은데
+                case .record:
                     HStack {
                         WaveFormViewWrapper()
                     }

@@ -204,7 +204,7 @@ extension HummingResultViewController: UITableViewDataSource {
                         if let avatarURL = currentPlayer?.avatarUrl {
                             SpeechBubbleCell(
                                 alignment: .left,
-                                messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                messageType: .record,
                                 avatarImagePublisher: { url in
                                     await viewModel.getAvatarData(url: url)
                                 },
@@ -221,7 +221,7 @@ extension HummingResultViewController: UITableViewDataSource {
                         if let avatarURL = currentPlayer?.avatarUrl {
                             SpeechBubbleCell(
                                 alignment: .right,
-                                messageType: .record(viewModel.currentRecords[indexPath.row]),
+                                messageType: .record,
                                 avatarImagePublisher: { url in
                                     await viewModel.getAvatarData(url: url)
                                 },
