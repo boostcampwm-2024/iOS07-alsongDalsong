@@ -20,11 +20,11 @@ struct SelectAnswerView: View {
                         viewModel.isPlaying.toggle()
                     } label: {
                         if #available(iOS 17.0, *) {
-                            Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                            Image(systemName: viewModel.isPlaying ? "stop.fill" : "play.fill")
                                 .font(.largeTitle)
                                 .contentTransition(.symbolEffect(.replace.offUp))
                         } else {
-                            Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                            Image(systemName: viewModel.isPlaying ? "stop.fill" : "play.fill")
                                 .font(.largeTitle)
                         }
                     }
