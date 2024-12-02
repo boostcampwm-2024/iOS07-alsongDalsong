@@ -66,6 +66,15 @@ actor AudioHelper {
         cancellable?.cancel()
         cancellable = nil
     }
+
+    func analyze(with data: Data) async {
+        do {
+            Logger.debug("파형분석 시작")
+            let columns = try await ASAudioAnalyzer.analyze(data: data, samplesCount: 48)
+            Logger.debug("파형분석 완료")
+            Logger.debug(columns)
+        } catch {}
+    }
 }
 
 // MARK: - Play Audio
