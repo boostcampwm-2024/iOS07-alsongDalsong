@@ -17,7 +17,9 @@ struct SelectAnswerView: View {
                     .scaleEffect(1.1)
                     Spacer()
                     Button {
-                        viewModel.isPlaying.toggle()
+                        if viewModel.selectedMusic != nil {
+                            viewModel.isPlaying.toggle()
+                        }
                     } label: {
                         if #available(iOS 17.0, *) {
                             Image(systemName: viewModel.isPlaying ? "stop.fill" : "play.fill")
