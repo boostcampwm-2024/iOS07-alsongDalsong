@@ -51,7 +51,7 @@ class HummingResultViewController: UIViewController {
         )
         view.addSubview(button)
         button.addAction(UIAction { [weak self] _ in
-            guard let self, let viewModel else { return }
+            guard let self else { return }
             showNextResultLoading()
         }, for: .touchUpInside)
         button.isHidden = true
@@ -149,10 +149,10 @@ class HummingResultViewController: UIViewController {
             .sink { [weak self] isHost in
                 guard let self else { return }
                 if isHost {
-                    self.button.isEnabled = true
+                    button.isEnabled = true
                 }
                 else {
-                    self.button.isEnabled = false
+                    button.isEnabled = false
                 }
             }
             .store(in: &cancellables)
@@ -243,7 +243,9 @@ extension HummingResultViewController: UITableViewDataSource {
                 HStack {
                     Spacer()
                     if viewModel.currentRecords.count % 2 == 0 {
-                        if let submit = viewModel.currentsubmit, let avatarURL = submit.player?.avatarUrl, let artworkURL = submit.music?.artworkUrl {
+                        if let submit = viewModel.currentsubmit,
+                           let avatarURL = submit.player?.avatarUrl,
+                           let artworkURL = submit.music?.artworkUrl {
                             SpeechBubbleCell(
                                 alignment: .left,
                                 messageType: .music(submit.music ?? .musicStub1),
@@ -260,7 +262,9 @@ extension HummingResultViewController: UITableViewDataSource {
                         }
                     }
                     else {
-                        if let submit = viewModel.currentsubmit, let avatarURL = submit.player?.avatarUrl, let artworkURL = submit.music?.artworkUrl {
+                        if let submit = viewModel.currentsubmit,
+                           let avatarURL = submit.player?.avatarUrl,
+                           let artworkURL = submit.music?.artworkUrl {
                             SpeechBubbleCell(
                                 alignment: .right,
                                 messageType: .music(submit.music ?? .musicStub1),
