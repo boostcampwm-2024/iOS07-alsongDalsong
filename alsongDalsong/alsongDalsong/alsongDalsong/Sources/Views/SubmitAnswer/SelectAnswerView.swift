@@ -5,6 +5,7 @@ struct SelectAnswerView: View {
     @ObservedObject var viewModel: SubmitAnswerViewModel
     @State var searchTerm = ""
     @Environment(\.dismiss) private var dismiss
+
     private let debouncer = Debouncer(delay: 0.5)
 
     var body: some View {
@@ -34,7 +35,7 @@ struct SelectAnswerView: View {
                     .frame(width: 60)
                 }
                 .padding(16)
-                
+
                 ASSearchBar(text: $searchTerm, placeHolder: "노래를 선택하세요")
                     .onChange(of: searchTerm) { newValue in
                         debouncer.debounce {
@@ -44,17 +45,30 @@ struct SelectAnswerView: View {
                             }
                         }
                     }
-                List(viewModel.searchList) { music in
-                    Button {
-                        viewModel.handleSelectedMusic(with: music)
-                    } label: {
-                        ASMusicItemCell(music: music, fetchArtwork: { url in
-                            await viewModel.downloadArtwork(url: url)
-                        })
-                        .tint(.black)
+                    .onTapGesture {
+                        viewModel.sheetDetent = .large
                     }
+                if viewModel.isSearching {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                            .scaleEffect(2.0)
+                        Spacer()
+                    }
+                } else {
+                    List(viewModel.searchList) { music in
+                        Button {
+                            viewModel.handleSelectedMusic(with: music)
+                        } label: {
+                            ASMusicItemCell(music: music, fetchArtwork: { url in
+                                await viewModel.downloadArtwork(url: url)
+                            })
+                            .tint(.black)
+                        }
+                    }
+                    .listStyle(.plain)
+                    .scrollDismissesKeyboard(.immediately)
                 }
-                .listStyle(.plain)
             }
             .background(.asLightGray)
             .toolbar {
@@ -66,6 +80,7 @@ struct SelectAnswerView: View {
                 }
             }
         }
+        .presentationDragIndicator(.visible) // detents와 selection 연결
     }
 }
 
