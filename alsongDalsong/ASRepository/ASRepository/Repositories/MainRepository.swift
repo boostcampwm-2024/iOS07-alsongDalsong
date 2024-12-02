@@ -55,7 +55,7 @@ public final class MainRepository: MainRepositoryProtocol {
         try await self.authManager.signIn(nickname: nickname, avatarURL: avatar)
         let response: [String: String]? = try await self.sendRequest(
             endpointPath: .createRoom,
-            requestBody: ["hostID": ASFirebaseAuth.myID]
+            requestBody: ["hostID": myId]
         )
         guard let roomNumber = response?["number"] as? String else {
             throw ASNetworkErrors.responseError
@@ -65,11 +65,11 @@ public final class MainRepository: MainRepositoryProtocol {
     
     public func joinRoom(nickname: String, avatar: URL, roomNumber: String) async throws -> Bool {
         let player = try await self.authManager.signIn(nickname: nickname, avatarURL: avatar)
-        let response: [String: String]? = try await self.sendRequest(
+        let response: [String: String] = try await self.sendRequest(
             endpointPath: .joinRoom,
-            requestBody: ["roomNumber": roomNumber, "userId": ASFirebaseAuth.myID]
+            requestBody: ["roomNumber": roomNumber, "userId": myId]
         )
-        guard let roomNumberResponse = response?["number"] as? String else {
+        guard let roomNumberResponse = response["number"] else {
             throw ASNetworkErrors.responseError
         }
         return roomNumberResponse == roomNumber
@@ -82,11 +82,11 @@ public final class MainRepository: MainRepositoryProtocol {
     }
     
     public func startGame() async throws -> Bool {
-        let response: [String: Bool]? = try await self.sendRequest(
+        let response: [String: Bool] = try await self.sendRequest(
             endpointPath: .gameStart,
             requestBody: ["roomNumber": self.room.value?.number, "userId": self.myId]
         )
-        guard let response = response?["success"] as? Bool else {
+        guard let response = response["success"] else {
             throw ASNetworkErrors.responseError
         }
         return response
@@ -97,7 +97,7 @@ public final class MainRepository: MainRepositoryProtocol {
             endpointPath: .changeMode,
             requestBody: ["roomNumber": self.room.value?.number, "userId": self.myId, "mode": mode.rawValue]
         )
-        guard let isSuccess = response["success"] as? Bool else {
+        guard let isSuccess = response["success"] else {
             throw ASNetworkErrors.responseError
         }
         return isSuccess
@@ -108,14 +108,14 @@ public final class MainRepository: MainRepositoryProtocol {
             endpointPath: .changeRecordOrder,
             requestBody: ["roomNumber": self.room.value?.number, "userId": self.myId]
         )
-        guard let isSuccess = response["success"] as? Bool else {
+        guard let isSuccess = response["success"] else {
             throw ASNetworkErrors.responseError
         }
         return isSuccess
     }
     
     public func resetGame() async throws -> Bool {
-        let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
+        let queryItems = [URLQueryItem(name: "userId", value: myId),
                           URLQueryItem(name: "roomNumber", value: self.room.value?.number)]
         let endPoint = FirebaseEndpoint(path: .resetGame, method: .post)
             .update(\.queryItems, with: queryItems)
@@ -133,7 +133,7 @@ public final class MainRepository: MainRepositoryProtocol {
     }
 
     public func submitMusic(answer: ASEntity.Music) async throws -> Bool {
-        let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
+        let queryItems = [URLQueryItem(name: "userId", value: myId),
                           URLQueryItem(name: "roomNumber", value: self.room.value?.number)]
         let endPoint = FirebaseEndpoint(path: .submitMusic, method: .post)
             .update(\.queryItems, with: queryItems)
@@ -159,7 +159,7 @@ public final class MainRepository: MainRepositoryProtocol {
     }
     
     public func submitAnswer(answer: ASEntity.Music) async throws -> Bool {
-        let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
+        let queryItems = [URLQueryItem(name: "userId", value: myId),
                           URLQueryItem(name: "roomNumber", value: self.room.value?.number)]
         let endPoint = FirebaseEndpoint(path: .submitAnswer, method: .post)
             .update(\.queryItems, with: queryItems)
@@ -172,7 +172,7 @@ public final class MainRepository: MainRepositoryProtocol {
     }
     
     public func postRecording(_ record: Data) async throws -> Bool {
-        let queryItems = [URLQueryItem(name: "userId", value: ASFirebaseAuth.myID),
+        let queryItems = [URLQueryItem(name: "userId", value: myId),
                           URLQueryItem(name: "roomNumber", value: self.room.value?.number)]
         let endPoint = FirebaseEndpoint(path: .uploadRecording, method: .post)
             .update(\.queryItems, with: queryItems)

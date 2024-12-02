@@ -69,15 +69,4 @@ public extension FirebaseEndpoint {
         Self(path: .auth, method: .get)
             .update(\.queryItems, with: [.init(name: "listAvatarUrls", value: "true")])
     }
-
-    func withCommonQueryItems(roomNumber: String?, userID: String?) -> Self {
-        var items = [URLQueryItem]()
-        if let userID {
-            items.append(URLQueryItem(name: "userId", value: userID))
-        }
-        if let roomNumber {
-            items.append(URLQueryItem(name: "roomNumber", value: roomNumber))
-        }
-        return self.update(\.queryItems, with: items)
-    }
 }
