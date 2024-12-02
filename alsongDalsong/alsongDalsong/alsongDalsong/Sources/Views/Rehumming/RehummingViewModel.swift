@@ -4,20 +4,20 @@ import Combine
 import Foundation
 
 final class RehummingViewModel: @unchecked Sendable {
-    @Published public private(set) var dueTime: Date?
-    @Published public private(set) var recordOrder: UInt8?
-    @Published public private(set) var status: Status?
-    @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
-    @Published public private(set) var music: Music?
-    @Published public private(set) var recordedData: Data?
-    @Published public private(set) var isRecording: Bool = false
+    @Published private(set) var dueTime: Date?
+    @Published private(set) var recordOrder: UInt8?
+    @Published private(set) var status: Status?
+    @Published private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
+    @Published private(set) var music: Music?
+    @Published private(set) var recordedData: Data?
+    @Published private(set) var isRecording: Bool = false
 
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
     private let recordsRepository: RecordsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
 
-    public init(
+    init(
         gameStatusRepository: GameStatusRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
         recordsRepository: RecordsRepositoryProtocol
@@ -96,6 +96,6 @@ final class RehummingViewModel: @unchecked Sendable {
             .store(in: &cancellables)
     }
     
-    public func cancelSubscriptions() {
+    func cancelSubscriptions() {
         cancellables.removeAll()
     }}

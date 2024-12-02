@@ -37,7 +37,7 @@ final class GameNavigationController: @unchecked Sendable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func setConfiguration() {
+    func setConfiguration() {
         gameStateRepository.getGameState()
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }

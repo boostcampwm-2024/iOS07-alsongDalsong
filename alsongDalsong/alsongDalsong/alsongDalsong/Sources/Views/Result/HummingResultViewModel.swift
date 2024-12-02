@@ -46,7 +46,7 @@ final class HummingResultViewModel: @unchecked Sendable {
         self.musicRepository = musicRepository
     }
     
-    public func fetchResult() {
+    func fetchResult() {
         hummingResultRepository.getResult()
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -186,7 +186,7 @@ final class HummingResultViewModel: @unchecked Sendable {
         }
     }
     
-    public func navigationToLobby() async throws {
+    func navigationToLobby() async throws {
         do {
             if !hummingResult.isEmpty { return }
             try await roomActionRepository.resetGame()
@@ -200,7 +200,7 @@ final class HummingResultViewModel: @unchecked Sendable {
         return await musicRepository.getMusicData(url: url)
     }
     
-    public func cancelSubscriptions() {
+    func cancelSubscriptions() {
         cancellables.removeAll()
     }
 }
