@@ -8,6 +8,7 @@ final class SubmitAnswerViewController: UIViewController {
     private var selectAnswerButton = ASButton()
     private var submitButton = ASButton()
     private var submissionStatus = SubmissionStatusView()
+    private var selectedAnswerView: UIHostingController<SelectAnswerView>?
     private var buttonStack = UIStackView()
     private let viewModel: SubmitAnswerViewModel
     private var cancellables: Set<AnyCancellable> = []
@@ -28,8 +29,9 @@ final class SubmitAnswerViewController: UIViewController {
         setAction()
         bindToComponents()
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         viewModel.cancelSubscriptions()
         cancellables.removeAll()
     }
@@ -71,7 +73,7 @@ final class SubmitAnswerViewController: UIViewController {
             progressBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             progressBar.heightAnchor.constraint(equalToConstant: 16),
-            
+
             musicPanel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 32),
             musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
@@ -80,7 +82,7 @@ final class SubmitAnswerViewController: UIViewController {
             selectedMusicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             selectedMusicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             selectedMusicPanel.heightAnchor.constraint(equalToConstant: 100),
-            
+
             submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
             submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
 
@@ -106,15 +108,16 @@ final class SubmitAnswerViewController: UIViewController {
     private func setAction() {
         selectAnswerButton.addAction(UIAction { [weak self] _ in
             guard let self else { return }
-            let selectAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: viewModel))
-            if let sheet = selectAnswerView.sheetPresentationController {
+            selectedAnswerView = UIHostingController(rootView: SelectAnswerView(viewModel: viewModel))
+            if let sheet = selectedAnswerView?.sheetPresentationController {
                 sheet.detents = [
                     .medium(),
-                    .large()
+                    .large(),
                 ]
                 sheet.prefersGrabberVisible = true
             }
             viewModel.stopMusic()
+            guard let selectAnswerView = selectedAnswerView else { return }
             present(selectAnswerView, animated: true)
         },
         for: .touchUpInside)
@@ -138,8 +141,9 @@ extension SubmitAnswerViewController {
         let alert = LoadingAlertController(
             progressText: .submitMusic,
             loadAction: { [weak self] in
-            try await self?.submitAnswer()
-        }) { [weak self] error in
+                try await self?.submitAnswer()
+            }
+        ) { [weak self] error in
             self?.showFailSubmitMusic(error)
         }
         presentAlert(alert)

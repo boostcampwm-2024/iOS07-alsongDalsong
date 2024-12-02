@@ -51,7 +51,7 @@ struct SelectMusicView: View {
                     Spacer()
                 }
             } else {
-                if viewModel.searchList.isEmpty {
+                if viewModel.isSearching {
                     VStack {
                         Spacer()
                         ProgressView()
@@ -70,10 +70,12 @@ struct SelectMusicView: View {
                         }
                     }
                     .listStyle(.plain)
+                    .scrollDismissesKeyboard(.immediately)
                 }
             }
         }
         .background(.asLightGray)
+        
     }
 }
 

@@ -7,6 +7,7 @@ import Foundation
 final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var searchList: [Music] = []
     @Published public private(set) var selectedMusic: Music?
+    @Published public private(set) var isSearching: Bool = false
     @Published public private(set) var dueTime: Date?
     @Published public private(set) var recordOrder: UInt8?
     @Published public private(set) var status: Status?
@@ -123,8 +124,10 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     public func searchMusic(text: String) async throws {
         do {
             if text.isEmpty { return }
+            isSearching = true
             let searchList = try await musicAPI.search(for: text)
             await updateSearchList(with: searchList)
+            isSearching = false
         } catch {
             throw error
         }
