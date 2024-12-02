@@ -16,7 +16,7 @@ struct AsyncImageView: View {
             } else {
                 Image(systemName: "person.circle.fill")
                     .resizable()
-                    .frame(width: 75, height: 75)
+                    .aspectRatio(contentMode: .fill)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.white, lineWidth: 5))
             }
@@ -49,21 +49,18 @@ struct ProfileView: View {
                         .offset(y: -20)
                         : nil
                 }
+                .padding(.bottom, 4)
             if let name {
                 Text(name)
                     .font(.doHyeon(size: 16))
                     .multilineTextAlignment(.center)
-                    .frame(maxWidth: 75, maxHeight: 32.0)
+                    .lineLimit(2)
             } else {
                 Text("비어 있음")
                     .font(.doHyeon(size: 16))
                     .multilineTextAlignment(.center)
-                    .frame(maxWidth: 75, maxHeight: 32.0)
+                    .lineLimit(2)
             }
         }
     }
-}
-
-#Preview {
-//    ProfileView(imagePublisher: Just(Data()).setFailureType(to: Error.self).eraseToAnyPublisher(), name: "틀틀보", isHost: true)
 }
