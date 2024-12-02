@@ -50,7 +50,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             }
             .store(in: &cancellables)
     }
-    
+
     private func bindGameStatus() {
         gameStatusRepository.getDueTime()
             .receive(on: DispatchQueue.main)
@@ -95,6 +95,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         selectedMusic = music
         beginPlaying()
     }
+
     public func submitMusic() async throws {
         guard let selectedMusic else { return }
         do {
@@ -109,6 +110,14 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             if text.isEmpty { return }
             let searchList = try await musicAPI.search(for: text)
             await updateSearchList(with: searchList)
+        } catch {
+            throw error
+        }
+    }
+    
+    public func randomMusic() async throws {
+        do {
+            selectedMusic = try await musicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
         } catch {
             throw error
         }
