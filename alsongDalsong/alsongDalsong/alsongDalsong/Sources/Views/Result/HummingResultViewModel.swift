@@ -46,7 +46,6 @@ final class HummingResultViewModel: @unchecked Sendable {
         self.musicRepository = musicRepository
     }
     
-    // TODO: 함수 명이 바뀔 필요가 있는 듯함.
     public func fetchResult() {
         hummingResultRepository.getResult()
             .receive(on: DispatchQueue.main)
@@ -54,7 +53,6 @@ final class HummingResultViewModel: @unchecked Sendable {
                 // TODO: 성공 실패 여부에 따른 처리
                 Logger.debug(completion)
             } receiveValue: { [weak self] (result: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer, recordOrder: UInt8)]) in
-                // 분명 받았던 데이터인데 계속 값이 들어옴
                 guard let self else { return }
                 
                 if (result.count - 1) < result.first?.recordOrder ?? 0 { return }
@@ -95,7 +93,6 @@ final class HummingResultViewModel: @unchecked Sendable {
             .sink { status, _ in
                 // order에 초기값이 들어오는 문제
                 if status == .result, self.recordOrder != 0 {
-                    self.recordOrder! += 1
                     self.isNext = true
                 } else {
                     self.recordOrder! += 1
@@ -132,8 +129,7 @@ final class HummingResultViewModel: @unchecked Sendable {
         await withCheckedContinuation { continuation in
             Task {
                 while await AudioHelper.shared.isPlaying() {
-                    // 재생이 끝날 때까지 대기
-                    try? await Task.sleep(nanoseconds: 100_000_000) // 0.1초
+                    try? await Task.sleep(nanoseconds: 100_000_000)
                 }
                 continuation.resume()
             }
