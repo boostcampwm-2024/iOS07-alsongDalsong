@@ -42,6 +42,7 @@ final class SubmitAnswerViewController: UIViewController {
         musicPanel.bind(to: viewModel.$music)
         selectedMusicPanel.bind(to: viewModel.$selectedMusic)
         submitButton.bind(to: viewModel.$musicData)
+
     }
 
     private func setupUI() {
