@@ -2,7 +2,6 @@ import ASEntity
 import ASRepositoryProtocol
 import Combine
 import Foundation
-import ASLogKit
 
 final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     private var playersRepository: PlayersRepositoryProtocol
@@ -89,7 +88,6 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isHost, playerCount in
                 self?.canBeginGame = isHost && playerCount > 1
-                Logger.debug("현재 canBeginGame: \(self?.canBeginGame)")
             }
             .store(in: &cancellables)
     }
