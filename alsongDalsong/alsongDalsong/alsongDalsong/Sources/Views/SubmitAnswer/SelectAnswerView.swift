@@ -75,7 +75,7 @@ struct SelectAnswerView: View {
             }
             .background(.asLightGray)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("완료") {
                         viewModel.stopMusic()
                         dismiss()
