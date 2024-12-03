@@ -1,4 +1,5 @@
 import ASEntity
+import ASLogKit
 import ASRepositoryProtocol
 import Combine
 import Foundation
