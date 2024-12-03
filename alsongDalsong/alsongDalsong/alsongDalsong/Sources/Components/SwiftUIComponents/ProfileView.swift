@@ -51,12 +51,12 @@ struct ProfileView: View {
                 }
             if let name {
                 Text(name)
-                    .font(.custom("DoHyeon-Regular", size: 16))
+                    .font(.doHyeon(size: 16))
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 75, maxHeight: 32.0)
             } else {
                 Text("비어 있음")
-                    .font(.custom("DoHyeon-Regular", size: 16))
+                    .font(.doHyeon(size: 16))
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 75, maxHeight: 32.0)
             }

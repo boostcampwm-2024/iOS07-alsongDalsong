@@ -1,6 +1,6 @@
 import SwiftUI
 
-class SelectMusicViewController: UIViewController {
+final class SelectMusicViewController: UIViewController {
     private var progressBar = ProgressBar()
     private var selectMusicView = UIViewController()
     private let submitButton = ASButton()

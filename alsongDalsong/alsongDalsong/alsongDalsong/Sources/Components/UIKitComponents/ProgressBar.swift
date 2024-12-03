@@ -37,11 +37,11 @@ final class ProgressBar: UIView {
         setupProgressBar()
     }
 
-    public func setCompletionHandler(_ handler: @escaping CompletionHandler) {
+    func setCompletionHandler(_ handler: @escaping CompletionHandler) {
         completionHandler = handler
     }
 
-    public func cancelCompletion() {
+    func cancelCompletion() {
         isCancelled = true
     }
 

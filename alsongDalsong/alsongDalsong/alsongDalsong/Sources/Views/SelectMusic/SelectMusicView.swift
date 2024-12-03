@@ -47,7 +47,7 @@ struct SelectMusicView: View {
                 VStack(alignment: .center) {
                     Spacer()
                     Text("음악을 선택하세요!")
-                        .font(.custom("DoHyeon-Regular", size: 36))
+                        .font(.doHyeon(size: 36))
                     Spacer()
                 }
             } else {

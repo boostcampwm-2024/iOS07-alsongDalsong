@@ -76,7 +76,7 @@ final class GuideIconView: UIView {
         )
     }
 
-    public func animateBounces(times: Int = 5) {
+    func animateBounces(times: Int = 5) {
         animationCount = 0
         animate(times: times)
     }

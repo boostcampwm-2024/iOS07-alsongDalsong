@@ -11,8 +11,8 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     private var avatarRepository: AvatarRepositoryProtocol
     
     let playerMaxCount = 4
+    private(set) var roomNumber: String = ""
     @Published var players: [Player] = []
-    @Published var roomNumber: String = ""
     @Published var mode: Mode = .humming {
         didSet {
             if mode != oldValue {

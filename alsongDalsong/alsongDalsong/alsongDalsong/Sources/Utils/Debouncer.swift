@@ -1,6 +1,6 @@
 import Foundation
 
-class Debouncer {
+final class Debouncer {
     private let delay: TimeInterval
     private var workItem: DispatchWorkItem?
 

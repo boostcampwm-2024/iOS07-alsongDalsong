@@ -8,7 +8,7 @@ final class MusicPanelViewModel: @unchecked Sendable {
     @Published var music: Music?
     @Published var artwork: Data?
     @Published var preview: Data?
-    @Published public private(set) var buttonState: AudioButtonState = .idle
+    @Published private(set) var buttonState: AudioButtonState = .idle
     private let musicRepository: MusicRepositoryProtocol?
     private var cancellables = Set<AnyCancellable>()
 

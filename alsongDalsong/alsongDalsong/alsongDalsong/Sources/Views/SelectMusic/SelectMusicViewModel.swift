@@ -5,18 +5,18 @@ import Combine
 import Foundation
 
 final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
-    @Published public private(set) var answers: [Answer] = []
-    @Published public private(set) var searchList: [Music] = []
-    @Published public private(set) var isSearching: Bool = false
-    @Published public private(set) var dueTime: Date?
-    @Published public private(set) var selectedMusic: Music?
-    @Published public private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
+    @Published private(set) var answers: [Answer] = []
+    @Published private(set) var searchList: [Music] = []
+    @Published private(set) var isSearching: Bool = false
+    @Published private(set) var dueTime: Date?
+    @Published private(set) var selectedMusic: Music?
+    @Published private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
 
-    @Published public private(set) var musicData: Data? {
+    @Published private(set) var musicData: Data? {
         didSet { isPlaying = true }
     }
 
-    @Published public var isPlaying: Bool = false {
+    @Published var isPlaying: Bool = false {
         didSet { isPlaying ? playMusic() : stopMusic() }
     }
     
@@ -74,30 +74,30 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             .store(in: &cancellables)
     }
     
-    public func playMusic() {
+    func playMusic() {
         guard let data = musicData else { return }
         Task {
             await AudioHelper.shared.startPlaying(data, option: .full)
         }
     }
     
-    public func stopMusic() {
+    func stopMusic() {
         Task {
             await AudioHelper.shared.stopPlaying()
         }
     }
     
-    public func downloadArtwork(url: URL?) async -> Data? {
+    func downloadArtwork(url: URL?) async -> Data? {
         guard let url else { return nil }
         return await musicRepository.getMusicData(url: url)
     }
     
-    public func handleSelectedSong(with music: Music) {
+    func handleSelectedSong(with music: Music) {
         selectedMusic = music
         beginPlaying()
     }
-
-    public func submitMusic() async throws {
+  
+    func submitMusic() async throws {
         if let selectedMusic {
             do {
                 _ = try await answersRepository.submitMusic(answer: selectedMusic)
@@ -107,7 +107,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         }
     }
  
-    public func searchMusic(text: String) async throws {
+    func searchMusic(text: String) async throws {
         do {
             if text.isEmpty { return }
             await updateIsSearching(with: true)
@@ -119,7 +119,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         }
     }
     
-    public func randomMusic() async throws {
+    func randomMusic() async throws {
         do {
             selectedMusic = try await musicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
         } catch {
@@ -127,7 +127,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         }
     }
     
-    public func downloadMusic(url: URL) {
+    func downloadMusic(url: URL) {
         Task {
             guard let musicData = await musicRepository.getMusicData(url: url) else {
                 return
@@ -142,7 +142,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     }
     
     @MainActor
-    public func resetSearchList() {
+    func resetSearchList() {
         searchList = []
     }
     
@@ -161,7 +161,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         self.isSearching = isSearching
     }
     
-    public func cancelSubscriptions() {
+    func cancelSubscriptions() {
         cancellables.removeAll()
     }
 }

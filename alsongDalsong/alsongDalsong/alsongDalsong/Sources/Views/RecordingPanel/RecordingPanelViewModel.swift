@@ -4,9 +4,9 @@ import Foundation
 final class RecordingPanelViewModel: @unchecked Sendable {
     let sampleCount: Int = 48
     @Published var recordedData: Data?
-    @Published public private(set) var recorderAmplitude: Float = 0.0
-    @Published public private(set) var buttonState: AudioButtonState = .idle
-    @Published public private(set) var playIndex: Int?
+    @Published private(set) var recorderAmplitude: Float = 0.0
+    @Published private(set) var buttonState: AudioButtonState = .idle
+    @Published private(set) var playIndex: Int?
 
     private var cancellables = Set<AnyCancellable>()
 

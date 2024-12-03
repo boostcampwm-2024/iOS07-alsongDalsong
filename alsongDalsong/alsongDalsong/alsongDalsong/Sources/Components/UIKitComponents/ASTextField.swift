@@ -1,6 +1,6 @@
 import UIKit
 
-class ASTextField: UITextField {
+final class ASTextField: UITextField {
     init() {
         super.init(frame: .zero)
     }
