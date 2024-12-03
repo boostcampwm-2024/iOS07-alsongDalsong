@@ -7,6 +7,7 @@ import Foundation
 final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     @Published public private(set) var searchList: [Music] = []
     @Published public private(set) var selectedMusic: Music?
+    @Published public private(set) var isSearching: Bool = false
     @Published public private(set) var dueTime: Date?
     @Published public private(set) var recordOrder: UInt8?
     @Published public private(set) var status: Status?
@@ -119,8 +120,10 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     public func searchMusic(text: String) async throws {
         do {
             if text.isEmpty { return }
+            await updateIsSearching(with: true)
             let searchList = try await musicAPI.search(for: text)
             await updateSearchList(with: searchList)
+            await updateIsSearching(with: false)
         } catch {
             throw error
         }
@@ -177,6 +180,11 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     @MainActor
     private func updateSearchList(with searchList: [Music]) {
         self.searchList = searchList
+    }
+    
+    @MainActor
+    private func updateIsSearching(with isSearching: Bool) {
+        self.isSearching = isSearching
     }
     
     public func cancelSubscriptions() {

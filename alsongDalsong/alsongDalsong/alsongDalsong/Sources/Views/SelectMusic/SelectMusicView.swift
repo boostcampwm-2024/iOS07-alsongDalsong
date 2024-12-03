@@ -14,14 +14,16 @@ struct SelectMusicView: View {
                 .scaleEffect(1.1)
                 Spacer()
                 Button {
-                    viewModel.isPlaying.toggle()
+                    if viewModel.selectedMusic != nil {
+                        viewModel.isPlaying.toggle()
+                    }
                 } label: {
                     if #available(iOS 17.0, *) {
-                        Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                        Image(systemName: viewModel.isPlaying ? "stop.fill" : "play.fill")
                             .font(.largeTitle)
                             .contentTransition(.symbolEffect(.replace.offUp))
                     } else {
-                        Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                        Image(systemName: viewModel.isPlaying ? "stop.fill" : "play.fill")
                             .font(.largeTitle)
                     }
                 }
@@ -49,13 +51,14 @@ struct SelectMusicView: View {
                     Spacer()
                 }
             } else {
-                if viewModel.searchList.isEmpty {
+                if viewModel.isSearching {
                     VStack {
                         Spacer()
                         ProgressView()
                             .scaleEffect(2.0)
                         Spacer()
                     }
+                    .scrollDismissesKeyboard(.immediately)
                 } else {
                     List(viewModel.searchList) { music in
                         Button {
@@ -68,6 +71,7 @@ struct SelectMusicView: View {
                         }
                     }
                     .listStyle(.plain)
+                    .scrollDismissesKeyboard(.immediately)
                 }
             }
         }
