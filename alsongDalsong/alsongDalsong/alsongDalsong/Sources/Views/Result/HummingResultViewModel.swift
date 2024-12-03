@@ -123,13 +123,9 @@ final class HummingResultViewModel: @unchecked Sendable {
     
     private func startPlayingCurrentMusic() async -> Void {
         guard let fileUrl = currentResult?.music?.previewUrl else { return }
-        do {
-            let data = try await musicRepository.getMusicData(url: fileUrl)
-            await AudioHelper.shared.startPlaying(data, option: .partial(time: 10))
-            await waitForPlaybackToFinish()
-        } catch {
-            return
-        }
+        let data = try? await musicRepository.getMusicData(url: fileUrl)
+        await AudioHelper.shared.startPlaying(data, option: .partial(time: 10))
+        await waitForPlaybackToFinish()
     }
     
     private func waitForPlaybackToFinish() async {

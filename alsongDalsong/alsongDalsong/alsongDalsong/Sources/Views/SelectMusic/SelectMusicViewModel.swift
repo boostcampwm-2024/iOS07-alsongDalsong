@@ -91,7 +91,8 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         guard let url else { return nil }
         do {
             return try await musicRepository.getMusicData(url: url)
-        } catch {
+        }
+        catch {
             return nil
         }
     }
@@ -115,7 +116,8 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         do {
             if text.isEmpty { return }
             await updateIsSearching(with: true)
-            searchList = try await musicAPI.search(for: text)
+            let searchList = try await musicAPI.search(for: text)
+            await updateSearchList(with: searchList)
             await updateIsSearching(with: false)
         } catch {
             throw error
@@ -124,7 +126,8 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     
     public func randomMusic() async throws {
         do {
-            selectedMusic = try await musicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
+            let selectedMusic = try await musicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
+            await updateSelectedMusic(with: selectedMusic)
         } catch {
             throw error
         }
@@ -161,6 +164,11 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     @MainActor
     private func updateIsSearching(with isSearching: Bool) {
         self.isSearching = isSearching
+    }
+    
+    @MainActor
+    private func updateSelectedMusic(with music: Music) {
+        selectedMusic = music
     }
     
     public func cancelSubscriptions() {
