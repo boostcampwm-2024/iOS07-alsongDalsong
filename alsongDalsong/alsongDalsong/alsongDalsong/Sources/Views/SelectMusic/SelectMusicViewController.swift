@@ -82,7 +82,19 @@ final class SelectMusicViewController: UIViewController {
         }, for: .touchUpInside)
         
         progressBar.setCompletionHandler { [weak self] in
+            guard let selectedMusic = self?.viewModel.selectedMusic else {
+                self?.showSubmitRandomMusicLoading()
+                return
+            }
             self?.showSubmitMusicLoading()
+        }
+    }
+    
+    private func pickRandomMusic() async throws {
+        do {
+            try await viewModel.randomMusic()
+        } catch {
+            throw error
         }
     }
     
@@ -105,6 +117,19 @@ extension SelectMusicViewController {
         let alert = LoadingAlertController(
             progressText: .submitMusic,
             loadAction: { [weak self] in
+                try await self?.submitMusic()
+            },
+            errorCompletion: { [weak self] error in
+                self?.showFailSubmitMusic(error)
+            })
+        presentAlert(alert)
+    }
+    
+    private func showSubmitRandomMusicLoading() {
+        let alert = LoadingAlertController(
+            progressText: .submitMusic,
+            loadAction: { [weak self] in
+                try await self?.pickRandomMusic()
                 try await self?.submitMusic()
             },
             errorCompletion: { [weak self] error in

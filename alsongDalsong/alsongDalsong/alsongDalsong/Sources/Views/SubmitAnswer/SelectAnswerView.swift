@@ -5,6 +5,8 @@ struct SelectAnswerView: View {
     @ObservedObject var viewModel: SubmitAnswerViewModel
     @State var searchTerm = ""
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var isFocused: Bool
+
     private let debouncer = Debouncer(delay: 0.5)
 
     var body: some View {
@@ -17,14 +19,16 @@ struct SelectAnswerView: View {
                     .scaleEffect(1.1)
                     Spacer()
                     Button {
-                        viewModel.isPlaying.toggle()
+                        if viewModel.selectedMusic != nil {
+                            viewModel.isPlaying.toggle()
+                        }
                     } label: {
                         if #available(iOS 17.0, *) {
-                            Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                            Image(systemName: viewModel.isPlaying ? "stop.fill" : "play.fill")
                                 .font(.largeTitle)
                                 .contentTransition(.symbolEffect(.replace.offUp))
                         } else {
-                            Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                            Image(systemName: viewModel.isPlaying ? "stop.fill" : "play.fill")
                                 .font(.largeTitle)
                         }
                     }
@@ -32,7 +36,10 @@ struct SelectAnswerView: View {
                     .frame(width: 60)
                 }
                 .padding(16)
-                
+                .onTapGesture {
+                    isFocused = false
+                }
+
                 ASSearchBar(text: $searchTerm, placeHolder: "노래를 선택하세요")
                     .onChange(of: searchTerm) { newValue in
                         debouncer.debounce {
@@ -42,17 +49,29 @@ struct SelectAnswerView: View {
                             }
                         }
                     }
-                List(viewModel.searchList) { music in
-                    Button {
-                        viewModel.handleSelectedMusic(with: music)
-                    } label: {
-                        ASMusicItemCell(music: music, fetchArtwork: { url in
-                            await viewModel.downloadArtwork(url: url)
-                        })
-                        .tint(.black)
+                    .focused($isFocused)
+                if viewModel.isSearching {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                            .scaleEffect(2.0)
+                        Spacer()
                     }
+                } else {
+                    List(viewModel.searchList) { music in
+                        Button {
+                            viewModel.handleSelectedMusic(with: music)
+                        } label: {
+                            ASMusicItemCell(music: music, fetchArtwork: { url in
+                                await viewModel.downloadArtwork(url: url)
+                            })
+                            .tint(.black)
+                        }
+                    }
+                    .listStyle(.plain)
+                    .edgesIgnoringSafeArea(.bottom)
+                    .scrollDismissesKeyboard(.immediately)
                 }
-                .listStyle(.plain)
             }
             .background(.asLightGray)
             .toolbar {
@@ -65,8 +84,4 @@ struct SelectAnswerView: View {
             }
         }
     }
-}
-
-#Preview {
-//    SelectMusicView(v)
 }

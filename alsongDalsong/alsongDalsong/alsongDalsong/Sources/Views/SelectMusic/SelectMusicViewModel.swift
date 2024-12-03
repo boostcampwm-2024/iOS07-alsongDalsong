@@ -7,6 +7,7 @@ import Foundation
 final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     @Published private(set) var answers: [Answer] = []
     @Published private(set) var searchList: [Music] = []
+    @Published private(set) var isSearching: Bool = false
     @Published private(set) var dueTime: Date?
     @Published private(set) var selectedMusic: Music?
     @Published private(set) var submissionStatus: (submits: String, total: String) = ("0", "0")
@@ -50,7 +51,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
             }
             .store(in: &cancellables)
     }
-    
+
     private func bindGameStatus() {
         gameStatusRepository.getDueTime()
             .receive(on: DispatchQueue.main)
@@ -95,20 +96,32 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         selectedMusic = music
         beginPlaying()
     }
+  
     func submitMusic() async throws {
-        guard let selectedMusic else { return }
-        do {
-            _ = try await answersRepository.submitMusic(answer: selectedMusic)
-        } catch {
-            throw error
+        if let selectedMusic {
+            do {
+                _ = try await answersRepository.submitMusic(answer: selectedMusic)
+            } catch {
+                throw error
+            }
         }
     }
  
     func searchMusic(text: String) async throws {
         do {
             if text.isEmpty { return }
+            await updateIsSearching(with: true)
             let searchList = try await musicAPI.search(for: text)
             await updateSearchList(with: searchList)
+            await updateIsSearching(with: false)
+        } catch {
+            throw error
+        }
+    }
+    
+    func randomMusic() async throws {
+        do {
+            selectedMusic = try await musicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
         } catch {
             throw error
         }
@@ -141,6 +154,11 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     @MainActor
     private func updateSearchList(with searchList: [Music]) {
         self.searchList = searchList
+    }
+    
+    @MainActor
+    private func updateIsSearching(with isSearching: Bool) {
+        self.isSearching = isSearching
     }
     
     func cancelSubscriptions() {
