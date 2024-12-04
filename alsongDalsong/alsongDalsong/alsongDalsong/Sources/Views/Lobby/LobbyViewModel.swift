@@ -13,6 +13,10 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     let playerMaxCount = 4
     private(set) var roomNumber: String = ""
     @Published var players: [Player] = []
+    @Published var host: Player?
+    @Published var isGameStrted: Bool = false
+    @Published var isHost: Bool = false
+    @Published var canBeginGame: Bool = false
     @Published var mode: Mode = .humming {
         didSet {
             if mode != oldValue {
@@ -20,12 +24,6 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             }
         }
     }
-
-    @Published var host: Player?
-    @Published var isGameStrted: Bool = false
-    @Published var isHost: Bool = false
-    @Published var canBeginGame: Bool = false
-    var isLeaveRoom = false
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -98,16 +96,6 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             _ = try await roomActionRepository.startGame(roomNumber: roomNumber)
         } catch {
             throw error
-        }
-    }
-    
-    func leaveRoom() {
-        Task {
-            do {
-                isLeaveRoom = try await roomActionRepository.leaveRoom()
-            } catch {
-                Logger.error(error.localizedDescription)
-            }
         }
     }
     

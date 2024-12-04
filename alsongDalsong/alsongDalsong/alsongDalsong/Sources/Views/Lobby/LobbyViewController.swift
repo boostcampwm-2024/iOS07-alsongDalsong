@@ -2,11 +2,10 @@ import Combine
 import SwiftUI
 
 final class LobbyViewController: UIViewController {
-    let inviteButton = ASButton()
-    let startButton = ASButton()
-    private var hostingController: UIHostingController<LobbyView>?
-
-    let viewmodel: LobbyViewModel
+    private let inviteButton = ASButton()
+    private let startButton = ASButton()
+    private var lobbyView = UIViewController()
+    private let viewmodel: LobbyViewModel
     private var cancellables: Set<AnyCancellable> = []
 
     init(lobbyViewModel: LobbyViewModel) {
@@ -25,21 +24,6 @@ final class LobbyViewController: UIViewController {
         setupLayout()
         setAction()
         bindToComponents()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if viewmodel.isLeaveRoom {
-            hostingController?.view.removeFromSuperview()
-            hostingController = nil
-        }
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        if viewmodel.isLeaveRoom {
-            viewmodel.leaveRoom()
-        }
     }
 
     private func bindToComponents() {
@@ -72,14 +56,18 @@ final class LobbyViewController: UIViewController {
             text: "초대하기!",
             backgroundColor: .asYellow
         )
-        inviteButton.translatesAutoresizingMaskIntoConstraints = false
 
         startButton.setConfiguration(
             systemImageName: "play.fill",
             text: "시작하기!",
             backgroundColor: .asMint
         )
-        startButton.translatesAutoresizingMaskIntoConstraints = false
+
+        lobbyView = UIHostingController(rootView: LobbyView(viewModel: viewmodel))
+
+        view.addSubview(lobbyView.view)
+        view.addSubview(startButton)
+        view.addSubview(inviteButton)
     }
 
     private func setAction() {
@@ -95,31 +83,18 @@ final class LobbyViewController: UIViewController {
         startButton.addAction(
             UIAction { [weak self] _ in
                 guard let playerCount = self?.viewmodel.players.count else { return }
-                if playerCount < 3 {
-                    let alert = DefaultAlertController(
-                        titleText: .needMorePlayer,
-                        primaryButtonText: .keep,
-                        secondaryButtonText: .cancel
-                    ) { [weak self] _ in
-                        self?.showStartGameLoading()
-                    }
-                    self?.presentAlert(alert)
-                } else {
+                playerCount < 3 ?
+                    self?.showNeedMorePlayers() :
                     self?.showStartGameLoading()
-                }
             },
             for: .touchUpInside
         )
     }
 
     private func setupLayout() {
-        let lobbyView = UIHostingController(rootView: LobbyView(viewModel: viewmodel))
-        hostingController = lobbyView
+        inviteButton.translatesAutoresizingMaskIntoConstraints = false
+        startButton.translatesAutoresizingMaskIntoConstraints = false
         lobbyView.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(lobbyView.view)
-        view.addSubview(startButton)
-        view.addSubview(inviteButton)
-
         
         NSLayoutConstraint.activate([
             lobbyView.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -161,6 +136,17 @@ extension LobbyViewController {
                 self?.showStartGameFailed(error)
             }
         )
+        presentAlert(alert)
+    }
+
+    func showNeedMorePlayers() {
+        let alert = DefaultAlertController(
+            titleText: .needMorePlayer,
+            primaryButtonText: .keep,
+            secondaryButtonText: .cancel
+        ) { [weak self] _ in
+            self?.showStartGameLoading()
+        }
         presentAlert(alert)
     }
 
