@@ -108,13 +108,9 @@ final class HummingResultViewModel: @unchecked Sendable {
         while !recordsResult.isEmpty {
             currentRecords.append(recordsResult.removeFirst())
             guard let fileUrl = currentRecords.last?.fileUrl else { continue }
-            do {
-                let data = try await fetchRecordData(url: fileUrl)
-                await AudioHelper.shared.startPlaying(data)
-                await waitForPlaybackToFinish()
-            } catch {
-                Logger.error("녹음 파일 다운로드에 실패하였습니다.")
-            }
+            let data = await hummingResultRepository.getRecordData(url: fileUrl)
+            await AudioHelper.shared.startPlaying(data)
+            await waitForPlaybackToFinish()
         }
         currentsubmit = submitsResult
     }
@@ -145,32 +141,6 @@ final class HummingResultViewModel: @unchecked Sendable {
         submitsResult = current.submit
         currentRecords.removeAll()
         currentsubmit = nil
-    }
-
-    private func getRecordData(url: URL?) -> AnyPublisher<Data?, Error> {
-        if let url {
-            hummingResultRepository.getRecordData(url: url)
-                .eraseToAnyPublisher()
-        } else {
-            Just(nil)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        }
-    }
-
-    private func fetchRecordData(url: URL) async throws -> Data {
-        try await withCheckedThrowingContinuation { continuation in
-            getRecordData(url: url)
-                .compactMap { $0 }
-                .sink(receiveCompletion: { completion in
-                    if case let .failure(error) = completion {
-                        continuation.resume(throwing: error)
-                    }
-                }, receiveValue: { data in
-                    continuation.resume(returning: data)
-                })
-                .store(in: &cancellables)
-        }
     }
 
     func getAvatarData(url: URL?) async -> Data? {

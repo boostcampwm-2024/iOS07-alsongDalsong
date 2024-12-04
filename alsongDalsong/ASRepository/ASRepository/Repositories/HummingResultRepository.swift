@@ -70,17 +70,13 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
         return submit ?? Answer.answerStub1
     }
 
-    public func getRecordData(url: URL) -> Future<Data?, Error> {
-        Future { promise in
-            Task {
-                do {
-                    guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
-                    promise(.success(data))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
+    public func getRecordData(url: URL) async -> Data? {
+        do {
+            guard let endpoint = ResourceEndpoint(url: url) else { return nil }
+            let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
+            return data
+        } catch {
+            return nil
         }
     }
 }
@@ -142,18 +138,14 @@ public final class LocalHummingResultRepository: HummingResultRepositoryProtocol
 
         return submit ?? Answer.answerStub1
     }
-
-    public func getRecordData(url: URL) -> Future<Data?, Error> {
-        Future { promise in
-            Task {
-                do {
-                    guard let endpoint = ResourceEndpoint(url: url) else { return promise(.failure(ASNetworkErrors.urlError)) }
-                    let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
-                    promise(.success(data))
-                } catch {
-                    promise(.failure(error))
-                }
-            }
+    
+    public func getRecordData(url: URL) async -> Data? {
+        do {
+            guard let endpoint = ResourceEndpoint(url: url) else { return nil }
+            let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
+            return data
+        } catch {
+            return nil
         }
     }
 }
