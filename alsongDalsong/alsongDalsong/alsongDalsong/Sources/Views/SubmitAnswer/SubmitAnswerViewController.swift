@@ -79,16 +79,16 @@ final class SubmitAnswerViewController: UIViewController {
             musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
 
             selectedMusicPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 32),
-            selectedMusicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            selectedMusicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            selectedMusicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            selectedMusicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             selectedMusicPanel.heightAnchor.constraint(equalToConstant: 100),
 
             submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
             submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
 
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
             buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }

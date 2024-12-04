@@ -82,7 +82,7 @@ class HummingResultViewController: UIViewController {
             nextButton.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 24),
             nextButton.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -24),
             nextButton.heightAnchor.constraint(equalToConstant: 64),
-            nextButton.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor, constant: -24),
+            nextButton.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor, constant: -16),
         ])
     }
 

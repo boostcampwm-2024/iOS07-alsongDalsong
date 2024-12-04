@@ -120,22 +120,21 @@ final class LobbyViewController: UIViewController {
         view.addSubview(startButton)
         view.addSubview(inviteButton)
 
-        let safeArea = view.safeAreaLayoutGuide
-
+        
         NSLayoutConstraint.activate([
-            lobbyView.view.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            lobbyView.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             lobbyView.view.bottomAnchor.constraint(equalTo: inviteButton.topAnchor, constant: -20),
-            lobbyView.view.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            lobbyView.view.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            lobbyView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            lobbyView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
             inviteButton.bottomAnchor.constraint(equalTo: startButton.topAnchor, constant: -25),
-            inviteButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            inviteButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            inviteButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            inviteButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             inviteButton.heightAnchor.constraint(equalToConstant: 64),
 
-            startButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -25),
-            startButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            startButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            startButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            startButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            startButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             startButton.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
