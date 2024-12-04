@@ -5,6 +5,8 @@ import ASRepositoryProtocol
 import Combine
 import Foundation
 
+typealias Result = (answer: Answer?, records: [ASEntity.Record]?, submit: Answer?)
+
 final class HummingResultViewModel: @unchecked Sendable {
     private var hummingResultRepository: HummingResultRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
@@ -21,10 +23,8 @@ final class HummingResultViewModel: @unchecked Sendable {
     @Published var currentsubmit: Answer?
     @Published var recordOrder: UInt8? = 0
     @Published var isHost: Bool = false
+    @Published var result: Result = (nil, nil, nil)
 
-    // 미리 받아놓을 정보 배열
-    private var recordsResult: [ASEntity.Record] = []
-    private var submitsResult: Answer?
     private var roomNumber: String = ""
 
     var hummingResult: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)] = []
@@ -47,32 +47,30 @@ final class HummingResultViewModel: @unchecked Sendable {
         fetchResult()
     }
 
+    private func updateCurrentResult() {
+        guard let next = hummingResult.first else { return }
+        currentResult = next.answer
+        result = (next.answer, next.records, next.submit)
+        hummingResult.removeFirst()
+    }
+
     func fetchResult() {
         hummingResultRepository.getResult()
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 성공 실패 여부에 따른 처리
-                Logger.debug(completion)
-            } receiveValue: { [weak self] (result: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer, recordOrder: UInt8)]) in
-                guard let self else { return }
-
-                if (result.count - 1) < result.first?.recordOrder ?? 0 { return }
-                Logger.debug("호출")
-                hummingResult = result.map {
-                    (answer: $0.answer, records: $0.records, submit: $0.submit)
-                }
-
-                hummingResult.sort {
-                    $0.answer.player?.order ?? 0 < $1.answer.player?.order ?? 1
-                }
-
-                Logger.debug("hummingResult \(hummingResult)")
-
-                let current = hummingResult.removeFirst()
-                currentResult = current.answer
-                recordsResult = current.records
-                submitsResult = current.submit
+            .tryMap { result in
+                result.sorted { $0.answer.player?.order ?? 0 < $1.answer.player?.order ?? 1 }
             }
+            .sink(receiveCompletion: { Logger.debug($0) },
+                  receiveValue: { [weak self] sortedResult in
+                      guard let self,
+                            (sortedResult.count - 1) >= sortedResult.first?.recordOrder ?? 0
+                      else { return }
+
+                      hummingResult = sortedResult.map { ($0.answer, $0.records, $0.submit) }
+                      Logger.debug("hummingResult \(hummingResult)")
+
+                      updateCurrentResult()
+                  })
             .store(in: &cancellables)
 
         playerRepository.isHost()
@@ -104,15 +102,15 @@ final class HummingResultViewModel: @unchecked Sendable {
 
     func startPlaying() async {
         await startPlayingCurrentMusic()
-
-        while !recordsResult.isEmpty {
-            currentRecords.append(recordsResult.removeFirst())
+        guard var records = result.records else { return }
+        while !records.isEmpty {
+            currentRecords.append(records.removeFirst())
             guard let fileUrl = currentRecords.last?.fileUrl else { continue }
             let data = await hummingResultRepository.getRecordData(url: fileUrl)
             await AudioHelper.shared.startPlaying(data)
             await waitForPlaybackToFinish()
         }
-        currentsubmit = submitsResult
+        currentsubmit = result.submit
     }
 
     private func startPlayingCurrentMusic() async {
@@ -137,8 +135,8 @@ final class HummingResultViewModel: @unchecked Sendable {
         if hummingResult.isEmpty { return }
         let current = hummingResult.removeFirst()
         currentResult = current.answer
-        recordsResult = current.records
-        submitsResult = current.submit
+        result.records = current.records
+        result.submit = current.submit
         currentRecords.removeAll()
         currentsubmit = nil
     }
@@ -150,7 +148,8 @@ final class HummingResultViewModel: @unchecked Sendable {
 
     func changeRecordOrder() async throws {
         do {
-            try await roomActionRepository.changeRecordOrder(roomNumber: roomNumber)
+            let succeded = try await roomActionRepository.changeRecordOrder(roomNumber: roomNumber)
+            if !succeded { Logger.error("Changing RecordOrder failed") }
         } catch {
             Logger.error(error.localizedDescription)
             throw error
@@ -160,7 +159,8 @@ final class HummingResultViewModel: @unchecked Sendable {
     func navigationToLobby() async throws {
         do {
             if !hummingResult.isEmpty { return }
-            try await roomActionRepository.resetGame()
+            let succeded = try await roomActionRepository.resetGame()
+            if !succeded { Logger.error("Game Reset failed") }
         } catch {
             throw error
         }
