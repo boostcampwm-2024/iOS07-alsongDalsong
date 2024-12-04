@@ -2,7 +2,7 @@ import UIKit
 import Combine
 import ASEntity
 
-final class ResultList: UIView {
+final class MusicPanelView: UIView {
     private let albumImageView = UIImageView()
     private let musicNameLabel = UILabel()
     private let singerNameLabel = UILabel()
@@ -60,7 +60,7 @@ final class ResultList: UIView {
         albumImageView.layer.cornerRadius = 6
         albumImageView.clipsToBounds = true
         albumImageView.translatesAutoresizingMaskIntoConstraints = false
-        albumImageView.image = UIImage(named: "mojojojo") // Placeholder image
+        albumImageView.backgroundColor = .secondarySystemBackground
         addSubview(albumImageView)
 
         musicNameLabel.font = .font(ofSize: 24)

@@ -3,7 +3,7 @@ import Combine
 import SwiftUI
 
 class HummingResultViewController: UIViewController {
-    private let musicList = ResultList()
+    private let answerView = MusicPanelView()
     private let resultTableView = UITableView()
     private let nextButton = ASButton()
 
@@ -60,21 +60,21 @@ class HummingResultViewController: UIViewController {
     }
 
     private func setConstraints() {
-        view.addSubview(musicList)
+        view.addSubview(answerView)
 
-        musicList.translatesAutoresizingMaskIntoConstraints = false
+        answerView.translatesAutoresizingMaskIntoConstraints = false
         resultTableView.translatesAutoresizingMaskIntoConstraints = false
         nextButton.translatesAutoresizingMaskIntoConstraints = false
 
         let layoutGuide = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
-            musicList.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: 20),
-            musicList.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 16),
-            musicList.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -16),
-            musicList.heightAnchor.constraint(equalToConstant: 130),
+            answerView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: 20),
+            answerView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 16),
+            answerView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -16),
+            answerView.heightAnchor.constraint(equalToConstant: 130),
 
-            resultTableView.topAnchor.constraint(equalTo: musicList.bottomAnchor, constant: 20),
+            resultTableView.topAnchor.constraint(equalTo: answerView.bottomAnchor, constant: 20),
             resultTableView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
             resultTableView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
             resultTableView.bottomAnchor.constraint(equalTo: nextButton.topAnchor, constant: -30),
@@ -88,7 +88,7 @@ class HummingResultViewController: UIViewController {
 
     private func bind() {
         guard let viewModel else { return }
-        musicList.bind(to: viewModel.$currentResult) { [weak self] url in
+        answerView.bind(to: viewModel.$currentResult) { [weak self] url in
             await self?.viewModel?.getArtworkData(url: url)
         } musicFetcher: {
             await self.viewModel?.startPlaying()
