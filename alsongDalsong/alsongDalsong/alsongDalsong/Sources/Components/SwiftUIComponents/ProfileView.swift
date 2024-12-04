@@ -62,5 +62,6 @@ struct ProfileView: View {
                     .lineLimit(2)
             }
         }
+        .frame(width: 75)
     }
 }
