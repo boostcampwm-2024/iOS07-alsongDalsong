@@ -35,8 +35,9 @@ class HummingResultViewController: UIViewController {
     }
 
     private func setResultTableView() {
+        guard let viewModel else { return }
         resultTableViewDiffableDataSource = HummingResultTableViewDiffableDataSource(tableView: resultTableView, viewModel: viewModel)
-        resultTableView.dataSource = resultTableViewDiffableDataSource
+        resultTableViewDiffableDataSource?.applySnapshot(newRecords: viewModel.currentRecords, submit: viewModel.currentsubmit)
         resultTableView.separatorStyle = .none
         resultTableView.allowsSelection = false
         resultTableView.backgroundColor = .asLightGray
@@ -96,14 +97,8 @@ class HummingResultViewController: UIViewController {
         viewModel.$currentRecords
             .receive(on: DispatchQueue.main)
             .sink { [weak self] records in
-                guard let self, !records.isEmpty else { return }
-                let indexPath = IndexPath(row: records.count - 1, section: 0)
-                if records.count > resultTableView.numberOfRows(inSection: 0) {
-                    resultTableView.insertRows(at: [indexPath], with: .fade)
-                }
-                else {
-                    resultTableView.reloadRows(at: [indexPath], with: .fade)
-                }
+                guard let self else { return }
+                resultTableViewDiffableDataSource?.applySnapshot(newRecords: records, submit: viewModel.currentsubmit)
             }
             .store(in: &cancellables)
 
@@ -113,14 +108,8 @@ class HummingResultViewController: UIViewController {
                 guard let self else { return }
                 if submit != nil {
                     nextButton.isHidden = false
-                    let indexPath = IndexPath(row: 0, section: 1)
-                    if resultTableView.numberOfRows(inSection: 1) == 1 {
-                        resultTableView.reloadRows(at: [indexPath], with: .fade)
-                    }
-                    else {
-                        resultTableView.insertRows(at: [indexPath], with: .fade)
-                    }
                 }
+                resultTableViewDiffableDataSource?.applySnapshot(newRecords: viewModel.currentRecords, submit: submit)
             }
             .store(in: &cancellables)
 

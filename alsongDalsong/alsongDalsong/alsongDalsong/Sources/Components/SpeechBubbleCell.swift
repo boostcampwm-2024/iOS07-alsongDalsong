@@ -5,7 +5,7 @@ import UIKit
 
 enum MessageType {
     case music(Music)
-    case record(Data)
+    case record(ASEntity.Record)
 
     var bubbleHeight: CGFloat {
         switch self {
@@ -96,7 +96,7 @@ struct SpeechBubbleCell: View {
                 }
             case let .record(file):
                 HStack {
-                    WaveFormWrapper(data: record.fileUrl!, sampleCount: 24, circleColor: .asBlack, highlightColor: .asGreen)
+                    WaveFormWrapper(data: file.fileUrl!, sampleCount: 24, circleColor: .asBlack, highlightColor: .asGreen)
                         .frame(width: 200)
                     Spacer()
                 }

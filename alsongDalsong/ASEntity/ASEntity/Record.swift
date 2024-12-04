@@ -1,9 +1,9 @@
 import Foundation
 
 public struct Record: Codable, Equatable, Sendable, Hashable {
-    public var player: Player?
-    public var recordOrder: UInt8?
-    public var fileUrl: URL?
+    public let player: Player?
+    public let recordOrder: UInt8?
+    public let fileUrl: URL?
     
     public init(player: Player? = nil, recordOrder: UInt8? = nil, fileUrl: URL? = nil) {
         self.player = player

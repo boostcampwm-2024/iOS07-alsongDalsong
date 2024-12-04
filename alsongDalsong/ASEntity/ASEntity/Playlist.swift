@@ -1,8 +1,8 @@
 import Foundation
 
 public struct Playlist: Codable, Equatable, Sendable, Hashable {
-    public var artworkUrl: URL?
-    public var title: String?
+    public let artworkUrl: URL?
+    public let title: String?
 
     public init() {}
 }

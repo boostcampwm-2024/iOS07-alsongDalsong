@@ -9,13 +9,9 @@ struct ResultTableViewItem: Hashable, Sendable {
 }
 
 final class HummingResultTableViewDiffableDataSource: UITableViewDiffableDataSource<Int, ResultTableViewItem> {
-    
     let viewModel: HummingResultViewModel
-    
-    init(tableView: UITableView, viewModel: HummingResultViewModel?) {
-        guard let viewModel else { return }
+    init(tableView: UITableView, viewModel: HummingResultViewModel) {
         self.viewModel = viewModel
-        
         super.init(tableView: tableView) { tableView, indexPath, item in
             let cell = UITableViewCell()
             cell.backgroundColor = .clear
@@ -30,7 +26,7 @@ final class HummingResultTableViewDiffableDataSource: UITableViewDiffableDataSou
                             if let avatarURL = currentPlayer?.avatarUrl {
                                 SpeechBubbleCell(
                                     alignment: .left,
-                                    messageType: .record,
+                                    messageType: .record(record),
                                     avatarImagePublisher: { url in
                                         await viewModel.getAvatarData(url: url)
                                     },
@@ -47,7 +43,7 @@ final class HummingResultTableViewDiffableDataSource: UITableViewDiffableDataSou
                             if let avatarURL = currentPlayer?.avatarUrl {
                                 SpeechBubbleCell(
                                     alignment: .right,
-                                    messageType: .record,
+                                    messageType: .record(record),
                                     avatarImagePublisher: { url in
                                         await viewModel.getAvatarData(url: url)
                                     },
@@ -133,4 +129,3 @@ final class HummingResultTableViewDiffableDataSource: UITableViewDiffableDataSou
         self.apply(snapshot, animatingDifferences: false)
     }
 }
-

@@ -1,11 +1,11 @@
 import Foundation
 
 public struct Player: Codable, Equatable, Identifiable, Sendable, Hashable {
-    public var id: String
-    public var avatarUrl: URL?
-    public var nickname: String?
-    public var score: Int?
-    public var order: Int?
+    public let id: String
+    public let avatarUrl: URL?
+    public let nickname: String?
+    public let score: Int?
+    public let order: Int?
     
     public init(
         id: String,
