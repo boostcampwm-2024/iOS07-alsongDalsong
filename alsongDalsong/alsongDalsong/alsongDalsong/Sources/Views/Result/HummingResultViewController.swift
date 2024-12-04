@@ -27,7 +27,7 @@ class HummingResultViewController: UIViewController {
         setResultTableView()
         setButton()
         setConstraints()
-        bind()
+        bindViewModel()
     }
 
     override func viewDidDisappear(_: Bool) {
@@ -86,7 +86,7 @@ class HummingResultViewController: UIViewController {
         ])
     }
 
-    private func bind() {
+    private func bindViewModel() {
         guard let viewModel else { return }
         answerView.bind(to: viewModel.$currentResult) { [weak self] url in
             await self?.viewModel?.getArtworkData(url: url)
@@ -142,15 +142,12 @@ class HummingResultViewController: UIViewController {
             .store(in: &cancellables)
     }
 
-    private func nextResultFetch() async throws {
+    private func fetchNextResult() async throws {
         guard let viewModel else { return }
         do {
-            if viewModel.hummingResult.isEmpty {
-                try await viewModel.navigationToLobby()
-            }
-            else {
+            viewModel.hummingResult.isEmpty ?
+                try await viewModel.navigateToLobby() :
                 try await viewModel.changeRecordOrder()
-            }
         }
         catch {
             throw error
@@ -163,10 +160,10 @@ extension HummingResultViewController {
         let alert = LoadingAlertController(
             progressText: .nextResult,
             loadAction: { [weak self] in
-                try await self?.nextResultFetch()
+                try await self?.fetchNextResult()
             },
             errorCompletion: { [weak self] error in
-                self?.showFailNextLoading(error)
+                self?.showFailedAlert(error)
             }
         )
         presentAlert(alert)
@@ -176,16 +173,16 @@ extension HummingResultViewController {
         let alert = LoadingAlertController(
             progressText: .toLobby,
             loadAction: { [weak self] in
-                try await self?.nextResultFetch()
+                try await self?.fetchNextResult()
             },
             errorCompletion: { [weak self] error in
-                self?.showFailNextLoading(error)
+                self?.showFailedAlert(error)
             }
         )
         presentAlert(alert)
     }
 
-    private func showFailNextLoading(_ error: Error) {
+    private func showFailedAlert(_ error: Error) {
         let alert = SingleButtonAlertController(titleText: .error(error))
         presentAlert(alert)
     }

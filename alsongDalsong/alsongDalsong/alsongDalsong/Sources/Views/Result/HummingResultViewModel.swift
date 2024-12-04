@@ -44,7 +44,10 @@ final class HummingResultViewModel: @unchecked Sendable {
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
         self.musicRepository = musicRepository
-        fetchResult()
+        bindResult()
+        bindPlayers()
+        bindRoomNumber()
+        bindRecordOrder()
     }
 
     private func updateCurrentResult() {
@@ -54,52 +57,54 @@ final class HummingResultViewModel: @unchecked Sendable {
         hummingResult.removeFirst()
     }
 
-    func fetchResult() {
-        hummingResultRepository.getResult()
-            .receive(on: DispatchQueue.main)
-            .tryMap { result in
-                result.sorted { $0.answer.player?.order ?? 0 < $1.answer.player?.order ?? 1 }
-            }
-            .sink(receiveCompletion: { Logger.debug($0) },
-                  receiveValue: { [weak self] sortedResult in
-                      guard let self,
-                            (sortedResult.count - 1) >= sortedResult.first?.recordOrder ?? 0
-                      else { return }
-
-                      hummingResult = sortedResult.map { ($0.answer, $0.records, $0.submit) }
-                      Logger.debug("hummingResult \(hummingResult)")
-
-                      updateCurrentResult()
-                  })
-            .store(in: &cancellables)
-
-        playerRepository.isHost()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isHost in
-                self?.isHost = isHost
-            }
-            .store(in: &cancellables)
-
-        roomInfoRepository.getRoomNumber()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] roomNumber in
-                self?.roomNumber = roomNumber
-            }
-            .store(in: &cancellables)
-
-        Publishers.CombineLatest(gameStatusRepository.getStatus(), gameStatusRepository.getRecordOrder())
-            .receive(on: DispatchQueue.main)
-            .sink { status, _ in
-                // order에 초기값이 들어오는 문제
-                if status == .result, self.recordOrder != 0 {
-                    self.isNext = true
-                } else {
-                    self.recordOrder! += 1
-                }
-            }
-            .store(in: &cancellables)
+    func nextResultFetch() {
+        if hummingResult.isEmpty { return }
+        let current = hummingResult.removeFirst()
+        currentResult = current.answer
+        result.records = current.records
+        result.submit = current.submit
+        currentRecords.removeAll()
+        currentsubmit = nil
     }
 
+    func getAvatarData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await avatarRepository.getAvatarData(url: url)
+    }
+
+    func changeRecordOrder() async throws {
+        do {
+            let succeded = try await roomActionRepository.changeRecordOrder(roomNumber: roomNumber)
+            if !succeded { Logger.error("Changing RecordOrder failed") }
+        } catch {
+            Logger.error(error.localizedDescription)
+            throw error
+        }
+    }
+
+    func navigateToLobby() async throws {
+        do {
+            if !hummingResult.isEmpty { return }
+            let succeded = try await roomActionRepository.resetGame()
+            if !succeded { Logger.error("Game Reset failed") }
+        } catch {
+            throw error
+        }
+    }
+
+    func getArtworkData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await musicRepository.getMusicData(url: url)
+    }
+
+    func cancelSubscriptions() {
+        cancellables.removeAll()
+    }
+}
+
+// MARK: - Playing music
+
+extension HummingResultViewModel {
     func startPlaying() async {
         await startPlayingCurrentMusic()
         guard var records = result.records else { return }
@@ -130,48 +135,59 @@ final class HummingResultViewModel: @unchecked Sendable {
             }
         }
     }
+}
 
-    func nextResultFetch() {
-        if hummingResult.isEmpty { return }
-        let current = hummingResult.removeFirst()
-        currentResult = current.answer
-        result.records = current.records
-        result.submit = current.submit
-        currentRecords.removeAll()
-        currentsubmit = nil
+// MARK: - Bind with Repositories
+extension HummingResultViewModel {
+    private func bindPlayers() {
+        playerRepository.isHost()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHost in
+                self?.isHost = isHost
+            }
+            .store(in: &cancellables)
     }
 
-    func getAvatarData(url: URL?) async -> Data? {
-        guard let url else { return nil }
-        return await avatarRepository.getAvatarData(url: url)
+    private func bindRoomNumber() {
+        roomInfoRepository.getRoomNumber()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] roomNumber in
+                self?.roomNumber = roomNumber
+            }
+            .store(in: &cancellables)
     }
 
-    func changeRecordOrder() async throws {
-        do {
-            let succeded = try await roomActionRepository.changeRecordOrder(roomNumber: roomNumber)
-            if !succeded { Logger.error("Changing RecordOrder failed") }
-        } catch {
-            Logger.error(error.localizedDescription)
-            throw error
-        }
+    private func bindRecordOrder() {
+        Publishers.CombineLatest(gameStatusRepository.getStatus(), gameStatusRepository.getRecordOrder())
+            .receive(on: DispatchQueue.main)
+            .sink { status, _ in
+                if status == .result, self.recordOrder != 0 {
+                    self.isNext = true
+                } else {
+                    self.recordOrder! += 1
+                }
+            }
+            .store(in: &cancellables)
     }
 
-    func navigationToLobby() async throws {
-        do {
-            if !hummingResult.isEmpty { return }
-            let succeded = try await roomActionRepository.resetGame()
-            if !succeded { Logger.error("Game Reset failed") }
-        } catch {
-            throw error
-        }
-    }
+    func bindResult() {
+        hummingResultRepository.getResult()
+            .receive(on: DispatchQueue.main)
+            .map { $0.sorted { $0.answer.player?.order ?? 0 < $1.answer.player?.order ?? 1 } }
+            .sink(receiveCompletion: { Logger.debug($0) },
+                  receiveValue: { [weak self] sortedResult in
+                      guard let self, isValidResult(sortedResult) else { return }
 
-    func getArtworkData(url: URL?) async -> Data? {
-        guard let url else { return nil }
-        return await musicRepository.getMusicData(url: url)
-    }
+                      hummingResult = sortedResult.map { ($0.answer, $0.records, $0.submit) }
+                      Logger.debug("hummingResult \(hummingResult)")
 
-    func cancelSubscriptions() {
-        cancellables.removeAll()
+                      updateCurrentResult()
+                  })
+            .store(in: &cancellables)
+    }
+    
+    private func isValidResult(_ sortedResult: [(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)]) -> Bool {
+        guard let firstRecordOrder = sortedResult.first?.recordOrder else { return false }
+        return (sortedResult.count - 1) >= firstRecordOrder
     }
 }
