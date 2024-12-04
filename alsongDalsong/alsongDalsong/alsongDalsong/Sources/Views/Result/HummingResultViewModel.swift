@@ -67,11 +67,6 @@ final class HummingResultViewModel: @unchecked Sendable {
         currentsubmit = nil
     }
 
-    func getAvatarData(url: URL?) async -> Data? {
-        guard let url else { return nil }
-        return await avatarRepository.getAvatarData(url: url)
-    }
-
     func changeRecordOrder() async throws {
         do {
             let succeded = try await roomActionRepository.changeRecordOrder(roomNumber: roomNumber)
@@ -91,12 +86,22 @@ final class HummingResultViewModel: @unchecked Sendable {
             throw error
         }
     }
-
+    
+    func getAvatarData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await avatarRepository.getAvatarData(url: url)
+    }
+    
     func getArtworkData(url: URL?) async -> Data? {
         guard let url else { return nil }
         return await musicRepository.getMusicData(url: url)
     }
 
+    func getRecordData(url: URL?) async -> Data? {
+        guard let url else { return nil }
+        return await hummingResultRepository.getRecordData(url: url)
+    }
+    
     func cancelSubscriptions() {
         cancellables.removeAll()
     }
@@ -111,7 +116,7 @@ extension HummingResultViewModel {
         while !records.isEmpty {
             currentRecords.append(records.removeFirst())
             guard let fileUrl = currentRecords.last?.fileUrl else { continue }
-            let data = await hummingResultRepository.getRecordData(url: fileUrl)
+            let data = await getRecordData(url: fileUrl)
             await AudioHelper.shared.startPlaying(data)
             await waitForPlaybackToFinish()
         }
@@ -143,7 +148,8 @@ extension HummingResultViewModel {
         playerRepository.isHost()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isHost in
-                self?.isHost = isHost
+                guard let self else { return }
+                self.isHost = isHost
             }
             .store(in: &cancellables)
     }
@@ -152,7 +158,8 @@ extension HummingResultViewModel {
         roomInfoRepository.getRoomNumber()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
-                self?.roomNumber = roomNumber
+                guard let self else { return }
+                self.roomNumber = roomNumber
             }
             .store(in: &cancellables)
     }
@@ -160,7 +167,8 @@ extension HummingResultViewModel {
     private func bindRecordOrder() {
         Publishers.CombineLatest(gameStatusRepository.getStatus(), gameStatusRepository.getRecordOrder())
             .receive(on: DispatchQueue.main)
-            .sink { status, _ in
+            .sink { [weak self] status, _ in
+                guard let self else { return }
                 if status == .result, self.recordOrder != 0 {
                     self.isNext = true
                 } else {
