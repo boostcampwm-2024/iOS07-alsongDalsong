@@ -2,8 +2,8 @@ import ASEntity
 import Foundation
 import MusicKit
 
-public struct ASMusicAPI {
-    public init() {}
+public class ASMusicAPI {
+    public static let shared = ASMusicAPI()
 
     /// MusicKit을 통해 Apple Music의 노래를 검색합니다.
     /// - Parameters:
@@ -16,11 +16,9 @@ public struct ASMusicAPI {
             case .authorized:
                 do {
                     var request = MusicCatalogSearchSuggestionsRequest(term: text, includingTopResultsOfTypes: [Song.self])
-
                     request.limit = maxCount
 
                     let result = try await request.response()
-
                     if !result.topResults.isEmpty {
                         let music = result.topResults.compactMap { topResult -> ASEntity.Music? in
                             if case .song(let song) = topResult {

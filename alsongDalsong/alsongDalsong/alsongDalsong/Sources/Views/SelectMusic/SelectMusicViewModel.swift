@@ -25,7 +25,6 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     private let answersRepository: AnswersRepositoryProtocol
     private let gameStatusRepository: GameStatusRepositoryProtocol
     
-    private let musicAPI = ASMusicAPI()
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -111,7 +110,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         do {
             if text.isEmpty { return }
             await updateIsSearching(with: true)
-            let searchList = try await musicAPI.search(for: text)
+            let searchList = try await ASMusicAPI.shared.search(for: text)
             await updateSearchList(with: searchList)
             await updateIsSearching(with: false)
         } catch {
@@ -121,7 +120,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     
     func randomMusic() async throws {
         do {
-            selectedMusic = try await musicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
+            selectedMusic = try await ASMusicAPI.shared.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
         } catch {
             throw error
         }

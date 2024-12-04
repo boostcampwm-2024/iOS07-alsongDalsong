@@ -47,9 +47,8 @@ final class OnboardingViewModel: @unchecked Sendable {
 
     @MainActor
     func authorizeAppleMusic() {
-        let musicAPI = ASMusicAPI()
         Task {
-            let _ = try await musicAPI.search(for: "뉴진스", 1, 1)
+            let _ = try await ASMusicAPI.shared.search(for: "뉴진스", 1, 1)
         }
     }
 

@@ -29,7 +29,6 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
     private let recordsRepository: RecordsRepositoryProtocol
     private let submitsRepository: SubmitsRepositoryProtocol
 
-    private let musicAPI = ASMusicAPI()
     private var cancellables: Set<AnyCancellable> = []
 
     init(
@@ -46,7 +45,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         self.musicRepository = musicRepository
         bindGameStatus()
     }
-    
+
     private func bindRecord(on recordOrder: UInt8) {
         recordsRepository.getHumming(on: recordOrder)
             .sink { [weak self] record in
@@ -62,7 +61,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
                 self?.dueTime = newDueTime
             }
             .store(in: &cancellables)
-        
+
         gameStatusRepository.getRecordOrder()
             .sink { [weak self] newRecordOrder in
                 self?.recordOrder = newRecordOrder
@@ -70,7 +69,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
                 self?.bindSubmissionStatus(with: newRecordOrder)
             }
             .store(in: &cancellables)
-        
+
         gameStatusRepository.getStatus()
             .sink { [weak self] newStatus in
                 self?.status = newStatus
@@ -121,7 +120,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         do {
             if text.isEmpty { return }
             await updateIsSearching(with: true)
-            let searchList = try await musicAPI.search(for: text)
+            let searchList = try await ASMusicAPI.shared.search(for: text)
             await updateSearchList(with: searchList)
             await updateIsSearching(with: false)
         } catch {
@@ -166,27 +165,27 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         recordedData = data
         isRecording = false
     }
-    
+
     @MainActor
     func resetSearchList() {
         searchList = []
     }
-    
+
     @MainActor
     private func updateMusicData(with musicData: Data) {
         self.musicData = musicData
     }
-    
+
     @MainActor
     private func updateSearchList(with searchList: [Music]) {
         self.searchList = searchList
     }
-    
+
     @MainActor
     private func updateIsSearching(with isSearching: Bool) {
         self.isSearching = isSearching
     }
-    
+
     func cancelSubscriptions() {
         cancellables.removeAll()
     }
