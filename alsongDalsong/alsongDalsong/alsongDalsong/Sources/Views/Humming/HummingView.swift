@@ -34,7 +34,7 @@ final class HummingViewController: UIViewController {
         hummingPanel.bind(to: viewModel.$isRecording)
         hummingPanel.onRecordingFinished = { [weak self] recordedData in
             self?.recordButton.updateButton(.reRecord)
-            self?.viewModel.updateRecordedData(with: recordedData)
+            self?.viewModel.didRecordingFinished(recordedData)
         }
         submitButton.bind(to: viewModel.$recordedData)
     }
@@ -58,7 +58,7 @@ final class HummingViewController: UIViewController {
     private func setAction() {
         recordButton.addAction(UIAction { [weak self] _ in
             self?.recordButton.updateButton(.recording)
-            self?.viewModel.startRecording()
+            self?.viewModel.didTappedRecordButton()
         },
         for: .touchUpInside)
 
@@ -104,14 +104,10 @@ final class HummingViewController: UIViewController {
     }
 
     private func submitHumming() async throws {
-        do {
-            progressBar.cancelCompletion()
-            try await viewModel.submitHumming()
-            submitButton.updateButton(.submitted)
-            recordButton.updateButton(.disabled)
-        } catch {
-            throw error
-        }
+        progressBar.cancelCompletion()
+        viewModel.didTappedSubmitButton()
+        submitButton.updateButton(.submitted)
+        recordButton.updateButton(.disabled)
     }
 }
 
