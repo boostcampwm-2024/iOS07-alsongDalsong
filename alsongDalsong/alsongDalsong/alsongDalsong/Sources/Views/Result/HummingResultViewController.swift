@@ -7,6 +7,7 @@ class HummingResultViewController: UIViewController {
     private let resultTableView = UITableView()
     private let nextButton = ASButton()
 
+    private var resultTableViewDiffableDataSource: HummingResultTableViewDiffableDataSource?
     private var viewModel: HummingResultViewModel?
     private var cancellables = Set<AnyCancellable>()
 
@@ -34,7 +35,8 @@ class HummingResultViewController: UIViewController {
     }
 
     private func setResultTableView() {
-        resultTableView.dataSource = self
+        resultTableViewDiffableDataSource = HummingResultTableViewDiffableDataSource(tableView: resultTableView, viewModel: viewModel)
+        resultTableView.dataSource = resultTableViewDiffableDataSource
         resultTableView.separatorStyle = .none
         resultTableView.allowsSelection = false
         resultTableView.backgroundColor = .asLightGray
@@ -164,125 +166,6 @@ class HummingResultViewController: UIViewController {
         catch {
             throw error
         }
-    }
-}
-
-extension HummingResultViewController: UITableViewDataSource {
-    func numberOfSections(in _: UITableView) -> Int {
-        2
-    }
-
-    func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let viewModel else { return 0 }
-        if section == 0 {
-            return viewModel.currentRecords.count
-        }
-        if viewModel.currentsubmit != nil {
-            return 1
-        }
-        else { return 0 }
-    }
-
-    func tableView(_: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.backgroundColor = .clear
-        guard let viewModel else { return cell }
-
-        if indexPath.section == 0 {
-            cell.contentConfiguration = UIHostingConfiguration {
-                let currentPlayer = viewModel.currentRecords[indexPath.row].player
-                HStack {
-                    Spacer()
-                    if indexPath.row % 2 == 0 {
-                        if let avatarURL = currentPlayer?.avatarUrl {
-                            SpeechBubbleCell(
-                                alignment: .left,
-                                messageType: .record,
-                                avatarImagePublisher: { url in
-                                    await viewModel.getAvatarData(url: url)
-                                },
-                                avatarURL: avatarURL,
-                                artworkImagePublisher: { url in
-                                    await viewModel.getArtworkData(url: url)
-                                },
-                                artworkURL: nil,
-                                name: currentPlayer?.nickname ?? ""
-                            )
-                        }
-                    }
-                    else {
-                        if let avatarURL = currentPlayer?.avatarUrl {
-                            SpeechBubbleCell(
-                                alignment: .right,
-                                messageType: .record,
-                                avatarImagePublisher: { url in
-                                    await viewModel.getAvatarData(url: url)
-                                },
-                                avatarURL: avatarURL,
-                                artworkImagePublisher: { url in
-                                    await viewModel.getArtworkData(url: url)
-                                },
-                                artworkURL: nil,
-                                name: currentPlayer?.nickname ?? ""
-                            )
-                        }
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal, 16)
-            }
-        }
-        else {
-            cell.contentConfiguration = UIHostingConfiguration {
-                HStack {
-                    Spacer()
-                    if viewModel.currentRecords.count % 2 == 0 {
-                        if let submit = viewModel.currentsubmit,
-                           let avatarURL = submit.player?.avatarUrl,
-                           let artworkURL = submit.music?.artworkUrl
-                        {
-                            SpeechBubbleCell(
-                                alignment: .left,
-                                messageType: .music(submit.music ?? .musicStub1),
-                                avatarImagePublisher: { url in
-                                    await viewModel.getAvatarData(url: url)
-                                },
-                                avatarURL: avatarURL,
-                                artworkImagePublisher: { url in
-                                    await viewModel.getArtworkData(url: url)
-                                },
-                                artworkURL: artworkURL,
-                                name: submit.player?.nickname ?? ""
-                            )
-                        }
-                    }
-                    else {
-                        if let submit = viewModel.currentsubmit,
-                           let avatarURL = submit.player?.avatarUrl,
-                           let artworkURL = submit.music?.artworkUrl
-                        {
-                            SpeechBubbleCell(
-                                alignment: .right,
-                                messageType: .music(submit.music ?? .musicStub1),
-                                avatarImagePublisher: { url in
-                                    await viewModel.getAvatarData(url: url)
-                                },
-                                avatarURL: avatarURL,
-                                artworkImagePublisher: { url in
-                                    await viewModel.getArtworkData(url: url)
-                                },
-                                artworkURL: artworkURL,
-                                name: submit.player?.nickname ?? ""
-                            )
-                        }
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal, 16)
-            }
-        }
-
-        return cell
     }
 }
 
