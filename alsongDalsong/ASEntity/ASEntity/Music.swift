@@ -1,13 +1,13 @@
 import Foundation
 
 public struct Music: Codable, Equatable, Identifiable, Sendable, Hashable {
-    public let id: String?
-    public let title: String?
-    public let artist: String?
-    public let artworkUrl: URL?
-    public let previewUrl: URL?
-    public let lyrics: String?
-    public let artworkBackgroundColor: String?
+    public var id: String?
+    public var title: String?
+    public var artist: String?
+    public var artworkUrl: URL?
+    public var previewUrl: URL?
+    public var lyrics: String?
+    public var artworkBackgroundColor: String?
 
     public init() {}
 

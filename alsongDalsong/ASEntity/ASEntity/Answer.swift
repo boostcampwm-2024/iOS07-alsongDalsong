@@ -1,9 +1,9 @@
 import Foundation
 
 public struct Answer: Codable, Equatable, Sendable, Hashable {
-    public let player: Player?
-    public let music: Music?
-    public let playlist: Playlist?
+    public var player: Player?
+    public var music: Music?
+    public var playlist: Playlist?
     
     public init(player: Player?, music: Music?, playlist: Playlist?) {
         self.player = player
