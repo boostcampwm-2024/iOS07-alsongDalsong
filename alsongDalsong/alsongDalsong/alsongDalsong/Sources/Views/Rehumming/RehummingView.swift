@@ -92,17 +92,17 @@ final class RehummingViewController: UIViewController {
             musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
 
-            hummingPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 36),
-            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            hummingPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 32),
+            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             hummingPanel.heightAnchor.constraint(equalToConstant: 84),
 
             submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
             submissionStatus.trailingAnchor.constraint(equalTo: buttonStack.trailingAnchor, constant: 16),
 
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
             buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }

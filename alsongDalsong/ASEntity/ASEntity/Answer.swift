@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Answer: Codable, Equatable {
+public struct Answer: Codable, Equatable, Sendable, Hashable {
     public var player: Player?
     public var music: Music?
     public var playlist: Playlist?

@@ -1,4 +1,5 @@
 import ASEntity
+import ASLogKit
 import ASRepositoryProtocol
 import Combine
 import Foundation
@@ -32,27 +33,34 @@ final class HummingViewModel: @unchecked Sendable {
         bindAnswer()
     }
 
-    func submitHumming() async throws {
-        do {
-            let result = try await recordsRepository.uploadRecording(recordedData ?? Data())
-            if result {
-                return
-            } else {
-                // 전송 안됨, 오류 alert
-            }
-        } catch {
-            throw error
-        }
-        return 
+    func didTappedRecordButton() {
+        startRecording()
     }
 
-    func startRecording() {
+    func didRecordingFinished(_ data: Data) {
+        updateRecordedData(with: data)
+    }
+
+    func didTappedSubmitButton() {
+        Task { await submitHumming() }
+    }
+
+    private func submitHumming() async {
+        do {
+            let result = try await recordsRepository.uploadRecording(recordedData ?? Data())
+            if !result { Logger.error("Humming Did not sent") }
+        } catch {
+            Logger.error(error.localizedDescription)
+        }
+    }
+
+    private func startRecording() {
         if !isRecording {
             isRecording = true
         }
     }
 
-    func updateRecordedData(with data: Data) {
+    private func updateRecordedData(with data: Data) {
         // TODO: - data가 empty일 때(녹음이 제대로 되지 않았을 때 사용자 오류처리 필요
         guard !data.isEmpty else { return }
         recordedData = data

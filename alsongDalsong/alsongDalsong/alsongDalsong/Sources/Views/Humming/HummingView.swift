@@ -34,7 +34,7 @@ final class HummingViewController: UIViewController {
         hummingPanel.bind(to: viewModel.$isRecording)
         hummingPanel.onRecordingFinished = { [weak self] recordedData in
             self?.recordButton.updateButton(.reRecord)
-            self?.viewModel.updateRecordedData(with: recordedData)
+            self?.viewModel.didRecordingFinished(recordedData)
         }
         submitButton.bind(to: viewModel.$recordedData)
     }
@@ -58,7 +58,7 @@ final class HummingViewController: UIViewController {
     private func setAction() {
         recordButton.addAction(UIAction { [weak self] _ in
             self?.recordButton.updateButton(.recording)
-            self?.viewModel.startRecording()
+            self?.viewModel.didTappedRecordButton()
         },
         for: .touchUpInside)
 
@@ -88,9 +88,9 @@ final class HummingViewController: UIViewController {
             musicPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             musicPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
 
-            hummingPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 36),
-            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            hummingPanel.topAnchor.constraint(equalTo: musicPanel.bottomAnchor, constant: 32),
+            hummingPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            hummingPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             hummingPanel.heightAnchor.constraint(equalToConstant: 84),
 
             submissionStatus.topAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
@@ -98,20 +98,16 @@ final class HummingViewController: UIViewController {
 
             buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             buttonStack.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
 
     private func submitHumming() async throws {
-        do {
-            progressBar.cancelCompletion()
-            try await viewModel.submitHumming()
-            submitButton.updateButton(.submitted)
-            recordButton.updateButton(.disabled)
-        } catch {
-            throw error
-        }
+        progressBar.cancelCompletion()
+        viewModel.didTappedSubmitButton()
+        submitButton.updateButton(.submitted)
+        recordButton.updateButton(.disabled)
     }
 }
 

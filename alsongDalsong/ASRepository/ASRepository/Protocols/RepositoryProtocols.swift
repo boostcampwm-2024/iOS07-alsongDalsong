@@ -48,7 +48,6 @@ public protocol SubmitsRepositoryProtocol {
 
 public protocol AvatarRepositoryProtocol {
     func getAvatarUrls() async throws -> [URL]
-    func getAvatarData(url: URL) async -> Data?
 }
 
 public protocol RoomActionRepositoryProtocol: Sendable {
@@ -61,15 +60,14 @@ public protocol RoomActionRepositoryProtocol: Sendable {
     func resetGame() async throws -> Bool
 }
 
-public protocol MusicRepositoryProtocol {
-    func getMusicData(url: URL) async -> Data?
-}
-
 public protocol GameStateRepositoryProtocol {
     func getGameState() -> AnyPublisher<GameState?, Never>
 }
 
 public protocol HummingResultRepositoryProtocol {
     func getResult() -> AnyPublisher<[(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)], Never>
-    func getRecordData(url: URL) -> Future<Data?, Error>
+}
+
+public protocol DataDownloadRepositoryProtocol {
+    func downloadData(url: URL) async -> Data?
 }
