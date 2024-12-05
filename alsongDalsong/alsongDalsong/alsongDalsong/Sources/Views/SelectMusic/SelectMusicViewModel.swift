@@ -109,8 +109,14 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     func searchMusic(text: String) async throws {
         do {
             if text.isEmpty { return }
+            
             await updateIsSearching(with: true)
-            let searchList = try await ASMusicAPI.shared.search(for: text)
+            
+            let startTime = Date()
+            let searchList = try await ASMusicAPI.search(for: text)
+            let finishTime = Date()
+            let elapsed = finishTime.timeIntervalSince(startTime)
+            print("elapsed:\(elapsed)")
             await updateSearchList(with: searchList)
             await updateIsSearching(with: false)
         } catch {
@@ -120,7 +126,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     
     func randomMusic() async throws {
         do {
-            selectedMusic = try await ASMusicAPI.shared.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
+            selectedMusic = try await ASMusicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
         } catch {
             throw error
         }

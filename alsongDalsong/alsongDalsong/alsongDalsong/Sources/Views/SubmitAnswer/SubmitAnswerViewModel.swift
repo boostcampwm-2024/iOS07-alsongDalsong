@@ -120,7 +120,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         do {
             if text.isEmpty { return }
             await updateIsSearching(with: true)
-            let searchList = try await ASMusicAPI.shared.search(for: text)
+            let searchList = try await ASMusicAPI.search(for: text)
             await updateSearchList(with: searchList)
             await updateIsSearching(with: false)
         } catch {
