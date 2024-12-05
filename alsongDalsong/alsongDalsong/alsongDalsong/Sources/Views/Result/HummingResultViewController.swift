@@ -28,6 +28,7 @@ class HummingResultViewController: UIViewController {
         setupUI()
         setupLayout()
         bindViewModel()
+        viewModel?.bindResult()
     }
 
     override func viewDidDisappear(_: Bool) {

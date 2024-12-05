@@ -46,7 +46,6 @@ final class HummingResultViewModel: @unchecked Sendable {
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
         self.dataDownloadRepository = dataDownloadRepository
-        bindResult()
         bindPlayers()
         bindRoomNumber()
         bindRecordOrder()
@@ -156,8 +155,8 @@ extension HummingResultViewModel {
 
 // MARK: - Bind with Repositories
 
-private extension HummingResultViewModel {
-    func bindPlayers() {
+extension HummingResultViewModel {
+    private func bindPlayers() {
         playerRepository.isHost()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isHost in
@@ -167,7 +166,7 @@ private extension HummingResultViewModel {
             .store(in: &cancellables)
     }
 
-    func bindRoomNumber() {
+    private func bindRoomNumber() {
         roomInfoRepository.getRoomNumber()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
@@ -177,7 +176,7 @@ private extension HummingResultViewModel {
             .store(in: &cancellables)
     }
 
-    func bindRecordOrder() {
+    private func bindRecordOrder() {
         Publishers.CombineLatest(gameStatusRepository.getStatus(), gameStatusRepository.getRecordOrder())
             .receive(on: DispatchQueue.main)
             .dropFirst()
@@ -204,7 +203,7 @@ private extension HummingResultViewModel {
             .store(in: &cancellables)
     }
 
-    func bindAudio() {
+    private func bindAudio() {
         Task {
             await AudioHelper.shared.playerStatePublisher
                 .receive(on: DispatchQueue.main)
