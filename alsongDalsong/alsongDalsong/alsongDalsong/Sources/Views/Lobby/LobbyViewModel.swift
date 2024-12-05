@@ -9,7 +9,8 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
     private var roomInfoRepository: RoomInfoRepositoryProtocol
     private var roomActionRepository: RoomActionRepositoryProtocol
     private var avatarRepository: AvatarRepositoryProtocol
-    
+    private var dataDownloadRepository: DataDownloadRepositoryProtocol
+
     let playerMaxCount = 4
     private(set) var roomNumber: String = ""
     @Published var players: [Player] = []
@@ -24,26 +25,28 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             }
         }
     }
-    
+
     private var cancellables: Set<AnyCancellable> = []
-    
+
     init(playersRepository: PlayersRepositoryProtocol,
          roomInfoRepository: RoomInfoRepositoryProtocol,
          roomActionRepository: RoomActionRepositoryProtocol,
-         avatarRepository: AvatarRepositoryProtocol)
+         avatarRepository: AvatarRepositoryProtocol,
+         dataDownloadRepository: DataDownloadRepositoryProtocol)
     {
         self.playersRepository = playersRepository
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
         self.avatarRepository = avatarRepository
+        self.dataDownloadRepository = dataDownloadRepository
         fetchData()
     }
-    
+
     func getAvatarData(url: URL?) async -> Data? {
         guard let url else { return nil }
-        return await avatarRepository.getAvatarData(url: url)
+        return await dataDownloadRepository.downloadData(url: url)
     }
-    
+
     func fetchData() {
         playersRepository.getPlayers()
             .receive(on: DispatchQueue.main)
@@ -51,14 +54,14 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
                 self?.players = players
             }
             .store(in: &cancellables)
-        
+
         playersRepository.getHost()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] host in
                 self?.host = host
             }
             .store(in: &cancellables)
-        
+
         roomInfoRepository.getMode()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] mode in
@@ -68,21 +71,21 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
                 }
             }
             .store(in: &cancellables)
-        
+
         roomInfoRepository.getRoomNumber()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] roomNumber in
                 self?.roomNumber = roomNumber
             }
             .store(in: &cancellables)
-        
+
         playersRepository.isHost()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isHost in
                 self?.isHost = isHost
             }
             .store(in: &cancellables)
-        
+
         playersRepository.isHost().combineLatest(playersRepository.getPlayersCount())
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isHost, playerCount in
@@ -90,7 +93,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             }
             .store(in: &cancellables)
     }
-    
+
     func gameStart() async throws {
         do {
             _ = try await roomActionRepository.startGame(roomNumber: roomNumber)
@@ -98,7 +101,7 @@ final class LobbyViewModel: ObservableObject, @unchecked Sendable {
             throw error
         }
     }
-    
+
     func changeMode() {
         Task {
             do {

@@ -23,11 +23,11 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         didSet { isPlaying ? playingMusic() : stopMusic() }
     }
 
-    private let musicRepository: MusicRepositoryProtocol
     private let gameStatusRepository: GameStatusRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
     private let recordsRepository: RecordsRepositoryProtocol
     private let submitsRepository: SubmitsRepositoryProtocol
+    private let dataDownloadRepository: DataDownloadRepositoryProtocol
 
     private let musicAPI = ASMusicAPI()
     private var cancellables: Set<AnyCancellable> = []
@@ -37,13 +37,13 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         playersRepository: PlayersRepositoryProtocol,
         recordsRepository: RecordsRepositoryProtocol,
         submitsRepository: SubmitsRepositoryProtocol,
-        musicRepository: MusicRepositoryProtocol
+        dataDownloadRepository: DataDownloadRepositoryProtocol
     ) {
         self.gameStatusRepository = gameStatusRepository
         self.playersRepository = playersRepository
         self.recordsRepository = recordsRepository
         self.submitsRepository = submitsRepository
-        self.musicRepository = musicRepository
+        self.dataDownloadRepository = dataDownloadRepository
         bindGameStatus()
     }
     
@@ -105,12 +105,12 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
 
     func downloadArtwork(url: URL?) async -> Data? {
         guard let url else { return nil }
-        return await musicRepository.getMusicData(url: url)
+        return await dataDownloadRepository.downloadData(url: url)
     }
 
     func downloadMusic(url: URL) {
         Task {
-            guard let musicData = await musicRepository.getMusicData(url: url) else {
+            guard let musicData = await dataDownloadRepository.downloadData(url: url) else {
                 return
             }
             await updateMusicData(with: musicData)
@@ -143,6 +143,7 @@ final class SubmitAnswerViewModel: ObservableObject, @unchecked Sendable {
         guard let selectedMusic else { return }
         do {
             let response = try await submitsRepository.submitAnswer(answer: selectedMusic)
+            
         } catch {
             throw error
         }

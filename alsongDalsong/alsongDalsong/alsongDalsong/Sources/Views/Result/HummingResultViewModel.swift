@@ -9,12 +9,11 @@ typealias Result = (answer: Answer?, records: [ASEntity.Record]?, submit: Answer
 
 final class HummingResultViewModel: @unchecked Sendable {
     private var hummingResultRepository: HummingResultRepositoryProtocol
-    private var avatarRepository: AvatarRepositoryProtocol
     private var gameStatusRepository: GameStatusRepositoryProtocol
     private var playerRepository: PlayersRepositoryProtocol
     private var roomActionRepository: RoomActionRepositoryProtocol
     private var roomInfoRepository: RoomInfoRepositoryProtocol
-    private var musicRepository: MusicRepositoryProtocol
+    private var dataDownloadRepository: DataDownloadRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
 
     @Published var isNext: Bool = false
@@ -30,20 +29,18 @@ final class HummingResultViewModel: @unchecked Sendable {
     var hummingResult: [(answer: ASEntity.Answer, records: [ASEntity.Record], submit: ASEntity.Answer)] = []
 
     init(hummingResultRepository: HummingResultRepositoryProtocol,
-         avatarRepository: AvatarRepositoryProtocol,
          gameStatusRepository: GameStatusRepositoryProtocol,
          playerRepository: PlayersRepositoryProtocol,
          roomActionRepository: RoomActionRepositoryProtocol,
          roomInfoRepository: RoomInfoRepositoryProtocol,
-         musicRepository: MusicRepositoryProtocol)
+         dataDownloadRepository: DataDownloadRepositoryProtocol)
     {
         self.hummingResultRepository = hummingResultRepository
-        self.avatarRepository = avatarRepository
         self.gameStatusRepository = gameStatusRepository
         self.playerRepository = playerRepository
         self.roomActionRepository = roomActionRepository
         self.roomInfoRepository = roomInfoRepository
-        self.musicRepository = musicRepository
+        self.dataDownloadRepository = dataDownloadRepository
         bindResult()
         bindPlayers()
         bindRoomNumber()
@@ -86,22 +83,22 @@ final class HummingResultViewModel: @unchecked Sendable {
             throw error
         }
     }
-    
+
     func getAvatarData(url: URL?) async -> Data? {
         guard let url else { return nil }
-        return await avatarRepository.getAvatarData(url: url)
+        return await dataDownloadRepository.downloadData(url: url)
     }
-    
+
     func getArtworkData(url: URL?) async -> Data? {
         guard let url else { return nil }
-        return await musicRepository.getMusicData(url: url)
+        return await dataDownloadRepository.downloadData(url: url)
     }
 
     func getRecordData(url: URL?) async -> Data? {
         guard let url else { return nil }
-        return await hummingResultRepository.getRecordData(url: url)
+        return await dataDownloadRepository.downloadData(url: url)
     }
-    
+
     func cancelSubscriptions() {
         cancellables.removeAll()
     }
@@ -125,7 +122,7 @@ extension HummingResultViewModel {
 
     private func startPlayingCurrentMusic() async {
         guard let fileUrl = currentResult?.music?.previewUrl else { return }
-        let data = await musicRepository.getMusicData(url: fileUrl)
+        let data = await dataDownloadRepository.downloadData(url: fileUrl)
         await AudioHelper.shared.startPlaying(data, option: .partial(time: 10))
         await waitForPlaybackToFinish()
     }
@@ -143,6 +140,7 @@ extension HummingResultViewModel {
 }
 
 // MARK: - Bind with Repositories
+
 extension HummingResultViewModel {
     private func bindPlayers() {
         playerRepository.isHost()
@@ -193,7 +191,7 @@ extension HummingResultViewModel {
                   })
             .store(in: &cancellables)
     }
-    
+
     private func isValidResult(_ sortedResult: [(answer: Answer, records: [ASEntity.Record], submit: Answer, recordOrder: UInt8)]) -> Bool {
         guard let firstRecordOrder = sortedResult.first?.recordOrder else { return false }
         return (sortedResult.count - 1) >= firstRecordOrder

@@ -69,16 +69,6 @@ public final class HummingResultRepository: HummingResultRepositoryProtocol {
         // TODO: nil 값에 대한 처리 필요
         return submit ?? Answer.answerStub1
     }
-
-    public func getRecordData(url: URL) async -> Data? {
-        do {
-            guard let endpoint = ResourceEndpoint(url: url) else { return nil }
-            let data = try await self.networkManager.sendRequest(to: endpoint, type: .json, body: nil, option: .both)
-            return data
-        } catch {
-            return nil
-        }
-    }
 }
 
 public final class LocalHummingResultRepository: HummingResultRepositoryProtocol {

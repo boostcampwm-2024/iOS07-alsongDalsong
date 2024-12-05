@@ -146,12 +146,14 @@ final class GameNavigationController: @unchecked Sendable {
         let playersRepository: PlayersRepositoryProtocol = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
         let roomActionRepository: RoomActionRepositoryProtocol = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
         let avatarRepository: AvatarRepositoryProtocol = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
+        let dataDownloadRepository: DataDownloadRepositoryProtocol = DIContainer.shared.resolve(DataDownloadRepositoryProtocol.self)
 
         let vm = LobbyViewModel(
             playersRepository: playersRepository,
             roomInfoRepository: roomInfoRepository,
             roomActionRepository: roomActionRepository,
-            avatarRepository: avatarRepository
+            avatarRepository: avatarRepository,
+            dataDownloadRepository: dataDownloadRepository
         )
         let vc = LobbyViewController(lobbyViewModel: vm)
         setupNavigationBar(for: vc)
@@ -159,16 +161,16 @@ final class GameNavigationController: @unchecked Sendable {
     }
 
     private func navigateToSelectMusic() {
-        let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
         let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
         let answersRepository = DIContainer.shared.resolve(AnswersRepositoryProtocol.self)
         let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
+        let dataDownloadRepository = DIContainer.shared.resolve(DataDownloadRepositoryProtocol.self)
 
         let vm = SelectMusicViewModel(
-            musicRepository: musicRepository,
             playersRepository: playersRepository,
             answerRepository: answersRepository,
-            gameStatusRepository: gameStatusRepository
+            gameStatusRepository: gameStatusRepository,
+            dataDownloadRepository: dataDownloadRepository
         )
         let vc = SelectMusicViewController(selectMusicViewModel: vm)
 
@@ -227,14 +229,14 @@ final class GameNavigationController: @unchecked Sendable {
         let playersRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
         let recordsRepository = DIContainer.shared.resolve(RecordsRepositoryProtocol.self)
         let submitsRepository = DIContainer.shared.resolve(SubmitsRepositoryProtocol.self)
-        let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
-
+        let dataDownloadRepository = DIContainer.shared.resolve(DataDownloadRepositoryProtocol.self)
+        
         let vm = SubmitAnswerViewModel(
             gameStatusRepository: gameStatusRepository,
             playersRepository: playersRepository,
             recordsRepository: recordsRepository,
             submitsRepository: submitsRepository,
-            musicRepository: musicRepository
+            dataDownloadRepository: dataDownloadRepository
         )
         let vc = SubmitAnswerViewController(viewModel: vm)
 
@@ -252,20 +254,19 @@ final class GameNavigationController: @unchecked Sendable {
             return
         }
         let hummingResultRepository = DIContainer.shared.resolve(HummingResultRepositoryProtocol.self)
-        let avatarRepository = DIContainer.shared.resolve(AvatarRepositoryProtocol.self)
         let gameStatusRepository = DIContainer.shared.resolve(GameStatusRepositoryProtocol.self)
         let playerRepository = DIContainer.shared.resolve(PlayersRepositoryProtocol.self)
         let roomActionRepository = DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
         let roomInfoRepository = DIContainer.shared.resolve(RoomInfoRepositoryProtocol.self)
-        let musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
+        let dataDownloadRepository = DIContainer.shared.resolve(DataDownloadRepositoryProtocol.self)
+
         let vm = HummingResultViewModel(
             hummingResultRepository: hummingResultRepository,
-            avatarRepository: avatarRepository,
             gameStatusRepository: gameStatusRepository,
             playerRepository: playerRepository,
             roomActionRepository: roomActionRepository,
             roomInfoRepository: roomInfoRepository,
-            musicRepository: musicRepository
+            dataDownloadRepository: dataDownloadRepository
         )
         let vc = HummingResultViewController(viewModel: vm)
 
