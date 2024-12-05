@@ -1,131 +1,64 @@
-import Foundation
-import UIKit
-import SwiftUI
 import ASEntity
+import Foundation
+import SwiftUI
+import UIKit
 
 struct ResultTableViewItem: Hashable, Sendable {
-    let record: Record?
-    let submit: Answer?
+    let record: MappedRecord?
+    let submit: MappedAnswer?
 }
 
 final class HummingResultTableViewDiffableDataSource: UITableViewDiffableDataSource<Int, ResultTableViewItem> {
-    let viewModel: HummingResultViewModel
-    init(tableView: UITableView, viewModel: HummingResultViewModel) {
-        self.viewModel = viewModel
+    init(tableView: UITableView) {
         super.init(tableView: tableView) { tableView, indexPath, item in
             let cell = UITableViewCell()
             cell.backgroundColor = .clear
             switch indexPath.section {
-            case 0:
-                guard let record = item.record else { return cell }
-                cell.contentConfiguration = UIHostingConfiguration {
-                    let currentPlayer = record.player
-                    HStack {
-                        Spacer()
-                        if indexPath.row % 2 == 0 {
-                            if let avatarURL = currentPlayer?.avatarUrl {
-                                SpeechBubbleCell(
-                                    alignment: .left,
-                                    messageType: .record(record),
-                                    avatarImagePublisher: { url in
-                                        await viewModel.getAvatarData(url: url)
-                                    },
-                                    avatarURL: avatarURL,
-                                    artworkImagePublisher: { url in
-                                        await viewModel.getArtworkData(url: url)
-                                    },
-                                    artworkURL: nil,
-                                    name: currentPlayer?.nickname ?? ""
-                                )
-                            }
-                        }
-                        else {
-                            if let avatarURL = currentPlayer?.avatarUrl {
-                                SpeechBubbleCell(
-                                    alignment: .right,
-                                    messageType: .record(record),
-                                    avatarImagePublisher: { url in
-                                        await viewModel.getAvatarData(url: url)
-                                    },
-                                    avatarURL: avatarURL,
-                                    artworkImagePublisher: { url in
-                                        await viewModel.getArtworkData(url: url)
-                                    },
-                                    artworkURL: nil,
-                                    name: currentPlayer?.nickname ?? ""
-                                )
-                            }
-                        }
-                        Spacer()
+                case 0:
+                    guard let record = item.record else { return cell }
+                    cell.contentConfiguration = UIHostingConfiguration {
+                        SpeechBubbleCell(
+                            row: indexPath.row,
+                            messageType: .record(record)
+                        )
+                        .padding(.horizontal, 16)
                     }
-                }
-            case 1:
-                guard let submit = item.submit else { return cell }
-                cell.contentConfiguration = UIHostingConfiguration {
-                    HStack {
-                        Spacer()
-                        if indexPath.row % 2 == 0 {
-                            if let avatarURL = submit.player?.avatarUrl,
-                               let artworkURL = submit.music?.artworkUrl {
-                                SpeechBubbleCell(
-                                    alignment: .left,
-                                    messageType: .music(submit.music ?? .musicStub1),
-                                    avatarImagePublisher: { url in
-                                        await viewModel.getAvatarData(url: url)
-                                    },
-                                    avatarURL: avatarURL,
-                                    artworkImagePublisher: { url in
-                                        await viewModel.getArtworkData(url: url)
-                                    },
-                                    artworkURL: artworkURL,
-                                    name: submit.player?.nickname ?? ""
-                                )
-                            }
-                        }
-                        else {
-                            if let submit = viewModel.currentsubmit,
-                               let avatarURL = submit.player?.avatarUrl,
-                               let artworkURL = submit.music?.artworkUrl {
-                                SpeechBubbleCell(
-                                    alignment: .right,
-                                    messageType: .music(submit.music ?? .musicStub1),
-                                    avatarImagePublisher: { url in
-                                        await viewModel.getAvatarData(url: url)
-                                    },
-                                    avatarURL: avatarURL,
-                                    artworkImagePublisher: { url in
-                                        await viewModel.getArtworkData(url: url)
-                                    },
-                                    artworkURL: artworkURL,
-                                    name: submit.player?.nickname ?? ""
-                                )
-                            }
-                        }
-                        Spacer()
+
+                case 1:
+                    guard let submit = item.submit else { return cell }
+                    let recordsCount = tableView.numberOfRows(inSection: 0)
+                    cell.contentConfiguration = UIHostingConfiguration {
+                        SpeechBubbleCell(
+                            row: recordsCount,
+                            messageType: .music(submit)
+                        )
+                        .padding(.horizontal, 16)
                     }
-                }
-            default:
-                return cell
+                default:
+                    return cell
             }
-            
+
             return cell
         }
     }
-    
-    func applySnapshot(newRecords: [Record], submit: Answer?) {
+
+    func applySnapshot(_ result: Result) {
+        let records = result.records
+        let submit = result.submit
+
         var snapshot = NSDiffableDataSourceSnapshot<Int, ResultTableViewItem>()
-        
+
         snapshot.appendSections([0, 1])
-        
-        snapshot.appendItems(newRecords.map {
+
+        snapshot.appendItems(records.map {
             ResultTableViewItem(record: $0, submit: nil)
         }, toSection: 0)
-        
+
         if let submit {
-            snapshot.appendItems( [ResultTableViewItem(record: nil, submit: submit)],
+            snapshot.appendItems([ResultTableViewItem(record: nil, submit: submit)],
                                  toSection: 1)
         }
-        
-        self.apply(snapshot, animatingDifferences: false)
+
+        apply(snapshot, animatingDifferences: false)
     }
 }

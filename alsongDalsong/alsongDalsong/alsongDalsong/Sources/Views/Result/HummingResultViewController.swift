@@ -1,4 +1,5 @@
 import ASEntity
+import ASLogKit
 import Combine
 import SwiftUI
 
@@ -24,9 +25,8 @@ class HummingResultViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .asLightGray
-        setResultTableView()
-        setButton()
-        setConstraints()
+        setupUI()
+        setupLayout()
         bindViewModel()
     }
 
@@ -34,15 +34,21 @@ class HummingResultViewController: UIViewController {
         viewModel?.cancelSubscriptions()
     }
 
+    private func setupUI() {
+        setResultTableView()
+        setButton()
+        setAction()
+        view.addSubview(resultTableView)
+        view.addSubview(nextButton)
+        view.addSubview(answerView)
+    }
+
     private func setResultTableView() {
-        guard let viewModel else { return }
-        resultTableViewDiffableDataSource = HummingResultTableViewDiffableDataSource(tableView: resultTableView, viewModel: viewModel)
-        resultTableViewDiffableDataSource?.applySnapshot(newRecords: viewModel.currentRecords, submit: viewModel.currentsubmit)
+        resultTableViewDiffableDataSource = HummingResultTableViewDiffableDataSource(tableView: resultTableView)
         resultTableView.separatorStyle = .none
         resultTableView.allowsSelection = false
         resultTableView.backgroundColor = .asLightGray
         resultTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
-        view.addSubview(resultTableView)
     }
 
     private func setButton() {
@@ -51,87 +57,89 @@ class HummingResultViewController: UIViewController {
             text: "다음으로",
             backgroundColor: .asMint
         )
-        view.addSubview(nextButton)
+        nextButton.updateButton(.disabled)
+    }
+
+    private func setAction() {
         nextButton.addAction(UIAction { [weak self] _ in
             guard let self else { return }
             showNextResultLoading()
         }, for: .touchUpInside)
-        nextButton.isHidden = true
     }
 
-    private func setConstraints() {
-        view.addSubview(answerView)
-
+    private func setupLayout() {
         answerView.translatesAutoresizingMaskIntoConstraints = false
         resultTableView.translatesAutoresizingMaskIntoConstraints = false
         nextButton.translatesAutoresizingMaskIntoConstraints = false
 
-        let layoutGuide = view.safeAreaLayoutGuide
-
         NSLayoutConstraint.activate([
-            answerView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: 20),
-            answerView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 16),
-            answerView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -16),
+            answerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            answerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            answerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             answerView.heightAnchor.constraint(equalToConstant: 130),
 
             resultTableView.topAnchor.constraint(equalTo: answerView.bottomAnchor, constant: 20),
-            resultTableView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
-            resultTableView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
+            resultTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            resultTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             resultTableView.bottomAnchor.constraint(equalTo: nextButton.topAnchor, constant: -30),
 
-            nextButton.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: 24),
-            nextButton.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -24),
+            nextButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             nextButton.heightAnchor.constraint(equalToConstant: 64),
-            nextButton.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor, constant: -16),
+            nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
+    }
+
+    func addDataSource(_ phase: ResultPhase, result: Result) {
+        if case let .record(count) = phase {
+            var updateResult = result
+            let records = updateResult.records[0 ... count]
+            updateResult.records = Array(records)
+            updateResult.submit = nil
+            Logger.debug("record update", updateResult)
+            resultTableViewDiffableDataSource?.applySnapshot(updateResult)
+            return
+        }
+        if case .submit = phase {
+            Logger.debug("submit update", result)
+            resultTableViewDiffableDataSource?.applySnapshot(result)
+            return
+        }
+        if case .answer = phase {
+            resultTableViewDiffableDataSource?.applySnapshot((result.answer, [], nil))
+        }
     }
 
     private func bindViewModel() {
         guard let viewModel else { return }
-        answerView.bind(to: viewModel.$currentResult) { [weak self] url in
-            await self?.viewModel?.getArtworkData(url: url)
-        } musicFetcher: {
-            await self.viewModel?.startPlaying()
-        }
+        answerView.bind(to: viewModel.$result)
 
-        viewModel.$currentRecords
+        viewModel.$resultPhase
+            .combineLatest(viewModel.$result)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] records in
+            .sink { [weak self] phase, result in
                 guard let self else { return }
-                resultTableViewDiffableDataSource?.applySnapshot(newRecords: records, submit: viewModel.currentsubmit)
+                addDataSource(phase, result: result)
             }
             .store(in: &cancellables)
 
-        viewModel.$currentsubmit
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] submit in
-                guard let self else { return }
-                if submit != nil {
-                    nextButton.isHidden = false
-                }
-                resultTableViewDiffableDataSource?.applySnapshot(newRecords: viewModel.currentRecords, submit: submit)
-            }
-            .store(in: &cancellables)
-
-        viewModel.$isNext
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isNext in
-                guard let self else { return }
-                if isNext {
-                    viewModel.nextResultFetch()
-                    nextButton.isHidden = true
-                    if viewModel.hummingResult.isEmpty {
-                        nextButton.updateButton(.complete)
-                        nextButton.removeTarget(nil, action: nil, for: .touchUpInside)
-                        nextButton.addAction(UIAction { _ in
-                            self.showLobbyLoading()
-                        }, for: .touchUpInside)
-                    }
-                    viewModel.isNext = false
-                    resultTableView.reloadData()
-                }
-            }
-            .store(in: &cancellables)
+//        viewModel.$isNext
+//            .receive(on: DispatchQueue.main)
+//            .sink { [weak self] isNext in
+//                guard let self else { return }
+//                if isNext {
+//                    nextButton.isHidden = true
+//                    if viewModel.hummingResult.isEmpty {
+//                        nextButton.updateButton(.complete)
+//                        nextButton.removeTarget(nil, action: nil, for: .touchUpInside)
+//                        nextButton.addAction(UIAction { _ in
+//                            self.showLobbyLoading()
+//                        }, for: .touchUpInside)
+//                    }
+//                    resultTableView.reloadData()
+//                }
+//            }
+//            .store(in: &cancellables)
 
         viewModel.$isHost
             .receive(on: DispatchQueue.main)
@@ -141,18 +149,6 @@ class HummingResultViewController: UIViewController {
             }
             .store(in: &cancellables)
     }
-
-    private func fetchNextResult() async throws {
-        guard let viewModel else { return }
-        do {
-            viewModel.hummingResult.isEmpty ?
-                try await viewModel.navigateToLobby() :
-                try await viewModel.changeRecordOrder()
-        }
-        catch {
-            throw error
-        }
-    }
 }
 
 extension HummingResultViewController {
@@ -160,7 +156,7 @@ extension HummingResultViewController {
         let alert = LoadingAlertController(
             progressText: .nextResult,
             loadAction: { [weak self] in
-                try await self?.fetchNextResult()
+                await self?.viewModel?.changeRecordOrder()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailedAlert(error)
@@ -173,7 +169,7 @@ extension HummingResultViewController {
         let alert = LoadingAlertController(
             progressText: .toLobby,
             loadAction: { [weak self] in
-                try await self?.fetchNextResult()
+//                try await self?.fetchNextResult()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailedAlert(error)

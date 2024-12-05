@@ -22,27 +22,21 @@ final class MusicPanelView: UIView {
     }
     
     func bind(
-        to dataSource: Published<Answer?>.Publisher,
-        fetcher: @escaping (URL?) async -> Data?,
-        musicFetcher: @escaping () async -> Void?
+        to dataSource: Published<Result>.Publisher
     ) {
         dataSource
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
-            .sink { [weak self] answer in
-                self?.musicNameLabel.text = answer.music?.title
-                self?.singerNameLabel.text = answer.music?.artist
-                Task {
-                    guard let url = answer.music?.artworkUrl else { return }
-                    let data = await fetcher(url)
-                    self?.setImage(data: data)
-                    await musicFetcher()
-                }
+            .sink { [weak self] result in
+                let answer = result.answer
+                self?.musicNameLabel.text = answer?.title
+                self?.singerNameLabel.text = answer?.artist
+                self?.setImage(with: answer?.artworkData)
             }
             .store(in: &cancellables)
     }
     
-    private func setImage(data: Data?) {
+    private func setImage(with data: Data?) {
         guard let data else { return }
         albumImageView.image = UIImage(data: data)
     }

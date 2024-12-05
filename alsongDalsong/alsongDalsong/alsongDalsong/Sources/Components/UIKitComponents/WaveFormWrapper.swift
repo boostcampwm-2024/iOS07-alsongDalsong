@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WaveFormWrapper: UIViewRepresentable {
-    let data: URL
+    let data: Data
     let sampleCount: Int
     let circleColor: UIColor
     let highlightColor: UIColor

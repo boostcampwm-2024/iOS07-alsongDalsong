@@ -13,7 +13,7 @@ public actor ASAudioPlayer: NSObject {
     public var onPlaybackFinished: (@Sendable () async -> Void)?
 
     /// 녹음파일을 재생하고 옵션에 따라 재생시간을 설정합니다.
-    public func startPlaying(data: Data, option: PlayType) {
+    public func startPlaying(data: Data, option: PlayType = .full) {
         configureAudioSession()
         do {
             audioPlayer = try AVAudioPlayer(data: data)
