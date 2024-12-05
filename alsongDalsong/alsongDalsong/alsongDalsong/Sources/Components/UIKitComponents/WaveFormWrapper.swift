@@ -8,10 +8,12 @@ struct WaveFormWrapper: UIViewRepresentable {
     
     func makeUIView(context: Context) -> WaveForm {
         let view = WaveForm(numOfColumns: sampleCount, circleColor: circleColor, highlightColor: highlightColor)
-        view.drawColumns(with: columns)
         return view
     }
     
     func updateUIView(_ uiView: WaveForm, context: Context) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            uiView.drawColumns(with: columns)
+        }
     }
 }
