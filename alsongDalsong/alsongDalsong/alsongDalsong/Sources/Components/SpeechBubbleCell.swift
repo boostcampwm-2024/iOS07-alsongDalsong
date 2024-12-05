@@ -4,8 +4,8 @@ import SwiftUI
 import UIKit
 
 enum MessageType {
-    case music(Music)
-    case record(ASEntity.Record)
+    case music(MappedAnswer)
+    case record(MappedRecord)
 
     var bubbleHeight: CGFloat {
         switch self {
@@ -23,36 +23,30 @@ enum MessageAlignment {
 }
 
 struct SpeechBubbleCell: View {
-    let alignment: MessageAlignment
+    let row: Int
     let messageType: MessageType
-    let avatarImagePublisher: (URL?) async -> Data?
-    let avatarURL: URL
-    let artworkImagePublisher: (URL?) async -> Data?
-    let artworkURL: URL?
-    let name: String
-    @State private var isVisible = false
+    private var alignment: MessageAlignment {
+        row.isMultiple(of: 2) ? .left : .right
+    }
+
+    private var playerInfo: PlayerInfo {
+        switch messageType {
+            case let .music(music): return music
+            case let .record(record): return record
+        }
+    }
 
     var body: some View {
-        HStack(spacing: 12) {
-            if alignment == .left {
-                ProfileView(imagePublisher: avatarImagePublisher,
-                            name: name,
-                            isHost: false, imageUrl: avatarURL)
-            }
-            if isVisible {
+        if alignment == .left {
+            HStack(spacing: 12) {
+                avatarView(info: playerInfo)
                 speechBubble
-                    .transition(.move(edge: alignment == .left ? .leading : .trailing))
-                    .animation(.easeInOut(duration: 1.0), value: isVisible)
-            }
-            if alignment == .right {
-                ProfileView(imagePublisher: avatarImagePublisher,
-                            name: name,
-                            isHost: false, imageUrl: avatarURL)
             }
         }
-        .onAppear {
-            withAnimation {
-                isVisible = true
+        if alignment == .right {
+            HStack(spacing: 12) {
+                speechBubble
+                avatarView(info: playerInfo)
             }
         }
     }
@@ -78,15 +72,15 @@ struct SpeechBubbleCell: View {
         switch messageType {
             case let .music(music):
                 HStack {
-                    AsyncImageView(imagePublisher: artworkImagePublisher, url: artworkURL)
+                    artworkView(music)
                         .frame(width: 60, height: 60)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
 
                     VStack(alignment: .leading) {
-                        Text(music.title ?? "")
+                        Text(music.title)
                             .foregroundStyle(.asBlack)
 
-                        Text(music.artist ?? "")
+                        Text(music.artist)
                             .foregroundStyle(.gray)
                     }
                     .frame(width: 130)
@@ -94,13 +88,41 @@ struct SpeechBubbleCell: View {
                     .lineLimit(1)
                     Spacer()
                 }
-            case let .record(file):
+            case let .record(record):
                 HStack {
-                    WaveFormWrapper(data: file.fileUrl!, sampleCount: 24, circleColor: .asBlack, highlightColor: .asGreen)
+                    WaveFormWrapper(data: record.recordData, sampleCount: 24, circleColor: .asBlack, highlightColor: .asGreen)
                         .frame(width: 200)
                     Spacer()
                 }
         }
+    }
+
+    @ViewBuilder
+    private func avatarView(info: PlayerInfo) -> some View {
+        VStack {
+            Image(uiImage: UIImage(data: info.playerAvatarData) ?? UIImage())
+                .resizable()
+                .background(Color.asMint)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 75, height: 75)
+                .clipShape(Circle())
+                .overlay(
+                    Circle().stroke(Color.white, lineWidth: 5)
+                )
+                .padding(.bottom, 4)
+            Text(info.playerName)
+                .font(.doHyeon(size: 16))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+        }
+        .frame(width: 75)
+    }
+
+    @ViewBuilder
+    private func artworkView(_ music: MappedAnswer) -> some View {
+        Image(uiImage: UIImage(data: music.artworkData) ?? UIImage())
+            .resizable()
+            .aspectRatio(contentMode: .fill)
     }
 }
 
