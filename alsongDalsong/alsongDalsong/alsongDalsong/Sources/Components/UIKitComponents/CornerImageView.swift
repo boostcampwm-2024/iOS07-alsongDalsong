@@ -56,18 +56,20 @@ final class GuideIconView: UIView {
         animationCount += 1
             
         transform = CGAffineTransform.identity
-        transform = CGAffineTransform.identity
         UIView.animate(
-            withDuration: 1.5,
+            withDuration: 0.4,
             delay: 0,
-            usingSpringWithDamping: 0.5,
+            usingSpringWithDamping: 1.0,
             initialSpringVelocity: 1.0,
-            options: .curveEaseInOut,
+            options: .curveLinear,
             animations: {
-                self.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+                self.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
             },
             completion: { _ in
-                UIView.animate(withDuration: 0.2) {
+                UIView.animate(
+                    withDuration: 0.4,
+                    delay: 0.1
+                ) {
                     self.transform = CGAffineTransform.identity
                 } completion: { [weak self] _ in
                     self?.animate(times: times)
@@ -76,7 +78,7 @@ final class GuideIconView: UIView {
         )
     }
 
-    func animateBounces(times: Int = 5) {
+    func animateBounces(times: Int = 10) {
         animationCount = 0
         animate(times: times)
     }
