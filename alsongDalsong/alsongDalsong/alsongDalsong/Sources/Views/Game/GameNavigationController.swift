@@ -50,8 +50,11 @@ final class GameNavigationController: @unchecked Sendable {
     private func setupNavigationBar(for viewController: UIViewController) {
         navigationController.navigationBar.isHidden = false
         navigationController.navigationBar.tintColor = .asBlack
-        navigationController.navigationBar.titleTextAttributes = [.font: UIFont.font(forTextStyle: .title3)]
-
+        let defaultFontSize = UIFont.preferredFont(forTextStyle: .headline).pointSize as CGFloat?
+        var fontStyle = UIFont()
+        if let defaultFontSize { fontStyle = UIFont.font(ofSize: defaultFontSize)}
+        else { fontStyle = UIFont.font(ofSize: 18) }
+        navigationController.navigationBar.titleTextAttributes = [.font: fontStyle]
         let backButtonImage = setImage()
 
         let backButtonAction = UIAction { [weak self] _ in
@@ -103,12 +106,8 @@ final class GameNavigationController: @unchecked Sendable {
         let viewType = gameInfo.resolveViewType()
         switch viewType {
             case .lobby: return UIImage(systemName: "rectangle.portrait.and.arrow.forward")?
-            .withRenderingMode(.alwaysTemplate)
-            .applyingSymbolConfiguration(.init(pointSize: 20, weight: .medium))?
             .rotate(radians: .pi)
-            default: return UIImage(systemName: "house")?
-            .withRenderingMode(.alwaysTemplate)
-            .applyingSymbolConfiguration(.init(pointSize: 20, weight: .medium))
+            default: return UIImage(systemName: "house")
         }
     }
 
