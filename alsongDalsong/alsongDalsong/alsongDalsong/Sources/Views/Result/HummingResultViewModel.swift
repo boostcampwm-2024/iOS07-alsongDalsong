@@ -56,6 +56,7 @@ final class HummingResultViewModel: @unchecked Sendable {
     /// RecordOrder 증가 시 호출, totalResult에서 첫번째 index를 pop하고 새로운 result로 변경
     private func updateCurrentResult() {
         Task {
+            guard !totalResult.isEmpty else { return }
             let displayableResult = totalResult.removeFirst()
             let answer = await mapAnswer(displayableResult.answer)
             let records = await mapRecords(displayableResult.records)
@@ -105,7 +106,7 @@ final class HummingResultViewModel: @unchecked Sendable {
 
     func navigateToLobby() async {
         do {
-            guard !totalResult.isEmpty else { return }
+            guard totalResult.isEmpty else { return }
             let succeded = try await roomActionRepository.resetGame()
             if !succeded { Logger.error("Game Reset failed") }
         } catch {

@@ -110,42 +110,53 @@ class HummingResultViewController: UIViewController {
         }
     }
 
+    private func changeButton(_ phase: ResultPhase) {
+        if case .none = phase {
+            nextButton.setConfiguration(
+                systemImageName: "play.fill",
+                text: "다음으로",
+                backgroundColor: .asMint
+            )
+            nextButton.isEnabled = true
+            nextButton.removeTarget(nil, action: nil, for: .touchUpInside)
+            nextButton.addAction(UIAction { _ in
+                self.showNextResultLoading()
+            }, for: .touchUpInside)
+        } else {
+            nextButton.updateButton(.disabled)
+        }
+    }
+
     private func bindViewModel() {
         guard let viewModel else { return }
         answerView.bind(to: viewModel.$result)
 
         viewModel.$resultPhase
-            .combineLatest(viewModel.$result)
+            .combineLatest(viewModel.$result, viewModel.$isHost)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] phase, result in
+            .sink { [weak self] phase, result, isHost in
                 guard let self else { return }
                 addDataSource(phase, result: result)
+                if result.answer != nil, isHost {
+                    changeButton(phase)
+                }
             }
             .store(in: &cancellables)
 
-//        viewModel.$isNext
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] isNext in
-//                guard let self else { return }
-//                if isNext {
-//                    nextButton.isHidden = true
-//                    if viewModel.hummingResult.isEmpty {
-//                        nextButton.updateButton(.complete)
-//                        nextButton.removeTarget(nil, action: nil, for: .touchUpInside)
-//                        nextButton.addAction(UIAction { _ in
-//                            self.showLobbyLoading()
-//                        }, for: .touchUpInside)
-//                    }
-//                    resultTableView.reloadData()
-//                }
-//            }
-//            .store(in: &cancellables)
-
-        viewModel.$isHost
+        viewModel.$canEndGame
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isHost in
+            .sink { [weak self] canEndGame in
                 guard let self else { return }
-                self.nextButton.isEnabled = isHost
+                if canEndGame {
+                    nextButton.updateButton(.complete)
+                    nextButton.isEnabled = true
+                    nextButton.removeTarget(nil, action: nil, for: .touchUpInside)
+                    nextButton.addAction(UIAction { _ in
+                        self.showLobbyLoading()
+                    }, for: .touchUpInside)
+                } else {
+                    nextButton.updateButton(.disabled)
+                }
             }
             .store(in: &cancellables)
     }
@@ -169,7 +180,7 @@ extension HummingResultViewController {
         let alert = LoadingAlertController(
             progressText: .toLobby,
             loadAction: { [weak self] in
-//                try await self?.fetchNextResult()
+                await self?.viewModel?.navigateToLobby()
             },
             errorCompletion: { [weak self] error in
                 self?.showFailedAlert(error)
