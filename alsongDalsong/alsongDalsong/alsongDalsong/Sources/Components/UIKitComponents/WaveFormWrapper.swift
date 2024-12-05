@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct WaveFormWrapper: UIViewRepresentable {
-    let data: Data
+    let columns: [CGFloat]
     let sampleCount: Int
     let circleColor: UIColor
     let highlightColor: UIColor
     
     func makeUIView(context: Context) -> WaveForm {
         let view = WaveForm(numOfColumns: sampleCount, circleColor: circleColor, highlightColor: highlightColor)
-        
+        view.drawColumns(with: columns)
         return view
     }
     

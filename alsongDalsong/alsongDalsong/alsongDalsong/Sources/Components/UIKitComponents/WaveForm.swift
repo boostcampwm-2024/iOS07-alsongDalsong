@@ -38,6 +38,12 @@ final class WaveForm: UIView {
         removeVisualizerCircles()
     }
 
+    func drawColumns(with amplitudes: [CGFloat]) {
+        for amplitude in amplitudes {
+            updateAmplitude(with: amplitude)
+        }
+    }
+    
     private func drawVisualizerCircles() {
         let diameter = bounds.width / CGFloat(2 * numOfColumns + 1)
         columnWidth = diameter

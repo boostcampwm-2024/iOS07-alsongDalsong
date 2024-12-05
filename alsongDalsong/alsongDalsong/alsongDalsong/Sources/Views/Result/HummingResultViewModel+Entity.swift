@@ -25,11 +25,13 @@ struct MappedAnswer: Hashable, PlayerInfo {
 
 struct MappedRecord: Hashable, PlayerInfo {
     var recordData: Data
+    var recordAmplitudes: [CGFloat]
     var playerName: String
     var playerAvatarData: Data
 
-    init(_ recordData: Data?, _ playerName: String?, _ playerAvatarData: Data?) {
+    init(_ recordData: Data?, _ recordAmplitudes: [CGFloat], _ playerName: String?, _ playerAvatarData: Data?) {
         self.recordData = recordData ?? Data()
+        self.recordAmplitudes = recordAmplitudes
         self.playerName = playerName ?? ""
         self.playerAvatarData = playerAvatarData ?? Data()
     }

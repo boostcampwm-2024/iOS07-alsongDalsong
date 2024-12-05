@@ -67,13 +67,16 @@ actor AudioHelper {
         cancellable = nil
     }
 
-    func analyze(with data: Data) async {
+    func analyze(with data: Data) async -> [CGFloat] {
         do {
             Logger.debug("파형분석 시작")
-            let columns = try await ASAudioAnalyzer.analyze(data: data, samplesCount: 48)
+            let columns = try await ASAudioAnalyzer.analyze(data: data, samplesCount: 24)
             Logger.debug("파형분석 완료")
             Logger.debug(columns)
-        } catch {}
+            return columns
+        } catch {
+            return []
+        }
     }
 }
 

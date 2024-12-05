@@ -133,9 +133,11 @@ final class HummingResultViewModel: @unchecked Sendable {
 
         for record in records {
             let recordData = await getRecordData(url: record.fileUrl)
+            let recordAmplitudes = await AudioHelper.shared.analyze(with: recordData ?? Data())
+            Logger.debug(recordAmplitudes)
             let playerName = record.player?.nickname
             let playerAvatarData = await getAvatarData(url: record.player?.avatarUrl)
-            mappedRecords.append(MappedRecord(recordData, playerName, playerAvatarData))
+            mappedRecords.append(MappedRecord(recordData, recordAmplitudes, playerName, playerAvatarData))
         }
 
         return mappedRecords
