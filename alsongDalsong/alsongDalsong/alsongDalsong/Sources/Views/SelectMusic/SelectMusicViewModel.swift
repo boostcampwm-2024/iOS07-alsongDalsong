@@ -119,6 +119,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         }
     }
     
+    @MainActor
     func randomMusic() async throws {
         do {
             selectedMusic = try await musicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
