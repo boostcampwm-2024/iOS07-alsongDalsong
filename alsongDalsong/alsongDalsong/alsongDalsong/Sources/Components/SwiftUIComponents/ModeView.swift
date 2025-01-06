@@ -22,8 +22,9 @@ struct ModeView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .padding()
                 Text(modeInfo.description)
-                    .font(.doHyeon(size: 16))
+                    .font(.doHyeon(size: 20))
                     .padding(.horizontal)
+                    .minimumScaleFactor(0.01)
                 Spacer()
             }
             

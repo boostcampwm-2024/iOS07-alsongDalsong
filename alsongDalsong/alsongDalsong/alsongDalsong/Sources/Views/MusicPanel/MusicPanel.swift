@@ -16,13 +16,11 @@ final class MusicPanel: UIView {
     private let artistLabel = UILabel()
     private let labelStack = UIStackView()
     private var cancellables = Set<AnyCancellable>()
-    private let musicRepository: MusicRepositoryProtocol
     private var viewModel: MusicPanelViewModel? = nil
     private var panelType: MusicPanelType = .large
 
     init(_ type: MusicPanelType = .large) {
         panelType = type
-        musicRepository = DIContainer.shared.resolve(MusicRepositoryProtocol.self)
         player = ASMusicPlayerView(type)
         super.init(frame: .zero)
         setupUI()
@@ -52,11 +50,11 @@ final class MusicPanel: UIView {
                     self.labelStack.isHidden = false
                     self.player.isHidden = false
                 }
-
+                let dataDownloadRepository = DIContainer.shared.resolve(DataDownloadRepositoryProtocol.self)
                 self.viewModel = MusicPanelViewModel(
                     music: music,
                     type: panelType,
-                    musicRepository: self.musicRepository
+                    dataDownloadRepository: dataDownloadRepository
                 )
                 self.player.updateMusicPanel(color: music?.artworkBackgroundColor?.hexToCGColor())
                 self.bindViewModel()

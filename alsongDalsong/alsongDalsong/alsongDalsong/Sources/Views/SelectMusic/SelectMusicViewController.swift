@@ -53,7 +53,6 @@ final class SelectMusicViewController: UIViewController {
         submissionStatus.translatesAutoresizingMaskIntoConstraints = false
         submitButton.translatesAutoresizingMaskIntoConstraints = false
         selectMusicView.view.translatesAutoresizingMaskIntoConstraints = false
-        let safeArea = view.safeAreaLayoutGuide
     
         NSLayoutConstraint.activate([
             progressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -62,16 +61,16 @@ final class SelectMusicViewController: UIViewController {
             progressBar.heightAnchor.constraint(equalToConstant: 16),
             
             selectMusicView.view.topAnchor.constraint(equalTo: progressBar.bottomAnchor),
-            selectMusicView.view.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            selectMusicView.view.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            selectMusicView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            selectMusicView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             selectMusicView.view.bottomAnchor.constraint(equalTo: submitButton.topAnchor, constant: -20),
             
             submissionStatus.topAnchor.constraint(equalTo: submitButton.topAnchor, constant: -16),
             submissionStatus.trailingAnchor.constraint(equalTo: submitButton.trailingAnchor, constant: 16),
 
-            submitButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            submitButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
-            submitButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -24),
+            submitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            submitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            submitButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             submitButton.heightAnchor.constraint(equalToConstant: 64),
         ])
     }
@@ -82,7 +81,7 @@ final class SelectMusicViewController: UIViewController {
         }, for: .touchUpInside)
         
         progressBar.setCompletionHandler { [weak self] in
-            guard let selectedMusic = self?.viewModel.selectedMusic else {
+            guard self?.viewModel.selectedMusic != nil else {
                 self?.showSubmitRandomMusicLoading()
                 return
             }

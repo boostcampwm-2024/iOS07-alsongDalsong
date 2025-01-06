@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Record: Codable, Equatable {
+public struct Record: Codable, Equatable, Sendable, Hashable {
     public var player: Player?
     public var recordOrder: UInt8?
     public var fileUrl: URL?

@@ -6,14 +6,11 @@ import ASRepositoryProtocol
 public final class AvatarRepository: AvatarRepositoryProtocol {
     // TODO: - Container로 주입
     private let storageManager: ASFirebaseStorageProtocol
-    private let networkManager: ASNetworkManagerProtocol
     
     public init (
-        storageManager: ASFirebaseStorageProtocol,
-        networkManager: ASNetworkManagerProtocol
+        storageManager: ASFirebaseStorageProtocol
     ) {
         self.storageManager = storageManager
-        self.networkManager = networkManager
     }
     
     public func getAvatarUrls() async throws -> [URL] {
@@ -22,16 +19,6 @@ public final class AvatarRepository: AvatarRepositoryProtocol {
             return urls
         } catch {
             throw error
-        }
-    }
-    
-    public func getAvatarData(url: URL) async -> Data? {
-        do {
-            guard let endpoint = ResourceEndpoint(url: url) else { return nil }
-            let data = try await self.networkManager.sendRequest(to: endpoint, type: .none, body: nil, option: .both)
-            return data
-        } catch {
-            return nil
         }
     }
 }

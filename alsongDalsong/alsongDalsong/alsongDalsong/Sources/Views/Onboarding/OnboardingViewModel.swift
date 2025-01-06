@@ -6,6 +6,7 @@ import Foundation
 final class OnboardingViewModel: @unchecked Sendable {
     private var avatarRepository: AvatarRepositoryProtocol
     private var roomActionRepository: RoomActionRepositoryProtocol
+    private var dataDownloadRepository: DataDownloadRepositoryProtocol
     private var avatars: [URL] = []
     private var selectedAvatar: URL?
     private var cancellables: Set<AnyCancellable> = []
@@ -15,10 +16,12 @@ final class OnboardingViewModel: @unchecked Sendable {
     @Published var buttonEnabled: Bool = true
 
     init(avatarRepository: AvatarRepositoryProtocol,
-         roomActionRepository: RoomActionRepositoryProtocol)
+         roomActionRepository: RoomActionRepositoryProtocol,
+         dataDownloadRepository: DataDownloadRepositoryProtocol)
     {
         self.avatarRepository = avatarRepository
         self.roomActionRepository = roomActionRepository
+        self.dataDownloadRepository = dataDownloadRepository
         refreshAvatars()
     }
 
@@ -39,9 +42,9 @@ final class OnboardingViewModel: @unchecked Sendable {
             fetchAvatars()
         }
         Task {
-            guard let randomAvatar = avatars.randomElement() else { return }
-            selectedAvatar = randomAvatar
-            self.avatarData = await avatarRepository.getAvatarData(url: randomAvatar)
+            guard let randomAvatarUrl = avatars.randomElement() else { return }
+            selectedAvatar = randomAvatarUrl
+            self.avatarData = await dataDownloadRepository.downloadData(url: randomAvatarUrl)
         }
     }
 

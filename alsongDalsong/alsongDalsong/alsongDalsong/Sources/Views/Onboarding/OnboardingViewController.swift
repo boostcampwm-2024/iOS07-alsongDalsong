@@ -63,17 +63,15 @@ final class OnboardingViewController: UIViewController {
     }
 
     private func setupLayout() {
-        let safeArea = view.safeAreaLayoutGuide
-
         NSLayoutConstraint.activate([
             logoImageView.widthAnchor.constraint(equalToConstant: 356),
             logoImageView.heightAnchor.constraint(equalToConstant: 160),
-            logoImageView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            logoImageView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 48),
+            logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 48),
 
             avatarView.widthAnchor.constraint(equalToConstant: 200),
             avatarView.heightAnchor.constraint(equalToConstant: 200),
-            avatarView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+            avatarView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
             avatarRefreshButton.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: -56),
             avatarRefreshButton.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: -56),
@@ -81,20 +79,20 @@ final class OnboardingViewController: UIViewController {
             avatarRefreshButton.heightAnchor.constraint(equalToConstant: 60),
 
             nickNamePanel.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: 36),
-            nickNamePanel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            nickNamePanel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            nickNamePanel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            nickNamePanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             nickNamePanel.heightAnchor.constraint(equalToConstant: 100),
 
-            createRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            createRoomButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            createRoomButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            createRoomButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             createRoomButton.topAnchor.constraint(equalTo: nickNamePanel.bottomAnchor, constant: 24),
             createRoomButton.bottomAnchor.constraint(equalTo: joinRoomButton.topAnchor, constant: -24),
             createRoomButton.heightAnchor.constraint(equalToConstant: 64),
 
-            joinRoomButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            joinRoomButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            joinRoomButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            joinRoomButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             joinRoomButton.heightAnchor.constraint(equalToConstant: 64),
-            joinRoomButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -24),
+            joinRoomButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
 

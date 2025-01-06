@@ -20,24 +20,24 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         didSet { isPlaying ? playMusic() : stopMusic() }
     }
     
-    private let musicRepository: MusicRepositoryProtocol
     private let playersRepository: PlayersRepositoryProtocol
     private let answersRepository: AnswersRepositoryProtocol
     private let gameStatusRepository: GameStatusRepositoryProtocol
+    private let dataDownloadRepository: DataDownloadRepositoryProtocol
     
     private let musicAPI = ASMusicAPI()
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        musicRepository: MusicRepositoryProtocol,
         playersRepository: PlayersRepositoryProtocol,
         answerRepository: AnswersRepositoryProtocol,
-        gameStatusRepository: GameStatusRepositoryProtocol
+        gameStatusRepository: GameStatusRepositoryProtocol,
+        dataDownloadRepository: DataDownloadRepositoryProtocol
     ) {
-        self.musicRepository = musicRepository
         self.playersRepository = playersRepository
         self.answersRepository = answerRepository
         self.gameStatusRepository = gameStatusRepository
+        self.dataDownloadRepository = dataDownloadRepository
         bindGameStatus()
         bindAnswer()
         bindSubmissionStatus()
@@ -89,7 +89,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     
     func downloadArtwork(url: URL?) async -> Data? {
         guard let url else { return nil }
-        return await musicRepository.getMusicData(url: url)
+        return await dataDownloadRepository.downloadData(url: url)
     }
     
     func handleSelectedSong(with music: Music) {
@@ -119,6 +119,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
         }
     }
     
+    @MainActor
     func randomMusic() async throws {
         do {
             selectedMusic = try await musicAPI.randomSong(from: "pl.u-aZb00o7uPlzMZzr")
@@ -129,7 +130,7 @@ final class SelectMusicViewModel: ObservableObject, @unchecked Sendable {
     
     func downloadMusic(url: URL) {
         Task {
-            guard let musicData = await musicRepository.getMusicData(url: url) else {
+            guard let musicData = await dataDownloadRepository.downloadData(url: url) else {
                 return
             }
             await updateMusicData(with: musicData)

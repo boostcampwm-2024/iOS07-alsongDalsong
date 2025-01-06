@@ -9,17 +9,17 @@ final class MusicPanelViewModel: @unchecked Sendable {
     @Published var artwork: Data?
     @Published var preview: Data?
     @Published private(set) var buttonState: AudioButtonState = .idle
-    private let musicRepository: MusicRepositoryProtocol?
+    private let dataDownloadRepository: DataDownloadRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
 
     init(
         music: Music?,
         type: MusicPanelType = .large,
-        musicRepository: MusicRepositoryProtocol?
+        dataDownloadRepository: DataDownloadRepositoryProtocol
     ) {
         self.music = music
         self.type = type
-        self.musicRepository = musicRepository
+        self.dataDownloadRepository = dataDownloadRepository
         getPreviewData()
         getArtworkData()
         bindAudioHelper()
@@ -88,14 +88,14 @@ final class MusicPanelViewModel: @unchecked Sendable {
     private func getPreviewData() {
         guard let previewUrl = music?.previewUrl else { return }
         Task { @MainActor in
-            preview = await musicRepository?.getMusicData(url: previewUrl)
+            preview = await dataDownloadRepository.downloadData(url: previewUrl)
         }
     }
 
     private func getArtworkData() {
         guard let artworkUrl = music?.artworkUrl else { return }
         Task { @MainActor in
-            artwork = await musicRepository?.getMusicData(url: artworkUrl)
+            artwork = await dataDownloadRepository.downloadData(url: artworkUrl)
         }
     }
 }

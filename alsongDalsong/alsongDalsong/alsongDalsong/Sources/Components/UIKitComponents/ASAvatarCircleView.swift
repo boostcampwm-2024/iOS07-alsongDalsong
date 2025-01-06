@@ -41,30 +41,3 @@ final class ASAvatarCircleView: UIView {
         imageView.image = UIImage(data: imageData)
     }
 }
-
-//struct ASAvatarCircleViewWrapper: UIViewRepresentable {
-//    let backgroundColor: UIColor = UIColor.asMint
-//    @Binding var imageURL: URL?
-//
-//    // MARK: - UIViewRepresentable Methods
-//    func makeUIView(context: Context) -> ASAvatarCircleView {
-//        let avatarView = ASAvatarCircleView(backgroundColor: backgroundColor)
-//        if let imageURL = imageURL {
-//            avatarView.setImage(imageURL: imageURL)
-//        } else {
-//            if let imagePath = Bundle.main.path(forResource: "mojojojo", ofType: "png") {
-//                let imageURL = URL(fileURLWithPath: imagePath)
-//                avatarView.setImage(imageURL: imageURL)
-//            }
-//        }
-//        return avatarView
-//    }
-//
-//    func updateUIView(_ uiView: ASAvatarCircleView, context: Context) {
-//        if let imageURL = imageURL {
-//            uiView.setImage(imageURL: imageURL)
-//        } else {
-//            //TODO: 이미지 URL 받아서 setImage 호출
-//        }
-//    }
-//}

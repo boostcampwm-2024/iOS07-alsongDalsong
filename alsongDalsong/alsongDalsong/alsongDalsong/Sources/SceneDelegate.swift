@@ -32,7 +32,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let onboardingVM = OnboardingViewModel(
             avatarRepository: DIContainer.shared.resolve(AvatarRepositoryProtocol.self),
-            roomActionRepository: DIContainer.shared.resolve(RoomActionRepositoryProtocol.self)
+            roomActionRepository: DIContainer.shared.resolve(RoomActionRepositoryProtocol.self),
+            dataDownloadRepository: DIContainer.shared.resolve(DataDownloadRepositoryProtocol.self)
         )
         let onboardingVC = OnboardingViewController(viewmodel: onboardingVM, inviteCode: inviteCode)
         let navigationController = UINavigationController(rootViewController: onboardingVC)

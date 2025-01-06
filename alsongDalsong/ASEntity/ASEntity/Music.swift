@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Music: Codable, Equatable, Identifiable, Sendable {
+public struct Music: Codable, Equatable, Identifiable, Sendable, Hashable {
     public var id: String?
     public var title: String?
     public var artist: String?

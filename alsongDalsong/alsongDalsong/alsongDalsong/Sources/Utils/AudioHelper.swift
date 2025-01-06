@@ -66,6 +66,18 @@ actor AudioHelper {
         cancellable?.cancel()
         cancellable = nil
     }
+
+    func analyze(with data: Data) async -> [CGFloat] {
+        do {
+            Logger.debug("파형분석 시작")
+            let columns = try await ASAudioAnalyzer.analyze(data: data, samplesCount: 24)
+            Logger.debug("파형분석 완료")
+            Logger.debug(columns)
+            return columns
+        } catch {
+            return []
+        }
+    }
 }
 
 // MARK: - Play Audio
@@ -80,7 +92,8 @@ extension AudioHelper {
     func startPlaying(_ file: Data?,
                       sourceType type: FileSource = .imported(.large),
                       option: PlayType = .full,
-                      needsWaveUpdate: Bool = false) async {
+                      needsWaveUpdate: Bool = false) async
+    {
         guard await checkRecorderState(), await checkPlayerState() else { return }
         guard let file else { return }
 
@@ -94,7 +107,20 @@ extension AudioHelper {
         if needsWaveUpdate {
             updatePlayIndex()
         }
-        await player?.startPlaying(data: file, option: playType)
+        await play(file: file, option: option)
+    }
+
+    func play(file: Data, option: PlayType) async {
+        switch option {
+            case .full: await player?.startPlaying(data: file)
+            case let .partial(time):
+                await player?.startPlaying(data: file)
+                do {
+                    try await Task.sleep(nanoseconds: UInt64(time * 1_000_000_000))
+                    await stopPlaying()
+                } catch { Logger.error(error.localizedDescription) }
+            @unknown default: break
+        }
     }
 
     func stopPlaying() async {
@@ -148,7 +174,6 @@ extension AudioHelper {
             try await Task.sleep(nanoseconds: 6 * 1_000_000_000)
             let recordedData = await stopRecording()
             sendDataThrough(recorderDataSubject, recordedData ?? Data())
-            removeTimer()
         } catch { Logger.error(error.localizedDescription) }
     }
 

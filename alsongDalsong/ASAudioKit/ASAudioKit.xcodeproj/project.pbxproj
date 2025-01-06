@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B7EB01B2CFDA83B00B2BE2A /* ASAudioAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7EB01A2CFDA83B00B2BE2A /* ASAudioAnalyzer.swift */; };
+		1B7EB01C2CFDA83B00B2BE2A /* ASAudioAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7EB01A2CFDA83B00B2BE2A /* ASAudioAnalyzer.swift */; };
 		4E8907C22CE2489A00D5B547 /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */; platformFilter = ios; };
 		4EB1ED372CE88E500012FFBA /* ASAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */; };
 		4EB1ED382CE88E500012FFBA /* ASAudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -44,6 +46,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1B7EB01A2CFDA83B00B2BE2A /* ASAudioAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASAudioAnalyzer.swift; sourceTree = "<group>"; };
 		4E89071E2CE23D1B00D5B547 /* ASAudioKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ASAudioKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E8907BE2CE2489A00D5B547 /* ASAudioKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASAudioKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EB1EC802CE7AA160012FFBA /* ASAudioDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASAudioDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +124,7 @@
 		4E8907142CE23D1A00D5B547 = {
 			isa = PBXGroup;
 			children = (
+				1B7EB01A2CFDA83B00B2BE2A /* ASAudioAnalyzer.swift */,
 				4E8907AD2CE240D400D5B547 /* ASAudioKit */,
 				4E8907BF2CE2489A00D5B547 /* ASAudioKitTests */,
 				4EB1EC812CE7AA160012FFBA /* ASAudioDemo */,
@@ -300,6 +304,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B7EB01C2CFDA83B00B2BE2A /* ASAudioAnalyzer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +319,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B7EB01B2CFDA83B00B2BE2A /* ASAudioAnalyzer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
